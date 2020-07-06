@@ -1,0 +1,875 @@
+---
+title: "PNSHP Culvert Report"
+author: "B. Van Deynze"
+date: "March 27, 2020"
+output:
+  html_document:
+    toc: true
+    toc_depth: 1
+    toc_float: true
+---
+```{css style, echo=FALSE}
+# body .main-container {
+#   max-width: 1944px !important;
+#   # width: 1280px !important;
+#   margin-left: 50px !important;
+# }
+# body {
+#   max-width: 1944px !important;
+# }
+```
+
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+ $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+```
+
+```{r setup, include=FALSE}
+# Set knitr options
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(fig.dim = c(8, 6))
+
+# Clear existing environment
+rm(list = ls())
+
+# Set libraries
+library(tidyverse)
+library(janitor)
+library(ggthemes)
+library(scales)
+library(searchable)
+library(knitr)
+library(kableExtra)
+library(xtable)
+library(here)
+
+# Set ggplot2 themes
+theme_set(theme_clean())
+theme_update(
+  plot.background = element_rect(color = NA),
+  plot.title.position = "plot"
+)
+
+# Set top-level working directory
+# wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
+# wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
+# wd <- "D:/Braeden/OneDrive/Documents/My Work/NOAA/Analysis"
+# knitr::opts_knit$set(root.dir = wd)
+# setwd(wd)
+# here()
+# setwd(here("output"))
+
+df_pnshp <- read_csv(paste0(here("output"), "/PNSHP_full_working.csv"))
+df_prj <- read_csv(paste0(here("output"), "/PNSHP_prj_working.csv"))
+
+# Investigate basics of raw data ====
+# Select only culvert-related projects
+df_culv <-
+  df_pnshp %>%
+  filter(
+    action_fishpass_culvimp == 1 | action_fishpass_culvinst == 1 | action_fishpass_culvrem == 1
+  )
+df_culv_prj <-
+  df_prj %>%
+  filter(
+    action_fishpass_culvimp == 1 | action_fishpass_culvinst == 1 | action_fishpass_culvrem == 1
+  )
+
+# This version includes mixed projects
+df_culv_all <-
+  df_pnshp %>%
+  semi_join(df_culv_prj, by = "project_id")
+
+# Drop full data
+rm(df_prj, df_pnshp)
+
+# Let's isolate "pure" projects, i.e. the ones that are just culvert projects
+df_culv_prj_pure <-
+  df_culv_prj %>%
+  filter_at(
+    vars(starts_with("action_") & !contains("culv")),
+    all_vars(. == 0)
+  )
+df_culv_pure <-
+  df_culv_all %>%
+  semi_join(
+    df_culv_prj_pure,
+    by = "project_id"
+  )
+
+# And then we'll seperate out the rest of the "dirty" projects
+df_culv_prj_dirty <-
+  df_culv_prj %>%
+  anti_join(
+    df_culv_prj_pure,
+    by = "project_id"
+  )
+df_culv_dirty <-
+  df_culv_all %>%
+  anti_join(
+    df_culv_prj_pure,
+    by = "project_id"
+  )
+
+# Lets start by building the # of culverts variable
+# For projects that don't have the COUNT OF BLOCKAGES metric, that's straight forward: it's just the number of actions
+# But we don't have any indicator in the project level data that identifies where COUNT OF BLOCKAGES is yet, so let's make one
+df_culv_pure <-
+  df_culv_pure %>%
+  group_by(project_id) %>%
+  mutate(
+    count_avail = I(sum(I(metric == "COUNT OF BLOCKAGES"), na.rm = TRUE) > 0)
+  )
+df_culv_prj_pure <-
+  df_culv_prj_pure %>%
+  left_join(
+    df_culv_pure %>% distinct(project_id, count_avail),
+    by = "project_id"
+  )
+
+# Let's add a culvert count for the ones that don't
+df_culv_prj_pure <-
+  df_culv_prj_pure %>%
+  mutate(
+    n_culverts = case_when(
+      count_avail == FALSE ~ n_action_prj,
+      TRUE ~ NA_real_
+    )
+  )
+# That leaves us with 285 projects with the COUNT OF BLOCKAGES metric that we'll need to address
+# Let's break them out in project and action form to take a closer look
+df_culv_prj_count <-
+  df_culv_prj_pure %>%
+  filter(
+    count_avail == TRUE
+  )
+df_culv_count <-
+  df_culv_pure %>%
+  ungroup() %>%
+  semi_join(
+    df_culv_prj_count,
+    by = "project_id"
+  )
+# Okay so only 15 of the 764 action x metric rows have NA metrics while 389 have COUNT OF BLOCKAGES
+
+# The ones that have only one action should be pretty easy to address, so let's update them
+df_culv_count <-
+  df_culv_count %>%
+  mutate(
+    n_culverts_temp = case_when(
+      metric != "COUNT OF BLOCKAGES" ~ 0, # These so we can later sum over this in a summarized frame
+      metric == "COUNT OF BLOCKAGES" & n_action_prj == 1 ~ numeric_value,
+      TRUE ~ NA_real_
+    )
+  )
+# So there's 156 more action x metric rows we have to deal with, and we should probably take a look at those ones with huge numbers of blockages too
+
+# For many, COUNT OF BLOCKAGES is exactly equal to the number of actions, so we can work with that 
+df_culv_count <-
+  df_culv_count %>%
+  mutate(
+    n_culverts_temp = case_when(
+      !is.na(n_culverts_temp) ~ n_culverts_temp,
+      numeric_value == n_action_prj ~ 1,
+      TRUE ~ NA_real_
+    )
+  )
+# Okay now we're down to 99 cases
+
+# In a lot of other cases, COUNT OF BLOCKAGES is 1, and the number of worksites exactly equals the number of actions, so we can use that
+df_culv_count <-
+  df_culv_count %>%
+  mutate(
+    n_culverts_temp = case_when(
+      !is.na(n_culverts_temp) ~ n_culverts_temp,
+      numeric_value == 1 & n_action_prj == n_worksites ~ 1,
+      TRUE ~ NA_real_
+    )
+  )
+# Down to 67
+
+# So it looks like in all of these cases we can assign a 1 in the culvrt count column to the NAs
+df_culv_count <-
+  df_culv_count %>%
+  group_by(project_id) %>%
+  mutate(
+    na_metric_prj = I(sum(is.na(metric), na.rm = TRUE) > 0) # Identifies when a project has a NA metric
+  ) %>%
+  ungroup() %>%
+  mutate(
+    n_culverts_temp = case_when(
+      !is.na(n_culverts_temp) ~ n_culverts_temp,
+      na_metric_prj == TRUE ~ 1,
+      TRUE ~ NA_real_
+    )
+  ) %>%
+  select(-na_metric_prj)
+# We've got it down to 49
+
+# These all look ambiguous, so let's drop them and move along
+df_culv_count <-
+  df_culv_count %>%
+  group_by(project_id) %>%
+  mutate(
+    na_culv_prj = I(sum(is.na(n_culverts_temp), na.rm = TRUE) > 0) # Identifies when a project has a NA culvert count
+  ) %>%
+  ungroup() %>%
+  filter(na_culv_prj == FALSE) %>%
+  select(-na_culv_prj)
+
+# We'll now merge the culvert counts into the project data
+df_culv_prj_count <-
+  df_culv_prj_count %>%
+  left_join(
+    df_culv_count %>%
+      group_by(project_id) %>%
+      summarize(
+        n_culverts_temp = sum(n_culverts_temp)
+      ),
+    by = "project_id"
+  ) %>%
+  mutate(
+    n_culverts = case_when(
+      !is.na(n_culverts) ~ n_culverts,
+      is.na(n_culverts) ~ n_culverts_temp
+    ),
+    n_culverts_temp = NULL,
+    n_culverts_fromcount = 1
+  ) %>%
+  filter(
+    !is.na(n_culverts)
+  )
+
+# And we'll merge that back into the pure culvert projects
+df_culv_prj_pure <-
+  df_culv_prj_pure %>%
+  left_join(
+    df_culv_prj_count %>%
+      distinct(
+        project_id,
+        n_culverts,
+        n_culverts_fromcount
+      ),
+    by = "project_id",
+    suffix = c("", "_temp")
+  ) %>%
+  mutate(
+    n_culverts = case_when(
+      !is.na(n_culverts) ~ n_culverts,
+      is.na(n_culverts) ~ n_culverts_temp
+    ),
+    n_culverts_temp = NULL,
+    n_culverts_fromcount = case_when(
+      is.na(n_culverts_fromcount) ~ 0,
+      TRUE ~ 1
+    )
+  ) %>%
+  drop_na(n_culverts) %>%
+  # And create our $/culvert variable
+  mutate(
+    cost_per_culvert = adj_cost / n_culverts
+  ) %>%
+  # And at this point, we can drop the extra columns as well to prepare for export
+  select(
+    -(starts_with("action_") & !contains("culv")),
+    -project_year,
+    -same_action,
+    -missing_metric,
+    -n_action_class,
+    -count_avail,
+    -metric_avail,
+    -both_avail,
+    -avail_class
+  )
+# And here's a list of those projects
+ls_culv_prj_pure <-
+  df_culv_prj_pure %>%
+  distinct(project_id) %>%
+  pull(project_id)
+
+# We should build these for action and worksite level data as well
+df_culv_pure <-
+  df_culv_pure %>%
+  ungroup() %>%
+  filter(
+    project_id %in% ls_culv_prj_pure
+  ) %>%
+  left_join(
+    df_culv_prj_pure %>% select(project_id, n_culverts, starts_with("action"), n_culverts, n_culverts_fromcount, cost_per_culvert),
+    by = "project_id",
+    suffix = c("", "_prj")
+  ) %>%
+  select(
+    -(starts_with("action_") & !contains("culv")),
+    -project_year,
+    -same_action,
+    -missing_metric,
+    -n_action_class,
+    -count_avail,
+    -metric_avail,
+    -both_avail,
+    -avail_class,
+    -metric,
+    -numeric_value,
+    -units
+  ) %>%
+  distinct(
+    project_id,
+    worksite_id,
+    action,
+    .keep_all = TRUE
+  )
+
+df_culv_wrk_pure <-
+  df_culv_pure %>%
+  group_by(project_id, worksite_id) %>%
+  mutate_at(
+    vars(starts_with("action_")),
+    ~as.numeric(I(sum(.) > 0))
+  ) %>%
+  rename_at(
+    vars(starts_with("action_") & !ends_with("_prj")),
+    ~paste0(., "_wrk")
+  ) %>%
+  select(-action) %>%
+  distinct(project_id, worksite_id, .keep_all = TRUE)
+
+# And add the action key for labels in the report
+action_key <-
+  c(
+    "ESTUARY/ NEARSHORE - CHANNEL MODIFICATION" = "est_chanmod",
+    "ESTUARY/ NEARSHORE - CREATION OF NEW ESTUARINE HABITAT" = "est_create",
+    "ESTUARY/ NEARSHORE - DIKE BREACHING/ REMOVAL" = "est_dikebreach",
+    "ESTUARY/ NEARSHORE - DIKE RECONFIGURATION" = "est_dikereconf",
+    "ESTUARY/ NEARSHORE - INVASIVE SPECIES TREATED" = "est_invasive",
+    "ESTUARY/ NEARSHORE - REMOVAL OF EXISTING FILL MATERIAL" = "est_fillrem",
+    "ESTUARY/ NEARSHORE - RESTORATION/REHABILITATION OF ESTUARINE HABITAT" = "est_resthab",
+    "ESTUARY/ NEARSHORE - SHORELINE ARMOR REMOVAL OR MODIFICATION" = "est_armormod",
+    "ESTUARY/ NEARSHORE - TIDEGATE ALTERATION/ REMOVAL" = "est_tidegate",
+    "FISH PASSAGE - BARRIERS (DAMS OR LOG JAMS)" = "fishpass_barriers",
+    "FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES" = "fishpass_culvimp",
+    "FISH PASSAGE - CULVERT INSTALLATION" = "fishpass_culvinst",
+    "FISH PASSAGE - CULVERT REMOVAL" = "fishpass_culvrem",
+    "FISH PASSAGE - DIVERSION DAM/ PUSH UP DAM REMOVAL" = "fishpass_diverdam",
+    "FISH PASSAGE - FISH LADDER IMPROVED" = "fishpass_ladderimp",
+    "FISH PASSAGE - FISH LADDER INSTALLED" = "fishpass_ladderinst",
+    "FISH PASSAGE - FISHWAYS (CHUTES OR POOLS) INSTALLED" = "fishpass_waysinst",
+    "FISH PASSAGE - ROAD CROSSINGS IN STREAM (OTHER THAN CULVERTS)" = "fishpass_roadcross",
+    "FISH PASSAGE - WEIRS (INCOMPLETE DAMS)" = "fishpass_weirs",
+    "FISH PASSAGE IMPROVEMENT - ROCKED FORD- ROAD STREAM CROSSING" = "fishpass_rockford",
+    "FISH SCREENING - FISH SCREEN INSTALLED" = "screen_inst",
+    "FISH SCREENING - FISH SCREEN REPLACED" = "screen_replace",
+    "INSTREAM - BEAVER INTRODUCTION" = "instream_beaver",
+    "INSTREAM - BOULDERS" = "instream_boulder",
+    "INSTREAM - CHANNEL CONNECTIVITY" = "instream_connect",
+    "INSTREAM - CHANNEL RECONFIGURATION" = "instream_reconf",
+    "INSTREAM - DEFLECTORS/ BARBS" = "instream_barbs",
+    "INSTREAM - LARGE WOODY DEBRIS" = "instream_wooddebris",
+    "INSTREAM - LOG WEIRS" = "instream_logweir",
+    "INSTREAM - OFF CHANNEL HABITAT" = "instream_offchannel",
+    "INSTREAM - PLANT REMOVAL/ CONTROL" = "instream_plantrem",
+    "INSTREAM - PREDATOR REMOVAL PROJECT" = "instream_predrem",
+    "INSTREAM - ROCK WEIRS" = "instream_rockweir",
+    "INSTREAM - ROOTWADS" = "instream_rootwad",
+    "INSTREAM - SPAWNING GRAVEL PLACEMENT" = "instream_gravel",
+    "INSTREAM - STREAMBANK STABILIZATION" = "instream_bankstab",
+    "INSTREAM - WOOD STRUCTURE/ LOG JAM" = "instream_logjam",
+    "INSTREAM FLOW - IRRIGATION PRACTICE IMPROVEMENT" = "flow_irriimp",
+    "INSTREAM FLOW - WATER LEASED OR PURCHASED" = "flow_waterlease",
+    "LAND PROTECTED, ACQUIRED, OR LEASED - STREAMBANK PROTECTION" = "land_streambank",
+    "LAND PROTECTED, ACQUIRED, OR LEASED - WETLAND OR ESTUARINE AREA PROTECTION" = "land_wetland",
+    "NUTRIENT ENRICHMENT - CARCASS ANALOG" = "nutrient_carcanalog",
+    "NUTRIENT ENRICHMENT - CARCASS PLACEMENT" = "nutrient_carcplace",
+    "NUTRIENT ENRICHMENT - FERTILIZER" = "nutrient_fert",
+    "PROJECT MAINTENANCE - SITE MAINTENANCE" = "projmaint_sitemaint",
+    "RIPARIAN - CONSERVATION GRAZING MANAGEMENT" = "riparian_graze",
+    "RIPARIAN - FENCING" = "riparian_fence",
+    "RIPARIAN - FORESTRY PRACTICES/ STAND MANAGEMENT" = "riparian_forest",
+    "RIPARIAN - LIVESTOCK EXCLUSION" = "riparian_liveexcl",
+    "RIPARIAN - LIVESTOCK WATER DEVELOPMENT" = "riparian_livewater",
+    "RIPARIAN - PLANTING" = "riparian_plant",
+    "RIPARIAN - WATER GAP DEVELOPMENT" = "riparian_watergap",
+    "RIPARIAN - WEED CONTROL" = "riparian_weed",
+    "SEDIMENT REDUCTION - EROSION CONTROL STRUCTURES" = "sedireduce_contstruc",
+    "SEDIMENT REDUCTION - ROAD DRAINAGE SYSTEM IMPROVEMENTS" = "sedireduce_roaddrain",
+    "SEDIMENT REDUCTION - ROAD OBLITERATION" = "sedireduce_roadobli",
+    "SEDIMENT REDUCTION - ROAD RECONSTRUCTION" = "sedireduce_roadrecon",
+    "SEDIMENT REDUCTION - ROAD RELOCATION" = "sedireduce_roadrelo",
+    "SEDIMENT REDUCTION - ROAD STREAM CROSSING IMPROVEMENTS" = "sedireduce_roadcross",
+    "SEDIMENT REDUCTION - SEDIMENT CONTROL" = "sedireduce_sedicont",
+    "UPLAND AGRICULTURE - BEST MANAGEMENT PRACTICES/ AGRICULTURE MANAGEMENT" = "agri_mgmt",
+    "UPLAND AGRICULTURE - BEST MANAGEMENT PRACTICES/ STRUCTURAL PRACTICES" = "agri_structure",
+    "UPLAND AGRICULTURE - BEST MANAGEMENT PRACTICES/ VEGETATIVE AND TILLING PRACTICES" = "agri_tillage",
+    "UPLAND LIVESTOCK - UPLAND EXCLUSION OR FENCING" = "livestock_fence",
+    "UPLAND LIVESTOCK - UPLAND GRAZING MANAGEMENT" = "livestock_graze",
+    "UPLAND LIVESTOCK - WATER DEVELOPMENT" = "livestock_water",
+    "UPLAND VEGETATION - INVASIVE PLANT CONTROL" = "uplandveg_invasive",
+    "UPLAND VEGETATION - PLANTING" = "uplandveg_plant",
+    "UPLAND VEGETATION - SLOPE STABILIZATION" = "uplandveg_slope",
+    "UPLAND VEGETATION - VEGETATION/ STAND MANAGEMENT" = "uplandveg_standmgmt",
+    "WATER QUALITY IMPROVEMENT - LIVESTOCK MANURE MANAGEMENT" = "wqimp_manure",
+    "WATER QUALITY IMPROVEMENT - REFUSE REMOVAL" = "wqimp_refuse",
+    "WATER QUALITY IMPROVEMENT - RETURN FLOW COOLING" = "wqimp_flowcool",
+    "WATER QUALITY IMPROVEMENT - SEWAGE CLEAN-UP" = "wqimp_sewage",
+    "WATER QUALITY IMPROVEMENT - STORMWATER/WASTEWATER" = "wqimp_wastewater",
+    "WATER QUALITY IMPROVEMENT - TOXIC CLEAN-UP" = "wqimp_toxic",
+    "WETLAND - PLANT REMOVAL/ CONTROL" = "wetland_plantrem",
+    "WETLAND - PLANTING" = "wetland_plant",
+    "WETLAND - WETLAND CREATION" = "wetland_create",
+    "WETLAND - WETLAND IMPROVEMENT/ ENHANCEMENT" = "wetland_imp",
+    "WETLAND - WETLAND INVASIVE SPECIES REMOVAL" = "wetland_invasive",
+    "WETLAND - WETLAND RESTORATION" = "wetland_restore"
+  )
+```
+
+This document summarizes the available culvert projects in the Pacific Northwest Salmonid Habitat Projects (PNSHP) database, with a focus on project costs. Culverts allow water to flow beneath roads, preventing washouts and flooding. However, many culvert designs prevent fish passage to spawning or rearing habitat. Improving culverts is a major priority of salmonid habitat restoration. A 2018 United States Supreme Court ruling (United States v. Washington) requires Washington State to improve state-owned culverts throughout the Puget Sound region to improve access to critical habitat for salmonid populations listed under the Endangered Species Act (ESA). These improvements are expected to cost billions of dollars. Improved understanding of drivers of the costs of culvert projects will help in prioritizing projects over space and time.
+
+The PNSHP database is a clearinghouse for salmonid habitat improvement projects throughout the Pacific Northwest. The database is maintained at the Northwest Fisheries Science Center. Because project data is reported by a variety of entities, data quality varies. Project data includes explicit data which actions have occurred, however information on the extent of the actions, where the occur, and costs varies in availability and detail.
+
+In the data described below, we only include projects that **include geographic coordinates** for work site locations that were completed **between 1991 and 2015**. Details on how culvert projects were identified and how the data are structured follow. The next section presents figures describing the data. We then examine additional inventories of culverts from state agencies.
+
+# Screening for Culvert Projects
+The full PNSHP data includes projects with a wide range of action types. Many projects include multiple action types, often over multiple work sites. Further complicating matters, cost data is only available at the project level, meaning costs cannot be attributed to specific work sites or actions. This complicates identifying culvert projects.
+
+There are 82 different action types included in the PNSHP data. We begin screening for culvert projects by isolating projects that include at least one of the three culvert-related action types: (1) culvert improvements or upgrades, (2) culvert removal, and (3) culvert installation. This process leaves `r comma(nrow(df_culv_prj))` projects related to culvert improvement.
+
+However, a good number of these projects involve not just culvert-related actions. These projects include `r comma(nrow(df_culv_all %>% distinct(project_id, worksite_id, action)))` actions, but only `r comma(nrow(df_culv %>% distinct(project_id, worksite_id, action)))` are culvert related.
+
+```{r actiontable}
+df_culv_all %>%
+  distinct(project_id, worksite_id, action) %>% 
+  tabyl(action) %>% 
+  select(action, n) %>%
+  mutate(action = recode(action, !!!invert(action_key))) %>%
+  arrange(-n) %>%
+  knitr::kable(
+    col.names = c("Action type", "N"), 
+    caption = "Actions associated with culvert projects",
+    format.args = list(big.mark = ","),
+    format = "html"
+  ) %>%
+  kableExtra::kable_styling(
+    full_width = FALSE,
+    bootstrap_options = c("striped", "hover"),
+    fixed_thead = TRUE
+  ) %>%
+  kableExtra::scroll_box(height = "500px")
+```
+\
+
+> **Idea:** Other road work like road drainage improvements and road obliteration occur most frequently alongside culvert actions for "dirty" projects. It may be possible to control for this kind of "contamination" with simple indicator variables in a cost model.
+
+Our ultimate goal is to get a "cost per culvert" measure. Because costs are reported at the project level, disentangling costs related to culverts and costs related to other actions will be challenging. For now, we will focus on the `r comma(nrow(df_culv_prj_pure))` projects that only involve culvert actions. We will call these projects the "pure" culvert projects and projects that are "contaminated" with other actions "dirty" projects. Project costs are available for the vast majority of pure projects, though if we can recover data from the contaminated dirty projects, we can boost our ultimate project-level sample size as much as `r percent(nrow(df_culv_prj_dirty %>% filter(cost_avail == TRUE)) / nrow(df_culv_prj_pure %>% filter(cost_avail == TRUE)))`.
+
+```{r coststables}
+df_culv_prj_pure %>%
+  tabyl(cost_avail) %>%
+  mutate(
+    cost_avail = as.character(cost_avail) %>% str_to_sentence(),
+    percent = percent(percent)
+  ) %>%
+  knitr::kable(
+    col.names = c("Project costs available?", "N", "%"), 
+    caption = "Project cost availability, pure projects",
+    format.args = list(big.mark = ","),
+    align = "lcc"
+  ) %>%
+  kableExtra::kable_styling(
+    full_width = FALSE,
+    position = "float_left",
+    bootstrap_options = c("striped", "hover")
+  )
+
+df_culv_prj_dirty %>%
+  tabyl(cost_avail) %>%
+  mutate(
+    cost_avail = as.character(cost_avail) %>% str_to_sentence(),
+    percent = percent(percent)
+  ) %>%
+  knitr::kable(
+    col.names = c("Project costs available?", "N", "%"), 
+    caption = "Project cost availability, dirty projects",
+    format.args = list(big.mark = ","),
+    align = "lcc"
+  ) %>%
+  kableExtra::kable_styling(
+    full_width = FALSE,
+    position = "left",
+    bootstrap_options = c("striped", "hover")
+  )
+```
+\
+
+```{r worksitecounts}
+df_culv_prj_pure %>%
+  tabyl(n_worksites) %>%
+  mutate(
+    percent = percent(percent)
+  ) %>%
+  knitr::kable(
+    col.names = c("# of work sites", "N", "%"), 
+    caption = "Number of work sites per project, pure projects",
+    format.args = list(big.mark = ","),
+    align = "lcc"
+  ) %>%
+  kableExtra::kable_styling(
+    full_width = FALSE,
+    position = "float_left",
+    bootstrap_options = c("striped", "hover")
+  )
+
+df_culv_prj_pure %>%
+  tabyl(n_action_prj) %>%
+  mutate(
+    percent = percent(percent)
+  ) %>%
+  knitr::kable(
+    col.names = c("# of actions", "N", "%"), 
+    caption = "Number of actions per project, pure projects",
+    format.args = list(big.mark = ","),
+    align = "lcc"
+  ) %>%
+  kableExtra::kable_styling(
+    full_width = FALSE,
+    position = "left",
+    bootstrap_options = c("striped", "hover")
+  )
+```
+\
+
+# Descriptive Figures for Culvert Projects {.tabset .tabset-fade .tabset-pills #pills}
+This section includes plots of the frequency of culvert projects and actions, the total spending on these projects, and the distributions of cost per culvert (project cost divided by the culvert counts constructed above), separated out by action type, basin, year, and reporting source. It also includes maps of where these culvert projects are distributed.
+
+## Action Counts
+### Action Counts
+*Counts of culvert-related actions by action-type, year, basin, and reporting source, separated by project cost availability. Only actions associated with pure culvert projects included.*
+![](.\figs\culverts\fig_countcost_action.png)
+![](.\figs\culverts\fig_countcost_year.png)
+![](.\figs\culverts\fig_countcost_basin.png)
+![](.\figs\culverts\fig_countcost_source.png)
+[Source glossery](#sources)
+![](.\figs\culverts\fig_countcost_action_year.png)
+![](.\figs\culverts\fig_countcost_source_action.png)
+[Source glossery](#sources)
+![](.\figs\culverts\fig_countcost_basin_action.png)
+![](.\figs\culverts\fig_countcost_basin_year.png)
+![](.\figs\culverts\fig_countcost_source_year.png)
+[Source glossery](#sources)
+![](.\figs\culverts\fig_countcost_basin_source.png)
+[Source glossery](#sources)\
+[Back to top](#pills)
+
+## Project Counts
+### Project Counts {#project}
+*Counts of culvert-related projects by year, basin, and reporting source, separated by project cost availability. Only pure culvert projects included.*
+![](.\figs\culverts\fig_prjcost_year.png)
+
+> **Observation:** Activity increases dramatically in the late '90s before falling off in the late '00s.
+
+![](.\figs\culverts\fig_prjcost_basin.png)
+
+> **Observation:** While overall cost availability is good, costs are reported less frequently in Washington than they are in Oregon.
+
+> **Observation:** There have been far more culvert projects in Oregon than Washington over the years.
+
+![](.\figs\culverts\fig_prjcost_source.png)
+[Source glossery](#sources)
+![](.\figs\culverts\fig_prjcost_basin_year.png)
+![](.\figs\culverts\fig_prjcost_source_year.png)
+[Source glossery](#sources)
+
+> **Observation:** The activity trends are driven largely by Oregon, especially dramatic drop-offs in reports by OWRI and REO.
+
+![](.\figs\culverts\fig_prjcost_basin_source.png)
+[Source glossery](#sources)\
+
+> **Observation:** OWRI reports by far the most projects, and only projects in Oregon. REO is the only organization that reports projects across all eight of the basins with the most activity, though their activity is centered around Oregon as well.
+
+[Back to top](#pills)
+
+## Culvert Spending
+### Culvert Spending
+*Total spending on culverts by year, basin, and reporting source. Only includes spending on pure culvert projects.*
+![](.\figs\culverts\fig_cost_year.png)
+![](.\figs\culverts\fig_cost_basin.png)
+![](.\figs\culverts\fig_cost_source.png)
+[Source glossery](#sources)
+![](.\figs\culverts\fig_cost_year_basin.png)
+![](.\figs\culverts\fig_cost_year_source.png)
+[Source glossery](#sources)
+![](.\figs\culverts\fig_cost_source_basin.png)
+[Source glossery](#sources)\
+
+> **Observation:** Following patterns in the number of projects, spending rose dramatically during the late '90s before falling off to a lower level in 2007. This pattern is mostly driven by REO's heavy investment along the southern Oregon coast in the early '00s. The drop-off corresponds with a drop in spending by OWRI.
+
+[Back to top](#pills)
+
+## Cost per Culvert Distributions
+### Cost per Culvert Distributions
+*Violin plots and box plots for project costs per culvert, on a log scale. Only includes pure culvert projects. Details on how the number of culverts is identified can be found in the [appendix](#count).*
+![](.\figs\culverts\fig_costdist_action.png)
+
+> **Observation:** Culvert installations are the most expensive, followed by culvert upgrades and culvert removals, though with considerable overlap in the distributions.
+
+![](.\figs\culverts\fig_costdist_year.png)
+
+> **Observation:** Cost per culvert seems to be rising from 1995 through around 2004 when they flatten out. From 2008 through 2011, costs are more concentrated near the median.
+
+![](.\figs\culverts\fig_costdist_basin.png)
+![](.\figs\culverts\fig_costdist_source.png)
+[Source glossery](#sources)\
+
+> **Observation:** There is a pretty wide range of costs across basins, but OWRI reports notably cheaper projects while WDOT's projects are much more expensive. OWRI also reports the bulk of projects, so if their costs are systemically under-reported, then we may have a problem.
+
+[Back to top](#pills)
+
+## Maps
+### Maps
+*Maps show work sites associated with pure culvert projects. To trim outliers, only projects with cost per culvert above $2,000 are included. Road and river data from OpenStreetMap API.*
+
+![](.\maps\culverts\fig_map_cost.png)
+
+> **Observation:** The cheapest projects are clustered along the northern Oregon coast, while the most expensive appear mostly in Washington. Projects in the middle of the distribution are well distributed across the region.
+
+![](.\maps\culverts\fig_map_year.png)
+
+> **Observation:** The earliest projects are clustered along the northern Oregon coast, and are also the cheapest. Washington projects tend to be more recent.
+
+![](.\maps\culverts\fig_map_source.png)
+[Source glossery](#sources)\
+
+> **Observation:** There is little geographic overlap between reporting sources, which may make mixing sources in a model difficult. Reporting source also closely corresponds with year and cost per culvert.
+
+[Back to top](#pills)
+
+# Outside Culvert Data
+Beyond the PNSHP data, the state governments of Washington and Oregon both maintain culvert inventories. This section provides some early exploration of these inventories and how they might be used in this project.
+
+## Washington State Department of Transportation Culvert Inventory
+**Responsible Agency:** WSDOT\
+**Domain:** Culverts on roads owned/maintained by WSDOT\
+**Key Features:** Geographic coordinates, affected species, assessment of fish passage, assessment of potential habitat gain\
+**Access:** GIS format, spreadsheet format, API available\
+**Notes:** Also available are "daughter" inventories detailing previously upgraded culverts, culverts scheduled for work, and culverts subject to the 2018 Supreme Court ruling. Lack of data on culverts on county, private, and municipal roads may limit the usefulness of this inventory for predicting benefits of specific culverts.\
+**Links:** [Overview](https://geo.wa.gov/datasets/084325b33b0d49a7846cc46a19f38fdc_4)\
+
+> **Idea:** We might be able to use land ownership and management records for areas upstream from state-owned culverts as a way to control for whether or not culverts can be "chained" together to maximize habitat access from the point of view of WSDOT.
+
+## Oregon Department of Fish and Wildlife Culvert Inventory
+**Responsible Agency:** ODFW\
+**Domain:** Culverts maintained by Oregon Department of Transportation, as well as other government agencies, including lower-level municipalities (e.g. counties, cities)\
+**Key Features:** Geographic coordinates, assessment of fish passage, length, width, height, slope, drop\
+**Access:** GIS format only\
+**Notes:** Significantly more detailed and wide-reaching than the WSDOT inventory. ODFW claims that this is the most robust inventory of culverts in Oregon, but does not claim it is comprehensive.\
+**Links:** [Overview](https://nrimp.dfw.state.or.us/DataClearinghouse/default.aspx?p=202&XMLname=44.xml); [Viewer](https://nrimp.dfw.state.or.us/FHD_FPB_Viewer/index.html)\
+
+> **Idea:** We may be able to use "fuzzy matching" methods to recover additional information about culverts included in the the PNSHP data.
+
+> **Idea:** Once we develop a model for culvert costs, we can feed the culverts from these inventories into the model to predict costs, which can then be used to help prioritize projects.
+
+# Appendix: Source Glossary {#sources}
+Thirty-eight different organizations, referred to as *sources*, contribute data to PNSHP. Below you will find a glossary of each source code.
+
+>
+**ASOTIN** - Asotin County Conservation District (Asotin County is the southeastern-most county in Washington and contains important Snake River watersheds)  
+**BLM** - Bureau of Land Management  
+**BOR** - Bureau of Reclamation (Department of the Interior agency responsible for water storage and irrigation, including federal dams)  
+**BPA** - Bonneville Power Administration  
+**CBFWA** - Columbia Basin Fish and Wildlife Authority (Now defunct group of state, federal, and tribal agencies organized to advise BPA on habitat improvement efforts)  
+**CHEHALIS** - Chehalis Tribe (Southwestern Washington)  
+**COLVILLE** - Colville Tribe (Northeastern Washington)  
+**COQUILLE** - Coquille Tribe (Southwestern Oregon)  
+**COWLITZ** -  Cowlitz Tribe (Northeastern Washington)  
+**CRITFC** - Columbia River Inter-Tribal Fisheries Commission  
+**DUCKS UNLIMITED** - Ducks Unlimited  
+**FISHER FISHERIES** - Fisher Fisheries Consultancy  
+**GRAND RONDE** - Grand Ronde Tribe (Central Western Oregon)  
+**GRMWP** - Grande Ronde Model Watershed Program (Northeastern Oregon river)  
+**HABITAT WORK SCHEDULE** - Washington State program for tracking projects by the 27 "Lead Entities", local boards responsible for managing state salmon habitat spending
+**ID OSC** - Idaho Office of Species Conservation  
+**IDAHODEQ** - Idaho Department of Environmental Quality  
+**IDFG** - Idaho Department of Fish and Game  
+**IDFG SCREEN SHOP** - Fish screen efforts for IDFG  
+**KRITFWC** - Klamath River Inter-Tribal Fish and Water Commission (Southern Oregon river)  
+**MONTANA WATER CENTER** - Research institute  based at Montana State  
+**NMFS** - NOAA Fisheries  
+**NOAA RESTORATION** - NOAA Restoration Center  
+**NRRSS** - National River Restoration Science Synthesis project (a project of American Rivers)  
+**NWIFC** - Northwest Indian Fisheries Commission  
+**OR WATER TRUST** - Oregon Water Trust  
+**OWRI** - Oregon Watershed Restoration Inventory  
+**PCSRF** - Pacific Coastal Salmon Recovery Fund (federal grant program administered by NOAA)  
+**REO** - United States Forest Service Region 6 Regional Ecosystem Office  
+**SHOSHONE-BANNOCK** - Shoshone-Bannock Tribes (Southeastern Idaho)  
+**SRFBD** - Salmon Funding Recovery Board Database (Washington State Recreation and Conservation Office grant program)  
+**STREAMNET** - Data project of the Pacific States Marine Fisheries Commission  
+**WA DOE** - Washington State Department of Ecology  
+**WA RCO** - Washington State Recreation and Conservation Office  
+**WA WATER TRUST** - Washington Water Trust  
+**WDFW FISHWAY** - Washington State Department of Fish and Wildlife (WDFW) Fishway Program  
+**WDFW WRIP** - WDFW Watershed Recovery Inventory Project  
+**WDOT** - Washington Department of Transportation
+
+# Appendix: Creating a Consistent Project-level Culvert Count {#count}
+Our ultimate goal is to model the costs of culvert projects. To do this, we need a consistent count of how many culverts each project involves. While this might seem straight forward, this information is reported in a number of different ways in the PNSHP data. In most cases, we can simply count the number of actions for each project. That is, the number of culverts equals the number of culvert-related actions.
+
+However, `r comma(nrow(df_culv_count %>% distinct(project_id, worksite_id, action)))` actions (associated with `r comma(nrow(df_culv_prj_count))` projects) also include a "metric" variable labelled "count of blockages". This variable measures the number of culverts addressed by the action, at the work site, or by the project. In this section, we will cover how we identify and deal with each of these three cases.
+
+When there is only a single action associated with a project, we can simply use the value provided in the "count of blockages" metric. The table below provides examples of the action-level data when this is the case. This accounts for `r comma(nrow(df_culv_prj_count %>% filter(n_action_prj == 1)))` projects.
+
+```{r countsingleaction}
+set.seed(101)
+df_culv_count %>%
+  filter(
+    n_action_prj == 1,
+    metric == "COUNT OF BLOCKAGES"
+  ) %>%
+  select(
+    project_id,
+    worksite_id,
+    action,
+    metric,
+    numeric_value,
+    units,
+    n_action_prj
+  ) %>%
+  mutate(action = recode(action, !!!invert(action_key))) %>%
+  sample_n(5, weight = numeric_value) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    fixed_thead = TRUE
+  ) %>%
+  kableExtra::column_spec(column = 1, width_min = "2in") %>%
+  kableExtra::column_spec(column = 2, width_min = "3in") %>%
+  kableExtra::column_spec(column = 3, width_min = "4.5in") %>%
+  kableExtra::column_spec(column = 4, width_min = "2.5in") %>%
+  kableExtra::scroll_box(width = "100%")
+```
+\
+For many of the remaining projects, the number of actions associated with the project is exactly equal to the number given by "count of blockages". This implies that "count of blockages" is provided at the project level. When this is the case, we can ignore "count of blockages" and use the number of actions as our project-level count of culverts. The table below provides four examples for when this is the case. This accounts for `r comma(df_culv_count %>% filter(n_action_prj == numeric_value, metric == "COUNT OF BLOCKAGES", n_action_prj > 1) %>% distinct(project_id) %>% nrow)` projects.
+
+```{r countactionvalue}
+df_culv_count %>%
+  filter(
+    n_action_prj == numeric_value,
+    metric == "COUNT OF BLOCKAGES"
+  ) %>%
+  filter(
+    project_id %in% c("REO - R_6040", "HWS - HWS_1893", "HWS - HWS_11151", "WARCO_RCO_00-1899 R")
+  ) %>%
+  select(
+    project_id,
+    worksite_id,
+    action,
+    metric,
+    numeric_value,
+    units,
+    n_action_prj
+  ) %>%
+  mutate(action = recode(action, !!!invert(action_key))) %>%
+  arrange(-numeric_value) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    fixed_thead = TRUE
+  ) %>%
+  kableExtra::column_spec(column = 1, width_min = "2in") %>%
+  kableExtra::column_spec(column = 2, width_min = "3in") %>%
+  kableExtra::column_spec(column = 3, width_min = "4.5in") %>%
+  kableExtra::column_spec(column = 4, width_min = "2.5in") %>%
+  kableExtra::scroll_box(width = "100%", height = "300px")
+```
+\
+In the third class of projects where "count of blockages" appears, each project has multiple work sites with a single action where the "count of blockages" variable is equal to one in all cases. This case can be identified by isolating rows where the count of blockages is equal to one while the number of actions exactly equals the number of  at the project level. Some examples are provided below. In this scenario, we can use the number of actions as the number of culverts. This class accounts for `r comma(df_culv_count %>% filter(n_action_prj == n_worksites, metric == "COUNT OF BLOCKAGES", numeric_value == 1, n_worksites > 1) %>% distinct(project_id) %>% nrow)` projects.
+
+```{r countactionworksite}
+df_culv_count %>%
+  filter(
+    n_action_prj == n_worksites,
+    metric == "COUNT OF BLOCKAGES",
+    numeric_value == 1,
+    n_worksites > 1
+  ) %>%
+  filter(
+    project_id %in% c("HWS - HWS_11099", "HWS - HWS_16458", "HWS - HWS_9725", "REO - R_5721")
+  ) %>%
+  select(
+    project_id,
+    worksite_id,
+    action,
+    metric,
+    numeric_value,
+    units,
+    n_action_prj,
+    n_worksites
+  ) %>%
+  mutate(action = recode(action, !!!invert(action_key))) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    fixed_thead = TRUE
+  ) %>%
+  kableExtra::column_spec(column = 1, width_min = "2in") %>%
+  kableExtra::column_spec(column = 2, width_min = "3in") %>%
+  kableExtra::column_spec(column = 3, width_min = "4.5in") %>%
+  kableExtra::column_spec(column = 4, width_min = "2.5in") %>%
+  kableExtra::scroll_box(width = "100%", height = "300px")
+```
+\
+Finally, there are a number of edge cases where one of the actions for a multiple action project has a "count of blockages" variable provided, but the other actions for the project do not, with no metric provided. For some of these projects, the single instance for "count of blockages" is equal to the number of work sites, which implies that this single "count of blockages" is likely provided at the project level. For others, the count given is one but multiple work sites are present. In either case, it should be safe to use the number of work sites as the count of culverts. Examples of these situations are provided below.
+
+```{r countnas}
+df_culv_count %>%
+  filter(
+    project_id %in% c("OWRI - OR_20140386", "WARCO_RCO_04-1020 R", "WARCO_RCO_99-1433 R"),
+    metric == "COUNT OF BLOCKAGES" | is.na(metric)
+  ) %>%
+  select(
+    project_id,
+    worksite_id,
+    action,
+    metric,
+    numeric_value,
+    units,
+    n_worksites
+  ) %>%
+  mutate(action = recode(action, !!!invert(action_key))) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    fixed_thead = TRUE
+  ) %>%
+  kableExtra::column_spec(column = 1, width_min = "2in") %>%
+  kableExtra::column_spec(column = 2, width_min = "3in") %>%
+  kableExtra::column_spec(column = 3, width_min = "4.5in") %>%
+  kableExtra::column_spec(column = 4, width_min = "2.5in") %>%
+  kableExtra::scroll_box(width = "100%")
+```
+\
+Ultimately, there are only six projects remaining after these cases are accounted for. For these six projects, the number of culverts is ambiguous. The number provided in "count of blockages" is either larger or smaller than the number of work sites at the project level. It is unclear how many culverts were worked on for these projects, so we drop them and move along.
+
+# End Matter
+```{r endmatter, message = TRUE, warning = TRUE}
+# Created on...
+Sys.time()
+
+# Using...
+sessionInfo()
+```
