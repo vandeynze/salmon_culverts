@@ -17,16 +17,16 @@ library(searchable)
 library(janitor)
 
 # Set top-level working directory
-wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
-# wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
-setwd(wd)
+# wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
+# # wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
+# setwd(wd)
 
 # Set ggplot2 themes
 theme_set(theme_clean())
 theme_update(plot.background = element_rect(color = NA)) # Removes ugly black border of plot
 
 # Load data ====
-setwd(wd)
+# setwd(wd)
 setwd("./output") # For Braeden; comment out for other users
 df_pnshp <- read_csv("PNSHP_full_working.csv")
 df_prj <- read_csv("PNSHP_prj_working.csv")

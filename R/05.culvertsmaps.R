@@ -22,9 +22,9 @@ library(ggthemes)
 library(janitor)
 
 # Set top-level working directory
-wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
+# wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
 # wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
-setwd(wd)
+# setwd(wd)
 
 # Set ggplot2 themes
 theme_set(theme_clean())
@@ -34,12 +34,12 @@ theme_update(
 ) # Removes ugly black border of plot
 
 # Load culvert data ====
-setwd(wd)
+# setwd(wd)
 setwd("./output") # For Braeden; comment out for other users
 df_culv_wrk_pure <- read_csv("culverts_wrk_working.csv")
 
 # Prepare map data ====
-setwd("./maps/sf")
+# setwd("./maps/sf")
 sf_us <- getData("GADM", country = "USA", level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c('California', 'Nevada', 'Utah', 'Wyoming', 'Montana', 'Idaho', 'Oregon', 'Washington'))
 sf_canada <- getData("GADM", country = "CAN", level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c("British Columbia", "Alberta"))
 sf_base <- 
@@ -154,8 +154,8 @@ base_map_draft <-
 # rm(sf_rivers, sf_roads, sf_lakes, sf_base)
 
 # Build further maps ====
-setwd(wd)
-setwd("./output/maps/culverts")
+# setwd(wd)
+# setwd("./output")
 
 fig_map_cost <-
   # base_map_draft +
@@ -185,7 +185,7 @@ fig_map_cost <-
   ggtitle("Map of culvert worksites, by cost per culvert")
 # fig_map_cost
 ggsave(
-  filename = "fig_map_cost.png",
+  filename = "/maps/culverts/fig_map_cost.png",
   plot = fig_map_cost,
   device = "png",
   width = 8,
@@ -216,7 +216,7 @@ fig_map_year <-
   ggtitle("Map of culvert worksites, by year")
 # fig_map_year
 ggsave(
-  filename = "fig_map_year.png",
+  filename = "/maps/culverts/fig_map_year.png",
   plot = fig_map_year,
   device = "png",
   width = 8,
@@ -250,7 +250,7 @@ fig_map_source <-
   ) +
   ggtitle("Map of culvert worksites, by reporting source")
 ggsave(
-  filename = "fig_map_source.png",
+  filename = "/maps/culverts/fig_map_source.png",
   plot = fig_map_source,
   device = "png",
   width = 8,

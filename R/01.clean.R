@@ -17,9 +17,9 @@ library(geosphere) # For distance calculations
 library(searchable) # For action key label inversion
 
 # Set top-level working directory
-wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
+# wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
 # wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
-setwd(wd)
+# setwd(wd)
 
 # Build custom functions
 # Should move these to a utilities.R script and source later

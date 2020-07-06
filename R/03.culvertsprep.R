@@ -14,13 +14,13 @@ library(tidyverse)
 library(geosphere)
 
 # Set top-level working directory
-wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
+# wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
 # wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
-setwd(wd)
+# setwd(wd)
 
 # Load data ====
-setwd(wd)
-setwd("./output") # For Braeden; comment out for other users
+# setwd(wd)
+# setwd("./output") # For Braeden; comment out for other users
 df_pnshp <- read_csv("PNSHP_full_working.csv")
 df_prj <- read_csv("PNSHP_prj_working.csv")
 

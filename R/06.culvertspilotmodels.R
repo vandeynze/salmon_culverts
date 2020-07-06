@@ -13,12 +13,12 @@ library(janitor)
 library(tidyverse)
 
 # Set top-level working directory
-wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
+# wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
 # wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
-setwd(wd)
+# setwd(wd)
 
 # Load and prepare culvert data ====
-setwd(wd)
+# setwd(wd)
 setwd("./output") # For Braeden; comment out for other users
 df_culv <- read_csv("culverts_wrk_working.csv")
 

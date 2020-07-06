@@ -23,9 +23,9 @@ unfactor <-
   }
 
 # Set top-level working directory
-wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
-# wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
-setwd(wd)
+# wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
+# # wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
+# setwd(wd)
 
 # Set ggplot2 themes
 theme_set(theme_clean())
@@ -35,7 +35,7 @@ theme_update(
 ) # Removes ugly black border of plot
 
 # Load data ====
-setwd(wd)
+# setwd(wd)
 setwd("./output") # For Braeden; comment out for other users
 df_culv_pure <- read_csv("culverts_full_working.csv")
 df_culv_wrk_pure <- read_csv("culverts_wrk_working.csv")

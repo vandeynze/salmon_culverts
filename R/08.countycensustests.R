@@ -20,8 +20,8 @@ library(tidyverse)
 
 # Load data
 # wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis" # Change to where your version of "Analysis" folder for culverts is located
-wd <- "D:/Braeden/OneDrive/Documents/My Work/NOAA/Analysis"
-setwd(wd)
+# wd <- "D:/Braeden/OneDrive/Documents/My Work/NOAA/Analysis"
+# setwd(wd)
 setwd("./output")
 df_culv <- read_csv("culverts_full_mapping.csv") # This should be in there if you copied from google drive
 

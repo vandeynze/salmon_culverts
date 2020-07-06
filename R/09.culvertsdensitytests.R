@@ -21,8 +21,8 @@ library(RColorBrewer)
 # Set top-level working directory
 # wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
 # wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
-wd <- "D:/Braeden/OneDrive/Documents/My Work/NOAA/Analysis"
-setwd(wd)
+# wd <- "D:/Braeden/OneDrive/Documents/My Work/NOAA/Analysis"
+# setwd(wd)
 
 # Load and prepare culvert data ====
 setwd("./output") # For Braeden; comment out for other users
@@ -163,10 +163,10 @@ map_density_allyears <-
     y = NULL
   )
 
-setwd(wd)
-setwd("./output/maps/culverts")
+# setwd(wd)
+# setwd("./output/maps/culverts")
 ggsave(
-  filename = "fig_map_density.png",
+  filename = "/maps/culverts/fig_map_density.png",
   plot = map_density_allyears,
   device = "png",
   width = 8,
