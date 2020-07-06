@@ -1,0 +1,22 @@
+Metadata - culverts_full_mapping.csv
+May 28, 2020
+
+Origin: All work sites for culvert-related projects with both cost data and lat/long data available between 1996 and 2015 in PNSHP database. Projects are considered culvert-related when they include at least one culvert removal, culvert improvement, or culvert installation action.
+
+Variables:
+
+project_id - Key unique to project (group of work sites)
+worksite_id - Key unique to work site (row unit)
+project_year - Year of project
+county - county containing work site (incomplete)
+state - state containing work site (incomplete)
+latitude - latitude of work site
+longitude - longitude of work site
+subwatershed - HUC12 subwatershed
+watershed - HUC10 watershed
+subbasin - HUC8 subbasin
+basin - HUC6 basin
+project_source - organization reporting project
+adj_cost - project cost adjusted for inflation
+pure_culv - whether the project only contains culvert-related actions
+
