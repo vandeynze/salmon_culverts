@@ -1,3 +1,8 @@
+# TITLE: County econ data from US census for culverts
+# AUTHOR: Braeden Van Deynze
+# DATE: June, 2020
+# INPUTS: "culverts_full_mapping.csv"" data for culvert work site data
+# OUTPUTS: relevant econ variables for culverts
 
 # Prepeare environment ====
 # Clear environment
@@ -5,19 +10,17 @@ rm(list = ls())
 
 # Load libraries
 library(sp)
+library(sf)
 library(maps)
 library(maptools)
 library(censusapi)
 # library(tigris)
 library(janitor)
 library(tidyverse)
+library(here)
 
 # Load data
-# wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis" # Change to where your version of "Analysis" folder for culverts is located
-# wd <- "D:/Braeden/OneDrive/Documents/My Work/NOAA/Analysis"
-# setwd(wd)
-setwd("./output")
-df_culv <- read_csv("culverts_wrk_working.csv") # This should be in there if you copied from google drive
+df_culv <- read_csv(here("output/culverts_wrk_working.csv")) # This should be in there if you copied from google drive
 
 # Build functions for finding county/fips from lat/long coordinates
 find_county <- function(x, y) {
@@ -66,11 +69,34 @@ df_culv <-
     state_fips = round(fips, -3)/1000
   )
 
-df_culv %>% tabyl(fips) %>% arrange(-n)
-df_culv %>% tabyl(state_fips) %>% arrange(-n)
+df_culv %>% tabyl(fips) %>% arrange(-n) # 181 NA
+df_culv %>% tabyl(state_fips) %>% arrange(-n) # 181 NA (same as above)
+df_culv %>% tabyl(county) %>% arrange(-n) # 146 NA
+
+# Assign geometry
+sf_culv <-
+  df_culv %>%
+  st_as_sf(
+    coords = c("longitude", "latitude"),
+    crs = 4326
+  )
+
+# Map against missing IDs for county
+sf_states <-
+  st_as_sf(maps::map("state", plot = FALSE, fill = TRUE)) %>%
+  filter(ID %in% c("california", "washington", "oregon", "idaho"))
+
+# Missing FIPS
+sf_culv %>% ggplot() + geom_sf(data = sf_states) + geom_sf(aes(color = is.na(fips))) + coord_sf(xlim = c(-125,-110), ylim = c(42, 49))
+
+# Missing counties
+sf_culv %>% ggplot() + geom_sf(data = sf_states) + geom_sf(aes(color = is.na(county))) + coord_sf(xlim = c(-125,-110), ylim = c(42, 49))
+
+# Almost all missing are on the coast...
+# Will deal with this later
 
 # Set up census api access
-census_key <- "a6269eff97f65894fc88029146636aafcc45f463" # Feel free to use my access key or request yoiur own
+census_key <- "a6269eff97f65894fc88029146636aafcc45f463" # Feel free to use my access key or request your own
 list_fips <- df_culv %>% tabyl(fips, show_na = FALSE) %>% arrange(-n) %>% pull(fips)
 list_fips_state <- df_culv %>% tabyl(state_fips, show_na = FALSE) %>% arrange(-n) %>% pull(state_fips)
 list_years <- df_culv %>% tabyl(completed_year, show_na = FALSE) %>% arrange(completed_year) %>% pull(completed_year)
@@ -86,7 +112,7 @@ list_years <- df_culv %>% tabyl(completed_year, show_na = FALSE) %>% arrange(com
 # Loops getCensus over multiple years for select STATE FIPS and NAICS codes for CBP
 # Only use top level NAICS codes (two digits); lower level classification is unsupported due to changes in NAICS over time
 # (Base function getCensus pulls only one year at a time and requires year specific NAICS codes as input, so get_census identifies proper code set to assign)
-# Needs to build out SIC code compatability for vintage prior to 1998
+# Needs to build out SIC code compatibility for vintage prior to 1998
 get_census <- function(years, naics, fips, key = census_key, program = "cbp") {
   require(censusapi)
   fips_chr <- paste(fips, collapse = ",")
@@ -229,7 +255,7 @@ get_census <- function(years, naics, fips, key = census_key, program = "cbp") {
     ) %>%
     select(year, fips, state, county, GEO_TTL, ESTAB, EMP, PAYANN, naics, naics_ttl) %>%
     clean_names() %>%
-    mutate(naics = as.numeric(naics)) %>%
+    # mutate(naics = as.numeric(naics)) %>%
     tibble()
   )
   census
@@ -238,12 +264,34 @@ get_census <- function(years, naics, fips, key = census_key, program = "cbp") {
 
 df_census_test <-
   get_census(
-    years = c(2008:2015),
-    naics = c(23, 11),
+    years = c(2001:2015),
+    naics = c(
+      23, 11
+              ),
     fips = 53
   )
-df_census_test 
-  
+df_census_test
+
+
+# So it works, but need to run over all naics base codes in order to draw totals
+# There's also a mismatch issue with the naics_ttl and geo_ttl's that will need cross-walks between versions
+# Or could index?
+# Also lots of zeros which appear to be missing values, likely due to privacy limitations on the data
+# Generally, these levels are very stable, though the ratio between construction and forestry/ag varies between counties
+# This means that a county-fixed effects model would absorb most of this variation
+# Because of little temporal variation, I think we can get away with some sort of fixed average across years, which would avoid missing values problem
+
+ggplot(
+  df_census_test %>%
+    filter(state == "53"),
+  aes(x = as.character(year), y = log(emp), color = factor(fips))
+) + 
+  geom_point(aes(shape = factor(naics))) +
+  geom_line(aes(linetype = factor(naics), group = factor(naics))) +
+  theme(legend.position = "none") +
+  facet_wrap(~ fips)
+
+
 ggplot(
   df_census_test %>%
     filter(state == "53") %>%
@@ -253,20 +301,18 @@ ggplot(
       names_prefix = "naics",
       values_from = emp
     ) %>%
-    rowwise() %>%
-    mutate(
-      ymin = min(naics23, naics11),
-      ymax = max(naics23, naics11)
-    )
+    rowwise()
 ) + 
-  geom_linerange(aes(x = as.character(year), y = ymin, ymax = ymax, group = geo_ttl), position = position_dodge(width = 0.9))
+  geom_point(aes(x = as.character(year), y = naics23, color = factor(fips))) +
+  geom_line(aes(x = as.character(year), y = naics23, color = factor(fips), group = factor(fips))) +
+  theme(legend.position = "none")
  
 ggplot(
   df_census_test %>% filter(fips %in% list_fips) %>% mutate(payann = payann / emp) %>% filter(payann != Inf) %>% group_by(geo_ttl, year) %>% mutate(payann_max = max(payann))
 ) + 
-  geom_line(aes(x = reorder(geo_ttl, payann_max), y = payann, group = geo_ttl), position = position_dodge(width = 0.9), color = "grey90") +
-  geom_point(aes(x = reorder(geo_ttl, payann_max), y = payann, color = naics_ttl), position = position_dodge(width = 0.9)) +
-  geom_text(aes(x = reorder(geo_ttl, payann_max), y = payann_max, group = geo_ttl, label = geo_ttl, alpha = naics), angle = 90, size = 2.5, nudge_y = 1, hjust = 0) +
+  geom_line(aes(x = reorder(fips, payann_max), y = payann, group = fips), position = position_dodge(width = 0.9), color = "grey90") +
+  geom_point(aes(x = reorder(fips, payann_max), y = payann, color = naics), position = position_dodge(width = 0.9)) +
+  geom_text(aes(x = reorder(fips, payann_max), y = payann_max, group = fips, label = geo_ttl, alpha = naics), angle = 90, size = 2.5, nudge_y = 1, hjust = 0) +
   facet_wrap(~year) +
   ggthemes::theme_clean() +
   theme(
@@ -277,10 +323,168 @@ ggplot(
     legend.position = "none"
   ) +
   ggtitle("Annual Payroll by Industry") +
-  scale_alpha(range = c(0, 1)) +
+  # scale_alpha_discrete(levels = c(0, 1)) +
   scale_y_continuous(label = scales::label_comma())
 
+# This test contains all fips categories
+df_census_test2 <-
+  get_census(
+    years = c(2010:2012),
+    naics = c(11,21,22,23,"31-33",42,"44-45","48-49",51,52,53,54,55,56,61,62,71,72,81),
+    fips = 53
+  )
+df_census_test2
+df_census_test2 %>% tabyl(naics)
+df_census_test2 %>% tabyl(naics, naics_ttl)
 
+
+df_census_test2_summs <-
+  df_census_test2 %>%
+  group_by(fips, year) %>%
+  mutate(
+    totpayann = sum(payann),
+    totemp = sum(emp),
+    totestab = sum(estab),
+    naics = case_when(
+      naics_ttl == "Manufacturing" ~ "31-33",
+      naics_ttl == "Transportation and warehousing" ~ "48-49",
+      naics_ttl == "Retail trade" ~ "44-45",
+      TRUE ~ naics
+    )
+  ) %>%
+  ungroup() %>%
+  mutate(
+    proppayann = payann / totpayann,
+    propemp = emp / totemp,
+    propestab = estab / totestab
+  )
+df_census_test2_summs
+
+
+df_census_test2_summs %>%
+  ggplot() +
+  geom_col(
+    aes(
+      x = factor(fips),
+      y = propemp,
+      fill = naics
+    ),
+    position = "stack"
+  ) +
+  facet_wrap(~ year)
+
+# Try linking it to culverts
+# Wide summs df
+(df_census_test2_summs2 <-
+  df_census_test2_summs %>%
+  select(
+    -c(totpayann, totemp, totestab, emp, estab, payann, proppayann, propestab, state, county, geo_ttl, naics_ttl)
+  ) %>%
+  pivot_wider(
+    id_cols = c(year, fips),
+    names_from = naics,
+    values_from = propemp,
+    names_prefix = "naics"
+  ))
+  
+df_culv_test <-
+  df_culv %>%
+  filter(
+    completed_year %in% c(2010:2012),
+    state == "WA"
+  ) %>%
+  left_join(
+    df_census_test2_summs2,
+    by = c(
+      "completed_year" = "year",
+      "fips" = "fips"
+    )
+  )
+df_culv_test %>% select(starts_with("naics")) %>% summary()
+# It pretty much works!
+
+
+# Full join
+df_census <-
+  get_census(
+    years = c(1998:2015),
+    naics = c(11,21,22,23,"31-33",42,"44-45","48-49",51,52,53,54,55,56,61,62,71,72,81),
+    fips = list_fips_state
+  )
+
+
+df_census_summs <-
+  df_census %>%
+  group_by(fips, year) %>%
+  mutate(
+    totpayann = sum(payann),
+    totemp = sum(emp),
+    totestab = sum(estab),
+    naics = case_when(
+      naics_ttl == "Manufacturing" ~ "31-33",
+      naics_ttl %in% c("Transportation and warehousing", "Transportation & warehousing", "Transportation and Warehousing") ~ "48-49",
+      naics_ttl %in% c("Retail trade", "Retail Trade") ~ "44-45",
+      TRUE ~ naics
+    )
+  ) %>%
+  ungroup() %>%
+  mutate(
+    proppayann = payann / totpayann,
+    propemp = emp / totemp,
+    propestab = estab / totestab
+  )
+df_census_summs
+
+
+# Wide summs df
+(df_census_summs <-
+    df_census_summs %>%
+    select(
+      -c(totpayann, totemp, totestab, emp, estab, payann, proppayann, propestab, state, county, geo_ttl, naics_ttl)
+    ) %>%
+    pivot_wider(
+      id_cols = c(year, fips),
+      names_from = naics,
+      values_from = propemp,
+      names_prefix = "naics"
+    ))
+
+df_culv_test <-
+  df_culv %>%
+  filter(
+    # project_year %in% c(2010:2012),
+    # state == "WA"
+  ) %>%
+  left_join(
+    df_census_summs,
+    by = c(
+      "completed_year" = "year",
+      "fips" = "fips"
+    )
+  )
+df_culv_test %>% select(starts_with("naics")) %>% summary()
+
+# NAICS KEY
+# 11 Ag, forestry
+# 21 Mining, oil and gas
+# 22 Utilities
+# 23 Construction
+# 31-33 Manufacturing
+# 42 Wholesale trade
+# 44-45 Retail trade
+# 48-49 Transport and warehousing
+# 51 Information
+# 52 Finance and insurance
+# 53 Real estate
+# 54 Professional/scientific services
+# 55 Management
+# 56 Admin/support/waste management
+# 61 Education
+# 62 Health/social care
+# 71 Arts/entertainment/recreation
+# 72 Hospitality/food
+# 81 Other
+# 92 Public admin
 
 area_county <- 
   counties(
