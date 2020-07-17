@@ -266,9 +266,9 @@ df_census_test <-
   get_census(
     years = c(2001:2015),
     naics = c(
-      23, 11
+      23,11
               ),
-    fips = 53
+    fips = "41"
   )
 df_census_test
 
@@ -407,11 +407,39 @@ df_culv_test %>% select(starts_with("naics")) %>% summary()
 # Full join
 df_census <-
   get_census(
-    years = c(1998:2015),
+    years = c(2001:2005, 2007:2015),
     naics = c(11,21,22,23,"31-33",42,"44-45","48-49",51,52,53,54,55,56,61,62,71,72,81),
-    fips = list_fips_state
+    fips = list_fips_state %>% as.character()
   )
-
+# Weird problem with 2006 rn
+# Also clearly a problem only for certain naics codes/states b/c the tests with only forestry and construction worked fine
+df_census <-
+  get_census(
+    years = 2006,
+    naics = c(
+      # 11,
+      # 21,
+      # 22,
+      # 23,
+      "31-33",
+      # 42,
+      "44-45",
+      "48-49",
+      # 51,
+      # 52,
+      53,
+      # 54,
+      55,
+      56,
+      61,
+      62,
+      71,
+      72,
+      81
+    ),
+    fips = "06"
+  )
+# Basically when 
 
 df_census_summs <-
   df_census %>%
@@ -449,21 +477,6 @@ df_census_summs
       names_prefix = "naics"
     ))
 
-df_culv_test <-
-  df_culv %>%
-  filter(
-    # project_year %in% c(2010:2012),
-    # state == "WA"
-  ) %>%
-  left_join(
-    df_census_summs,
-    by = c(
-      "completed_year" = "year",
-      "fips" = "fips"
-    )
-  )
-df_culv_test %>% select(starts_with("naics")) %>% summary()
-
 # NAICS KEY
 # 11 Ag, forestry
 # 21 Mining, oil and gas
@@ -484,7 +497,52 @@ df_culv_test %>% select(starts_with("naics")) %>% summary()
 # 71 Arts/entertainment/recreation
 # 72 Hospitality/food
 # 81 Other
-# 92 Public admin
+
+# Update to better names
+df_census_summs <-
+    df_census_summs %>%
+    rename(
+      emp_agforest = naics11,
+      emp_mining = naics21,
+      emp_util = naics22,
+      emp_const = naics23,
+      emp_manuf = `naics31-33`,
+      emp_wholesale = naics42,
+      emp_retail = `naics44-45`,
+      emp_transport = `naics48-49`,
+      emp_info = naics51,
+      emp_finance = naics52,
+      emp_realestate = naics53,
+      emp_profsci = naics54,
+      emp_mgmn = naics55,
+      emp_admin = naics56,
+      emp_educ = naics61,
+      emp_health = naics62,
+      emp_arts = naics71,
+      emp_food = naics72,
+      emp_other = naics81
+    )
+
+
+df_culv <-
+  df_culv %>%
+  filter(
+    # project_year %in% c(2010:2012),
+    # state == "WA"
+  ) %>%
+  left_join(
+    df_census_summs,
+    by = c(
+      "completed_year" = "year",
+      "fips" = "fips"
+    )
+  )
+df_culv %>% select(fips, completed_year, starts_with("emp_")) %>% mutate(across(-completed_year, ~is.na(.))) %>% tabyl(emp_agforest, completed_year)
+# Lots missing values, ~105
+
+
+# Save out
+write_csv(df_culv, here("output/culverts_full_working.csv"))
 
 area_county <- 
   counties(
