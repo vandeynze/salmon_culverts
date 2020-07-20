@@ -1,8 +1,8 @@
 # TITLE: County econ data from US census for culverts
 # AUTHOR: Braeden Van Deynze
-# DATE: June, 2020
+# DATE: July, 2020
 # INPUTS: "culverts_full_mapping.csv"" data for culvert work site data
-# OUTPUTS: relevant econ variables for culverts
+# OUTPUTS: Culvert dataset with employment data
 
 # Prepeare environment ====
 # Clear environment
@@ -19,8 +19,8 @@ library(janitor)
 library(tidyverse)
 library(here)
 
-# Load data
-df_culv <- read_csv(here("output/culverts_wrk_working.csv")) # This should be in there if you copied from google drive
+# Load culvert worksite data
+df_culv <- read_csv(here("output/culverts_wrk_working.csv"))
 
 # Build functions for finding county/fips from lat/long coordinates
 find_county <- function(x, y) {
@@ -264,14 +264,15 @@ get_census <- function(years, naics, fips, key = census_key, program = "cbp") {
 
 df_census_test <-
   get_census(
-    years = c(2001:2015),
+    # years = c(2001:2015),
+    years = c(2001:2005,2007:2015),
     naics = c(
       23,11
               ),
     fips = "41"
   )
-df_census_test
-
+df_census_test %>% filter(year == 2005)
+# 2006 is broken for some reason and included in a different year; weird but I'm rolling with it
 
 # So it works, but need to run over all naics base codes in order to draw totals
 # There's also a mismatch issue with the naics_ttl and geo_ttl's that will need cross-walks between versions
@@ -283,18 +284,21 @@ df_census_test
 
 ggplot(
   df_census_test %>%
-    filter(state == "53"),
+    filter(state == "41"),
   aes(x = as.character(year), y = log(emp), color = factor(fips))
 ) + 
   geom_point(aes(shape = factor(naics))) +
   geom_line(aes(linetype = factor(naics), group = factor(naics))) +
-  theme(legend.position = "none") +
+  scale_color_discrete(guide = NULL) +
+  ggthemes::theme_clean() +
+  theme(legend.position = "bottom", axis.text = element_text(angle = 90)) +
+  ggtitle("Log Employment by County over Time", "On log scale, not much change over time; Lots of missing value issues too") +
   facet_wrap(~ fips)
 
 
 ggplot(
   df_census_test %>%
-    filter(state == "53") %>%
+    filter(state == "41") %>%
     pivot_wider(
       id_cols = c(year, fips, state, county, geo_ttl),
       names_from = naics,
@@ -305,14 +309,17 @@ ggplot(
 ) + 
   geom_point(aes(x = as.character(year), y = naics23, color = factor(fips))) +
   geom_line(aes(x = as.character(year), y = naics23, color = factor(fips), group = factor(fips))) +
-  theme(legend.position = "none")
+  ggthemes::theme_clean() +
+  theme(legend.position = "none", axis.text = element_text(angle = 90)) +
+  ggtitle("Construction Employment by County over Time", "Not much difference in between county variation over time,\nbut absolute levels show large variation across time and between counties")
+  
  
 ggplot(
   df_census_test %>% filter(fips %in% list_fips) %>% mutate(payann = payann / emp) %>% filter(payann != Inf) %>% group_by(geo_ttl, year) %>% mutate(payann_max = max(payann))
 ) + 
   geom_line(aes(x = reorder(fips, payann_max), y = payann, group = fips), position = position_dodge(width = 0.9), color = "grey90") +
   geom_point(aes(x = reorder(fips, payann_max), y = payann, color = naics), position = position_dodge(width = 0.9)) +
-  geom_text(aes(x = reorder(fips, payann_max), y = payann_max, group = fips, label = geo_ttl, alpha = naics), angle = 90, size = 2.5, nudge_y = 1, hjust = 0) +
+  geom_text(aes(x = reorder(fips, payann_max), y = payann_max, group = fips, label = geo_ttl), angle = 90, size = 2.5, nudge_y = 1, hjust = 0) +
   facet_wrap(~year) +
   ggthemes::theme_clean() +
   theme(
@@ -320,9 +327,9 @@ ggplot(
     axis.title.x = element_blank(),
     axis.ticks.x = element_blank(),
     axis.title.y = element_blank(),
-    legend.position = "none"
+    legend.position = "bottom"
   ) +
-  ggtitle("Annual Payroll by Industry") +
+  ggtitle("Annual Payroll by Industry", "Not much difference in ratio between industry within county or relative pay between counties over time,\nbut ratios are different across counties") +
   # scale_alpha_discrete(levels = c(0, 1)) +
   scale_y_continuous(label = scales::label_comma())
 
@@ -371,6 +378,9 @@ df_census_test2_summs %>%
     ),
     position = "stack"
   ) +
+  ggthemes::theme_clean() +
+  # theme(legend.position = "none", axis.text = element_text(angle = 90)) +
+  ggtitle("Proportion of Total Employment by NAICS Code by State", "Not much change in overall patterns between years") +
   facet_wrap(~ year)
 
 # Try linking it to culverts
@@ -411,35 +421,7 @@ df_census <-
     naics = c(11,21,22,23,"31-33",42,"44-45","48-49",51,52,53,54,55,56,61,62,71,72,81),
     fips = list_fips_state %>% as.character()
   )
-# Weird problem with 2006 rn
-# Also clearly a problem only for certain naics codes/states b/c the tests with only forestry and construction worked fine
-df_census <-
-  get_census(
-    years = 2006,
-    naics = c(
-      # 11,
-      # 21,
-      # 22,
-      # 23,
-      "31-33",
-      # 42,
-      "44-45",
-      "48-49",
-      # 51,
-      # 52,
-      53,
-      # 54,
-      55,
-      56,
-      61,
-      62,
-      71,
-      72,
-      81
-    ),
-    fips = "06"
-  )
-# Basically when 
+# Weird problem with 2006 rn but still recovers 2006 with another call for some reason; this is a bizarre undocumented api problem I think
 
 df_census_summs <-
   df_census %>%
@@ -468,12 +450,14 @@ df_census_summs
 (df_census_summs <-
     df_census_summs %>%
     select(
-      -c(totpayann, totemp, totestab, emp, estab, payann, proppayann, propestab, state, county, geo_ttl, naics_ttl)
+      -c(
+        totpayann, totemp, totestab, emp, estab, payann, proppayann, propestab, # Tweak here to grab other measures
+        state, county, geo_ttl, naics_ttl)
     ) %>%
     pivot_wider(
       id_cols = c(year, fips),
       names_from = naics,
-      values_from = propemp,
+      values_from = propemp, # Tweak here to grab other measures
       names_prefix = "naics"
     ))
 
@@ -530,6 +514,9 @@ df_culv <-
     # project_year %in% c(2010:2012),
     # state == "WA"
   ) %>%
+  select(
+    -starts_with("emp_")
+  ) %>%
   left_join(
     df_census_summs,
     by = c(
@@ -538,28 +525,8 @@ df_culv <-
     )
   )
 df_culv %>% select(fips, completed_year, starts_with("emp_")) %>% mutate(across(-completed_year, ~is.na(.))) %>% tabyl(emp_agforest, completed_year)
-# Lots missing values, ~105
+# Lots missing values, but mostly in the years before CBP is pulled < 2001
 
 
 # Save out
 write_csv(df_culv, here("output/culverts_full_working.csv"))
-
-area_county <- 
-  counties(
-    year = c(2015),
-    state = c("WA", "OR", "ID", "MT"),
-    cb = TRUE, 
-    class = "sf", 
-    progress_bar = FALSE
-  ) %>%
-  clean_names() %>%
-  filter(
-    geoid %in% list_fips
-  ) %>%
-  mutate(
-    area = aland / 2589988,
-    geoid = as.numeric(geoid)
-  ) %>%
-  select(geoid, area) %>%
-  sf::st_drop_geometry()
-area_county
