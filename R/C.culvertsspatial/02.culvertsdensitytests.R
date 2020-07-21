@@ -330,6 +330,7 @@ ggplot(sf_culv) + geom_histogram(aes(x = culvs_50km), color = NA, fill = reds_ra
 ggplot() +
   geom_sf(data = sf_base, fill = "antiquewhite1") +
   geom_sf(aes(color = culvs_50km), data = sf_culv) +
+  geom_sf(data = sf_culv_buff %>% slice(100), fill = NA, color = "red", size = 1) +
   scale_color_distiller(expression(Culvert~work~sites~within~50~km~(all~years)), palette = "Reds", direction = 1) +
   coord_sf(
     xlim = c(-124.5, -123),

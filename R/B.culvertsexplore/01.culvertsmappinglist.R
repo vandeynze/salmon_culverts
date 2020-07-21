@@ -8,16 +8,12 @@ rm(list = ls())
 
 library(tidyverse)
 library(janitor)
+library(here)
 
-# wd <- "D:/Braeden/OneDrive/Documents/My Work/NOAA/Analysis"
-# wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
-# setwd(wd)
 
 # Load data ====
-# setwd(wd)
-setwd("./output")
-df_pnshp <- read_csv("PNSHP_full_working.csv")
-df_prj <- read_csv("PNSHP_prj_working.csv")
+df_pnshp <- read_csv(here("/output/PNSHP_full_working.csv"))
+df_prj <- read_csv(here("/output/PNSHP_prj_working.csv"))
 
 # Investigate basics of raw data ====
 # Select only culvert-related projects
@@ -118,4 +114,7 @@ df_culv_export <-
   drop_na(adj_cost) %>%
   filter(project_year %in% c(1996:2015))
   
-write_csv(df_culv_export, "culverts_full_mapping.csv")
+write_csv(df_culv_export, here("/output/culverts_full_mapping.csv"))
+
+# This file contains both pure and mixed culvert work sites
+# In the future, this should feed into 02.culvertsprep.R, which currently builds its own list from the PNSHP core that excludes mixed projects
