@@ -4,7 +4,9 @@ A project aiming to improve the use of cost models in culvert improvement planni
 ## Use
 1. Download full repository  
 2. Ensure all libraries are properly installed
-3. Run scripts in "R" subdirectory in order from 01-09 to generate output
+3. Run scripts in "R" subdirectory modules A-C
+4. Knit R Markdown in "output" subdirectory
+5. Explore content in "output" subdirectory
 
 *Note:* Pre-generated output is provided in directory
 
