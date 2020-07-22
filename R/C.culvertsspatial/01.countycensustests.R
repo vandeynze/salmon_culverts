@@ -507,6 +507,7 @@ df_census_summs <-
       emp_other = naics81
     )
 
+# THIS IS A CHANGE
 
 df_culv <-
   df_culv %>%
@@ -528,5 +529,5 @@ df_culv %>% select(fips, completed_year, starts_with("emp_")) %>% mutate(across(
 # Lots missing values, but mostly in the years before CBP is pulled < 2001
 
 
-# Save out
-write_csv(df_culv, here("output/culverts_full_working.csv"))
+# Save out census data for future merging
+write_csv(df_census_summs, here("output/culverts_cbp.csv"))
