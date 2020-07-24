@@ -2,8 +2,10 @@
 # AUTHOR: Braeden Van Deynze
 # DATE: July, 2020
 # INPUTS: "culverts_full_mapping.csv"" data for culvert work site data
-# OUTPUTS: Culvert dataset with employment data
-
+# OUTPUTS: Data on nearest road to culvert work site
+# STATUS: Operable for full data with levels and proportion outputs
+# PRIORITY: (1) Prep for sourcing
+  
 # Prepeare environment ====
 # Clear environment
 rm(list = ls())
@@ -20,7 +22,7 @@ library(tidyverse)
 library(here)
 
 # Load culvert worksite data
-df_culv <- read_csv(here("output/culverts_wrk_working.csv"))
+df_culv <- read_csv(here("output/culverts_full_mapping.csv"))
 
 # Build functions for finding county/fips from lat/long coordinates
 find_county <- function(x, y) {

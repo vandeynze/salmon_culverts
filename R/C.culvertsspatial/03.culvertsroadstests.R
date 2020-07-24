@@ -3,9 +3,12 @@
 # DATE: July, 2020
 # INPUTS: "culverts_full_mapping.csv"" data for culvert work site data
 # OUTPUTS: Data on nearest road to culvert work site
+# STATUS: Proof-of-concept operable
+# PRIORITY: (1) Identify distance threshold for unclassified road (2) Expand for full data (3) Prep for sourcing
 
 # Based on example in https://stackoverflow.com/questions/47675571/r-spatial-join-between-spatialpoints-gps-coordinates-and-spatiallinesdatafra/47731067#47731067
 
+rm(list = ls())
 # Load libraries
 library(raster)
 library(sf)
@@ -32,7 +35,7 @@ df_culverts %>%
 # Read roads
 sf_roads <-
   opq(
-    bbox = c(-123.2, 44.65, -123.1, 44.8),
+    bbox = c(-123.3, 44.5, -123, 44.8),
     timeout = 3000,
     memsize = 4e+9
   ) %>%
@@ -60,10 +63,10 @@ sf_roads %>% st_drop_geometry() %>% as_tibble() %>% select(name, highway, lanes,
 sf_culverts_test <-
   df_culverts %>%
   filter(
-    latitude >= 44.65,
+    latitude >= 44.5,
     latitude <= 44.8,
-    longitude <= -123.1,
-    longitude >= -123.2
+    longitude <= -123,
+    longitude >= -123.3
   ) %>%
   st_as_sf(coords = c("longitude", "latitude")) %>%
   st_set_crs(4326)
@@ -83,10 +86,10 @@ system.time(df_distance <- dist2Line(as(sf_culverts_test, "Spatial"), as(sf_road
 # Row order is the same as row order in original culvert tibble; ID is the row number from the sf_roads simple feature collection; distance is distance in meters to nearest road
 # So we can bind columns directly to the culvert tibble, convert the roads sf to a tibble with the row number as the ID, and then join to grab fields for road info
 
-sf_culverts_test <-
+(sf_culverts_test <-
   sf_culverts_test %>%
   bind_cols(df_distance %>% as_tibble) %>%
-  left_join(sf_roads %>% st_drop_geometry() %>% select(-county) %>% mutate(ID = row_number()), by = "ID")
+  left_join(sf_roads %>% st_drop_geometry() %>% select(-county) %>% mutate(ID = row_number()), by = "ID"))
 # So we have a proof of concept that finds nearest road and identifies OSM class and features, nice!
 # But even the nearest work site is nearly 300m from the nearest OSM road, so we should probably make some sort of distance threshold beyond which we simply assign "unclassified"
 # TODO: Experiment with distance thresholds

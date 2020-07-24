@@ -3,6 +3,8 @@
 # DATE: July, 2020
 # INPUTS: "culverts_full_mapping.csv"" data for culvert work site data
 # OUTPUTS: density metrics for nearby culvert projects
+# STATUS: Proof-of-concept is operable, may need optimization for run over full data
+# PRIORITY: (1) Scale up for full data (2) Select thresholds (3) Move production code to the front and option out exploratory code into end matter, prep for sourcing
 
 # Prepare environment ====
 # Clear environment
