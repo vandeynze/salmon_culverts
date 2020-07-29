@@ -1,4 +1,4 @@
-# TITLE: County econ data from US census for culverts
+# TITLE: Attach OpenStreetMap data for nearest road to culvert work site
 # AUTHOR: Braeden Van Deynze
 # DATE: July, 2020
 # INPUTS: "culverts_full_mapping.csv"" data for culvert work site data
@@ -35,7 +35,7 @@ df_culverts %>%
 # Read roads
 sf_roads <-
   opq(
-    bbox = c(-123.3, 44.5, -123, 44.8),
+    bbox = c(-123.3, 44.5, -123, 44.8), # Test near Salem, OR
     timeout = 3000,
     memsize = 4e+9
   ) %>%
@@ -56,8 +56,10 @@ sf_roads <-
   sf_roads$osm_lines %>%
   st_set_crs(4326)
 # Lots of missing info for important things like lanes (only ever 2 anyways in this snapshot) and surface (see summary below)
-sf_roads %>% st_drop_geometry() %>% as_tibble() %>% select(name, highway, lanes, surface) %>% tabyl(surface)
+sf_roads %>% st_drop_geometry() %>% as_tibble() %>% dplyr::select(name, highway, lanes, surface) %>% tabyl(surface)
 # TODO: Can we do some sort of intropoloation for missing surface? Like, regional/local paved/unpaved share by road-type (primary, secondary, tertiary, etc.)
+sf_roads %>% st_drop_geometry() %>% as_tibble() %>% dplyr::select(name, highway, lanes, surface) %>% tabyl(surface, highway)
+# At least in this test sample, not much useful surface info...
 
 # Build test grid near mean of lat/long (outside Salem, OR)
 sf_culverts_test <-
@@ -75,7 +77,7 @@ sf_culverts_test <-
 ggplot() +
   geom_sf(aes(color = highway), data = sf_roads) + 
   geom_sf(data = sf_culverts_test, color = "red")
-# None of the culverts are directly on roads, but we can still use the geosphere library to identify the nearest road (line)
+# Few culverts are directly on roads, but we can still use the geosphere library to identify the nearest road (line)
 
 system.time(df_distance <- dist2Line(as(sf_culverts_test, "Spatial"), as(sf_roads, "Spatial")))
 # On my laptop w/ 16 GB RAM, 2.8GHz, i7-7700HQ CPU
@@ -89,9 +91,12 @@ system.time(df_distance <- dist2Line(as(sf_culverts_test, "Spatial"), as(sf_road
 (sf_culverts_test <-
   sf_culverts_test %>%
   bind_cols(df_distance %>% as_tibble) %>%
-  left_join(sf_roads %>% st_drop_geometry() %>% select(-county) %>% mutate(ID = row_number()), by = "ID"))
+  left_join(sf_roads %>% st_drop_geometry() %>% dplyr::select(-county) %>% mutate(ID = row_number()), by = "ID")) 
+
+sf_culverts_test %>%
+  dplyr::select(worksite_id:pure_culv, distance, name, highway, lanes, surface, maxspeed)
 # So we have a proof of concept that finds nearest road and identifies OSM class and features, nice!
-# But even the nearest work site is nearly 300m from the nearest OSM road, so we should probably make some sort of distance threshold beyond which we simply assign "unclassified"
+# But even the most work sites are over 300m from the nearest OSM road, so we should probably make some sort of distance threshold beyond which we simply assign "unclassified"
 # TODO: Experiment with distance thresholds
 # TODO: Expand distance merge to larger share/all culverts
 # TODO: Replicate for rivers/streams
