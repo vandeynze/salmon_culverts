@@ -12,17 +12,17 @@ A project aiming to improve the use of cost models in culvert improvement planni
 1. Download full repository.  
 2. Explore "output" directory for intermediate data products, figures, and reports.  
 3. To re-build the "output" folder...  
-  1. Ensure all libraries are properly installed.  
-  2. Run scripts in "R" subdirectory modules A-C in numerical order.  
-  *Note:* There are dependencies between modules, so be sure to run at least modules A and B in order to completion before attempting to use module C.  
-  3. Knit Rmd scripts in "output" subdirectory for HTML reports.  
+   1. Ensure all libraries are properly installed.  
+   2. Run scripts in "R" subdirectory modules A-C in numerical order.  
+   *Note:* There are dependencies between modules, so be sure to run at least modules A and B in order to completion before attempting to use module C.  
+   3. Knit Rmd scripts in "output" subdirectory for HTML reports.  
 
 ## Key Files
 - /output/culverts_full_mapping.csv: These data contain the coordinates for every work site for projects with culvert-related actions between 1996 and 2015. These data should be used as the core inputs into the "C.culvertsspatial" module. Variable definitions can be found in /docs/culverts_full_mapping_metadata.txt.
 - /data/PNSHP_raw.csv: These data are from the original PNSHP database pull and serve as the raw data. Please do not modify.
 
 ## Contributors
-See [CONTRIBUTING.md](https://github.com/vandeynze/salmon_culverts/blob/master/CONTRIBUTING.md) for contribution guidelines.
+See [CONTRIBUTING.md](https://github.com/vandeynze/salmon_culverts/blob/master/CONTRIBUTING.md) for contribution guidelines and how you can help!
 
 ### Scripting
 Braeden Van Deynze (project lead, [@vandeynze](https://github.com/vandeynze/)), Robby Fonner  
