@@ -532,4 +532,4 @@ df_culv %>% select(fips, completed_year, starts_with("emp_")) %>% mutate(across(
 
 
 # Save out census data for future merging
-write_csv(df_census_summs, here("output/culverts_cbp.csv"))
+# write_csv(df_census_summs, here("output/culverts_cbp.csv"))

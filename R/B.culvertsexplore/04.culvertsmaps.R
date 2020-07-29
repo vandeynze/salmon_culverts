@@ -34,8 +34,8 @@ df_culv_wrk_pure <- read_csv(here("/output/culverts_wrk_working.csv"))
 
 # Prepare map data ====
 # setwd("./maps/sf")
-sf_us <- getData("GADM", country = "USA", level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c('California', 'Nevada', 'Utah', 'Wyoming', 'Montana', 'Idaho', 'Oregon', 'Washington'))
-sf_canada <- getData("GADM", country = "CAN", level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c("British Columbia", "Alberta"))
+sf_us <- getData("GADM", country = "USA", download = TRUE, path = here("output"), level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c('California', 'Nevada', 'Utah', 'Wyoming', 'Montana', 'Idaho', 'Oregon', 'Washington'))
+sf_canada <- getData("GADM", country = "CAN", download = TRUE, path = here("output"), level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c("British Columbia", "Alberta"))
 sf_base <- 
   rbind(sf_us, sf_canada)
 
@@ -53,20 +53,24 @@ sf_roads <-
       "primary"
     )
   ) %>%
-  osmdata_sf()
+  osmdata_sf() %>%
+  unname_osmdata_sf()
 
 sf_rivers <-
   opq(
     bbox = c(-126, 40, -110, 49.5),
+    # bbox = c(-122.5, 47.5, -122, 48), # Seattle area check
     timeout = 3000,
     memsize = 4e+9
   ) %>%
   add_osm_feature(
     key = "waterway",
     value = c(
+      # "streams", # Can also add "streams" and other levels for lower level streams, but dramatically increases file size
+      # "canal",
+      # "brook",
       "river",
       "riverbank"
-      # Can also add "streams" for lower level streams, but dramatically increases file size
     )
   ) %>%
   osmdata_sf()
@@ -74,6 +78,7 @@ sf_rivers <-
 sf_lakes <-
   opq(
     bbox = c(-126, 40, -110, 49.5),
+    # bbox = c(-122.5, 47.5, -122, 48), # Seattle area check
     timeout = 3000,
     memsize = 4e+9
   ) %>%
@@ -85,17 +90,35 @@ sf_lakes <-
   ) %>%
   osmdata_sf()
 
+# Fix broken osm_multipolygons names for plotting (https://github.com/rstudio/leaflet/issues/631#issuecomment-504729274)
+for(i in seq(nrow(sf_lakes$osm_multipolygons))) {
+  names(sf_lakes$osm_multipolygons$geometry[i][[1]]) = NULL
+  names(sf_lakes$osm_multipolygons$geometry[[i]][[1]]) = NULL
+}
+# sf_rivers <- unname_osmdata_sf(sf_rivers) # Doesn't seem to work
+# names(sf_rivers$osm_multipolygons$geometry) = NULL
+for(i in seq(nrow(sf_rivers$osm_multipolygons))) {
+  names(sf_rivers$osm_multipolygons$geometry[i][[1]]) = NULL
+  names(sf_rivers$osm_multipolygons$geometry[[i]][[1]]) = NULL
+}
+
 # Build base map ====
 base_map <-
   ggplot() +
   geom_sf(data = sf_base, fill = "antiquewhite1", color = NA) +
-  geom_sf(data = sf_rivers$osm_lines, color = "steelblue1", size = 0.3) +
-  geom_sf(data = sf_lakes$osm_multipolygons, color = NA, fill = "steelblue1") +
+  geom_sf(data = sf_rivers$osm_lines, color = "steelblue1", fill = "steelblue1", size = 0.3) +
+  geom_sf(data = sf_rivers$osm_multilines, color = "steelblue1", fill = "steelblue1", size = 0.3) +
+  geom_sf(data = sf_rivers$osm_polygons, color = "steelblue1", fill = "steelblue1", size = 0.3) +
+  geom_sf(data = sf_rivers$osm_multipolygons, color = "steelblue1", fill = "steelblue1", size = 0.3) +
+  geom_sf(data = sf_lakes$osm_lines, color = "steelblue1", fill = "steelblue1") +
+  geom_sf(data = sf_lakes$osm_polygons %>% filter(water == "lake"), color = "steelblue1", fill = "steelblue1") +
+  geom_sf(data = sf_lakes$osm_multipolygons, color = "steelblue1", fill = "steelblue1") +
+  geom_sf(data = sf_lakes$osm_polygons %>% filter(is.na(water) & !is.na(place)), color = "steelblue1", fill = "antiquewhite1") +
   geom_sf(data = sf_roads$osm_lines, color = "firebrick1", size = 0.3) +
   geom_sf(data = sf_base, fill = NA, color = "black") +
   coord_sf(
-    xlim = c(-126, -111.5),
-    ylim = c(41.5, 49.5),
+    xlim = c(-126, -111.5), ylim = c(41.5, 49.5),
+    # xlim = c(-122.5, -122), ylim = c(47.5, 48), # Seattle area check
     expand = FALSE
   ) +
   theme_bw() +

@@ -81,7 +81,7 @@ system.time(df_distance <- dist2Line(as(sf_culverts_test, "Spatial"), as(sf_road
 # On my laptop w/ 16 GB RAM, 2.8GHz, i7-7700HQ CPU
 # user  system elapsed 
 # 5.83    0.00    5.83 
-# Even for just 7 culverts, and a fairly small area, still takes quite a long time
+# Even for just 11 culverts, and a fairly small area, still takes quite a long time
 (df_distance <- df_distance %>% as_tibble())
 # Row order is the same as row order in original culvert tibble; ID is the row number from the sf_roads simple feature collection; distance is distance in meters to nearest road
 # So we can bind columns directly to the culvert tibble, convert the roads sf to a tibble with the row number as the ID, and then join to grab fields for road info
