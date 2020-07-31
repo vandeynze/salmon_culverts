@@ -21,87 +21,44 @@ library(janitor)
 library(tidyverse)
 library(here)
 
-# Load culvert worksite data
-df_culv <- read_csv(here("output/culverts_full_mapping.csv"))
+# Load culvert work site data
+# Load data
+sf_culv <- read_csv(here("output/culverts_full_mapping.csv")) %>% 
+  st_as_sf(coords = c('longitude', 'latitude'), crs = 4326) %>%
+  select(-county)
 
-# Build functions for finding county/fips from lat/long coordinates
-find_county <- function(x, y) {
-  require(sp)
-  require(maps)
-  require(maptools)
-  # The arguments to this function, x and y, are vectors in which:
-  #   - x contains the longitude in degrees (negative in the US)
-  #   - y contains the latitude in degrees
-  pointsDF <- data.frame(x, y)
-  
-  # Prepare SpatialPolygons object with one SpatialPolygon
-  # per county
-  counties <- maps::map('county', fill=TRUE, col="transparent", plot=FALSE)
-  IDs <- sapply(strsplit(counties$names, ":"), function(x) x[1])
-  counties_sp <- map2SpatialPolygons(counties, IDs=IDs,
-                                     proj4string=CRS("+proj=longlat +datum=WGS84"))
-  
-  # Convert pointsDF to a SpatialPoints object 
-  pointsSP <- SpatialPoints(pointsDF, 
-                            proj4string=CRS("+proj=longlat +datum=WGS84"))
-  
-  # Use 'over' to get _indices_ of the Polygons object containing each point 
-  indices <- over(pointsSP, counties_sp)
-  
-  # Return the county names of the Polygons object containing each point
-  countyNames <- sapply(counties_sp@polygons, function(x) x@ID)
-  countyNames[indices]
-}
+# Load county data to ID missing counties
+temp <- tempfile()
+tempdir <- tempdir()
+download.file("https://www2.census.gov/geo/tiger/TIGER2017/COUNTY/tl_2017_us_county.zip", temp)
+unzip(temp, exdir = tempdir)
+sf_counties <- read_sf(paste0(tempdir, "\\tl_2017_us_county.shp")) %>%
+  st_transform(crs = 4326) %>%
+  clean_names() %>%
+  select(fips = geoid, county = name, state_fips = statefp)
+unlink(temp)
+rm(temp, tempdir)
 
-find_fips <- function(x) {
-  require(maps)
-  # The argument to this function, x, is a vector which contains the name of a county in "state,county" format
-  # Compatible with the maps::county.fips dataframe only
-  data.frame("x.name" = x) %>% mutate(x.name = as.character(x)) %>% left_join(county.fips, by = c("x.name" = "polyname")) %>% pull(fips)
-}
+# Spatial join
+sf_culv <- st_join(sf_culv, sf_counties) %>% 
+  mutate(match = !is.na(fips))
 
-# Begin exploring...
+# Check for missing counties
+sum(sf_culv$match) # No missing
 
-# Add county and fips variables
-df_culv <-
-  df_culv %>%
-  mutate(
-    county = find_county(x = longitude, y = latitude),
-    fips = find_fips(county),
-    state_fips = round(fips, -3)/1000
-  )
-
-df_culv %>% tabyl(fips) %>% arrange(-n) # 181 NA
-df_culv %>% tabyl(state_fips) %>% arrange(-n) # 181 NA (same as above)
-df_culv %>% tabyl(county) %>% arrange(-n) # 146 NA
-
-# Assign geometry
-sf_culv <-
-  df_culv %>%
-  st_as_sf(
-    coords = c("longitude", "latitude"),
-    crs = 4326
-  )
-
-# Map against missing IDs for county
-sf_states <-
-  st_as_sf(maps::map("state", plot = FALSE, fill = TRUE)) %>%
-  filter(ID %in% c("california", "washington", "oregon", "idaho"))
-
-# Missing FIPS
-sf_culv %>% ggplot() + geom_sf(data = sf_states) + geom_sf(aes(color = is.na(fips))) + coord_sf(xlim = c(-125,-110), ylim = c(42, 49))
-
-# Missing counties
-sf_culv %>% ggplot() + geom_sf(data = sf_states) + geom_sf(aes(color = is.na(county))) + coord_sf(xlim = c(-125,-110), ylim = c(42, 49))
-
-# Almost all missing are on the coast...
-# Will deal with this later
+sf_culv %>% tabyl(fips) %>% arrange(-n)
+sf_culv %>% tabyl(state_fips) %>% arrange(-n)
+sf_culv %>% tabyl(county) %>% arrange(-n)
 
 # Set up census api access
 census_key <- "a6269eff97f65894fc88029146636aafcc45f463" # Feel free to use my access key or request your own
+
+# Move to df for culverts and load lists for mapping
+df_culv <- sf_culv %>% st_drop_geometry()
+
 list_fips <- df_culv %>% tabyl(fips, show_na = FALSE) %>% arrange(-n) %>% pull(fips)
 list_fips_state <- df_culv %>% tabyl(state_fips, show_na = FALSE) %>% arrange(-n) %>% pull(state_fips)
-list_years <- df_culv %>% tabyl(completed_year, show_na = FALSE) %>% arrange(completed_year) %>% pull(completed_year)
+list_years <- df_culv %>% tabyl(project_year, show_na = FALSE) %>% arrange(project_year) %>% pull(project_year)
 
 # Test census pull with getCensus
 # Target NAICS codes:
@@ -273,16 +230,13 @@ df_census_test <-
               ),
     fips = "41"
   )
-df_census_test %>% filter(year == 2005)
+df_census_test %>% filter(year == 2006)
 # 2006 is broken for some reason and included in a different year; weird but I'm rolling with it
 
 # So it works, but need to run over all naics base codes in order to draw totals
 # There's also a mismatch issue with the naics_ttl and geo_ttl's that will need cross-walks between versions
 # Or could index?
-# Also lots of zeros which appear to be missing values, likely due to privacy limitations on the data
-# Generally, these levels are very stable, though the ratio between construction and forestry/ag varies between counties
-# This means that a county-fixed effects model would absorb most of this variation
-# Because of little temporal variation, I think we can get away with some sort of fixed average across years, which would avoid missing values problem
+# Also lots of zeros which appear to be missing values, likely due to privacy limitations on the data (I see this w/ NASS and counties w/ few farms too)
 
 ggplot(
   df_census_test %>%
@@ -509,7 +463,6 @@ df_census_summs <-
       emp_other = naics81
     )
 
-# THIS IS A CHANGE
 
 df_culv <-
   df_culv %>%
