@@ -304,7 +304,7 @@ ggplot() +
 # Buffer method for raw count ====
 # Based on discussion found here: https://lbusettspatialr.blogspot.com/2018/02/speeding-up-spatial-analyses-by.html
 # Just the basic st_intersects version for now, but method using data.table might be more effective for full runs
-sf_culv <- sf_culv_test
+# sf_culv <- sf_culv_test
 
 sf_culv_buff <- st_buffer(sf_culv, 5/60) # With a 5/60 arcdegree radius, or ~ 50km
 sf_culv_buff %>% st_length %>% units::set_units(km)
@@ -353,3 +353,10 @@ ggplot() +
 # Can adjust the dist argument of the buffer to pick different radiuses
 # TODO: Extend to contemp. and cummul. versions and prepare full output frame for saving
 # TODO: Run on full sample of culvert work sites
+
+
+
+# Save out full data ====
+sf_culv %>%
+  st_drop_geometry() %>%
+  write_csv(here("output/spatial/culverts_density.csv"))
