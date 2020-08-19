@@ -31,4 +31,4 @@ Braeden Van Deynze (project lead, [@vandeynze](https://github.com/vandeynze/)), 
 Katie Barnas, Monica Diaz
 
 ### Project Planning
-Dan Holland, Sunny Jardine
+Dan Holland, Sunny Jardine, Robby Fonner
