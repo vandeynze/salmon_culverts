@@ -30,9 +30,9 @@ sf_culv <- read_csv(here("output/culverts_full_mapping.csv")) %>%
 # Load county data to ID missing counties
 temp <- tempfile()
 tempdir <- tempdir()
-download.file("https://www2.census.gov/geo/tiger/TIGER2017/COUNTY/tl_2017_us_county.zip", temp)
+download.file("https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_county_500k.zip", temp)
 unzip(temp, exdir = tempdir)
-sf_counties <- read_sf(paste0(tempdir, "\\tl_2017_us_county.shp")) %>%
+sf_counties <- read_sf(paste0(tempdir, "\\cb_2018_us_county_500k.shp")) %>%
   st_transform(crs = 4326) %>%
   clean_names() %>%
   select(fips = geoid, county = name, state_fips = statefp)
@@ -386,17 +386,18 @@ df_census2 <-
   )
 
 # Can be finicky, try it until it succeeds basically
-df_census10 <- get_census(
-    years = 2009,
-    naics = c(61,62,71,72,81),
-    fips = list_fips_state %>% as.character()
-  )
+# df_census10 <- get_census(
+#     years = 2009,
+#     naics = c(61,62,71,72,81),
+#     fips = list_fips_state %>% as.character()
+#   )
+# 
+# df_census <-
+#   df_census %>%
+#   bind_rows(df_census2, df_census3, df_census4, df_census5, df_census6, df_census7, df_census8, df_census9, df_census10)
 
-df_census <-
-  df_census %>%
-  bind_rows(df_census2, df_census3, df_census4, df_census5, df_census6, df_census7, df_census8, df_census9, df_census10)
 df_census %>% tabyl(year)
-# Looks good
+# Looks good!
 
 df_census_summs <-
   df_census %>%
@@ -426,13 +427,13 @@ df_census_summs
     df_census_summs %>%
     select(
       -c(
-        totpayann, totemp, totestab, emp, estab, payann, proppayann, propestab, # Tweak here to grab other measures
+        totpayann, totemp, totestab, estab, payann, proppayann, propestab, # Tweak here to grab other measures
         state, county, geo_ttl, naics_ttl)
     ) %>%
     pivot_wider(
       id_cols = c(year, fips),
       names_from = naics,
-      values_from = propemp, # Tweak here to grab other measures
+      values_from = emp, # Tweak here to grab other measures
       names_prefix = "naics"
     ))
 

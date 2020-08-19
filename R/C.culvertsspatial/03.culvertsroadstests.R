@@ -76,7 +76,7 @@ sf_roads %>% st_drop_geometry() %>% as_tibble() %>% dplyr::select(name, highway,
 sf_roads %>% st_drop_geometry() %>% as_tibble() %>% dplyr::select(name, highway, lanes, surface) %>% tabyl(surface, highway)
 # At least in this test sample, not much useful surface info...
 
-# Build test grid near mean of lat/long (outside Salem, OR)
+# Build test grid near mean of lat/long (outside Salem, OR) ====
 sf_culverts_test <-
   df_culverts %>%
   filter(
@@ -177,6 +177,48 @@ ggmap(sf_sat) +
 
 # So we have a proof of concept that finds nearest road and identifies OSM class and features, nice!
 # But even the most work sites are over 300m from the nearest OSM road, so we should probably make some sort of distance threshold beyond which we simply assign "unclassified"
+
+# Run on full data and save out ====
+sf_culverts <-
+  df_culverts %>%
+  st_as_sf(coords = c("longitude", "latitude")) %>%
+  st_set_crs(4326)
+
+
+system.time(df_distance <- dist2Line(as(sf_culverts, "Spatial"), as(sf_roads, "Spatial")))
+# On my laptop w/ 16 GB RAM, 2.8GHz, i7-7700HQ CPU
+# user  system elapsed 
+# 5.83    0.00    5.83 
+# Even for just 11 culverts, and a fairly small area, still takes quite a long time
+(df_distance <- df_distance %>% as_tibble())
+# Row order is the same as row order in original culvert tibble; ID is the row number from the sf_roads simple feature collection; distance is distance in meters to nearest road
+# So we can bind columns directly to the culvert tibble, convert the roads sf to a tibble with the row number as the ID, and then join to grab fields for road info
+
+(sf_culverts_out <-
+    sf_culverts %>%
+    bind_cols(df_distance %>% as_tibble) %>%
+    left_join(sf_roads %>% st_drop_geometry() %>% dplyr::select(-county) %>% mutate(ID = row_number()), by = "ID")) 
+
+sf_culverts_out %>%
+  dplyr::select(worksite_id:pure_culv, distance, name, highway, lanes, surface, maxspeed)
+
+qplot(x = distance, data = sf_culverts_out) + ggtitle("Distribution of distance from nearest road (m)")
+
+# Add poor match flag
+match_thresh = 250
+
+sf_culverts_out <-
+  sf_culverts_out %>%
+  mutate(poor_match = I(distance > match_thresh))
+
+sf_culverts_out %>% tabyl(poor_match)
+
+# Save out
+sf_culverts_out %>%
+  st_drop_geometry() %>%
+  write_csv(here("output/spatial/culverts_osmroads.csv"))
+
+
 # TODO: Experiment with distance thresholds
 # TODO: Link into Google Maps or other to try to ID missing road
 # TODO: Expand distance merge to larger share/all culverts
