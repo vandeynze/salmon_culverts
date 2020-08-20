@@ -98,19 +98,15 @@ sf_base <-
 rm(sf_us, sf_canada)
 
 # Prep data for spatial analysis using sf
-
-# Build smaller test culvert sf collection
-sf_culv_test <-
+sf_culv <-
   df_culv %>%
-  filter(
-    latitude >= 44,
-    latitude <= 45,
-    longitude <= -123,
-    longitude >= -124.5
-  ) %>%
   st_as_sf(coords = c("longitude", "latitude")) %>%
   st_set_crs(4326)
 
+# Build smaller test culvert sf collection
+sf_culv_test <-
+  sf_culv %>%
+  st_crop(., y = c(ymin = 44, xmin = -124.5, ymax = 45, xmax = -123))
 
 # Estimate kde
 system.time(sf_kde <- st_kde(sf_culv_test, cellarea = 1e6))
@@ -193,7 +189,7 @@ ggsave(
 # For contemporaneous projects and all previous projects
 # We need to run st_kde for each year
 # Then we need to use st_join with sf_culv for the appropriate year's kde
-sf_culv <- sf_culv_test
+
 
 # Run st_kde for each year and map to a list of tibbles with sf geometries
 list_years <- sf_culv %>% st_drop_geometry() %>% ungroup %>% distinct(project_year) %>% pull(project_year) %>% sort()
@@ -305,10 +301,18 @@ ggplot() +
 # Based on discussion found here: https://lbusettspatialr.blogspot.com/2018/02/speeding-up-spatial-analyses-by.html
 # Just the basic st_intersects version for now, but method using data.table might be more effective for full runs
 # sf_culv <- sf_culv_test
+radius_list = c(1/1200, 1/600, 1/120, 1/60, 1/12)
+# 0.5km, 1km, 5km, 10km, 50km
 
-sf_culv_buff <- st_buffer(sf_culv, 5/60) # With a 5/60 arcdegree radius, or ~ 50km
-sf_culv_buff %>% st_length %>% units::set_units(km)
-# Find points within 500 meters wrt each point
+# Prepare years in order for easy (sloppy) merging
+sf_culv <- sf_culv %>% arrange(project_year)
+sf_culv_buff <- sf_culv_buff %>% arrange(project_year)
+(years = sf_culv %>% pull(project_year) %>% unique())
+
+for(i in length(radius_list)) {
+radius = radius_list[i]
+sf_culv_buff <- st_buffer(sf_culv, radius)
+(radius_units = round(mean(sf_culv_buff %>% st_length %>% units::set_units(km)), 2))
 (sf_culv_int <- st_intersects(sf_culv_buff, sf_culv))
 (sf_culv_int <- 
   tibble(
@@ -323,17 +327,18 @@ sf_culv_buff %>% st_length %>% units::set_units(km)
 # Looks good, let's merge the data and map it
 sf_culv <-
   sf_culv %>%
-  left_join(sf_culv_int %>% select(id, culvs_50km = int_count), by = c("worksite_id" = "id"))
+  left_join(sf_culv_int %>% select(id, paste0("int_count_", radius_units) = int_count), by = c("worksite_id" = "id"))
 
 # Histogram
-ggplot(sf_culv) + geom_histogram(aes(x = culvs_50km), color = NA, fill = reds_ramp(30)) + ggtitle("Distribution of culvert work sites within 50km, across all years")
+ggplot(sf_culv) + geom_histogram(aes(x = paste0("int_count_", radius_units)), color = NA, fill = reds_ramp(30)) + ggtitle(paste0("Distribution of culvert work sites within ", radius_units,"km, across all years"))
 
 # Map
 ggplot() +
   geom_sf(data = sf_base, fill = "antiquewhite1") +
-  geom_sf(aes(color = culvs_50km), data = sf_culv) +
-  geom_sf(data = sf_culv_buff %>% slice(100), fill = NA, color = "red", size = 1) +
-  scale_color_distiller(expression(Culvert~work~sites~within~50~km~(all~years)), palette = "Reds", direction = 1) +
+  geom_sf(aes(color = paste0("int_count_", radius_units)), data = sf_culv) +
+  geom_sf(aes(linetype = "Example buffer"), data = sf_culv_buff %>% slice(100), fill = NA, size = 1, color = "red") +
+  scale_color_distiller(paste0("Culvert work sites within ", radius_units, "km (all years)"), palette = "Reds", direction = 1) +
+  scale_linetype(NULL) +
   coord_sf(
     xlim = c(-124.5, -123),
     ylim = c(44, 45),
@@ -349,6 +354,42 @@ ggplot() +
     legend.box.background = element_rect(color = "black", size = 1),
     legend.title = element_text(size = 10)
   )
+
+# Extend to contemp. and cummul. versions
+# Find points within 50 km wrt each point contemporaneously
+(sf_culv_int_contemp <- map(years, ~st_intersects(sf_culv_buff %>% filter(project_year == .x), sf_culv %>% filter(project_year == .x))) %>% unlist(recursive = FALSE))
+(sf_culv_int_contemp <- 
+    tibble(
+      id = sf_culv_buff$worksite_id,
+      int_ids_contemp = map(sf_culv_int_contemp, ~ sf_culv_buff$worksite_id[.x])
+    )%>%
+    rowwise() %>%
+    mutate(
+      int_count_contemp = length(int_ids_contemp)
+    ))
+
+# Looks good, let's merge the data
+sf_culv <-
+  sf_culv %>%
+  left_join(sf_culv_int_contemp %>% select(id, paste0("int_count_contemp_", radius_units) = int_count_contemp), by = c("worksite_id" = "id"))
+
+# Find points within 50 km wrt each point cummulatively
+(sf_culv_int_cummul <- map(years, ~st_intersects(sf_culv_buff %>% filter(project_year <= .x), sf_culv %>% filter(project_year <= .x))) %>% unlist(recursive = FALSE))
+(sf_culv_int_cummul <- 
+    tibble(
+      id = sf_culv_buff$worksite_id,
+      int_ids_cummul = map(sf_culv_int_cummul, ~ sf_culv_buff$worksite_id[.x])
+    )%>%
+    rowwise() %>%
+    mutate(
+      int_count_cummul = length(int_ids_cummul)
+    ))
+
+# Looks good, let's merge the data
+sf_culv <-
+  sf_culv %>%
+  left_join(sf_culv_int_cummul %>% select(id, paste0("int_count_cummul_", radius_units) = int_count_cummul), by = c("worksite_id" = "id"))
+}
 
 # Can adjust the dist argument of the buffer to pick different radiuses
 # TODO: Extend to contemp. and cummul. versions and prepare full output frame for saving
