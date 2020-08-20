@@ -28,7 +28,7 @@ See [CONTRIBUTING.md](https://github.com/vandeynze/salmon_culverts/blob/master/C
 Braeden Van Deynze (project lead, [@vandeynze](https://github.com/vandeynze/)), Robby Fonner  
 
 ### Data
-Katie Barnas, Monica Diaz
+Katie Barnas, Monica Diaz, Blake Feist
 
 ### Project Planning
-Dan Holland, Sunny Jardine
+Robby Fonner, Dan Holland, Sunny Jardine, Braeden Van Deynze
