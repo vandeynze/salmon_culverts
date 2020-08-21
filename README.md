@@ -22,13 +22,9 @@ A project aiming to improve the use of cost models in culvert improvement planni
 - /data/PNSHP_raw.csv: These data are from the original PNSHP database pull and serve as the raw data. Please do not modify.
 
 ## Contributors
+Braeden Van Deynze (repo manager, data analysis; [@vandeynze](https://github.com/vandeynze/)), Robby Fonner (funding acquisition, research design & direction) Blake Feist (data provision and quality evaluation), Sunny Jardine (scripting assistance, research design, funding acquisition), Dan Holland (funding acquisition, research design)
+
+Thank you to Katie Barnas and Monica Diaz for maintaining and sharing the PNSHP data.
+
 See [CONTRIBUTING.md](https://github.com/vandeynze/salmon_culverts/blob/master/CONTRIBUTING.md) for contribution guidelines and how you can help!
 
-### Scripting
-Braeden Van Deynze (project lead, [@vandeynze](https://github.com/vandeynze/)), Robby Fonner  
-
-### Data
-Katie Barnas, Monica Diaz, Blake Feist
-
-### Project Planning
-Robby Fonner, Dan Holland, Sunny Jardine, Braeden Van Deynze
