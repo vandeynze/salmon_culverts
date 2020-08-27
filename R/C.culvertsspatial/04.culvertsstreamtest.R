@@ -5,7 +5,7 @@
 # OUTPUTS: Data on nearest NHD+ to culvert work site
 # STATUS: Operable for full data, currently for slope and total upstream potential
 
-#https://usgs-r.github.io/nhdplusTools/index.html
+# https://usgs-r.github.io/nhdplusTools/index.html
 rm(list = ls())
 library(sf)
 library(tidyverse)
@@ -29,7 +29,7 @@ if(!file.exists(here("data/NHDPlusNationalData/NHDPlusV21_National_Seamless_Flat
 # View available layers
 # st_layers(dsn = here("data/NHDPlusNationalData/NHDPlusV21_National_Seamless_Flattened_Lower48.gdb"))
 
-# Load flowline network data
+# Load flowline network data (Really big! This might take awhile)
 fln <- read_sf(dsn = here("data/NHDPlusNationalData/NHDPlusV21_National_Seamless_Flattened_Lower48.gdb"), 
                 layer = "NHDFlowline_Network") 
 
@@ -40,38 +40,47 @@ fln <- st_zm(fln)
 names(fln)
 
 # Build function to calculate total potential upstream habitat from point (does not account for other blockages)
-upst_km <- function(x, fln = fln) {
-  require(nhdplusTools)  
+upst_km <- function(x, nhd_source = fln) {
+  # require(nhdplusTools)  
   start_point <- x
   start_comid <- discover_nhdplus_id(start_point)
-  UT_comids <- get_UT(fln, start_comid) #upstream with tributaries
+  UT_comids <- get_UT(nhd_source, start_comid) #upstream with tributaries
   
-  fln_sub <- fln %>% 
+  fln_sub <- nhd_source %>% 
     filter(COMID %in% UT_comids)
   sum(fln_sub$LENGTHKM) 
 }
 
 # Build function to grab stream slope
-strm_slope <- function(x, fln = fln) {
+strm_slope <- function(x, nhd_source = fln) {
   require(nhdplusTools)
   comid <- discover_nhdplus_id(x)
   fln %>% filter(COMID == comid) %>% pull(SLOPE)
 }
 
+
 # Test on subset
 set.seed(832020)
-df_test <- df_culv %>% sample_n(50)
+df_test <- df_culv %>% sample_n(15)
 system.time(
   (df_test <- 
      df_test %>%
      rowwise() %>%
      mutate(
-       upst_km = tryCatch({upst_km(geometry)},
+       upst_km = upst_km(geometry),
+       upst_km = tryCatch({upst_km(geometry)}, # ALL NAs
                           error = function(e) {NA}),
-       slope = tryCatch({strm_slope(geometry)},
+       slope = tryCatch({strm_slope(geometry)}, # ALL NAs
+                        error = function(e) {NA}),
+       comid = tryCatch({discover_nhdplus_id(geometry)},
                         error = function(e) {NA})
      ))
 )
+# For 15 culverts
+# user  system elapsed 
+# 25.42   10.86   40.06 
+df_test
+
 
 # Map
 start_comid <- df_test %>% mutate(start_comid = discover_nhdplus_id(geometry)) %>% pull(start_comid)
@@ -87,6 +96,7 @@ ggplot() +
   geom_sf(aes(geometry = geometry), data = df_culv, color = "grey60", size = 0.5) + # All culverts
   coord_sf(xlim = c(st_bbox(upst_fln)[c(1,3)]), ylim = c(st_bbox(upst_fln)[c(2,4)])) +
   ggtitle("Upstream reaches for target culverts", "Obviously other blockages upstream will affect immediate impact") +
+  scale_color_discrete("") +
   ggthemes::theme_map() +
   theme(legend.position = "right")
 
@@ -101,9 +111,12 @@ system.time(
       upst_km = tryCatch({upst_km(geometry)},
                          error = function(e) {NA}),
       slope = tryCatch({strm_slope(geometry)},
+                       error = function(e) {NA}),
+      comid = tryCatch({discover_nhdplus_id(geometry)},
                        error = function(e) {NA})
     ))
 )
+sum(is.na(df_culv$upst_km))
 
 
 # Write out

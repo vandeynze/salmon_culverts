@@ -104,21 +104,18 @@ sf_culv <-
   st_set_crs(4326)
 
 # Build smaller test culvert sf collection
-sf_culv_test <-
-  sf_culv %>%
-  st_crop(., y = c(ymin = 44, xmin = -124.5, ymax = 45, xmax = -123))
+# sf_culv_test <-
+#   sf_culv %>%
+#   st_crop(., y = c(ymin = 44, xmin = -124.5, ymax = 45, xmax = -123))
 
 # Estimate kde
-system.time(sf_kde <- st_kde(sf_culv_test, cellarea = 1e6))
+system.time(sf_kde <- st_kde(sf_culv, cellarea = 1e6))
 # On my laptop w/ 16 GB RAM, 2.8GHz, i7-7700HQ CPU
 # user  system elapsed 
-# 1.96    0.00    1.95 
-# Pretty quick, at least with only ~750 obs. and a pretty big cell area
+# 203.08    4.11   208.12 
+# Pretty quick, a few minutes
 
 # system.time(sf_kde <- st_kde(sf_culv_test, cellarea = 1e5))
-# On my laptop w/ 16 GB RAM, 2.8GHz, i7-7700HQ CPU
-# user  system elapsed 
-# 21.69    0.30   22.10 
 # Okay a LOT slower when you ramp down the cell size
 
 # Plot
@@ -128,13 +125,13 @@ reds_ramp <- colorRampPalette(brewer.pal(9, name = "Reds"))
 # Histogram
 ggplot() +
   geom_histogram(data = sf_kde, aes(x = density_10km2), bins = 30, fill = reds_ramp(30)) +
-  ggtitle("Distribution of cell culvert densities for test area (near Salem, OR)", "Large areas with few culverts, but large concentration in the tails")
+  ggtitle("Distribution of cell culvert densities", "Large areas with few culverts, but large concentration in the tails")
 
 # Map
 (map_density_allyears <- 
   ggplot() +
-  geom_sf(data = sf_base, fill = "antiquewhite1") +
-  geom_sf(data = sf_culv_test, size = 0.1) +
+    geom_sf(data = sf_base, fill = "antiquewhite1", size = 0.25) +
+    geom_sf(data = sf_culv, size = 0.1) +
     geom_sf(
       data = 
         sf_kde %>% 
@@ -143,7 +140,7 @@ ggplot() +
                  base::cut(
                    density_10km2,
                    breaks = 
-                     c(0, 10, 20, 30, Inf),
+                     c(0, 5, 10, 15, 20, Inf),
                    ordered_result = TRUE,
                    right = FALSE
                  )
@@ -153,28 +150,28 @@ ggplot() +
       size = 1,
       fill = NA
     ) +
-  scale_color_brewer(expression(Culverts~per~10~km^2), palette = "Reds", direction = 1) +
-  # scale_alpha(range = c(0, 1)) +
-  coord_sf(
-    xlim = c(-124.5, -123),
-    ylim = c(44, 45),
-    expand = FALSE
-  ) +
-  theme_bw() +
-  theme(
-    panel.background = element_rect(fill = "aliceblue", size = 1),
-    axis.text = element_blank(),
-    axis.ticks = element_blank(),
-    legend.position = c(0.99, 0.01),
-    legend.justification = c("right", "bottom"),
-    legend.box.background = element_rect(color = "black", size = 1),
-    legend.title = element_text(size = 10)
-  ) +
-  labs(
-    title = "Culvert project density, all years",
-    x = NULL,
-    y = NULL
-  ))
+    scale_color_brewer(expression(Culverts~per~10~km^2), palette = "Reds", direction = 1) +
+    # scale_alpha(range = c(0, 1)) +
+    coord_sf(
+      xlim = c(-124.5, -113.5),
+      ylim = c(41, 49),
+      expand = FALSE
+    ) +
+    theme_bw() +
+    theme(
+      panel.background = element_rect(fill = "aliceblue"),
+      axis.text = element_blank(),
+      axis.ticks = element_blank(),
+      legend.position = c(0.99, 0.01),
+      legend.justification = c("right", "bottom"),
+      legend.box.background = element_rect(color = "black", size = 1),
+      legend.title = element_text(size = 10)
+    ) +
+    labs(
+      title = "Culvert project density, all years",
+      x = NULL,
+      y = NULL
+    ))
 
 ggsave(
   filename = here("output/maps/culverts/fig_map_density.png"),
@@ -193,7 +190,7 @@ ggsave(
 
 # Run st_kde for each year and map to a list of tibbles with sf geometries
 list_years <- sf_culv %>% st_drop_geometry() %>% ungroup %>% distinct(project_year) %>% pull(project_year) %>% sort()
-list_years <- list_years[c(10:15)]
+# list_years <- list_years[c(10:15)] # Short year list for testing
 
 list_kde_contemp <-
   map(
@@ -223,16 +220,16 @@ list_culv_byyear_density <-
 sf_culv <- do.call(rbind, list_culv_byyear_density)
 
 # Clear out density estimate
-rm(list_kde_contemp)
+rm(list_kde_contemp, list_culv_byyear, list_culv_byyear_density)
 
 # Plot
 ggplot() +
-  geom_sf(data = sf_base, fill = "antiquewhite1") +
+  geom_sf(data = sf_base, fill = "antiquewhite1", size = 0.15) +
   geom_sf(aes(color = density_10km2), data = sf_culv %>% filter(project_year %in% list_years)) +
-  scale_color_distiller(expression(Culvert-work-sites~per~10~km^2-(same-year)), palette = "Reds", direction = 1) +
+  scale_color_distiller(expression(Culverts~per~10~km^2), palette = "Reds", direction = 1) +
   coord_sf(
-    xlim = c(-124.5, -123),
-    ylim = c(44, 45),
+    xlim = c(-124.5, -113.5),
+    ylim = c(41, 49),
     expand = FALSE
   ) +
   theme_bw() +
@@ -240,12 +237,34 @@ ggplot() +
     panel.background = element_rect(fill = "aliceblue", size = 1),
     axis.text = element_blank(),
     axis.ticks = element_blank(),
-    legend.position = c(0.99, 0.01),
+    legend.position = "right",
     legend.justification = c("right", "bottom"),
     legend.box.background = element_rect(color = "black", size = 1),
     legend.title = element_text(size = 10)
   ) +
-  facet_wrap(~ project_year)
+  facet_wrap(~ project_year) +
+  ggtitle("Culvert work site density, contemperaneous projects, by year")
+ggsave(
+  here("output","maps","culverts","fig_map_density_contemp_byyear.png"),   
+  device = "png",
+  width = 8,
+  height = 6
+)
+
+ggplot(sf_culv %>% filter(state %in% c("ID", "OR", "WA"))) +
+  geom_histogram(aes(density_10km2, fill = stat(count)), bins = 30) +
+  scale_fill_distiller("", direction = 1, palette = "Reds") +
+  # theme_void() +
+  theme(legend.position = "none", axis.title.y = element_blank(), axis.ticks.y = element_blank(), panel.grid = element_blank(), axis.text.y = element_blank()) +
+  ggtitle("Distribution of cell culvert densities, contemperaneous projects", "Much denser concentration in OR, especially in '00s") +
+  xlab("Density [Work sites per 10km2]") +
+  facet_grid(project_year ~ state)
+ggsave(
+  here("output","figs","culverts","fig_density_contemp_byyear.png"),   
+  device = "png",
+  width = 8,
+  height = 6
+)
 
 # Builds cumulative version (points persistent)
 list_kde_cumul <-
@@ -281,8 +300,8 @@ ggplot() +
   geom_sf(aes(color = density_10km2_cummul), data = sf_culv %>% filter(project_year %in% list_years)) +
   scale_color_distiller(expression(Culvert~work~sites~per~10~km^2~(up~to~year)), palette = "Reds", direction = 1) +
   coord_sf(
-    xlim = c(-124.5, -123),
-    ylim = c(44, 45),
+    # xlim = c(-124.5, -123),
+    # ylim = c(44, 45),
     expand = FALSE
   ) +
   theme_bw() +

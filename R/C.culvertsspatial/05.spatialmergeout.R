@@ -9,6 +9,7 @@
 
 rm(list = ls())
 # Load libraries
+library(sf)
 library(tidyverse)
 library(here)
 library(janitor)
@@ -27,11 +28,42 @@ df_cbp <- read_csv(here("output/spatial/culverts_cbp.csv"))
 # df_density <- read_csv(here("output/spatial/culverts_density.csv"))
 # 03.culvertsroadstets.R - OSM streets data
 # df_osmroads <- read_csv(here("output/spatial/culverts_osmroads.csv"))
-# 04.culvertsstreamtest.R - NHD+ stream data
+# 04.culvertsstreamtest.R - NHDPlus V2.1 stream data
 # df_nhdstreams <- read_csv(here("output/spatial/culverts_nhdstreams.csv"))
 
 # Blake's ArcGIS pulls
 df_blake <- read_xlsx(here("data/Culverts spatial overlays v 06Aug2020.xlsx"), sheet = 1) %>% as_tibble() %>% clean_names() %>% mutate(pure_culv = as.logical(pure_culv))
+
+# NHDPlus attributes from https://www.sciencebase.gov/catalog/item/5669a79ee4b08895842a1d47
+
+# Water Balance Estimates (methods from https://doi.org/10.1029/2011WR010630)
+# Annual Average Precipitation in mm 1945-2015: https://www.sciencebase.gov/catalog/item/57bf5c07e4b0f2f0ceb75b1b
+
+# Annual Average Runoff in mm 1945-2015: https://www.sciencebase.gov/catalog/item/57bf5e25e4b0f2f0ceb75b77
+
+# Annual Average Temperature in C 1945-2015: https://www.sciencebase.gov/catalog/item/5787ea72e4b0d27deb377b6d
+
+# Hydrologic Attributes
+# Base Flow Index 2003: https://www.sciencebase.gov/catalog/item/5669a8e3e4b08895842a1d4f
+# Units are percent. Base flow is the component of streamflow that can be attributed to ground-water discharge into streams.
+
+# Various Land Cover Attributes: https://www.sciencebase.gov/catalog/folder/5669a834e4b08895842a1d49
+
+# Population/Infrastructure Attributes
+# Housing density in units per square km 1940-2010: https://www.sciencebase.gov/catalog/item/5910de31e4b0e541a03ac983
+
+# Population density in persons per square km based on 2000/2010 Census block data: https://www.sciencebase.gov/catalog/item/5728f532e4b0b13d3918aa0a / https://www.sciencebase.gov/catalog/item/5728f746e4b0b13d3918aa1e
+
+# Basin Characteristics
+# Includes basin area, stream slope, road density, stream density, 
+
+
+
+# Compute bank full width using methods from https://doi.org/10.1016/j.geomorph.2009.02.005
+# loge(BFW) = loge(2.00 + 0.34 × DA × 10−6), where DA is upstream drainage area, coefficients from PNW regional model
+# Full paper has more specific coef. estimates for PNW, but would need to ID shape files for region borders
+
+
 
 # Add fips codes for culverts
 # Load county data to ID missing counties
