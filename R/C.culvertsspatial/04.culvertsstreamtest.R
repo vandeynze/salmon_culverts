@@ -22,9 +22,26 @@ df_culv <- read_csv(here("output/culverts_full_mapping.csv")) %>%
   st_transform(., crs = 4269)
 
 # Load streams data from NHD+
-if(!file.exists(here("data/NHDPlusV21_NationalData_Seamless_Geodatabase_Lower48_07.7z"))) download.file("https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/Data/NationalData/NHDPlusV21_NationalData_Seamless_Geodatabase_Lower48_07.7z", here("data/"))
+if(
+  !file.exists(
+    here(
+      "data/NHDPlusV21_NationalData_Seamless_Geodatabase_Lower48_07.7z"
+      )
+    )
+  ) {
+  download.file(
+    "https://s3.amazonaws.com/edap-nhdplus/NHDPlusV21/Data/NationalData/NHDPlusV21_NationalData_Seamless_Geodatabase_Lower48_07.7z",
+    here("data/")
+  )
+}
 # Extract in data folder
-if(!file.exists(here("data/NHDPlusNationalData/NHDPlusV21_National_Seamless_Flattened_Lower48.gdb"))) stop("Extract NHDPlus into /data/ directory!")
+if(
+  !file.exists(
+    here(
+      "data/NHDPlusNationalData/NHDPlusV21_National_Seamless_Flattened_Lower48.gdb"
+      )
+    )
+) stop("Extract NHDPlus into /data/ directory!")
 
 # View available layers
 # st_layers(dsn = here("data/NHDPlusNationalData/NHDPlusV21_National_Seamless_Flattened_Lower48.gdb"))
@@ -53,7 +70,7 @@ upst_km <- function(x, nhd_source = fln) {
 
 # Build function to grab stream slope
 strm_slope <- function(x, nhd_source = fln) {
-  require(nhdplusTools)
+  # require(nhdplusTools)
   comid <- discover_nhdplus_id(x)
   fln %>% filter(COMID == comid) %>% pull(SLOPE)
 }
@@ -62,24 +79,48 @@ strm_slope <- function(x, nhd_source = fln) {
 # Test on subset
 set.seed(832020)
 df_test <- df_culv %>% sample_n(15)
-system.time(
-  (df_test <- 
-     df_test %>%
-     rowwise() %>%
-     mutate(
-       upst_km = upst_km(geometry),
-       upst_km = tryCatch({upst_km(geometry)}, # ALL NAs
-                          error = function(e) {NA}),
-       slope = tryCatch({strm_slope(geometry)}, # ALL NAs
-                        error = function(e) {NA}),
-       comid = tryCatch({discover_nhdplus_id(geometry)},
-                        error = function(e) {NA})
-     ))
-)
+# system.time(
+#   (df_test <- 
+#      df_test %>%
+#      rowwise() %>%
+#      mutate(
+#        # upst_km = upst_km(geometry),
+#        upst_km = tryCatch({upst_km(geometry)}, # ALL NAs
+#                           error = function(e) {NA}),
+#        slope = tryCatch({strm_slope(geometry)}, # ALL NAs
+#                         error = function(e) {NA}),
+#        comid = tryCatch({discover_nhdplus_id(geometry)},
+#                         error = function(e) {NA})
+#      ))
+# )
+# 
+# df_test %>% select(worksite_id, project_year, basin, upst_km, slope, comid)
+
+# Test non-tidyverse version
+
+slope <- numeric(nrow(df_test))
+for(i in 1:nrow(df_test)){
+  slope[i] <- tryCatch({strm_slope(df_test$geometry[i])}, error = function(e) {NA})
+}
+
+upst_dist <- numeric(nrow(df_test))
+for(i in 1:nrow(df_test)){
+  upst_dist[i] <- tryCatch({upst_km(df_test$geometry[i])}, error = function(e) {NA})
+}
+
+comid <- numeric(nrow(df_test))
+for(i in 1:nrow(df_test)){
+  comid[i] <- tryCatch({discover_nhdplus_id(df_test$geometry[i])}, error = function(e) {NA})
+}
+
+df_stream <- tibble(comid, slope, upst_dist)
+
+df_test <- bind_cols(df_test, df_stream)
+
 # For 15 culverts
 # user  system elapsed 
 # 25.42   10.86   40.06 
-df_test
+df_test %>% select(worksite_id, project_year, basin, upst_dist, slope, comid)
 
 
 # Map
@@ -101,22 +142,63 @@ ggplot() +
   theme(legend.position = "right")
 
 sum(is.na(df_culv$upst_km))
-wrn <- warnings()
+# wrn <- warnings()
 
 # Run on full
-system.time(
-  (df_culv <- df_culv %>%
-    rowwise() %>%
-    mutate(
-      upst_km = tryCatch({upst_km(geometry)},
-                         error = function(e) {NA}),
-      slope = tryCatch({strm_slope(geometry)},
-                       error = function(e) {NA}),
-      comid = tryCatch({discover_nhdplus_id(geometry)},
-                       error = function(e) {NA})
-    ))
-)
-sum(is.na(df_culv$upst_km))
+# (df_culv <- df_culv %>%
+#   rowwise() %>%
+#   mutate(
+#     upst_km = tryCatch({upst_km(geometry)},
+#                        error = function(e) {NA}),
+#     slope = tryCatch({strm_slope(geometry)},
+#                      error = function(e) {NA}),
+#     comid = tryCatch({discover_nhdplus_id(geometry)},
+#                      error = function(e) {NA})
+#   ))
+
+slope <- numeric(nrow(df_culv))
+for(i in 1:nrow(df_culv)){
+  slope[i] <- tryCatch({strm_slope(df_culv$geometry[i])}, error = function(e) {NA})
+}
+
+upst_dist <- numeric(nrow(df_culv))
+for(i in 1:nrow(df_culv)){
+  upst_dist[i] <- tryCatch({upst_km(df_culv$geometry[i])}, error = function(e) {NA})
+}
+
+comid <- numeric(nrow(df_culv))
+for(i in 1:nrow(df_culv)){
+  comid[i] <- discover_nhdplus_id(df_culv$geometry[i])
+}
+# Bugs out at 585
+comid[585] <- NA
+for(i in 586:nrow(df_culv)){
+  comid[i] <- tryCatch({discover_nhdplus_id(df_culv$geometry[i])}, error = function(e) {NA})
+}
+
+# Bugs out at 594
+comid[594] <- NA
+for(i in 595:nrow(df_culv)){
+  comid[i] <- discover_nhdplus_id(df_culv$geometry[i])
+}
+
+# Bugs out at 603
+comid[603] <- NA
+for(i in 604:nrow(df_culv)){
+  comid[i] <- tryCatch({discover_nhdplus_id(df_culv$geometry[i])}, error = function(e) {0})
+}
+
+# Bugs out at 5010
+comid[5010] <- NA
+for(i in 5011:nrow(df_culv)){
+  comid[i] <- tryCatch({discover_nhdplus_id(df_culv$geometry[i])}, error = function(e) {0})
+}
+
+df_stream <- tibble(comid, slope, upst_dist)
+
+df_culv <- bind_cols(df_culv %>% select(-(comid:upst_dist)), df_stream)
+
+sum(is.na(df_culv$slope))
 
 
 # Write out
