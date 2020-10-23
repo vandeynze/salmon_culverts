@@ -1,0 +1,1032 @@
+---
+title: "Culvert Cost Pilot Models"
+author: "B. Van Deynze"
+date: "April 7, 2020"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float:
+      collapsed: false
+---
+```{css zoom-lib-src, echo = FALSE}
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+```
+
+```{js zoom-jquery, echo = FALSE}
+ $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+```
+
+```{r setup, include=FALSE}
+# Set knitr options
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(fig.dim = c(8, 6))
+
+# Clear existing environment
+rm(list = ls())
+
+# Set libraries
+library(tidyverse)
+library(janitor)
+library(ggthemes)
+library(ggfortify)
+library(grid)
+library(scales)
+library(knitr)
+library(kableExtra)
+library(broom)
+library(here)
+
+# Set ggplot2 themes
+theme_set(theme_clean())
+theme_update(
+  plot.background = element_rect(color = NA),
+  plot.title.position = "plot",
+  plot.caption.position = "plot"
+)
+
+# Set top-level working directory
+# wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
+# wd <- "C:/Users/Braeden/Desktop/NOAA/Analysis"
+# wd <- "D:/Braeden/OneDrive/Documents/My Work/NOAA/Analysis"
+# knitr::opts_knit$set(root.dir = wd)
+# setwd(wd)
+# setwd("./output")
+```
+This report's goal is to demonstrate how we might model costs for culvert improvement projects. We begin with a description of the currently available data. We then describe a number of pilot regressions demonstrating how these data can be used to model drivers of costs across the region of study. We then discuss proposed next steps, including a list of potential additional variables and example applications.
+
+# Data Description
+```{r data-prep}
+# Load and prepare culvert data
+# setwd(wd)
+# setwd("./output") # For Braeden; comment out for other users
+df_culv <- read_csv(paste0(here("output"), "/culverts_wrk_working.csv"))
+df_culv_prj <-
+  df_culv %>%
+  distinct(
+    project_id,
+    cost_per_culvert,
+    n_culverts,
+    dist_mean,
+    n_worksites, 
+    action_fishpass_culvrem_prj,
+    action_fishpass_culvinst_prj,
+    project_source,
+    basin,
+    completed_year
+  ) %>%
+  # mutate(
+  #   completed_year = ordered(as.character(completed_year))
+  # ) %>%
+  mutate(
+    project_source = relevel(factor(project_source), ref = "OWRI"),
+    basin = relevel(factor(basin), ref = "SOUTHERN OREGON COASTAL")
+  ) %>%
+  drop_na(cost_per_culvert) %>%
+  filter(completed_year > 1995)
+```
+The data used in this analsis are from the **Pacific Northwest Salmonid Habitat Project** (PNSHP) database. This database, maintained by Katie Barnas at the NOAA Northwest Fisheries Science Center, serves as a clearinghouse for reporting habitat restoration projects targeting salmon in Washington, Oregon, Idaho, and Montana. The data is structured with project as the base observation unit. Each project consists of one or more work site, and each work site consists of one or more restoration action. Costs are provided at the project level (as opposed to the worksite or action level), and the vast majority of work sites are geocoded (i.e. coordiantes are available).
+
+In this analysis, we focus on "pure" culvert projects (i.e. projects where culvert-related actions are the only actions taken at any of the project work sites) between 1996 and 2015 (20 years), with cost reported. There are `r df_culv_prj %>% nrow() %>% comma()` projects that meet this criteria, distributed across `r df_culv_prj %>% pull(basin) %>% n_distinct() %>% comma()` basins and reported by `r df_culv_prj %>% pull(project_source) %>% n_distinct() %>% comma()` different sources. Note that different reporting sources focus on different basins, and that there are clear systemic differences in how costs are reported across sources. For more details, please check the ***PNSHP Culvert Report***.
+
+Some projects in the sample are clearly outliers (See table below). Therefore, we trim projects with costs per culvert less than \$2,000 and greater than \$750,000, a process that removes `r df_culv_prj %>% filter(cost_per_culvert < 2000 | cost_per_culvert > 750000) %>% nrow()` projects.
+
+```{r data-trim}
+# Filter out cost per culvert outliers
+quantile(df_culv_prj$cost_per_culvert, na.rm = TRUE, probs = c(0, 0.01, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99, 1), type = 8) %>% dollar() %>% t() %>% kable(caption = "Quantiles for project-level costs per culvert") %>% kable_styling()
+df_culv_prj <-
+  df_culv_prj %>%
+  filter(cost_per_culvert > 2000, cost_per_culvert < 750000)
+```
+
+The PNSHP data is limited in detail but we can recover two key variables that are possible drivers of culvert improvement costs: the *number of culverts* under a single project and the *distance between work sites* (measured in meters as the mean Euclidian distance between worksites). Summary statistics for both of these variables are presented in the tables below.
+
+```{r data-summ}
+# Full data
+df_culv_prj %>%
+  summarise_at(
+    vars(n_culverts, dist_mean),
+    list(min, mean, median, max, sd)
+  ) %>%
+  rename_at(
+    vars(ends_with("fn1")), list(~str_replace(., "_fn1", "-Min."))
+  ) %>%
+  rename_at(
+    vars(ends_with("fn2")), list(~str_replace(., "_fn2", "-Mean"))
+  ) %>%
+  rename_at(
+    vars(ends_with("fn3")), list(~str_replace(., "_fn3", "-Median"))
+  ) %>%
+  rename_at(
+    vars(ends_with("fn4")), list(~str_replace(., "_fn4", "-Max."))
+  ) %>%
+  rename_at(
+    vars(ends_with("fn5")), list(~str_replace(., "_fn5", "-Std. dev."))
+  ) %>%
+  pivot_longer(
+    everything(),
+    names_to = c("Variable", "stat"),
+    names_sep = "-"
+  ) %>%
+  arrange(Variable) %>%
+  pivot_wider(
+    names_from = "stat",
+    values_from = "value"
+  ) %>%
+  mutate(
+    Variable = case_when(
+      Variable == "dist_mean" ~ "Distance (mean between worksites), meters",
+      Variable == "n_culverts" ~ "Number of culverts"
+    )
+  ) %>%
+  kable(caption = "Summary statistics for key variables, full sample", digits = 1, format.args = list(big.mark = ",", nsmall = 1)) %>%
+  kable_styling()
+
+# Multiple worksites only
+df_culv_prj %>%
+  filter(n_worksites > 1) %>%
+  summarise_at(
+    vars(n_culverts, dist_mean),
+    list(min, mean, median, max, sd)
+  ) %>%
+  rename_at(
+    vars(ends_with("fn1")), list(~str_replace(., "_fn1", "-Min."))
+  ) %>%
+  rename_at(
+    vars(ends_with("fn2")), list(~str_replace(., "_fn2", "-Mean"))
+  ) %>%
+  rename_at(
+    vars(ends_with("fn3")), list(~str_replace(., "_fn3", "-Median"))
+  ) %>%
+  rename_at(
+    vars(ends_with("fn4")), list(~str_replace(., "_fn4", "-Max."))
+  ) %>%
+  rename_at(
+    vars(ends_with("fn5")), list(~str_replace(., "_fn5", "-Std. dev."))
+  ) %>%
+  pivot_longer(
+    everything(),
+    names_to = c("Variable", "stat"),
+    names_sep = "-"
+  ) %>%
+  arrange(Variable) %>%
+  pivot_wider(
+    names_from = "stat",
+    values_from = "value"
+  ) %>%
+  mutate(
+    Variable = case_when(
+      Variable == "dist_mean" ~ "Distance (mean between worksites), meters",
+      Variable == "n_culverts" ~ "Number of culverts"
+    )
+  ) %>%
+  kable(caption = "Summary statistics for key variables, multiple worksite projects only", digits = 1, format.args = list(big.mark = ",", nsmall = 1)) %>%
+  kable_styling()
+```
+
+Both variables skew right as expected. The vast majority of projects are single work site projects (`r df_culv_prj %>% filter(n_culverts == 1) %>% nrow() %>% comma()` of `r df_culv_prj %>% nrow() %>% comma()`), and therefore have no distance between work sites by definition. Also as expected, projects with more culverts have a larger mean distance between work sites, but the correlation is fairly small (Pearson's correlation = `r cor(df_culv_prj$n_culverts, df_culv_prj$dist_mean) %>% format(digits = 2, nsmall = 2)`). Histograms for the number of culverts, mean distance between work sites, and log mean distance between work sites are presented below.
+
+```{r data-histograms}
+# Histogram of n_culverts
+ggplot(data = df_culv_prj) +
+  geom_bar(aes(n_culverts), fill = "forestgreen") +
+  labs(x = "Number of culverts", y = NULL, title = "Frequency of projects by number of culverts") +
+  scale_y_continuous(labels = scales::label_comma())
+
+# Histogram of dist_mean
+ggplot(data = df_culv_prj %>% filter(dist_mean > 0)) +
+  geom_histogram(aes(dist_mean), bins = 30, fill = "forestgreen",  color = "white") +
+  labs(x = "Mean distance between work sites, meters", y = NULL,
+       title = "Frequency of projects by mean distance between work sites",
+       subtitle = "Single work site projects omitted") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  scale_x_continuous(labels = scales::label_comma())
+
+ggplot(data = df_culv_prj %>% filter(dist_mean > 0)) +
+  geom_histogram(aes(dist_mean), bins = 30, fill = "forestgreen",  color = "white") +
+  labs(x = "Mean distance between work sites, meters (log scale)", y = NULL,
+       title = "Frequency of projects by mean distance between work sites",
+       subtitle = "Single work site projects omitted") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  scale_x_log10(labels = scales::label_comma())
+```
+
+# Pilot Regressions
+In this section, we present results from initial pilot regressions attempting to model costs per culverts as a function of project characteristics. These models are obviously incomplete, but serve as a first cut we can build on going forward.
+
+In each regression, the dependent variable is **log costs per culvert**. All estimation is simple *ordinary least squares* estimated with R's `lm` function.
+
+## Initial Hypotheses
+We consider two initial hypotheses related to the two variables discussed in the data description section.
+
+Our first hypothesis relates to *economies of scale*. Are per culvert costs lower for projects that modify more culverts? We test this by including the number of culverts linearly or, in an alternative specification, as a series of dummies (two culverts through five or more culverts, with one culvert as the base level).
+
+Our second hypothesis relates to *distance*. Do projects with work sites that are further apart have higher average costs? We test this by including mean distance in a number of alternative specifications. We include the mean distance variable either lineraly or log transformed. We also include a dummy for single work site projects where the mean distance is always zero. This allows for a discontinuity at zero for the distance effect, disentangling the scale effect from multiple work sites from the effect of distance.
+
+## Fixed Effects and Additional Controls
+In addition to the variables of interest, we also include fixed effects for **year**, **reporting source**, and **basin**. We also include dummies for whether the project included complete removal of a culvert or installation of an entirely new culvert. For year dummies the base level is 1996, for reporting source the base is OWRI, and for basin the base level is Southern Oregon Coastal.
+
+## Preliminary Results {.tabset .tabset-pills #results} 
+### Fixed Effects
+```{r models-fe}
+# Full fixed effects, n_culverts only
+mod_fe_1 <- lm(
+  log(cost_per_culvert) ~
+    n_culverts +
+    action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+    project_source + basin + factor(completed_year),
+  df_culv_prj
+)
+# n_culverts result survives fixed effects
+
+# Full fixed effects, distance only
+mod_fe_2 <- lm(
+  log(cost_per_culvert) ~
+    dist_mean +
+    action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+    project_source + basin + factor(completed_year),
+  df_culv_prj
+)
+# Still likely due to omitted n_culverts and high correlation
+
+# Full fixed effects, log distance only
+mod_fe_3 <- lm(
+  log(cost_per_culvert) ~
+    log(dist_mean+1) +
+    action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+    project_source + basin + factor(completed_year),
+  df_culv_prj
+)
+# Still likely due to omitted n_culverts and high correlation
+
+# Full fixed effects, n_culverts and distance
+mod_fe_4 <- lm(
+  log(cost_per_culvert) ~
+    n_culverts + dist_mean +
+    action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+    project_source + basin + factor(completed_year),
+  df_culv_prj
+)
+# n_culvert result remains the same, dist_mean insignificant
+
+# Full fixed effects, n_culverts and log distance
+mod_fe_5 <- lm(
+  log(cost_per_culvert) ~
+    n_culverts + log(dist_mean+1) +
+    action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+    project_source + basin + factor(completed_year),
+  df_culv_prj
+)
+# Still wouldn't read into dist_mean result too much
+
+# Okay how about when we include a dummy for when there is only one worksite...
+# Full fixed effects, n_culverts and distance and worksites dummy
+mod_fe_6 <- lm(
+  log(cost_per_culvert) ~
+    n_culverts + dist_mean + I(n_worksites == 1) +
+    action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+    project_source + basin + factor(completed_year),
+  df_culv_prj
+)
+# n_culvert result remains the same, dist_mean insignificant, single worksite projects have higher costs
+
+# Full fixed effects, n_culverts and log distance and worksites dummy (Preferred model)
+mod_fe_7 <- lm(
+  log(cost_per_culvert) ~
+    n_culverts + log(dist_mean+1) + I(n_worksites == 1) +
+    action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+    project_source + basin + factor(completed_year),
+  df_culv_prj
+)
+# n_culvert and single worksite dummy results remain, and now worksites further away from others in the project appear to be more expensive too, but statistically insignificant
+# But magnitude of the effect is extremely small (doubling of distance leads to only 2.7% increase in cost per culvert on average; ten-times the distance only 10% increase in cost)
+
+mods_fe <- list("FE-1" = mod_fe_1, "FE-2" = mod_fe_2, "FE-3" = mod_fe_3, "FE-4" = mod_fe_4, "FE-5" = mod_fe_5, "FE-6" = mod_fe_6, "FE-7" = mod_fe_7)
+mods_fe_pars <-
+  map_df(mods_fe, tidy, .id = "model") %>%
+  complete(model, term) %>%
+  mutate(
+    stars = case_when(
+      p.value < 0.01 ~ "***",
+      p.value < 0.05 ~ "**",
+      p.value < 0.1 ~ "*",
+      TRUE ~ ""
+    ),
+    full.est = if_else(
+      is.na(estimate),
+      "&#8210;",
+      paste0(
+        format(signif(estimate, 3), scientific = FALSE, drop0trailing = TRUE, trim = TRUE),
+        stars,
+        "<br>(", format(signif(std.error, 3), scientific = FALSE, drop0trailing = TRUE, trim = TRUE), ")"
+      )
+    ),
+    term = case_when(
+      term == "(Intercept)" ~ "Intercept",
+      term == "action_fishpass_culvinst_prj" ~ "Culvert installation (dummy)",
+      term == "action_fishpass_culvrem_prj" ~ "Culvert removal (dummy)",
+      term == "n_culverts" ~ "Number of culverts",
+      term == "dist_mean" ~ "Mean distance between work sites",
+      term == "log(dist_mean + 1)" ~ "Mean distance between work sites, log",
+      term == "I(n_worksites == 1)TRUE" ~ "Single work site (dummy)",
+      TRUE ~ term
+    ),
+    term = str_replace(term, "project_source", "Project source: "),
+    term = str_replace(term, "basin", "Basin: "),
+    term = str_replace(term, "factor[(]completed_year[)]", "Year: ")
+  ) %>%
+  select(
+    model, term, full.est
+  ) %>%
+  pivot_wider(id_cols = model, names_from = term, values_from = full.est) %>%
+  select(
+    model,
+    Intercept,
+    "Number of culverts",
+    starts_with("Mean distance between "),
+    "Single work site (dummy)",
+    starts_with("Culvert "),
+    starts_with("Project source: "),
+    starts_with("Year: "),
+    starts_with("Basin: ")
+  )
+
+mods_fe_stats <-
+  map_df(mods_fe, glance, .id = "model") %>%
+    mutate(
+      `Adj. R2` = signif(adj.r.squared, 3),
+      AIC = round(AIC, 1),
+      BIC = round(BIC, 1),
+      N = df + df.residual
+    ) %>%
+    select(model, `Adj. R2`, AIC, BIC, N) %>%
+  mutate_all(~as.character(.))
+  
+mods_fe_pars %>%
+  left_join(mods_fe_stats, by = "model") %>%
+  pivot_longer(-model, names_to = "Term", values_to = "Value") %>%
+  pivot_wider(id_cols = Term, names_from = model, values_from = Value) %>%
+  kable(caption = "Pilot models, full fixed effects", align = "lccccccc", escape = FALSE) %>%
+  kable_styling("hover", fixed_thead = TRUE) %>%
+  column_spec(1 , bold = TRUE) %>%
+  row_spec(c(58, 62), extra_css = "border-bottom: 1px solid") %>%
+  add_footnote("* p < 0.1, ** p < 0.05, *** p < 0.01", notation = "none") %>%
+  scroll_box(height = "800px")
+```
+
+### No Fixed Effects
+```{r models-nofe}
+# No fixed effects, n_culverts only
+mod_nofe_1 <- lm(
+  log(cost_per_culvert) ~
+    n_culverts,
+  df_culv_prj
+)
+# More culverts in project, lower cost per culverts
+
+# No fixed effects, distance only
+mod_nofe_2 <- lm(
+  log(cost_per_culvert) ~
+    dist_mean,
+  df_culv_prj
+)
+# Result likely due to high correlation with n_culverts
+
+# No fixed effects, log distance only
+mod_nofe_3 <- lm(
+  log(cost_per_culvert) ~
+    log(dist_mean+1),
+  df_culv_prj
+)
+# Result likely due to high correlation with n_culverts
+
+# No fixed effects, n_culverts and distance
+mod_nofe_4 <- lm(
+  log(cost_per_culvert) ~
+    n_culverts + dist_mean,
+  df_culv_prj
+)
+# Only n_culverts result survives
+
+# No fixed effects, n_culverts and log distance
+mod_nofe_5 <- lm(
+  log(cost_per_culvert) ~
+    n_culverts + log(dist_mean+1),
+  df_culv_prj
+)
+# Log dist_mean significant and negative
+
+# No fixed effects, n_culverts and distance with single worksite dummy
+mod_nofe_6 <- lm(
+  log(cost_per_culvert) ~
+    n_culverts + dist_mean + I(n_worksites == 1),
+  df_culv_prj
+)
+# Only n_culverts result survives
+
+# No fixed effects, n_culverts and log distance with single worksite dummy
+mod_nofe_7 <- lm(
+  log(cost_per_culvert) ~
+    n_culverts + log(dist_mean+1) + I(n_worksites == 1),
+  df_culv_prj
+)
+# Log dist_mean insignificant and negative
+
+mods_nofe <- list("NOFE-1" = mod_nofe_1, "NOFE-2" = mod_nofe_2, "NOFE-3" = mod_nofe_3, "NOFE-4" = mod_nofe_4, "NOFE-5" = mod_nofe_5, "NOFE-6" = mod_nofe_6, "NOFE-7" = mod_nofe_7)
+mods_nofe_pars <-
+  map_df(mods_nofe, tidy, .id = "model") %>%
+  complete(model, term) %>%
+  mutate(
+    stars = case_when(
+      p.value < 0.01 ~ "***",
+      p.value < 0.05 ~ "**",
+      p.value < 0.1 ~ "*",
+      TRUE ~ ""
+    ),
+    full.est = if_else(
+      is.na(estimate),
+      "&#8210;",
+      paste0(
+        format(signif(estimate, 3), scientific = FALSE, drop0trailing = TRUE, trim = TRUE),
+        stars,
+        "<br>(", format(signif(std.error, 3), scientific = FALSE, drop0trailing = TRUE, trim = TRUE), ")"
+      )
+    ),
+    term = case_when(
+      term == "(Intercept)" ~ "Intercept",
+      term == "n_culverts" ~ "Number of culverts",
+      term == "dist_mean" ~ "Mean distance between work sites",
+      term == "log(dist_mean + 1)" ~ "Mean distance between work sites, log",
+      term == "I(n_worksites == 1)TRUE" ~ "Single work site (dummy)",
+      TRUE ~ term
+    )
+  ) %>%
+  select(
+    model, term, full.est
+  ) %>%
+  pivot_wider(id_cols = model, names_from = term, values_from = full.est) %>%
+  select(
+    model,
+    Intercept,
+    "Number of culverts",
+    starts_with("Mean distance between "),
+    "Single work site (dummy)"
+  )
+
+mods_nofe_stats <-
+  map_df(mods_nofe, glance, .id = "model") %>%
+    mutate(
+      `Adj. R2` = signif(adj.r.squared, 3),
+      AIC = round(AIC, 1),
+      BIC = round(BIC, 1),
+      N = df + df.residual
+    ) %>%
+    select(model, `Adj. R2`, AIC, BIC, N) %>%
+  mutate_all(~as.character(.))
+  
+mods_nofe_pars %>%
+  left_join(mods_nofe_stats, by = "model") %>%
+  pivot_longer(-model, names_to = "Term", values_to = "Value") %>%
+  pivot_wider(id_cols = Term, names_from = model, values_from = Value) %>%
+  kable(caption = "Pilot models, no fixed effects", align = "lccccccc", escape = FALSE) %>%
+  kable_styling("hover", fixed_thead = TRUE) %>%
+  column_spec(1 , bold = TRUE) %>%
+  row_spec(c(5, 9), extra_css = "border-bottom: 1px solid") %>%
+  add_footnote("* p < 0.1, ** p < 0.05, *** p < 0.01", notation = "none")
+```
+[Back to top](#results)
+
+### Number of Culverts Binned
+```{r models-binned}
+# Full fixed effects, n_culverts as dummies
+mod_bin_1 <- lm(
+  log(cost_per_culvert) ~
+    I(n_culverts == 2) + I(n_culverts == 3) + I(n_culverts == 4) + I(n_culverts >= 5) +
+    action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+    project_source + basin + factor(completed_year),
+  df_culv_prj
+)
+# Same n_culvert pattern
+
+# Full fixed effects, n_culverts as dummies and distance
+mod_bin_2 <- lm(
+  log(cost_per_culvert) ~
+    I(n_culverts == 2) + I(n_culverts == 3) + I(n_culverts == 4) + I(n_culverts >= 5) + dist_mean +
+    action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+    project_source + basin + factor(completed_year),
+  df_culv_prj
+)
+# Same n_culvert pattern, dist_mean insignificant
+
+# Full fixed effects, n_culverts as dummies and log distance
+mod_bin_3 <- lm(
+  log(cost_per_culvert) ~
+    I(n_culverts == 2) + I(n_culverts == 3) + I(n_culverts == 4) + I(n_culverts >= 5) + log(dist_mean+1) + 
+    action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+    project_source + basin + factor(completed_year),
+  df_culv_prj
+)
+# Same n_culvert pattern, dist_mean insignificant
+
+# Full fixed effects, n_culverts as dummies and distance, with single worksite dummy
+mod_bin_4 <- lm(
+  log(cost_per_culvert) ~
+    I(n_culverts == 2) + I(n_culverts == 3) + I(n_culverts == 4) + I(n_culverts >= 5) + dist_mean + I(n_worksites == 1) +
+    action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+    project_source + basin + factor(completed_year),
+  df_culv_prj
+)
+# Same n_culvert pattern, dist_mean insignificant
+
+# Full fixed effects, n_culverts as dummies and log distance, with single worksite dummy
+mod_bin_5 <- lm(
+  log(cost_per_culvert) ~
+    I(n_culverts == 2) + I(n_culverts == 3) + I(n_culverts == 4) + I(n_culverts >= 5) + log(dist_mean+1) + I(n_worksites == 1) +
+    action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+    project_source + basin + factor(completed_year),
+  df_culv_prj
+)
+# Same n_culvert pattern, log dist_mean significant but magnitude is very small
+
+mods_bin <- list("BIN-1" = mod_bin_1, "BIN-2" = mod_bin_2, "BIN-3" = mod_bin_3, "BIN-4" = mod_bin_4, "BIN-5" = mod_bin_5)
+mods_bin_pars <-
+  map_df(mods_bin, tidy, .id = "model") %>%
+  complete(model, term) %>%
+  mutate(
+    stars = case_when(
+      p.value < 0.01 ~ "***",
+      p.value < 0.05 ~ "**",
+      p.value < 0.1 ~ "*",
+      TRUE ~ ""
+    ),
+    full.est = if_else(
+      is.na(estimate),
+      "&#8210;",
+      paste0(
+        format(signif(estimate, 3), scientific = FALSE, drop0trailing = TRUE, trim = TRUE),
+        stars,
+        "<br>(", format(signif(std.error, 3), scientific = FALSE, drop0trailing = TRUE, trim = TRUE), ")"
+      )
+    ),
+    term = case_when(
+      term == "(Intercept)" ~ "Intercept",
+      term == "action_fishpass_culvinst_prj" ~ "Culvert installation (dummy)",
+      term == "action_fishpass_culvrem_prj" ~ "Culvert removal (dummy)",
+      term == "dist_mean" ~ "Mean distance between work sites",
+      term == "log(dist_mean + 1)" ~ "Mean distance between work sites, log",
+      term == "I(n_worksites == 1)TRUE" ~ "Single work site (dummy)",
+      term == "I(n_culverts == 2)TRUE" ~ "Number of culverts: 2",
+      term == "I(n_culverts == 3)TRUE" ~ "Number of culverts: 3",
+      term == "I(n_culverts == 4)TRUE" ~ "Number of culverts: 4",
+      term == "I(n_culverts >= 5)TRUE" ~ "Number of culverts: 5 or more",
+      TRUE ~ term
+    ),
+    term = str_replace(term, "project_source", "Project source: "),
+    term = str_replace(term, "basin", "Basin: "),
+    term = str_replace(term, "factor[(]completed_year[)]", "Year: ")
+  ) %>%
+  select(
+    model, term, full.est
+  ) %>%
+  pivot_wider(id_cols = model, names_from = term, values_from = full.est) %>%
+  select(
+    model,
+    Intercept,
+    starts_with("Number of culverts:"),
+    starts_with("Mean distance between "),
+    "Single work site (dummy)",
+    starts_with("Culvert "),
+    starts_with("Project source: "),
+    starts_with("Year: "),
+    starts_with("Basin: ")
+  )
+
+mods_bin_stats <-
+  map_df(mods_bin, glance, .id = "model") %>%
+    mutate(
+      `Adj. R2` = signif(adj.r.squared, 3),
+      AIC = round(AIC, 1),
+      BIC = round(BIC, 1),
+      N = df + df.residual
+    ) %>%
+    select(model, `Adj. R2`, AIC, BIC, N) %>%
+  mutate_all(~as.character(.))
+  
+mods_bin_pars %>%
+  left_join(mods_bin_stats, by = "model") %>%
+  pivot_longer(-model, names_to = "Term", values_to = "Value") %>%
+  pivot_wider(id_cols = Term, names_from = model, values_from = Value) %>%
+  kable(caption = "Pilot models, number of culverts binned", align = "lccccccc", escape = FALSE) %>%
+  kable_styling("hover", fixed_thead = TRUE) %>%
+  column_spec(1 , bold = TRUE) %>%
+  row_spec(c(61, 65), extra_css = "border-bottom: 1px solid") %>%
+  add_footnote("* p < 0.1, ** p < 0.05, *** p < 0.01", notation = "none") %>%
+  scroll_box(height = "800px")
+
+```
+
+## Preferred Model Interpretation {.tabset .tabset-pills}
+Preferred model interpretation (n_culverts, log dist_mean, worksite dummy, with fixed effects)
+Our preferred model is **FE-7**, the specification with linear numer of culverts, log mean distance with a dummy for single work site projects, and the full suite of fixed effects. This model has the highest **adjusted R<sup>2</sup>** (**`r mod_fe_7 %>% glance() %>% pull(adj.r.squared) %>% signif(3)`**) and lowest **AIC** (**`r mod_fe_7 %>% glance() %>% pull(AIC) %>% round(1) %>% format(small.mark = ",")`**). Its fit is marginally better than alternatives, though the results described below largely hold across models. Below are fitted value vs. residuals plots and a Q-Q plot of the residuals for the preferred model.
+
+```{r fig-diagnostic, fig.dim = c(8, 4)}
+mod_fe_7 %>%
+  autoplot(which = c(1, 2), ncol = 2, smooth.colour = "black", colour = "project_source", ad.colour = "black", label = FALSE) +
+  # scale_colour_brewer("Dark2") +
+  theme(legend.position = "none")
+```
+\
+*Color indicates funding source.*
+
+**Evidence of economies of scale**\
+The preferred model suggests that for every additional culvert under a project, project average costs fall **`r coef(mod_fe_7)["n_culverts"] %>% exp() %>% sum(-1) %>% abs() %>% percent(accuracy = 0.1)`** on average. This result is consistent across alternative specifications. Falling average costs as the number of culverts increases is consistent with the hypothesis of economies of scale. Presumably, economies of scale fall at some point, though the binned models suggest that this inflection point is somewhere beyond five culverts and outside the range of the observed data.
+
+**Little support for distance hypothesis**\
+We find some weak support for the distance hypothesis. In the preferred model, the log mean distance betweeen work sites coefficient is positive, but statistically insignificant at the 10% level. For a 10% increase in the distance between work sites, project average costs increase only **`r 1.1 ^ coef(mod_fe_7)["log(dist_mean + 1)"] %>% sum(-1) %>% percent(accuracy = 0.1)`**. (Note that in model **BIN-5**, the coefficient is statistically significant at the 10% level and in this model, a 10% increase in distance is associated with a **`r 1.1 ^ coef(mod_bin_5)["log(dist_mean + 1)"] %>% sum(-1) %>% percent(accuracy = 0.1)`**.)
+
+In models where mean distance between work sites is included without number of culverts, the coefficients are negative and statistically significant, and this effect persists for log mean distance specifications. This is likely due to collinearity (and ommited variable bias) between the number of culverts and the mean distance between work sites, which confounds scale effects of increasing the number of culverts and worksites with the distance effect of when worksites are further away. This effect is likely especially pronounced when projects increase from one culvert and one work site (and therefore zero distance between work sites by definition) to multiple work sites. Including the single work site dummy alleviates this effect.
+
+## Results Figures {.tabset .tabset-pills}
+We can compare fixed effects to identify trends in project average costs over time, differences in levels between basins or reporting sources. To do so, we plot the exponentiated coefficients for each model with fixed effects (**FE** and **BIN** models), which gives the ratio of the expected average costs for projects in a given category (i.e. *year* or *basin*) relative to the base category (i.e. *1996* or *Southern Oregon Coastal*), conditional on the other covariates. 
+
+### Year Fixed Effects
+```{r fig-year}
+mods_years_counts <-
+  df_culv_prj %>%
+  group_by(completed_year) %>%
+  summarize(n = n()) %>%
+  mutate(completed_year = as.character(completed_year))
+
+mods_years_pars <- 
+  map_df(c(mods_fe, mods_bin), tidy, .id = "model", conf.int = TRUE, exponentiate = TRUE) %>%
+  filter(str_detect(term, "year")) %>%
+  mutate(
+    year = str_remove(term, "factor[(]completed_year[)]"),
+    p.value = I(p.value < 0.05),
+    pref.model = I(model == "FE-7"),
+    mod.color = case_when(
+      p.value == TRUE & pref.model == TRUE ~ "forestgreen",
+      p.value == FALSE & pref.model == TRUE ~ "palegreen",
+      p.value == TRUE & pref.model == FALSE ~ "grey60",
+      p.value == FALSE & pref.model == FALSE ~ "grey90",
+    )
+  ) %>%
+  select(model, year, estimate, conf.low, conf.high, mod.color) %>%
+  left_join(mods_years_counts, by = c("year" = "completed_year")) %>%
+  mutate(
+    year_n = paste0(
+      year,
+      "\n(n = ",
+      comma(n),
+      ")"
+    )
+  )
+
+ggplot(mods_years_pars) +
+  geom_pointrange(
+    aes(
+      x = year_n,
+      y = estimate,
+      ymin = conf.low,
+      ymax = conf.high,
+      group = model,
+      color = mod.color
+    ),
+    position = position_dodge(width = 0.9)
+  ) +
+  scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey90", "grey60")) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  labs(
+    x = "Year", 
+    y = "Project average costs", 
+    title = "Year fixed effects",
+    subtitle = "Project average costs relative to 1996 levels",
+    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(
+      angle = 90,
+      hjust = 1,
+      vjust = 0.75
+    )
+  )
+```
+
+> **Observation:** Average costs were higher between 2002 and 2007 before falling to a lower level between 2008 and 2011. Average costs fell to pre-2002 levels in 2013 before spiking again to early 2000s levels in 2015.
+
+### Source Fixed Effects
+```{r fig-source, fig.dim = c(8, 10)}
+mods_source_counts <-
+  df_culv_prj %>%
+  group_by(project_source) %>%
+  summarize(n = n())
+
+mods_source_pars <- 
+  map_df(c(mods_fe, mods_bin), tidy, .id = "model", conf.int = TRUE, exponentiate = TRUE) %>%
+  filter(str_detect(term, "source")) %>%
+  mutate(
+    source = str_remove(term, "project_source"),
+    p.value = I(p.value < 0.05),
+    pref.model = I(model == "FE-7"),
+    mod.color = case_when(
+      p.value == TRUE & pref.model == TRUE ~ "forestgreen",
+      p.value == FALSE & pref.model == TRUE ~ "palegreen",
+      p.value == TRUE & pref.model == FALSE ~ "grey60",
+      p.value == FALSE & pref.model == FALSE ~ "grey90",
+    )
+  ) %>%
+  group_by(source) %>%
+  mutate(outlier = I(sum(I(conf.high > 10)) > 0)) %>%
+  select(model, source, estimate, conf.low, conf.high, mod.color, outlier) %>%
+  left_join(mods_source_counts, by = c("source" = "project_source")) %>%
+  mutate(
+    source_n = paste0(
+      source,
+      "\n(n = ",
+      comma(n),
+      ")"
+    )
+  )
+
+
+fig_source <-
+  (ggplot(mods_source_pars) +
+     geom_pointrange(
+       aes(
+         y = reorder(source_n, estimate),
+         x = estimate,
+         xmin = conf.low,
+         xmax = conf.high,
+         group = model,
+         color = mod.color
+       ),
+       position = position_dodge(width = 0.9)
+     ) +
+     scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey90", "grey60")) +
+     geom_vline(xintercept = 1, linetype = "dashed") +
+     labs(
+       y = NULL, 
+       x = "Project average costs", 
+       title = "Reporting source fixed effects",
+       subtitle = "Project average costs relative to OWRI",
+       caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+     ) +
+     theme_clean() +
+     theme(
+       legend.position = "none",
+       strip.background = element_blank(),
+       strip.text.x = element_blank(),
+       plot.background = element_rect(color = NA),
+       plot.title.position = "plot",
+       plot.caption.position = "plot"
+     ) +
+     facet_wrap(.~-outlier, ncol = 1, scales = "free")
+  )
+fig_source <-
+  ggplotGrob(fig_source)
+
+fig_source$heights[8] = unit(3, "null")
+fig_source$heights[13] = unit(8, "null")
+
+grid.draw(fig_source)
+```
+[Source glossery](#sources)
+
+> **Observation:** **WSDOT** reports unusually high average costs. Projects reported by **OWRI** (the base level) have average costs that are relatively low. These effects swamp basin effects observed in the next figure. 
+
+### Basin Fixed Effects
+```{r fig-basin, fig.dim = c(8, 12)}
+mods_basin_counts <-
+  df_culv_prj %>%
+  group_by(basin) %>%
+  summarize(n = n())
+
+mods_basin_pars <- 
+  map_df(c(mods_fe, mods_bin), tidy, .id = "model", conf.int = TRUE, exponentiate = TRUE) %>%
+  filter(str_detect(term, "basin")) %>%
+  mutate(
+    basin = str_remove(term, "basin"),
+    p.value = I(p.value < 0.05),
+    pref.model = I(model == "FE-7"),
+    mod.color = case_when(
+      p.value == TRUE & pref.model == TRUE ~ "forestgreen",
+      p.value == FALSE & pref.model == TRUE ~ "palegreen",
+      p.value == TRUE & pref.model == FALSE ~ "grey60",
+      p.value == FALSE & pref.model == FALSE ~ "grey90",
+    )
+  ) %>%
+  group_by(basin) %>%
+  mutate(outlier = I(conf.high > 10)) %>%
+  select(model, basin, estimate, conf.low, conf.high, mod.color, outlier) %>%
+  left_join(mods_basin_counts, by = "basin") %>%
+  mutate(
+    basin_n = paste0(
+      basin,
+      "\n(n = ",
+      comma(n),
+      ")"
+    )
+  )
+
+# fig_basin <-
+  # (
+    ggplot(mods_basin_pars) +
+     geom_pointrange(
+       aes(
+         y = reorder(basin_n, estimate),
+         x = estimate,
+         xmin = conf.low,
+         xmax = conf.high,
+         group = model,
+         color = mod.color
+       ),
+       position = position_dodge(width = 0.9)
+     ) +
+     scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey90", "grey60")) +
+     geom_vline(xintercept = 1, linetype = "dashed") +
+     labs(
+       y = NULL, 
+       x = "Project average costs", 
+       title = "Basin fixed effects",
+       subtitle = "Project average costs relative to Southern Oregon Coastal",
+       caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+     ) +
+     theme_clean() +
+     theme(
+       legend.position = "none",
+       strip.background = element_blank(),
+       strip.text.x = element_blank(),
+       plot.background = element_rect(color = NA),
+       plot.title.position = "plot",
+       plot.caption.position = "plot"
+     )
+# ) +
+#      facet_wrap(.~-outlier, ncol = 1, scales = "free")
+#   )
+# fig_basin <-
+#   ggplotGrob(fig_basin)
+# 
+# fig_basin$heights[13] = unit(21, "null")
+# fig_basin$heights[8] = unit(1, "null")
+# 
+# grid.draw(fig_basin)
+```
+
+> **Observation:** Average costs are unsually high in the **Lower Snake** and **Oregon Closed** basins. Projects in the **Willamette** and **Northern Oregon Coastal** basins have average costs that are significatnly lower than projects in the **Southern Oregon Coastal** basin.
+
+### Effect Size by Number of Culverts
+```{r fig-culverts, fig.dim = c(8, 4)}
+mods_culverts_pars <- 
+  map_df(mods_bin, tidy, .id = "model", conf.int = TRUE, exponentiate = TRUE) %>%
+  filter(str_detect(term, "n_culverts")) %>%
+  mutate(
+    n_culverts = case_when(
+      term == "I(n_culverts == 2)TRUE" ~ "Number of culverts: 2",
+      term == "I(n_culverts == 3)TRUE" ~ "Number of culverts: 3",
+      term == "I(n_culverts == 4)TRUE" ~ "Number of culverts: 4",
+      term == "I(n_culverts >= 5)TRUE" ~ "Number of culverts: 5 or more",
+      TRUE ~ term
+    ),
+    p.value = I(p.value < 0.05),
+    pref.model = I(model == "BIN-5"),
+    mod.color = case_when(
+      p.value == TRUE & pref.model == TRUE ~ "forestgreen",
+      p.value == FALSE & pref.model == TRUE ~ "palegreen",
+      p.value == TRUE & pref.model == FALSE ~ "grey60",
+      p.value == FALSE & pref.model == FALSE ~ "grey90",
+    )
+  ) %>%
+  select(model, n_culverts, estimate, conf.low, conf.high, mod.color)
+  
+ggplot(mods_culverts_pars) +
+  geom_pointrange(
+    aes(
+      y = reorder(n_culverts, -estimate),
+      x = estimate,
+      xmin = conf.low,
+      xmax = conf.high,
+      group = model,
+      color = mod.color
+    ),
+    position = position_dodge(width = 0.6)
+  ) +
+  scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey90", "grey60")) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  labs(
+    y = NULL, 
+    x = "Project average costs", 
+    title = "Effect size by number of culverts",
+    subtitle = "Project average costs relative to single culvert projects",
+    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+  ) +
+  theme(
+    legend.position = "none"
+  )
+```
+
+> **Observation:** Average costs are **lower** for projects that deal with more culverts, suggesting *economies of scale*. This result is consistent with evidence from the preferred model.
+
+# Next Steps
+In this section, we brainstorm potential variables that we may be able to layer upon the existing models to improve predictive power and utility or test additional hypotheses. We then also brainstorm potential applications for future models.
+
+## Potential Additional Variables
+#### Road Variables
+**Examples:** Road width at culvert, road classification (i.e. four-lane highway, two-land highway, etc.), average monthly traffic, years since maintenance\
+**Potential Sources:** OpenStreetMaps road data, others (?)\
+**Technical Barriers:** Developing efficient algorithm for identifying and measuring nearest road, possibility that ArcGIS has superior methods\
+**Other Notes:** These variables will be tough to get, but it should be possible. Work site coordinates are likely not exactly on the roads due to accuracy, so identifying the nearest road instead of the exact overlap will likely be necessary. OpenStreetData is the only database I've checked so far, but there are likely other more detailed road inventories available. Culverts on smaller roads will require more detailed road data, which is even more computationally demanding.\
+
+#### Stream Variables
+**Examples:** Stream width at culvert, flow at culvert, depth at culvert\
+**Potential Sources:** OpenStreetMaps stream data, nearest observation stations along streams if available, others (?)\
+**Technical Barriers:** Developing efficient algorithm for identifying nearest stream or observation station, possibility that ArcGIS has superior methods\
+**Other Notes:** These variables are likely even harder to generate than the road ones. All of the same caveats apply, but exact stream characteristics vary a lot year-to-year, so tracking down reliable data might be difficult.\
+
+#### Geo-spatial Variables
+**Examples:** Number of other work sites in *r* radius in past *y* years, spatial auto-correlation methods (Moran's *I*, Cliff-Ord type models), distance to nearest population center\
+**Potential Sources:** Already possible with existing coordinates\
+**Technical Barriers:** Developing efficient algorithm for counting other projects in radius over time and space, identifying appropriate econometric techniques\
+**Other Notes:** Building in these sorts of methods might be computationally taxing but is surely possible in the near-term. The value of adding these sorts of methods will increase once other co-variates are added.\
+
+#### Socio-economic Variables
+**Examples:** Population density in county, distribution of jobs across sectors in county, unemployment in county, median income in county\
+**Potential Sources:** US Census Bureau, others (?)\
+**Technical Barriers:** Accessing Census Bureau API, identifying time series with appropriate temporal/geographic resolution, identifying county by coordinates\
+**Other Notes:** This seems to be the low-hanging fruit. Work on this can start immediately.\
+
+## Example Applications
+#### Predicting Costs for Future Culvert Projects
+Using data from state culvert inventories, we may be able to use these models to develop cost predictions for future culvert projects. These predictions can be integrated into prioritization methods used by state and local agencies. Maps and examples with different prioritization algorithms (e.g. with or without accounting for costs) can demonstrate value of including cost modeling in restoration planning.
+
+#### Quantity vs. Expenditure Plots
+With a sufficiently accurate model and a optimization algorithm, we could estimate the minimum expenditures on culvert projects that would be necessary to achieve a given level of additional stream access. We could further prioritize different streams by habitat quality and ECU population ranges to demonstrate cost-conservation target trade-offs. We could also demonstrate the effects of distributing funding uniformly over municipalities versus in a more targeted fashion.
+
+#### Other Extensions
+The PNSHP database includes projects for other restoration actions. Models like these may be extendable to some other actions. Specifically, actions like the installation of in-stream large woody debris and other discrete riparian actions seem to be prime candidates to extend these methods to in parallel models.
+
+# Appendix: Source Glossary {#sources}
+Thirty-eight different organizations, referred to as *sources*, contribute data to PNSHP. Below you will find a glossary of each source code.
+
+>
+**ASOTIN** - Asotin County Conservation District (Asotin County is the southeastern-most county in Washington and contains important Snake River watersheds)  
+**BLM** - Bureau of Land Management  
+**BOR** - Bureau of Reclamation (Department of the Interior agency responsible for water storage and irrigation, including federal dams)  
+**BPA** - Bonneville Power Administration  
+**CBFWA** - Columbia Basin Fish and Wildlife Authority (Now defunct group of state, federal, and tribal agencies organized to advise BPA on habitat improvement efforts)  
+**CHEHALIS** - Chehalis Tribe (Southwestern Washington)  
+**COLVILLE** - Colville Tribe (Northeastern Washington)  
+**COQUILLE** - Coquille Tribe (Southwestern Oregon)  
+**COWLITZ** -  Cowlitz Tribe (Northeastern Washington)  
+**CRITFC** - Columbia River Inter-Tribal Fisheries Commission  
+**DUCKS UNLIMITED** - Ducks Unlimited  
+**FISHER FISHERIES** - Fisher Fisheries Consultancy  
+**GRAND RONDE** - Grand Ronde Tribe (Central Western Oregon)  
+**GRMWP** - Grande Ronde Model Watershed Program (Northeastern Oregon river)  
+**HABITAT WORK SCHEDULE** - Washington State program for tracking projects by the 27 "Lead Entities", local boards responsible for managing state salmon habitat spending  
+**ID OSC** - Idaho Office of Species Conservation  
+**IDAHODEQ** - Idaho Department of Environmental Quality  
+**IDFG** - Idaho Department of Fish and Game  
+**IDFG SCREEN SHOP** - Fish screen efforts for IDFG  
+**KRITFWC** - Klamath River Inter-Tribal Fish and Water Commission (Southern Oregon river)  
+**MONTANA WATER CENTER** - Research institute  based at Montana State  
+**NMFS** - NOAA Fisheries  
+**NOAA RESTORATION** - NOAA Restoration Center  
+**NRRSS** - National River Restoration Science Synthesis project (a project of American Rivers)  
+**NWIFC** - Northwest Indian Fisheries Commission  
+**OR WATER TRUST** - Oregon Water Trust  
+**OWRI** - Oregon Watershed Restoration Inventory  
+**PCSRF** - Pacific Coastal Salmon Recovery Fund (federal grant program administered by NOAA)  
+**REO** - United States Forest Service Region 6 Regional Ecosystem Office  
+**SHOSHONE-BANNOCK** - Shoshone-Bannock Tribes (Southeastern Idaho)  
+**SRFBD** - Salmon Funding Recovery Board Database (Washington State Recreation and Conservation Office grant program)  
+**STREAMNET** - Data project of the Pacific States Marine Fisheries Commission  
+**WA DOE** - Washington State Department of Ecology  
+**WA RCO** - Washington State Recreation and Conservation Office  
+**WA WATER TRUST** - Washington Water Trust  
+**WDFW FISHWAY** - Washington State Department of Fish and Wildlife (WDFW) Fishway Program  
+**WDFW WRIP** - WDFW Watershed Recovery Inventory Project  
+**WDOT** - Washington Department of Transportation
+
+
+# End Matter
+```{r endmatter, message = TRUE, warning = TRUE}
+# Created on...
+Sys.time()
+
+# Using...
+sessionInfo()
+```

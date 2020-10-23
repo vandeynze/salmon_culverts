@@ -1,0 +1,3071 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="B. Van Deynze" />
+
+<meta name="date" content="2020-03-27" />
+
+<title>PNSHP Culvert Report</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">salmon_culverts</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">PNSHP Culvert Report</h1>
+<h4 class="author">B. Van Deynze</h4>
+<h4 class="date">March 27, 2020</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-10-23
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>salmon_culverts/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20201023code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20201023)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20201023code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20201023)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomvandeynzesalmonculvertstree3b581cac451d1dda7798214e3058f477f67ee107targetblank3b581caa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/vandeynze/salmon_culverts/tree/3b581cac451d1dda7798214e3058f477f67ee107" target="_blank">3b581ca</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomvandeynzesalmonculvertstree3b581cac451d1dda7798214e3058f477f67ee107targetblank3b581caa" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/vandeynze/salmon_culverts/tree/3b581cac451d1dda7798214e3058f477f67ee107" target="_blank">3b581ca</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    R/B.culvertsexplore/.Rhistory
+    Ignored:    data/NHDPlusNationalData/
+    Ignored:    data/NHDPlusV21_NationalData_Seamless_Geodatabase_Lower48_07.7z
+    Ignored:    data/old/
+
+Untracked files:
+    Untracked:  R/C.culvertsspatial/07.spatialcostmodels.R
+    Untracked:  R/C.culvertsspatial/08.extraculvsexplore.R
+    Untracked:  analysis/PNSHP_report_2020mar10.Rmd
+    Untracked:  analysis/culverts_report_2020mar27.Rmd
+    Untracked:  analysis/culvertspilotreg_report_2020april3.Rmd
+    Untracked:  analysis/spatialcostmodels.Rmd
+    Untracked:  analysis/spatialexplore.Rmd
+    Untracked:  data/Culverts spatial overlays v 20Aug2020.xlsx
+    Untracked:  data/NHDPlusSuppData/
+    Untracked:  data/culv_inventories/
+    Untracked:  output/culverts_pure_modelling.csv
+    Untracked:  output/culverts_pure_spatial.csv
+    Untracked:  output/spatial/nhdplus_fln_sml.rds
+
+Unstaged changes:
+    Modified:   R/B.culvertsexplore/03.culvertsfigs.R
+    Modified:   R/C.culvertsspatial/04.culvertsstreamtest_forloopversion.R
+    Modified:   R/C.culvertsspatial/05.spatialmergeout.R
+    Modified:   R/C.culvertsspatial/06.spatialexplore.R
+    Modified:   analysis/about.Rmd
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/license.Rmd
+    Deleted:    code/README.md
+    Deleted:    output/PNSHP_report_2020mar10.Rmd
+    Deleted:    output/PNSHP_report_2020mar10.html
+    Modified:   output/culverts_full_spatial.csv
+    Deleted:    output/culverts_report_2020mar27.Rmd
+    Deleted:    output/culverts_report_2020mar27.html
+    Deleted:    output/culvertspilotreg_report_2020april3.Rmd
+    Deleted:    output/culvertspilotreg_report_2020april3.html
+    Deleted:    output/culvertsspatial_report_2020aug18.html
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<style type="text/css">
+# body .main-container {
+#   max-width: 1944px !important;
+#   # width: 1280px !important;
+#   margin-left: 50px !important;
+# }
+# body {
+#   max-width: 1944px !important;
+# }
+</style>
+<style type="text/css">
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+</style>
+<script type="text/javascript">
+ $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+</script>
+<p>This document summarizes the available culvert projects in the Pacific Northwest Salmonid Habitat Projects (PNSHP) database, with a focus on project costs. Culverts allow water to flow beneath roads, preventing washouts and flooding. However, many culvert designs prevent fish passage to spawning or rearing habitat. Improving culverts is a major priority of salmonid habitat restoration. A 2018 United States Supreme Court ruling (United States v. Washington) requires Washington State to improve state-owned culverts throughout the Puget Sound region to improve access to critical habitat for salmonid populations listed under the Endangered Species Act (ESA). These improvements are expected to cost billions of dollars. Improved understanding of drivers of the costs of culvert projects will help in prioritizing projects over space and time.</p>
+<p>The PNSHP database is a clearinghouse for salmonid habitat improvement projects throughout the Pacific Northwest. The database is maintained at the Northwest Fisheries Science Center. Because project data is reported by a variety of entities, data quality varies. Project data includes explicit data which actions have occurred, however information on the extent of the actions, where the occur, and costs varies in availability and detail.</p>
+<p>In the data described below, we only include projects that <strong>include geographic coordinates</strong> for work site locations that were completed <strong>between 1991 and 2015</strong>. Details on how culvert projects were identified and how the data are structured follow. The next section presents figures describing the data. We then examine additional inventories of culverts from state agencies.</p>
+<div id="screening-for-culvert-projects" class="section level1">
+<h1>Screening for Culvert Projects</h1>
+<p>The full PNSHP data includes projects with a wide range of action types. Many projects include multiple action types, often over multiple work sites. Further complicating matters, cost data is only available at the project level, meaning costs cannot be attributed to specific work sites or actions. This complicates identifying culvert projects.</p>
+<p>There are 82 different action types included in the PNSHP data. We begin screening for culvert projects by isolating projects that include at least one of the three culvert-related action types: (1) culvert improvements or upgrades, (2) culvert removal, and (3) culvert installation. This process leaves 3,107 projects related to culvert improvement.</p>
+<p>However, a good number of these projects involve not just culvert-related actions. These projects include 13,305 actions, but only 6,391 are culvert related.</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:500px; ">
+<table class="table table-striped table-hover" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>
+Actions associated with culvert projects
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Action type
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+N
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:right;">
+3,897
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SEDIMENT REDUCTION - ROAD DRAINAGE SYSTEM IMPROVEMENTS
+</td>
+<td style="text-align:right;">
+1,708
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:right;">
+1,695
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FISH PASSAGE - CULVERT INSTALLATION
+</td>
+<td style="text-align:right;">
+799
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SEDIMENT REDUCTION - ROAD OBLITERATION
+</td>
+<td style="text-align:right;">
+680
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RIPARIAN - PLANTING
+</td>
+<td style="text-align:right;">
+448
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - LARGE WOODY DEBRIS
+</td>
+<td style="text-align:right;">
+377
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - WOOD STRUCTURE/ LOG JAM
+</td>
+<td style="text-align:right;">
+371
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UPLAND VEGETATION - PLANTING
+</td>
+<td style="text-align:right;">
+211
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FISH PASSAGE - WEIRS (INCOMPLETE DAMS)
+</td>
+<td style="text-align:right;">
+192
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RIPARIAN - WEED CONTROL
+</td>
+<td style="text-align:right;">
+180
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UPLAND AGRICULTURE - BEST MANAGEMENT PRACTICES/ STRUCTURAL PRACTICES
+</td>
+<td style="text-align:right;">
+169
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RIPARIAN - FENCING
+</td>
+<td style="text-align:right;">
+167
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FISH PASSAGE - BARRIERS (DAMS OR LOG JAMS)
+</td>
+<td style="text-align:right;">
+164
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FISH PASSAGE - ROAD CROSSINGS IN STREAM (OTHER THAN CULVERTS)
+</td>
+<td style="text-align:right;">
+156
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - STREAMBANK STABILIZATION
+</td>
+<td style="text-align:right;">
+142
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SEDIMENT REDUCTION - SEDIMENT CONTROL
+</td>
+<td style="text-align:right;">
+138
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FISH PASSAGE - DIVERSION DAM/ PUSH UP DAM REMOVAL
+</td>
+<td style="text-align:right;">
+124
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - BOULDERS
+</td>
+<td style="text-align:right;">
+124
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - OFF CHANNEL HABITAT
+</td>
+<td style="text-align:right;">
+93
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SEDIMENT REDUCTION - ROAD RELOCATION
+</td>
+<td style="text-align:right;">
+83
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WETLAND - WETLAND IMPROVEMENT/ ENHANCEMENT
+</td>
+<td style="text-align:right;">
+78
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - DEFLECTORS/ BARBS
+</td>
+<td style="text-align:right;">
+75
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - ROCK WEIRS
+</td>
+<td style="text-align:right;">
+75
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - CHANNEL CONNECTIVITY
+</td>
+<td style="text-align:right;">
+69
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - LOG WEIRS
+</td>
+<td style="text-align:right;">
+68
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SEDIMENT REDUCTION - ROAD STREAM CROSSING IMPROVEMENTS
+</td>
+<td style="text-align:right;">
+65
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SEDIMENT REDUCTION - ROAD RECONSTRUCTION
+</td>
+<td style="text-align:right;">
+65
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - CHANNEL RECONFIGURATION
+</td>
+<td style="text-align:right;">
+62
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - ROOTWADS
+</td>
+<td style="text-align:right;">
+59
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WETLAND - WETLAND RESTORATION
+</td>
+<td style="text-align:right;">
+58
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+SEDIMENT REDUCTION - EROSION CONTROL STRUCTURES
+</td>
+<td style="text-align:right;">
+56
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UPLAND LIVESTOCK - UPLAND GRAZING MANAGEMENT
+</td>
+<td style="text-align:right;">
+53
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UPLAND LIVESTOCK - WATER DEVELOPMENT
+</td>
+<td style="text-align:right;">
+43
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ESTUARY/ NEARSHORE - TIDEGATE ALTERATION/ REMOVAL
+</td>
+<td style="text-align:right;">
+40
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UPLAND VEGETATION - SLOPE STABILIZATION
+</td>
+<td style="text-align:right;">
+40
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UPLAND LIVESTOCK - UPLAND EXCLUSION OR FENCING
+</td>
+<td style="text-align:right;">
+36
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ESTUARY/ NEARSHORE - REMOVAL OF EXISTING FILL MATERIAL
+</td>
+<td style="text-align:right;">
+34
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RIPARIAN - WATER GAP DEVELOPMENT
+</td>
+<td style="text-align:right;">
+33
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM FLOW - IRRIGATION PRACTICE IMPROVEMENT
+</td>
+<td style="text-align:right;">
+32
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FISH SCREENING - FISH SCREEN INSTALLED
+</td>
+<td style="text-align:right;">
+32
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WETLAND - WETLAND INVASIVE SPECIES REMOVAL
+</td>
+<td style="text-align:right;">
+30
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WETLAND - WETLAND CREATION
+</td>
+<td style="text-align:right;">
+25
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ESTUARY/ NEARSHORE - DIKE BREACHING/ REMOVAL
+</td>
+<td style="text-align:right;">
+24
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FISH PASSAGE - FISHWAYS (CHUTES OR POOLS) INSTALLED
+</td>
+<td style="text-align:right;">
+23
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FISH PASSAGE - FISH LADDER INSTALLED
+</td>
+<td style="text-align:right;">
+21
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UPLAND VEGETATION - INVASIVE PLANT CONTROL
+</td>
+<td style="text-align:right;">
+20
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WETLAND - PLANT REMOVAL/ CONTROL
+</td>
+<td style="text-align:right;">
+17
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ESTUARY/ NEARSHORE - DIKE RECONFIGURATION
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - PLANT REMOVAL/ CONTROL
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WETLAND - PLANTING
+</td>
+<td style="text-align:right;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UPLAND VEGETATION - VEGETATION/ STAND MANAGEMENT
+</td>
+<td style="text-align:right;">
+13
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FISH SCREENING - FISH SCREEN REPLACED
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - SPAWNING GRAVEL PLACEMENT
+</td>
+<td style="text-align:right;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ESTUARY/ NEARSHORE - CHANNEL MODIFICATION
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RIPARIAN - FORESTRY PRACTICES/ STAND MANAGEMENT
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RIPARIAN - LIVESTOCK EXCLUSION
+</td>
+<td style="text-align:right;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UPLAND AGRICULTURE - BEST MANAGEMENT PRACTICES/ AGRICULTURE MANAGEMENT
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FISH PASSAGE IMPROVEMENT - ROCKED FORD- ROAD STREAM CROSSING
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ESTUARY/ NEARSHORE - RESTORATION/REHABILITATION OF ESTUARINE HABITAT
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM FLOW - WATER LEASED OR PURCHASED
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - PREDATOR REMOVAL PROJECT
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+INSTREAM - BEAVER INTRODUCTION
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ESTUARY/ NEARSHORE - SHORELINE ARMOR REMOVAL OR MODIFICATION
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FISH PASSAGE - FISH LADDER IMPROVED
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LAND PROTECTED, ACQUIRED, OR LEASED - STREAMBANK PROTECTION
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LAND PROTECTED, ACQUIRED, OR LEASED - WETLAND OR ESTUARINE AREA PROTECTION
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PROJECT MAINTENANCE - SITE MAINTENANCE
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+RIPARIAN - CONSERVATION GRAZING MANAGEMENT
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WATER QUALITY IMPROVEMENT - STORMWATER/WASTEWATER
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ESTUARY/ NEARSHORE - INVASIVE SPECIES TREATED
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NUTRIENT ENRICHMENT - CARCASS ANALOG
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NUTRIENT ENRICHMENT - CARCASS PLACEMENT
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NUTRIENT ENRICHMENT - FERTILIZER
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WATER QUALITY IMPROVEMENT - REFUSE REMOVAL
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WATER QUALITY IMPROVEMENT - TOXIC CLEAN-UP
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br />
+</p>
+<blockquote>
+<p><strong>Idea:</strong> Other road work like road drainage improvements and road obliteration occur most frequently alongside culvert actions for “dirty” projects. It may be possible to control for this kind of “contamination” with simple indicator variables in a cost model.</p>
+</blockquote>
+<p>Our ultimate goal is to get a “cost per culvert” measure. Because costs are reported at the project level, disentangling costs related to culverts and costs related to other actions will be challenging. For now, we will focus on the 2,066 projects that only involve culvert actions. We will call these projects the “pure” culvert projects and projects that are “contaminated” with other actions “dirty” projects. Project costs are available for the vast majority of pure projects, though if we can recover data from the contaminated dirty projects, we can boost our ultimate project-level sample size as much as 45%.</p>
+<table class="table table-striped table-hover" style="width: auto !important; float: left; margin-right: 10px;">
+<caption>
+Project cost availability, pure projects
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Project costs available?
+</th>
+<th style="text-align:center;">
+N
+</th>
+<th style="text-align:center;">
+%
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+False
+</td>
+<td style="text-align:center;">
+275
+</td>
+<td style="text-align:center;">
+13%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+True
+</td>
+<td style="text-align:center;">
+1,791
+</td>
+<td style="text-align:center;">
+87%
+</td>
+</tr>
+</tbody>
+</table>
+<table class="table table-striped table-hover" style="width: auto !important; ">
+<caption>
+Project cost availability, dirty projects
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Project costs available?
+</th>
+<th style="text-align:center;">
+N
+</th>
+<th style="text-align:center;">
+%
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+False
+</td>
+<td style="text-align:center;">
+222
+</td>
+<td style="text-align:center;">
+21%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+True
+</td>
+<td style="text-align:center;">
+813
+</td>
+<td style="text-align:center;">
+79%
+</td>
+</tr>
+</tbody>
+</table>
+<p><br />
+</p>
+<table class="table table-striped table-hover" style="width: auto !important; float: left; margin-right: 10px;">
+<caption>
+Number of work sites per project, pure projects
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+# of work sites
+</th>
+<th style="text-align:center;">
+N
+</th>
+<th style="text-align:center;">
+%
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:center;">
+1,683
+</td>
+<td style="text-align:center;">
+81.462%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:center;">
+285
+</td>
+<td style="text-align:center;">
+13.795%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:center;">
+42
+</td>
+<td style="text-align:center;">
+2.033%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:center;">
+28
+</td>
+<td style="text-align:center;">
+1.355%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:center;">
+7
+</td>
+<td style="text-align:center;">
+0.339%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+0.290%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+0.194%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:center;">
+5
+</td>
+<td style="text-align:center;">
+0.242%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+0.048%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+0.145%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+0.048%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+18
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+0.048%
+</td>
+</tr>
+</tbody>
+</table>
+<table class="table table-striped table-hover" style="width: auto !important; ">
+<caption>
+Number of actions per project, pure projects
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+# of actions
+</th>
+<th style="text-align:center;">
+N
+</th>
+<th style="text-align:center;">
+%
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:center;">
+1,620
+</td>
+<td style="text-align:center;">
+78.412%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:center;">
+332
+</td>
+<td style="text-align:center;">
+16.070%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:center;">
+41
+</td>
+<td style="text-align:center;">
+1.985%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:center;">
+42
+</td>
+<td style="text-align:center;">
+2.033%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+0.290%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:center;">
+7
+</td>
+<td style="text-align:center;">
+0.339%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+0.145%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:center;">
+7
+</td>
+<td style="text-align:center;">
+0.339%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+0.048%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+0.194%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+14
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+0.048%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+18
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+0.048%
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+22
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+0.048%
+</td>
+</tr>
+</tbody>
+</table>
+<p><br />
+</p>
+</div>
+<div id="pills" class="section level1 tabset tabset-fade tabset-pills">
+<h1>Descriptive Figures for Culvert Projects</h1>
+<p>This section includes plots of the frequency of culvert projects and actions, the total spending on these projects, and the distributions of cost per culvert (project cost divided by the culvert counts constructed above), separated out by action type, basin, year, and reporting source. It also includes maps of where these culvert projects are distributed.</p>
+<div id="action-counts" class="section level2">
+<h2>Action Counts</h2>
+<div id="action-counts-1" class="section level3">
+<h3>Action Counts</h3>
+<p><em>Counts of culvert-related actions by action-type, year, basin, and reporting source, separated by project cost availability. Only actions associated with pure culvert projects included.</em> <img src=".\figs\culverts\fig_countcost_action.png" /> <img src=".\figs\culverts\fig_countcost_year.png" /> <img src=".\figs\culverts\fig_countcost_basin.png" /> <img src=".\figs\culverts\fig_countcost_source.png" /> <a href="#sources">Source glossery</a> <img src=".\figs\culverts\fig_countcost_action_year.png" /> <img src=".\figs\culverts\fig_countcost_source_action.png" /> <a href="#sources">Source glossery</a> <img src=".\figs\culverts\fig_countcost_basin_action.png" /> <img src=".\figs\culverts\fig_countcost_basin_year.png" /> <img src=".\figs\culverts\fig_countcost_source_year.png" /> <a href="#sources">Source glossery</a> <img src=".\figs\culverts\fig_countcost_basin_source.png" /> <a href="#sources">Source glossery</a><br />
+<a href="#pills">Back to top</a></p>
+</div>
+</div>
+<div id="project-counts" class="section level2">
+<h2>Project Counts</h2>
+<div id="project" class="section level3">
+<h3>Project Counts</h3>
+<p><em>Counts of culvert-related projects by year, basin, and reporting source, separated by project cost availability. Only pure culvert projects included.</em> <img src=".\figs\culverts\fig_prjcost_year.png" /></p>
+<blockquote>
+<p><strong>Observation:</strong> Activity increases dramatically in the late ’90s before falling off in the late ’00s.</p>
+</blockquote>
+<p><img src=".\figs\culverts\fig_prjcost_basin.png" /></p>
+<blockquote>
+<p><strong>Observation:</strong> While overall cost availability is good, costs are reported less frequently in Washington than they are in Oregon.</p>
+</blockquote>
+<blockquote>
+<p><strong>Observation:</strong> There have been far more culvert projects in Oregon than Washington over the years.</p>
+</blockquote>
+<p><img src=".\figs\culverts\fig_prjcost_source.png" /> <a href="#sources">Source glossery</a> <img src=".\figs\culverts\fig_prjcost_basin_year.png" /> <img src=".\figs\culverts\fig_prjcost_source_year.png" /> <a href="#sources">Source glossery</a></p>
+<blockquote>
+<p><strong>Observation:</strong> The activity trends are driven largely by Oregon, especially dramatic drop-offs in reports by OWRI and REO.</p>
+</blockquote>
+<p><img src=".\figs\culverts\fig_prjcost_basin_source.png" /> <a href="#sources">Source glossery</a><br />
+</p>
+<blockquote>
+<p><strong>Observation:</strong> OWRI reports by far the most projects, and only projects in Oregon. REO is the only organization that reports projects across all eight of the basins with the most activity, though their activity is centered around Oregon as well.</p>
+</blockquote>
+<p><a href="#pills">Back to top</a></p>
+</div>
+</div>
+<div id="culvert-spending" class="section level2">
+<h2>Culvert Spending</h2>
+<div id="culvert-spending-1" class="section level3">
+<h3>Culvert Spending</h3>
+<p><em>Total spending on culverts by year, basin, and reporting source. Only includes spending on pure culvert projects.</em> <img src=".\figs\culverts\fig_cost_year.png" /> <img src=".\figs\culverts\fig_cost_basin.png" /> <img src=".\figs\culverts\fig_cost_source.png" /> <a href="#sources">Source glossery</a> <img src=".\figs\culverts\fig_cost_year_basin.png" /> <img src=".\figs\culverts\fig_cost_year_source.png" /> <a href="#sources">Source glossery</a> <img src=".\figs\culverts\fig_cost_source_basin.png" /> <a href="#sources">Source glossery</a><br />
+</p>
+<blockquote>
+<p><strong>Observation:</strong> Following patterns in the number of projects, spending rose dramatically during the late ’90s before falling off to a lower level in 2007. This pattern is mostly driven by REO’s heavy investment along the southern Oregon coast in the early ’00s. The drop-off corresponds with a drop in spending by OWRI.</p>
+</blockquote>
+<p><a href="#pills">Back to top</a></p>
+</div>
+</div>
+<div id="cost-per-culvert-distributions" class="section level2">
+<h2>Cost per Culvert Distributions</h2>
+<div id="cost-per-culvert-distributions-1" class="section level3">
+<h3>Cost per Culvert Distributions</h3>
+<p><em>Violin plots and box plots for project costs per culvert, on a log scale. Only includes pure culvert projects. Details on how the number of culverts is identified can be found in the <a href="#count">appendix</a>.</em> <img src=".\figs\culverts\fig_costdist_action.png" /></p>
+<blockquote>
+<p><strong>Observation:</strong> Culvert installations are the most expensive, followed by culvert upgrades and culvert removals, though with considerable overlap in the distributions.</p>
+</blockquote>
+<p><img src=".\figs\culverts\fig_costdist_year.png" /></p>
+<blockquote>
+<p><strong>Observation:</strong> Cost per culvert seems to be rising from 1995 through around 2004 when they flatten out. From 2008 through 2011, costs are more concentrated near the median.</p>
+</blockquote>
+<p><img src=".\figs\culverts\fig_costdist_basin.png" /> <img src=".\figs\culverts\fig_costdist_source.png" /> <a href="#sources">Source glossery</a><br />
+</p>
+<blockquote>
+<p><strong>Observation:</strong> There is a pretty wide range of costs across basins, but OWRI reports notably cheaper projects while WDOT’s projects are much more expensive. OWRI also reports the bulk of projects, so if their costs are systemically under-reported, then we may have a problem.</p>
+</blockquote>
+<p><a href="#pills">Back to top</a></p>
+</div>
+</div>
+<div id="maps" class="section level2">
+<h2>Maps</h2>
+<div id="maps-1" class="section level3">
+<h3>Maps</h3>
+<p><em>Maps show work sites associated with pure culvert projects. To trim outliers, only projects with cost per culvert above $2,000 are included. Road and river data from OpenStreetMap API.</em></p>
+<p><img src=".\maps\culverts\fig_map_cost.png" /></p>
+<blockquote>
+<p><strong>Observation:</strong> The cheapest projects are clustered along the northern Oregon coast, while the most expensive appear mostly in Washington. Projects in the middle of the distribution are well distributed across the region.</p>
+</blockquote>
+<p><img src=".\maps\culverts\fig_map_year.png" /></p>
+<blockquote>
+<p><strong>Observation:</strong> The earliest projects are clustered along the northern Oregon coast, and are also the cheapest. Washington projects tend to be more recent.</p>
+</blockquote>
+<p><img src=".\maps\culverts\fig_map_source.png" /> <a href="#sources">Source glossery</a><br />
+</p>
+<blockquote>
+<p><strong>Observation:</strong> There is little geographic overlap between reporting sources, which may make mixing sources in a model difficult. Reporting source also closely corresponds with year and cost per culvert.</p>
+</blockquote>
+<p><a href="#pills">Back to top</a></p>
+</div>
+</div>
+</div>
+<div id="outside-culvert-data" class="section level1">
+<h1>Outside Culvert Data</h1>
+<p>Beyond the PNSHP data, the state governments of Washington and Oregon both maintain culvert inventories. This section provides some early exploration of these inventories and how they might be used in this project.</p>
+<div id="washington-state-department-of-transportation-culvert-inventory" class="section level2">
+<h2>Washington State Department of Transportation Culvert Inventory</h2>
+<p><strong>Responsible Agency:</strong> WSDOT<br />
+<strong>Domain:</strong> Culverts on roads owned/maintained by WSDOT<br />
+<strong>Key Features:</strong> Geographic coordinates, affected species, assessment of fish passage, assessment of potential habitat gain<br />
+<strong>Access:</strong> GIS format, spreadsheet format, API available<br />
+<strong>Notes:</strong> Also available are “daughter” inventories detailing previously upgraded culverts, culverts scheduled for work, and culverts subject to the 2018 Supreme Court ruling. Lack of data on culverts on county, private, and municipal roads may limit the usefulness of this inventory for predicting benefits of specific culverts.<br />
+<strong>Links:</strong> <a href="https://geo.wa.gov/datasets/084325b33b0d49a7846cc46a19f38fdc_4">Overview</a><br />
+</p>
+<blockquote>
+<p><strong>Idea:</strong> We might be able to use land ownership and management records for areas upstream from state-owned culverts as a way to control for whether or not culverts can be “chained” together to maximize habitat access from the point of view of WSDOT.</p>
+</blockquote>
+</div>
+<div id="oregon-department-of-fish-and-wildlife-culvert-inventory" class="section level2">
+<h2>Oregon Department of Fish and Wildlife Culvert Inventory</h2>
+<p><strong>Responsible Agency:</strong> ODFW<br />
+<strong>Domain:</strong> Culverts maintained by Oregon Department of Transportation, as well as other government agencies, including lower-level municipalities (e.g. counties, cities)<br />
+<strong>Key Features:</strong> Geographic coordinates, assessment of fish passage, length, width, height, slope, drop<br />
+<strong>Access:</strong> GIS format only<br />
+<strong>Notes:</strong> Significantly more detailed and wide-reaching than the WSDOT inventory. ODFW claims that this is the most robust inventory of culverts in Oregon, but does not claim it is comprehensive.<br />
+<strong>Links:</strong> <a href="https://nrimp.dfw.state.or.us/DataClearinghouse/default.aspx?p=202&amp;XMLname=44.xml">Overview</a>; <a href="https://nrimp.dfw.state.or.us/FHD_FPB_Viewer/index.html">Viewer</a><br />
+</p>
+<blockquote>
+<p><strong>Idea:</strong> We may be able to use “fuzzy matching” methods to recover additional information about culverts included in the the PNSHP data.</p>
+</blockquote>
+<blockquote>
+<p><strong>Idea:</strong> Once we develop a model for culvert costs, we can feed the culverts from these inventories into the model to predict costs, which can then be used to help prioritize projects.</p>
+</blockquote>
+</div>
+</div>
+<div id="sources" class="section level1">
+<h1>Appendix: Source Glossary</h1>
+<p>Thirty-eight different organizations, referred to as <em>sources</em>, contribute data to PNSHP. Below you will find a glossary of each source code.</p>
+<blockquote>
+<p><strong>ASOTIN</strong> - Asotin County Conservation District (Asotin County is the southeastern-most county in Washington and contains important Snake River watersheds)<br />
+<strong>BLM</strong> - Bureau of Land Management<br />
+<strong>BOR</strong> - Bureau of Reclamation (Department of the Interior agency responsible for water storage and irrigation, including federal dams)<br />
+<strong>BPA</strong> - Bonneville Power Administration<br />
+<strong>CBFWA</strong> - Columbia Basin Fish and Wildlife Authority (Now defunct group of state, federal, and tribal agencies organized to advise BPA on habitat improvement efforts)<br />
+<strong>CHEHALIS</strong> - Chehalis Tribe (Southwestern Washington)<br />
+<strong>COLVILLE</strong> - Colville Tribe (Northeastern Washington)<br />
+<strong>COQUILLE</strong> - Coquille Tribe (Southwestern Oregon)<br />
+<strong>COWLITZ</strong> - Cowlitz Tribe (Northeastern Washington)<br />
+<strong>CRITFC</strong> - Columbia River Inter-Tribal Fisheries Commission<br />
+<strong>DUCKS UNLIMITED</strong> - Ducks Unlimited<br />
+<strong>FISHER FISHERIES</strong> - Fisher Fisheries Consultancy<br />
+<strong>GRAND RONDE</strong> - Grand Ronde Tribe (Central Western Oregon)<br />
+<strong>GRMWP</strong> - Grande Ronde Model Watershed Program (Northeastern Oregon river)<br />
+<strong>HABITAT WORK SCHEDULE</strong> - Washington State program for tracking projects by the 27 “Lead Entities”, local boards responsible for managing state salmon habitat spending <strong>ID OSC</strong> - Idaho Office of Species Conservation<br />
+<strong>IDAHODEQ</strong> - Idaho Department of Environmental Quality<br />
+<strong>IDFG</strong> - Idaho Department of Fish and Game<br />
+<strong>IDFG SCREEN SHOP</strong> - Fish screen efforts for IDFG<br />
+<strong>KRITFWC</strong> - Klamath River Inter-Tribal Fish and Water Commission (Southern Oregon river)<br />
+<strong>MONTANA WATER CENTER</strong> - Research institute based at Montana State<br />
+<strong>NMFS</strong> - NOAA Fisheries<br />
+<strong>NOAA RESTORATION</strong> - NOAA Restoration Center<br />
+<strong>NRRSS</strong> - National River Restoration Science Synthesis project (a project of American Rivers)<br />
+<strong>NWIFC</strong> - Northwest Indian Fisheries Commission<br />
+<strong>OR WATER TRUST</strong> - Oregon Water Trust<br />
+<strong>OWRI</strong> - Oregon Watershed Restoration Inventory<br />
+<strong>PCSRF</strong> - Pacific Coastal Salmon Recovery Fund (federal grant program administered by NOAA)<br />
+<strong>REO</strong> - United States Forest Service Region 6 Regional Ecosystem Office<br />
+<strong>SHOSHONE-BANNOCK</strong> - Shoshone-Bannock Tribes (Southeastern Idaho)<br />
+<strong>SRFBD</strong> - Salmon Funding Recovery Board Database (Washington State Recreation and Conservation Office grant program)<br />
+<strong>STREAMNET</strong> - Data project of the Pacific States Marine Fisheries Commission<br />
+<strong>WA DOE</strong> - Washington State Department of Ecology<br />
+<strong>WA RCO</strong> - Washington State Recreation and Conservation Office<br />
+<strong>WA WATER TRUST</strong> - Washington Water Trust<br />
+<strong>WDFW FISHWAY</strong> - Washington State Department of Fish and Wildlife (WDFW) Fishway Program<br />
+<strong>WDFW WRIP</strong> - WDFW Watershed Recovery Inventory Project<br />
+<strong>WDOT</strong> - Washington Department of Transportation</p>
+</blockquote>
+</div>
+<div id="count" class="section level1">
+<h1>Appendix: Creating a Consistent Project-level Culvert Count</h1>
+<p>Our ultimate goal is to model the costs of culvert projects. To do this, we need a consistent count of how many culverts each project involves. While this might seem straight forward, this information is reported in a number of different ways in the PNSHP data. In most cases, we can simply count the number of actions for each project. That is, the number of culverts equals the number of culvert-related actions.</p>
+<p>However, 354 actions (associated with 279 projects) also include a “metric” variable labelled “count of blockages”. This variable measures the number of culverts addressed by the action, at the work site, or by the project. In this section, we will cover how we identify and deal with each of these three cases.</p>
+<p>When there is only a single action associated with a project, we can simply use the value provided in the “count of blockages” metric. The table below provides examples of the action-level data when this is the case. This accounts for 248 projects.</p>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+project_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+worksite_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+action
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+metric
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+numeric_value
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+units
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+n_action_prj
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+WARCO_RCO_08-1982 R
+</td>
+<td style="text-align:left;min-width: 3in; ">
+WARCO_RCO_08-1982 R-WS-11647
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+WARCO_RCO_07-1881 P
+</td>
+<td style="text-align:left;min-width: 3in; ">
+WARCO_RCO_07-1881 P-WS-10230
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+123
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+WARCO_RCO_04-1749 R
+</td>
+<td style="text-align:left;min-width: 3in; ">
+WARCO_RCO_04-1749 R-WS-10007
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+WARCO_RCO_02-1447 R
+</td>
+<td style="text-align:left;min-width: 3in; ">
+WARCO_RCO_02-1447 R-WS-1730
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+WARCO_RCO_04-1626 R
+</td>
+<td style="text-align:left;min-width: 3in; ">
+WARCO_RCO_04-1626 R-WS-2646
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br />
+For many of the remaining projects, the number of actions associated with the project is exactly equal to the number given by “count of blockages”. This implies that “count of blockages” is provided at the project level. When this is the case, we can ignore “count of blockages” and use the number of actions as our project-level count of culverts. The table below provides four examples for when this is the case. This accounts for 18 projects.</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+project_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+worksite_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+action
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+metric
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+numeric_value
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+units
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+n_action_prj
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+REO - R_6040
+</td>
+<td style="text-align:left;min-width: 3in; ">
+REO - R_6040-WS-1
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+REO - R_6040
+</td>
+<td style="text-align:left;min-width: 3in; ">
+REO - R_6040-WS-2
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+REO - R_6040
+</td>
+<td style="text-align:left;min-width: 3in; ">
+REO - R_6040-WS-3
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+REO - R_6040
+</td>
+<td style="text-align:left;min-width: 3in; ">
+REO - R_6040-WS-4
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+REO - R_6040
+</td>
+<td style="text-align:left;min-width: 3in; ">
+REO - R_6040-WS-5
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+REO - R_6040
+</td>
+<td style="text-align:left;min-width: 3in; ">
+REO - R_6040-WS-6
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_1893
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_1893-WS-1
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_1893
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_1893-WS-2
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_1893
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_1893-WS-3
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_11151
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_11151-WS-1
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_11151
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_11151-WS-2
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+WARCO_RCO_00-1899 R
+</td>
+<td style="text-align:left;min-width: 3in; ">
+WARCO_RCO_00-1899 R-WS-884
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+WARCO_RCO_00-1899 R
+</td>
+<td style="text-align:left;min-width: 3in; ">
+WARCO_RCO_00-1899 R-WS-884
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br />
+In the third class of projects where “count of blockages” appears, each project has multiple work sites with a single action where the “count of blockages” variable is equal to one in all cases. This case can be identified by isolating rows where the count of blockages is equal to one while the number of actions exactly equals the number of at the project level. Some examples are provided below. In this scenario, we can use the number of actions as the number of culverts. This class accounts for 11 projects.</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:300px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+project_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+worksite_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+action
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+metric
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+numeric_value
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+units
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+n_action_prj
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+n_worksites
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_11099
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_11099-WS-1
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_11099
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_11099-WS-2
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_16458
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_16458-WS-1
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_16458
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_16458-WS-2
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_16458
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_16458-WS-5
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_16458
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_16458-WS-6
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_16458
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_16458-WS-7
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_16458
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_16458-WS-8
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_9725
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_9725-WS-1
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT INSTALLATION
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+HWS - HWS_9725
+</td>
+<td style="text-align:left;min-width: 3in; ">
+HWS - HWS_9725-WS-2
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT INSTALLATION
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+REO - R_5721
+</td>
+<td style="text-align:left;min-width: 3in; ">
+REO - R_5721-WS-1
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+REO - R_5721
+</td>
+<td style="text-align:left;min-width: 3in; ">
+REO - R_5721-WS-2
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+REO - R_5721
+</td>
+<td style="text-align:left;min-width: 3in; ">
+REO - R_5721-WS-3
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+REO - R_5721
+</td>
+<td style="text-align:left;min-width: 3in; ">
+REO - R_5721-WS-4
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br />
+Finally, there are a number of edge cases where one of the actions for a multiple action project has a “count of blockages” variable provided, but the other actions for the project do not, with no metric provided. For some of these projects, the single instance for “count of blockages” is equal to the number of work sites, which implies that this single “count of blockages” is likely provided at the project level. For others, the count given is one but multiple work sites are present. In either case, it should be safe to use the number of work sites as the count of culverts. Examples of these situations are provided below.</p>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+project_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+worksite_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+action
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+metric
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+numeric_value
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+units
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+n_worksites
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+OWRI - OR_20140386
+</td>
+<td style="text-align:left;min-width: 3in; ">
+OWRI - OR_20140386-WS-1
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+OWRI - OR_20140386
+</td>
+<td style="text-align:left;min-width: 3in; ">
+OWRI - OR_20140386-WS-2
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+OWRI - OR_20140386
+</td>
+<td style="text-align:left;min-width: 3in; ">
+OWRI - OR_20140386-WS-3
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+WARCO_RCO_04-1020 R
+</td>
+<td style="text-align:left;min-width: 3in; ">
+WARCO_RCO_04-1020 R-WS-2164
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+WARCO_RCO_04-1020 R
+</td>
+<td style="text-align:left;min-width: 3in; ">
+WARCO_RCO_04-1020 R-WS-2165
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+WARCO_RCO_99-1433 R
+</td>
+<td style="text-align:left;min-width: 3in; ">
+WARCO_RCO_99-1433 R-WS-8708
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+COUNT OF BLOCKAGES
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+COUNT
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;min-width: 2in; ">
+WARCO_RCO_99-1433 R
+</td>
+<td style="text-align:left;min-width: 3in; ">
+WARCO_RCO_99-1433 R-WS-8709
+</td>
+<td style="text-align:left;min-width: 4.5in; ">
+FISH PASSAGE - CULVERT REMOVAL
+</td>
+<td style="text-align:left;min-width: 2.5in; ">
+NA
+</td>
+<td style="text-align:right;">
+NA
+</td>
+<td style="text-align:left;">
+NA
+</td>
+<td style="text-align:right;">
+2
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br />
+Ultimately, there are only six projects remaining after these cases are accounted for. For these six projects, the number of culverts is ambiguous. The number provided in “count of blockages” is either larger or smaller than the number of work sites at the project level. It is unclear how many culverts were worked on for these projects, so we drop them and move along.</p>
+</div>
+<div id="end-matter" class="section level1">
+<h1>End Matter</h1>
+<pre><code>[1] &quot;2020-10-23 12:25:46 PDT&quot;</code></pre>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19041)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] here_0.1           xtable_1.8-4       kableExtra_1.1.0   knitr_1.29        
+ [5] searchable_0.3.3.1 scales_1.1.1       ggthemes_4.2.0     janitor_2.0.1     
+ [9] forcats_0.5.0      stringr_1.4.0      dplyr_1.0.1        purrr_0.3.4       
+[13] readr_1.3.1        tidyr_1.1.1        tibble_3.0.4       ggplot2_3.3.2     
+[17] tidyverse_1.3.0    workflowr_1.6.2   
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.5        lubridate_1.7.9   ps_1.3.3          assertthat_0.2.1 
+ [5] rprojroot_1.3-2   digest_0.6.25     R6_2.4.1          cellranger_1.1.0 
+ [9] backports_1.1.8   reprex_0.3.0      evaluate_0.14     highr_0.8        
+[13] httr_1.4.2        pillar_1.4.6      rlang_0.4.8       readxl_1.3.1     
+[17] rstudioapi_0.11   blob_1.2.1        rmarkdown_2.3     webshot_0.5.2    
+[21] munsell_0.5.0     broom_0.7.0       compiler_4.0.2    httpuv_1.5.4     
+[25] modelr_0.1.8      xfun_0.16         pkgconfig_2.0.3   htmltools_0.5.0  
+[29] tidyselect_1.1.0  fansi_0.4.1       viridisLite_0.3.0 crayon_1.3.4     
+[33] dbplyr_1.4.4      withr_2.2.0       later_1.1.0.1     grid_4.0.2       
+[37] jsonlite_1.7.1    gtable_0.3.0      lifecycle_0.2.0   DBI_1.1.0        
+[41] git2r_0.27.1      magrittr_1.5      cli_2.1.0         stringi_1.4.6    
+[45] fs_1.4.2          promises_1.1.1    snakecase_0.11.0  xml2_1.3.2       
+[49] ellipsis_0.3.1    generics_0.0.2    vctrs_0.3.4       tools_4.0.2      
+[53] glue_1.4.2        hms_0.5.3         yaml_2.2.1        colorspace_1.4-1 
+[57] rvest_0.3.6       haven_2.3.1      </code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19041)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] here_0.1           xtable_1.8-4       kableExtra_1.1.0   knitr_1.29        
+ [5] searchable_0.3.3.1 scales_1.1.1       ggthemes_4.2.0     janitor_2.0.1     
+ [9] forcats_0.5.0      stringr_1.4.0      dplyr_1.0.1        purrr_0.3.4       
+[13] readr_1.3.1        tidyr_1.1.1        tibble_3.0.4       ggplot2_3.3.2     
+[17] tidyverse_1.3.0    workflowr_1.6.2   
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.5        lubridate_1.7.9   ps_1.3.3          assertthat_0.2.1 
+ [5] rprojroot_1.3-2   digest_0.6.25     R6_2.4.1          cellranger_1.1.0 
+ [9] backports_1.1.8   reprex_0.3.0      evaluate_0.14     highr_0.8        
+[13] httr_1.4.2        pillar_1.4.6      rlang_0.4.8       readxl_1.3.1     
+[17] rstudioapi_0.11   blob_1.2.1        rmarkdown_2.3     webshot_0.5.2    
+[21] munsell_0.5.0     broom_0.7.0       compiler_4.0.2    httpuv_1.5.4     
+[25] modelr_0.1.8      xfun_0.16         pkgconfig_2.0.3   htmltools_0.5.0  
+[29] tidyselect_1.1.0  fansi_0.4.1       viridisLite_0.3.0 crayon_1.3.4     
+[33] dbplyr_1.4.4      withr_2.2.0       later_1.1.0.1     grid_4.0.2       
+[37] jsonlite_1.7.1    gtable_0.3.0      lifecycle_0.2.0   DBI_1.1.0        
+[41] git2r_0.27.1      magrittr_1.5      cli_2.1.0         stringi_1.4.6    
+[45] fs_1.4.2          promises_1.1.1    snakecase_0.11.0  xml2_1.3.2       
+[49] ellipsis_0.3.1    generics_0.0.2    vctrs_0.3.4       tools_4.0.2      
+[53] glue_1.4.2        hms_0.5.3         yaml_2.2.1        colorspace_1.4-1 
+[57] rvest_0.3.6       haven_2.3.1      </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

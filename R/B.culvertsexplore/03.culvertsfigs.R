@@ -70,6 +70,9 @@ base_countcost_bar <-
     palette = "Greens",
     labels = c("No", "Yes")
   ) +
+  theme(
+    legend.position = c(0.85, 0.1)
+  ) +
   coord_flip()
 
 base_countcost_line <-
@@ -105,7 +108,8 @@ base_countcost_line <-
       angle = 90,
       hjust = 0,
       vjust = 0.5
-    )
+    ),
+    legend.position = c(0.85, 0.90)
   )
 
 base_cost_bar <-
@@ -259,139 +263,150 @@ action_costdist_levels <-
 
 # Action counts w/ costs ====
 # By year
-fig_countcost_year <-
-  base_countcost_line %+%
-  (df_culv_pure %>%
-     group_by(
-       completed_year = ordered(completed_year),
-       cost_avail = factor(cost_avail),
-       .drop = FALSE
-     ) %>%
-     count() %>%
-     ungroup() %>%
-     mutate(
-       completed_year = unfactor(completed_year)
-     )
-  ) +
-  ggtitle("Culvert action count, by year")
-fig_countcost_year
+(
+  fig_countcost_year <-
+    base_countcost_line %+%
+    (df_culv_pure %>%
+       group_by(
+         completed_year = ordered(completed_year),
+         cost_avail = factor(cost_avail),
+         .drop = FALSE
+       ) %>%
+       count() %>%
+       ungroup() %>%
+       mutate(
+         completed_year = unfactor(completed_year)
+       )
+    ) +
+    ggtitle("Culvert action count, by year")
+)
 
 # By action type
-fig_countcost_action <-
-  base_countcost_bar %+%
-  (df_culv_pure %>%
-     group_by(
-       action = recode(action, !!!invert(action_key)) %>% ordered(action_levels),
-       cost_avail = factor(cost_avail)
-     ) %>%
-     count() %>%
-     drop_na()
-  ) +
-  aes(
-    x = action
-  ) +
-  ggtitle("Culvert action count, by action type")
-fig_countcost_action
+(
+  fig_countcost_action <-
+    base_countcost_bar %+%
+    (df_culv_pure %>%
+       group_by(
+         action = recode(action, !!!invert(action_key)) %>% ordered(action_levels),
+         cost_avail = factor(cost_avail)
+       ) %>%
+       count() %>%
+       drop_na()
+    ) +
+    aes(
+      x = action
+    ) +
+    ggtitle("Culvert action count, by action type")
+)
 
 # By basin
-fig_countcost_basin <-
-  base_countcost_bar %+%
-  (df_culv_pure %>%
-     group_by(
-       basin = ordered(basin, basin_levels) %>% fct_explicit_na(),
-       cost_avail = factor(cost_avail)
-     ) %>%
-     count() %>%
-     drop_na()
-  ) +
-  aes(
-    x = fct_rev(basin)
-  ) +
-  ggtitle("Culvert action count, by basin")
-fig_countcost_basin
+(
+  fig_countcost_basin <-
+    base_countcost_bar %+%
+    (df_culv_pure %>%
+       group_by(
+         basin = ordered(basin, basin_levels) %>% fct_explicit_na(),
+         cost_avail = factor(cost_avail)
+       ) %>%
+       count() %>%
+       drop_na()
+    ) +
+    aes(
+      x = fct_rev(basin)
+    ) +
+    ggtitle("Culvert action count, by basin")
+)
 
 # By source
-fig_countcost_source <-
-  base_countcost_bar %+%
-  (df_culv_pure %>%
-     group_by(
-       project_source = ordered(project_source, source_levels),
-       cost_avail = factor(cost_avail)
-     ) %>%
-     count() %>%
-     drop_na()
-  ) +
-  aes(
-    x = fct_rev(project_source)
-  ) +
-  ggtitle("Culvert action count, by reporting source")
-fig_countcost_source
+(
+  fig_countcost_source <-
+    base_countcost_bar %+%
+    (df_culv_pure %>%
+       group_by(
+         project_source = ordered(project_source, source_levels),
+         cost_avail = factor(cost_avail)
+       ) %>%
+       count() %>%
+       drop_na()
+    ) +
+    aes(
+      x = fct_rev(project_source)
+    ) +
+    ggtitle("Culvert action count, by reporting source")
+)
 
 # By action and year
-fig_countcost_action_year <-
-  base_countcost_line %+%
-  (df_culv_pure %>%
-     group_by(
-       completed_year = ordered(completed_year),
-       action = recode(action, !!!invert(action_key)) %>% ordered(action_levels),
-       cost_avail = factor(cost_avail),
-       .drop = FALSE
-     ) %>%
-     count() %>%
-     ungroup() %>%
-     mutate(
-       completed_year = unfactor(completed_year)
-     )
-  ) +
-  ggtitle("Culvert action count, by action type and year") +
-  facet_wrap(~ action, ncol = 1)
-fig_countcost_action_year
+(
+  fig_countcost_action_year <-
+    base_countcost_line %+%
+    (df_culv_pure %>%
+       group_by(
+         completed_year = ordered(completed_year),
+         action = recode(action, !!!invert(action_key)) %>% ordered(action_levels),
+         cost_avail = factor(cost_avail),
+         .drop = FALSE
+       ) %>%
+       count() %>%
+       ungroup() %>%
+       mutate(
+         completed_year = unfactor(completed_year)
+       )
+    ) +
+    ggtitle("Culvert action count, by action type and year") +
+    facet_wrap(~ action, ncol = 1)
+)
 
 # By basin and year
-fig_countcost_basin_year <-
-  base_countcost_line %+%
-  (df_culv_pure %>%
-     group_by(
-       completed_year = ordered(completed_year),
-       basin = ordered(basin, basin_levels) %>% fct_explicit_na(),
-       cost_avail = factor(cost_avail),
-       .drop = FALSE
-     ) %>%
-     count() %>%
-     ungroup() %>%
-     mutate(
-       completed_year = unfactor(completed_year)
-     ) %>%
-     filter(
-       basin %in% basin_levels[1:8]
-     )
-  ) +
-  ggtitle("Culvert action count, by basin and year", "8 basins (of 27) with most actions") +
-  facet_wrap(~ basin, ncol = 2)
-fig_countcost_basin_year
-
+(
+  fig_countcost_basin_year <-
+    base_countcost_line %+%
+    (df_culv_pure %>%
+       group_by(
+         completed_year = ordered(completed_year),
+         basin = ordered(basin, basin_levels) %>% fct_explicit_na(),
+         cost_avail = factor(cost_avail),
+         .drop = FALSE
+       ) %>%
+       count() %>%
+       ungroup() %>%
+       mutate(
+         completed_year = unfactor(completed_year)
+       ) %>%
+       filter(
+         basin %in% basin_levels[1:8]
+       )
+    ) +
+    ggtitle("Culvert action count, by basin and year", "8 basins (of 27) with most actions") +
+    facet_wrap(~ basin, ncol = 2) +
+    theme(
+      legend.position = "bottom" 
+    )
+)
+  
 # By source and year
-fig_countcost_source_year <-
-  base_countcost_line %+%
-  (df_culv_pure %>%
-     group_by(
-       completed_year = ordered(completed_year),
-       project_source = ordered(project_source, source_levels),
-       cost_avail = factor(cost_avail),
-       .drop = FALSE
-     ) %>%
-     count() %>%
-     ungroup() %>%
-     mutate(
-       completed_year = unfactor(completed_year)
-     ) %>%
-     filter(
-       project_source %in% source_levels[1:6]
-     )
-  ) +
-  ggtitle("Culvert action count, by reporting source and year", "6 sources (of 20) with most actions") +
-  facet_wrap(~ project_source, ncol = 2)
-fig_countcost_source_year
+(
+  fig_countcost_source_year <-
+    base_countcost_line %+%
+    (df_culv_pure %>%
+       group_by(
+         completed_year = ordered(completed_year),
+         project_source = ordered(project_source, source_levels),
+         cost_avail = factor(cost_avail),
+         .drop = FALSE
+       ) %>%
+       count() %>%
+       ungroup() %>%
+       mutate(
+         completed_year = unfactor(completed_year)
+       ) %>%
+       filter(
+         project_source %in% source_levels[1:6]
+       )
+    ) +
+    ggtitle("Culvert action count, by reporting source and year", "6 sources (of 20) with most actions") +
+    facet_wrap(~ project_source, ncol = 2) +
+    theme(legend.position = "bottom")
+)
 
 # By basin and action
 fig_countcost_basin_action <-

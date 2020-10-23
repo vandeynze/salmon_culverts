@@ -1,0 +1,4424 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="B. Van Deynze" />
+
+<meta name="date" content="2020-04-07" />
+
+<title>Culvert Cost Pilot Models</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">salmon_culverts</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Culvert Cost Pilot Models</h1>
+<h4 class="author">B. Van Deynze</h4>
+<h4 class="date">April 7, 2020</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-10-23
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+</p>
+<p>
+<strong>Knit directory:</strong> <code>salmon_culverts/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The R Markdown is untracked by Git. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20201023code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20201023)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20201023code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20201023)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomvandeynzesalmonculvertstree3b581cac451d1dda7798214e3058f477f67ee107targetblank3b581caa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/vandeynze/salmon_culverts/tree/3b581cac451d1dda7798214e3058f477f67ee107" target="_blank">3b581ca</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomvandeynzesalmonculvertstree3b581cac451d1dda7798214e3058f477f67ee107targetblank3b581caa" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/vandeynze/salmon_culverts/tree/3b581cac451d1dda7798214e3058f477f67ee107" target="_blank">3b581ca</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    R/B.culvertsexplore/.Rhistory
+    Ignored:    data/NHDPlusNationalData/
+    Ignored:    data/NHDPlusV21_NationalData_Seamless_Geodatabase_Lower48_07.7z
+    Ignored:    data/old/
+
+Untracked files:
+    Untracked:  R/C.culvertsspatial/07.spatialcostmodels.R
+    Untracked:  R/C.culvertsspatial/08.extraculvsexplore.R
+    Untracked:  analysis/PNSHP_report_2020mar10.Rmd
+    Untracked:  analysis/culverts_report_2020mar27.Rmd
+    Untracked:  analysis/culvertspilotreg_report_2020april3.Rmd
+    Untracked:  analysis/spatialcostmodels.Rmd
+    Untracked:  analysis/spatialexplore.Rmd
+    Untracked:  data/Culverts spatial overlays v 20Aug2020.xlsx
+    Untracked:  data/NHDPlusSuppData/
+    Untracked:  data/culv_inventories/
+    Untracked:  output/culverts_pure_modelling.csv
+    Untracked:  output/culverts_pure_spatial.csv
+    Untracked:  output/spatial/nhdplus_fln_sml.rds
+
+Unstaged changes:
+    Modified:   R/B.culvertsexplore/03.culvertsfigs.R
+    Modified:   R/C.culvertsspatial/04.culvertsstreamtest_forloopversion.R
+    Modified:   R/C.culvertsspatial/05.spatialmergeout.R
+    Modified:   R/C.culvertsspatial/06.spatialexplore.R
+    Modified:   analysis/about.Rmd
+    Modified:   analysis/index.Rmd
+    Modified:   analysis/license.Rmd
+    Deleted:    code/README.md
+    Deleted:    output/PNSHP_report_2020mar10.Rmd
+    Deleted:    output/PNSHP_report_2020mar10.html
+    Modified:   output/culverts_full_spatial.csv
+    Deleted:    output/culverts_report_2020mar27.Rmd
+    Deleted:    output/culverts_report_2020mar27.html
+    Deleted:    output/culvertspilotreg_report_2020april3.Rmd
+    Deleted:    output/culvertspilotreg_report_2020april3.html
+    Deleted:    output/culvertsspatial_report_2020aug18.html
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+<p>
+There are no past versions. Publish this analysis with <code>wflow_publish()</code> to start tracking its development.
+</p>
+<hr>
+</div>
+</div>
+</div>
+<style type="text/css">
+script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+</style>
+<script type="text/javascript">
+ $(document).ready(function() {
+    $('body').prepend('<div class=\"zoomDiv\"><img src=\"\" class=\"zoomImg\"></div>');
+    // onClick function for all plots (img's)
+    $('img:not(.zoomImg)').click(function() {
+      $('.zoomImg').attr('src', $(this).attr('src')).css({width: '100%'});
+      $('.zoomDiv').css({opacity: '1', width: 'auto', border: '1px solid white', borderRadius: '5px', position: 'fixed', top: '50%', left: '50%', marginRight: '-50%', transform: 'translate(-50%, -50%)', boxShadow: '0px 0px 50px #888888', zIndex: '50', overflow: 'auto', maxHeight: '100%'});
+    });
+    // onClick function for zoomImg
+    $('img.zoomImg').click(function() {
+      $('.zoomDiv').css({opacity: '0', width: '0%'}); 
+    });
+  });
+</script>
+<p>This report’s goal is to demonstrate how we might model costs for culvert improvement projects. We begin with a description of the currently available data. We then describe a number of pilot regressions demonstrating how these data can be used to model drivers of costs across the region of study. We then discuss proposed next steps, including a list of potential additional variables and example applications.</p>
+<div id="data-description" class="section level1">
+<h1>Data Description</h1>
+<p>The data used in this analsis are from the <strong>Pacific Northwest Salmonid Habitat Project</strong> (PNSHP) database. This database, maintained by Katie Barnas at the NOAA Northwest Fisheries Science Center, serves as a clearinghouse for reporting habitat restoration projects targeting salmon in Washington, Oregon, Idaho, and Montana. The data is structured with project as the base observation unit. Each project consists of one or more work site, and each work site consists of one or more restoration action. Costs are provided at the project level (as opposed to the worksite or action level), and the vast majority of work sites are geocoded (i.e. coordiantes are available).</p>
+<p>In this analysis, we focus on “pure” culvert projects (i.e. projects where culvert-related actions are the only actions taken at any of the project work sites) between 1996 and 2015 (20 years), with cost reported. There are 1,781 projects that meet this criteria, distributed across 24 basins and reported by 13 different sources. Note that different reporting sources focus on different basins, and that there are clear systemic differences in how costs are reported across sources. For more details, please check the <strong><em>PNSHP Culvert Report</em></strong>.</p>
+<p>Some projects in the sample are clearly outliers (See table below). Therefore, we trim projects with costs per culvert less than $2,000 and greater than $750,000, a process that removes 116 projects.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Quantiles for project-level costs per culvert
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+0%
+</th>
+<th style="text-align:left;">
+1%
+</th>
+<th style="text-align:left;">
+10%
+</th>
+<th style="text-align:left;">
+25%
+</th>
+<th style="text-align:left;">
+50%
+</th>
+<th style="text-align:left;">
+75%
+</th>
+<th style="text-align:left;">
+90%
+</th>
+<th style="text-align:left;">
+99%
+</th>
+<th style="text-align:left;">
+100%
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+$1
+</td>
+<td style="text-align:left;">
+$594
+</td>
+<td style="text-align:left;">
+$4,430
+</td>
+<td style="text-align:left;">
+$11,706
+</td>
+<td style="text-align:left;">
+$44,770
+</td>
+<td style="text-align:left;">
+$106,078
+</td>
+<td style="text-align:left;">
+$199,649
+</td>
+<td style="text-align:left;">
+$911,470
+</td>
+<td style="text-align:left;">
+$2,230,328
+</td>
+</tr>
+</tbody>
+</table>
+<p>The PNSHP data is limited in detail but we can recover two key variables that are possible drivers of culvert improvement costs: the <em>number of culverts</em> under a single project and the <em>distance between work sites</em> (measured in meters as the mean Euclidian distance between worksites). Summary statistics for both of these variables are presented in the tables below.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Summary statistics for key variables, full sample
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+Min.
+</th>
+<th style="text-align:right;">
+Mean
+</th>
+<th style="text-align:right;">
+Median
+</th>
+<th style="text-align:right;">
+Max.
+</th>
+<th style="text-align:right;">
+Std. dev.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Distance (mean between worksites), meters
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+287.0
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+32,903.8
+</td>
+<td style="text-align:right;">
+1,811.4
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number of culverts
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+1.5
+</td>
+<td style="text-align:right;">
+1.0
+</td>
+<td style="text-align:right;">
+25.0
+</td>
+<td style="text-align:right;">
+1.6
+</td>
+</tr>
+</tbody>
+</table>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Summary statistics for key variables, multiple worksite projects only
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+Min.
+</th>
+<th style="text-align:right;">
+Mean
+</th>
+<th style="text-align:right;">
+Median
+</th>
+<th style="text-align:right;">
+Max.
+</th>
+<th style="text-align:right;">
+Std. dev.
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Distance (mean between worksites), meters
+</td>
+<td style="text-align:right;">
+0.0
+</td>
+<td style="text-align:right;">
+1,493.5
+</td>
+<td style="text-align:right;">
+465.4
+</td>
+<td style="text-align:right;">
+32,903.8
+</td>
+<td style="text-align:right;">
+3,912.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number of culverts
+</td>
+<td style="text-align:right;">
+2.0
+</td>
+<td style="text-align:right;">
+2.8
+</td>
+<td style="text-align:right;">
+2.0
+</td>
+<td style="text-align:right;">
+22.0
+</td>
+<td style="text-align:right;">
+2.2
+</td>
+</tr>
+</tbody>
+</table>
+<p>Both variables skew right as expected. The vast majority of projects are single work site projects (1,283 of 1,665), and therefore have no distance between work sites by definition. Also as expected, projects with more culverts have a larger mean distance between work sites, but the correlation is fairly small (Pearson’s correlation = 0.40). Histograms for the number of culverts, mean distance between work sites, and log mean distance between work sites are presented below.</p>
+<p><img src="figure/culvertspilotreg_report_2020april3.Rmd/data-histograms-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/culvertspilotreg_report_2020april3.Rmd/data-histograms-2.png" width="768" style="display: block; margin: auto;" /><img src="figure/culvertspilotreg_report_2020april3.Rmd/data-histograms-3.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="pilot-regressions" class="section level1">
+<h1>Pilot Regressions</h1>
+<p>In this section, we present results from initial pilot regressions attempting to model costs per culverts as a function of project characteristics. These models are obviously incomplete, but serve as a first cut we can build on going forward.</p>
+<p>In each regression, the dependent variable is <strong>log costs per culvert</strong>. All estimation is simple <em>ordinary least squares</em> estimated with R’s <code>lm</code> function.</p>
+<div id="initial-hypotheses" class="section level2">
+<h2>Initial Hypotheses</h2>
+<p>We consider two initial hypotheses related to the two variables discussed in the data description section.</p>
+<p>Our first hypothesis relates to <em>economies of scale</em>. Are per culvert costs lower for projects that modify more culverts? We test this by including the number of culverts linearly or, in an alternative specification, as a series of dummies (two culverts through five or more culverts, with one culvert as the base level).</p>
+<p>Our second hypothesis relates to <em>distance</em>. Do projects with work sites that are further apart have higher average costs? We test this by including mean distance in a number of alternative specifications. We include the mean distance variable either lineraly or log transformed. We also include a dummy for single work site projects where the mean distance is always zero. This allows for a discontinuity at zero for the distance effect, disentangling the scale effect from multiple work sites from the effect of distance.</p>
+</div>
+<div id="fixed-effects-and-additional-controls" class="section level2">
+<h2>Fixed Effects and Additional Controls</h2>
+<p>In addition to the variables of interest, we also include fixed effects for <strong>year</strong>, <strong>reporting source</strong>, and <strong>basin</strong>. We also include dummies for whether the project included complete removal of a culvert or installation of an entirely new culvert. For year dummies the base level is 1996, for reporting source the base is OWRI, and for basin the base level is Southern Oregon Coastal.</p>
+</div>
+<div id="results" class="section level2 tabset tabset-pills">
+<h2>Preliminary Results</h2>
+<div id="fixed-effects" class="section level3">
+<h3>Fixed Effects</h3>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:800px; ">
+<table class="table table-hover" style="margin-left: auto; margin-right: auto;">
+<caption>
+Pilot models, full fixed effects
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Term
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+FE-1
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+FE-2
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+FE-3
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+FE-4
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+FE-5
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+FE-6
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+FE-7
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Intercept
+</td>
+<td style="text-align:center;">
+9.97***<br>(0.246)
+</td>
+<td style="text-align:center;">
+9.83***<br>(0.251)
+</td>
+<td style="text-align:center;">
+9.8***<br>(0.25)
+</td>
+<td style="text-align:center;">
+9.96***<br>(0.247)
+</td>
+<td style="text-align:center;">
+9.93***<br>(0.247)
+</td>
+<td style="text-align:center;">
+9.66***<br>(0.262)
+</td>
+<td style="text-align:center;">
+9.45***<br>(0.299)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Number of culverts
+</td>
+<td style="text-align:center;">
+-0.148***<br>(0.0162)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+-0.145***<br>(0.0175)
+</td>
+<td style="text-align:center;">
+-0.129***<br>(0.0179)
+</td>
+<td style="text-align:center;">
+-0.124***<br>(0.0184)
+</td>
+<td style="text-align:center;">
+-0.128***<br>(0.0179)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Mean distance between work sites
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+-0.0000571***<br>(0.000015)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+-0.0000078<br>(0.0000159)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+0.00000136<br>(0.0000161)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Mean distance between work sites, log
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+-0.0704***<br>(0.0117)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+-0.0305**<br>(0.0128)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+0.0422<br>(0.0286)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Single work site (dummy)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+0.271***<br>(0.0804)
+</td>
+<td style="text-align:center;">
+0.504***<br>(0.177)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Culvert installation (dummy)
+</td>
+<td style="text-align:center;">
+0.0073<br>(0.13)
+</td>
+<td style="text-align:center;">
+-0.0483<br>(0.132)
+</td>
+<td style="text-align:center;">
+-0.0122<br>(0.132)
+</td>
+<td style="text-align:center;">
+0.00418<br>(0.13)
+</td>
+<td style="text-align:center;">
+0.0109<br>(0.13)
+</td>
+<td style="text-align:center;">
+0.025<br>(0.13)
+</td>
+<td style="text-align:center;">
+0.0343<br>(0.13)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Culvert removal (dummy)
+</td>
+<td style="text-align:center;">
+-0.0725<br>(0.0762)
+</td>
+<td style="text-align:center;">
+-0.122<br>(0.0776)
+</td>
+<td style="text-align:center;">
+-0.105<br>(0.0772)
+</td>
+<td style="text-align:center;">
+-0.0735<br>(0.0763)
+</td>
+<td style="text-align:center;">
+-0.0712<br>(0.0761)
+</td>
+<td style="text-align:center;">
+-0.0641<br>(0.0761)
+</td>
+<td style="text-align:center;">
+-0.059<br>(0.0761)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: BLM
+</td>
+<td style="text-align:center;">
+0.886***<br>(0.123)
+</td>
+<td style="text-align:center;">
+0.89***<br>(0.125)
+</td>
+<td style="text-align:center;">
+0.881***<br>(0.125)
+</td>
+<td style="text-align:center;">
+0.887***<br>(0.123)
+</td>
+<td style="text-align:center;">
+0.885***<br>(0.123)
+</td>
+<td style="text-align:center;">
+0.885***<br>(0.122)
+</td>
+<td style="text-align:center;">
+0.887***<br>(0.122)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: BPA
+</td>
+<td style="text-align:center;">
+0.982*<br>(0.537)
+</td>
+<td style="text-align:center;">
+0.94*<br>(0.548)
+</td>
+<td style="text-align:center;">
+0.839<br>(0.545)
+</td>
+<td style="text-align:center;">
+0.982*<br>(0.537)
+</td>
+<td style="text-align:center;">
+0.934*<br>(0.536)
+</td>
+<td style="text-align:center;">
+0.905*<br>(0.536)
+</td>
+<td style="text-align:center;">
+0.905*<br>(0.535)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: GRMWP
+</td>
+<td style="text-align:center;">
+-0.509<br>(0.553)
+</td>
+<td style="text-align:center;">
+-0.536<br>(0.565)
+</td>
+<td style="text-align:center;">
+-0.59<br>(0.561)
+</td>
+<td style="text-align:center;">
+-0.5<br>(0.554)
+</td>
+<td style="text-align:center;">
+-0.508<br>(0.553)
+</td>
+<td style="text-align:center;">
+-0.527<br>(0.552)
+</td>
+<td style="text-align:center;">
+-0.541<br>(0.552)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: HABITAT WORK SCHEDULE
+</td>
+<td style="text-align:center;">
+1.29***<br>(0.221)
+</td>
+<td style="text-align:center;">
+1.28***<br>(0.226)
+</td>
+<td style="text-align:center;">
+1.32***<br>(0.224)
+</td>
+<td style="text-align:center;">
+1.3***<br>(0.221)
+</td>
+<td style="text-align:center;">
+1.33***<br>(0.221)
+</td>
+<td style="text-align:center;">
+1.33***<br>(0.221)
+</td>
+<td style="text-align:center;">
+1.31***<br>(0.22)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: NMFS
+</td>
+<td style="text-align:center;">
+1.59*<br>(0.831)
+</td>
+<td style="text-align:center;">
+1.51*<br>(0.849)
+</td>
+<td style="text-align:center;">
+1.5*<br>(0.843)
+</td>
+<td style="text-align:center;">
+1.6*<br>(0.831)
+</td>
+<td style="text-align:center;">
+1.6*<br>(0.83)
+</td>
+<td style="text-align:center;">
+1.59*<br>(0.829)
+</td>
+<td style="text-align:center;">
+1.57*<br>(0.828)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: NOAA RESTORATION
+</td>
+<td style="text-align:center;">
+0.989***<br>(0.23)
+</td>
+<td style="text-align:center;">
+1.03***<br>(0.235)
+</td>
+<td style="text-align:center;">
+0.991***<br>(0.233)
+</td>
+<td style="text-align:center;">
+0.988***<br>(0.23)
+</td>
+<td style="text-align:center;">
+0.973***<br>(0.23)
+</td>
+<td style="text-align:center;">
+0.961***<br>(0.229)
+</td>
+<td style="text-align:center;">
+0.958***<br>(0.229)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: NRRSS
+</td>
+<td style="text-align:center;">
+1.45***<br>(0.364)
+</td>
+<td style="text-align:center;">
+1.6***<br>(0.374)
+</td>
+<td style="text-align:center;">
+1.45***<br>(0.369)
+</td>
+<td style="text-align:center;">
+1.47***<br>(0.366)
+</td>
+<td style="text-align:center;">
+1.45***<br>(0.363)
+</td>
+<td style="text-align:center;">
+1.43***<br>(0.365)
+</td>
+<td style="text-align:center;">
+1.41***<br>(0.363)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: REO
+</td>
+<td style="text-align:center;">
+0.903***<br>(0.0787)
+</td>
+<td style="text-align:center;">
+0.926***<br>(0.0805)
+</td>
+<td style="text-align:center;">
+0.885***<br>(0.08)
+</td>
+<td style="text-align:center;">
+0.905***<br>(0.0789)
+</td>
+<td style="text-align:center;">
+0.892***<br>(0.0787)
+</td>
+<td style="text-align:center;">
+0.885***<br>(0.0788)
+</td>
+<td style="text-align:center;">
+0.884***<br>(0.0786)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: SRFBD
+</td>
+<td style="text-align:center;">
+1.62***<br>(0.243)
+</td>
+<td style="text-align:center;">
+1.68***<br>(0.248)
+</td>
+<td style="text-align:center;">
+1.66***<br>(0.246)
+</td>
+<td style="text-align:center;">
+1.62***<br>(0.243)
+</td>
+<td style="text-align:center;">
+1.61***<br>(0.242)
+</td>
+<td style="text-align:center;">
+1.6***<br>(0.242)
+</td>
+<td style="text-align:center;">
+1.59***<br>(0.242)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: WA RCO
+</td>
+<td style="text-align:center;">
+0.95***<br>(0.161)
+</td>
+<td style="text-align:center;">
+0.859***<br>(0.164)
+</td>
+<td style="text-align:center;">
+0.842***<br>(0.163)
+</td>
+<td style="text-align:center;">
+0.95***<br>(0.161)
+</td>
+<td style="text-align:center;">
+0.937***<br>(0.161)
+</td>
+<td style="text-align:center;">
+0.926***<br>(0.161)
+</td>
+<td style="text-align:center;">
+0.924***<br>(0.161)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: WDOT
+</td>
+<td style="text-align:center;">
+2.68***<br>(0.327)
+</td>
+<td style="text-align:center;">
+2.72***<br>(0.334)
+</td>
+<td style="text-align:center;">
+2.64***<br>(0.332)
+</td>
+<td style="text-align:center;">
+2.68***<br>(0.327)
+</td>
+<td style="text-align:center;">
+2.65***<br>(0.326)
+</td>
+<td style="text-align:center;">
+2.63***<br>(0.326)
+</td>
+<td style="text-align:center;">
+2.63***<br>(0.326)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 1997
+</td>
+<td style="text-align:center;">
+-0.501*<br>(0.273)
+</td>
+<td style="text-align:center;">
+-0.539*<br>(0.279)
+</td>
+<td style="text-align:center;">
+-0.41<br>(0.278)
+</td>
+<td style="text-align:center;">
+-0.5*<br>(0.273)
+</td>
+<td style="text-align:center;">
+-0.445<br>(0.274)
+</td>
+<td style="text-align:center;">
+-0.438<br>(0.273)
+</td>
+<td style="text-align:center;">
+-0.46*<br>(0.273)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 1998
+</td>
+<td style="text-align:center;">
+0.0185<br>(0.26)
+</td>
+<td style="text-align:center;">
+-0.0197<br>(0.265)
+</td>
+<td style="text-align:center;">
+0.0956<br>(0.265)
+</td>
+<td style="text-align:center;">
+0.0203<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.0709<br>(0.261)
+</td>
+<td style="text-align:center;">
+0.0836<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.0677<br>(0.26)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 1999
+</td>
+<td style="text-align:center;">
+0.153<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.113<br>(0.266)
+</td>
+<td style="text-align:center;">
+0.219<br>(0.265)
+</td>
+<td style="text-align:center;">
+0.154<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.2<br>(0.261)
+</td>
+<td style="text-align:center;">
+0.209<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.193<br>(0.26)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2000
+</td>
+<td style="text-align:center;">
+0.34<br>(0.258)
+</td>
+<td style="text-align:center;">
+0.321<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.431<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.344<br>(0.258)
+</td>
+<td style="text-align:center;">
+0.397<br>(0.259)
+</td>
+<td style="text-align:center;">
+0.41<br>(0.258)
+</td>
+<td style="text-align:center;">
+0.392<br>(0.258)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2001
+</td>
+<td style="text-align:center;">
+0.321<br>(0.262)
+</td>
+<td style="text-align:center;">
+0.278<br>(0.267)
+</td>
+<td style="text-align:center;">
+0.394<br>(0.267)
+</td>
+<td style="text-align:center;">
+0.326<br>(0.262)
+</td>
+<td style="text-align:center;">
+0.382<br>(0.262)
+</td>
+<td style="text-align:center;">
+0.395<br>(0.262)
+</td>
+<td style="text-align:center;">
+0.377<br>(0.262)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2002
+</td>
+<td style="text-align:center;">
+0.491*<br>(0.258)
+</td>
+<td style="text-align:center;">
+0.447*<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.565**<br>(0.262)
+</td>
+<td style="text-align:center;">
+0.492*<br>(0.258)
+</td>
+<td style="text-align:center;">
+0.542**<br>(0.258)
+</td>
+<td style="text-align:center;">
+0.548**<br>(0.257)
+</td>
+<td style="text-align:center;">
+0.527**<br>(0.258)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2003
+</td>
+<td style="text-align:center;">
+0.679***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.65**<br>(0.265)
+</td>
+<td style="text-align:center;">
+0.725***<br>(0.264)
+</td>
+<td style="text-align:center;">
+0.68***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.71***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.712***<br>(0.259)
+</td>
+<td style="text-align:center;">
+0.698***<br>(0.259)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2004
+</td>
+<td style="text-align:center;">
+1.04***<br>(0.26)
+</td>
+<td style="text-align:center;">
+1.03***<br>(0.266)
+</td>
+<td style="text-align:center;">
+1.1***<br>(0.264)
+</td>
+<td style="text-align:center;">
+1.04***<br>(0.26)
+</td>
+<td style="text-align:center;">
+1.07***<br>(0.26)
+</td>
+<td style="text-align:center;">
+1.07***<br>(0.26)
+</td>
+<td style="text-align:center;">
+1.05***<br>(0.26)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2005
+</td>
+<td style="text-align:center;">
+0.759***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.737***<br>(0.265)
+</td>
+<td style="text-align:center;">
+0.807***<br>(0.264)
+</td>
+<td style="text-align:center;">
+0.76***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.791***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.789***<br>(0.259)
+</td>
+<td style="text-align:center;">
+0.771***<br>(0.259)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2006
+</td>
+<td style="text-align:center;">
+0.825***<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.749***<br>(0.268)
+</td>
+<td style="text-align:center;">
+0.822***<br>(0.267)
+</td>
+<td style="text-align:center;">
+0.824***<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.85***<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.856***<br>(0.262)
+</td>
+<td style="text-align:center;">
+0.848***<br>(0.262)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2007
+</td>
+<td style="text-align:center;">
+0.982***<br>(0.268)
+</td>
+<td style="text-align:center;">
+0.945***<br>(0.274)
+</td>
+<td style="text-align:center;">
+1***<br>(0.272)
+</td>
+<td style="text-align:center;">
+0.982***<br>(0.268)
+</td>
+<td style="text-align:center;">
+1***<br>(0.268)
+</td>
+<td style="text-align:center;">
+1.01***<br>(0.267)
+</td>
+<td style="text-align:center;">
+1***<br>(0.267)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2008
+</td>
+<td style="text-align:center;">
+0.512*<br>(0.304)
+</td>
+<td style="text-align:center;">
+0.505<br>(0.311)
+</td>
+<td style="text-align:center;">
+0.555*<br>(0.309)
+</td>
+<td style="text-align:center;">
+0.513*<br>(0.304)
+</td>
+<td style="text-align:center;">
+0.534*<br>(0.304)
+</td>
+<td style="text-align:center;">
+0.534*<br>(0.303)
+</td>
+<td style="text-align:center;">
+0.522*<br>(0.303)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2009
+</td>
+<td style="text-align:center;">
+0.619**<br>(0.301)
+</td>
+<td style="text-align:center;">
+0.556*<br>(0.307)
+</td>
+<td style="text-align:center;">
+0.621**<br>(0.305)
+</td>
+<td style="text-align:center;">
+0.618**<br>(0.301)
+</td>
+<td style="text-align:center;">
+0.64**<br>(0.3)
+</td>
+<td style="text-align:center;">
+0.648**<br>(0.3)
+</td>
+<td style="text-align:center;">
+0.644**<br>(0.3)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2010
+</td>
+<td style="text-align:center;">
+0.765***<br>(0.292)
+</td>
+<td style="text-align:center;">
+0.518*<br>(0.297)
+</td>
+<td style="text-align:center;">
+0.579*<br>(0.295)
+</td>
+<td style="text-align:center;">
+0.761***<br>(0.292)
+</td>
+<td style="text-align:center;">
+0.763***<br>(0.292)
+</td>
+<td style="text-align:center;">
+0.754***<br>(0.291)
+</td>
+<td style="text-align:center;">
+0.746**<br>(0.291)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2011
+</td>
+<td style="text-align:center;">
+0.576*<br>(0.303)
+</td>
+<td style="text-align:center;">
+0.505<br>(0.31)
+</td>
+<td style="text-align:center;">
+0.581*<br>(0.308)
+</td>
+<td style="text-align:center;">
+0.576*<br>(0.303)
+</td>
+<td style="text-align:center;">
+0.606**<br>(0.303)
+</td>
+<td style="text-align:center;">
+0.611**<br>(0.303)
+</td>
+<td style="text-align:center;">
+0.6**<br>(0.302)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2012
+</td>
+<td style="text-align:center;">
+0.586*<br>(0.327)
+</td>
+<td style="text-align:center;">
+0.558*<br>(0.334)
+</td>
+<td style="text-align:center;">
+0.656**<br>(0.332)
+</td>
+<td style="text-align:center;">
+0.589*<br>(0.327)
+</td>
+<td style="text-align:center;">
+0.633*<br>(0.327)
+</td>
+<td style="text-align:center;">
+0.644**<br>(0.327)
+</td>
+<td style="text-align:center;">
+0.631*<br>(0.327)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2013
+</td>
+<td style="text-align:center;">
+0.33<br>(0.3)
+</td>
+<td style="text-align:center;">
+0.296<br>(0.306)
+</td>
+<td style="text-align:center;">
+0.355<br>(0.305)
+</td>
+<td style="text-align:center;">
+0.331<br>(0.3)
+</td>
+<td style="text-align:center;">
+0.356<br>(0.3)
+</td>
+<td style="text-align:center;">
+0.355<br>(0.299)
+</td>
+<td style="text-align:center;">
+0.341<br>(0.299)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2014
+</td>
+<td style="text-align:center;">
+0.495<br>(0.318)
+</td>
+<td style="text-align:center;">
+0.478<br>(0.325)
+</td>
+<td style="text-align:center;">
+0.49<br>(0.323)
+</td>
+<td style="text-align:center;">
+0.498<br>(0.318)
+</td>
+<td style="text-align:center;">
+0.509<br>(0.318)
+</td>
+<td style="text-align:center;">
+0.493<br>(0.317)
+</td>
+<td style="text-align:center;">
+0.473<br>(0.317)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2015
+</td>
+<td style="text-align:center;">
+1.11***<br>(0.41)
+</td>
+<td style="text-align:center;">
+0.974**<br>(0.425)
+</td>
+<td style="text-align:center;">
+0.75*<br>(0.413)
+</td>
+<td style="text-align:center;">
+1.15***<br>(0.417)
+</td>
+<td style="text-align:center;">
+1.11***<br>(0.409)
+</td>
+<td style="text-align:center;">
+1.08***<br>(0.416)
+</td>
+<td style="text-align:center;">
+1.06***<br>(0.409)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: CLEARWATER
+</td>
+<td style="text-align:center;">
+0.131<br>(0.744)
+</td>
+<td style="text-align:center;">
+-0.00986<br>(0.759)
+</td>
+<td style="text-align:center;">
+0.33<br>(0.756)
+</td>
+<td style="text-align:center;">
+0.125<br>(0.744)
+</td>
+<td style="text-align:center;">
+0.254<br>(0.745)
+</td>
+<td style="text-align:center;">
+0.344<br>(0.744)
+</td>
+<td style="text-align:center;">
+0.355<br>(0.744)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: DESCHUTES
+</td>
+<td style="text-align:center;">
+0.278<br>(0.218)
+</td>
+<td style="text-align:center;">
+0.319<br>(0.223)
+</td>
+<td style="text-align:center;">
+0.29<br>(0.221)
+</td>
+<td style="text-align:center;">
+0.278<br>(0.218)
+</td>
+<td style="text-align:center;">
+0.269<br>(0.218)
+</td>
+<td style="text-align:center;">
+0.261<br>(0.218)
+</td>
+<td style="text-align:center;">
+0.259<br>(0.217)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: JOHN DAY
+</td>
+<td style="text-align:center;">
+-0.197<br>(0.186)
+</td>
+<td style="text-align:center;">
+-0.171<br>(0.19)
+</td>
+<td style="text-align:center;">
+-0.139<br>(0.189)
+</td>
+<td style="text-align:center;">
+-0.197<br>(0.187)
+</td>
+<td style="text-align:center;">
+-0.181<br>(0.186)
+</td>
+<td style="text-align:center;">
+-0.175<br>(0.186)
+</td>
+<td style="text-align:center;">
+-0.179<br>(0.186)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: KLAMATH
+</td>
+<td style="text-align:center;">
+0.00602<br>(0.378)
+</td>
+<td style="text-align:center;">
+0.000107<br>(0.386)
+</td>
+<td style="text-align:center;">
+0.054<br>(0.383)
+</td>
+<td style="text-align:center;">
+0.00724<br>(0.378)
+</td>
+<td style="text-align:center;">
+0.0323<br>(0.377)
+</td>
+<td style="text-align:center;">
+0.0327<br>(0.377)
+</td>
+<td style="text-align:center;">
+0.0197<br>(0.376)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: KOOTENAI
+</td>
+<td style="text-align:center;">
+-0.755<br>(0.807)
+</td>
+<td style="text-align:center;">
+-0.886<br>(0.825)
+</td>
+<td style="text-align:center;">
+-0.811<br>(0.819)
+</td>
+<td style="text-align:center;">
+-0.777<br>(0.809)
+</td>
+<td style="text-align:center;">
+-0.788<br>(0.806)
+</td>
+<td style="text-align:center;">
+-0.779<br>(0.806)
+</td>
+<td style="text-align:center;">
+-0.76<br>(0.805)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: LOWER COLUMBIA
+</td>
+<td style="text-align:center;">
+0.0201<br>(0.129)
+</td>
+<td style="text-align:center;">
+0.00761<br>(0.132)
+</td>
+<td style="text-align:center;">
+-0.00201<br>(0.131)
+</td>
+<td style="text-align:center;">
+0.0219<br>(0.13)
+</td>
+<td style="text-align:center;">
+0.0198<br>(0.129)
+</td>
+<td style="text-align:center;">
+0.0183<br>(0.129)
+</td>
+<td style="text-align:center;">
+0.0176<br>(0.129)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: LOWER SNAKE
+</td>
+<td style="text-align:center;">
+0.876***<br>(0.316)
+</td>
+<td style="text-align:center;">
+0.967***<br>(0.323)
+</td>
+<td style="text-align:center;">
+1***<br>(0.321)
+</td>
+<td style="text-align:center;">
+0.88***<br>(0.317)
+</td>
+<td style="text-align:center;">
+0.909***<br>(0.316)
+</td>
+<td style="text-align:center;">
+0.91***<br>(0.316)
+</td>
+<td style="text-align:center;">
+0.895***<br>(0.316)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: MIDDLE COLUMBIA
+</td>
+<td style="text-align:center;">
+-0.338<br>(0.25)
+</td>
+<td style="text-align:center;">
+-0.445*<br>(0.255)
+</td>
+<td style="text-align:center;">
+-0.402<br>(0.253)
+</td>
+<td style="text-align:center;">
+-0.341<br>(0.25)
+</td>
+<td style="text-align:center;">
+-0.335<br>(0.25)
+</td>
+<td style="text-align:center;">
+-0.318<br>(0.249)
+</td>
+<td style="text-align:center;">
+-0.307<br>(0.249)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: MIDDLE SNAKE-BOISE
+</td>
+<td style="text-align:center;">
+-0.0011<br>(0.465)
+</td>
+<td style="text-align:center;">
+0.0366<br>(0.474)
+</td>
+<td style="text-align:center;">
+0.0377<br>(0.471)
+</td>
+<td style="text-align:center;">
+-0.00062<br>(0.465)
+</td>
+<td style="text-align:center;">
+0.00315<br>(0.464)
+</td>
+<td style="text-align:center;">
+0.0049<br>(0.463)
+</td>
+<td style="text-align:center;">
+0.00433<br>(0.463)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: MIDDLE SNAKE-POWDER
+</td>
+<td style="text-align:center;">
+-1.33<br>(1.02)
+</td>
+<td style="text-align:center;">
+-1.29<br>(1.05)
+</td>
+<td style="text-align:center;">
+-1.34<br>(1.04)
+</td>
+<td style="text-align:center;">
+-1.33<br>(1.03)
+</td>
+<td style="text-align:center;">
+-1.35<br>(1.02)
+</td>
+<td style="text-align:center;">
+-1.36<br>(1.02)
+</td>
+<td style="text-align:center;">
+-1.37<br>(1.02)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: NORTHERN CALIFORNIA COASTAL
+</td>
+<td style="text-align:center;">
+-1.31<br>(1.03)
+</td>
+<td style="text-align:center;">
+-1.3<br>(1.05)
+</td>
+<td style="text-align:center;">
+-1.34<br>(1.04)
+</td>
+<td style="text-align:center;">
+-1.31<br>(1.03)
+</td>
+<td style="text-align:center;">
+-1.34<br>(1.02)
+</td>
+<td style="text-align:center;">
+-1.35<br>(1.02)
+</td>
+<td style="text-align:center;">
+-1.35<br>(1.02)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: NORTHERN OREGON COASTAL
+</td>
+<td style="text-align:center;">
+-0.397***<br>(0.0837)
+</td>
+<td style="text-align:center;">
+-0.448***<br>(0.0856)
+</td>
+<td style="text-align:center;">
+-0.314***<br>(0.0893)
+</td>
+<td style="text-align:center;">
+-0.393***<br>(0.0841)
+</td>
+<td style="text-align:center;">
+-0.332***<br>(0.0879)
+</td>
+<td style="text-align:center;">
+-0.302***<br>(0.0881)
+</td>
+<td style="text-align:center;">
+-0.31***<br>(0.0881)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: OREGON CLOSED BASINS
+</td>
+<td style="text-align:center;">
+0.762**<br>(0.302)
+</td>
+<td style="text-align:center;">
+0.774**<br>(0.308)
+</td>
+<td style="text-align:center;">
+0.774**<br>(0.306)
+</td>
+<td style="text-align:center;">
+0.761**<br>(0.302)
+</td>
+<td style="text-align:center;">
+0.76**<br>(0.301)
+</td>
+<td style="text-align:center;">
+0.761**<br>(0.301)
+</td>
+<td style="text-align:center;">
+0.762**<br>(0.301)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: PEND OREILLE
+</td>
+<td style="text-align:center;">
+-0.546<br>(0.355)
+</td>
+<td style="text-align:center;">
+-0.545<br>(0.362)
+</td>
+<td style="text-align:center;">
+-0.556<br>(0.36)
+</td>
+<td style="text-align:center;">
+-0.548<br>(0.355)
+</td>
+<td style="text-align:center;">
+-0.557<br>(0.354)
+</td>
+<td style="text-align:center;">
+-0.559<br>(0.354)
+</td>
+<td style="text-align:center;">
+-0.556<br>(0.353)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: PUGET SOUND
+</td>
+<td style="text-align:center;">
+0.0467<br>(0.164)
+</td>
+<td style="text-align:center;">
+0.0733<br>(0.168)
+</td>
+<td style="text-align:center;">
+0.0644<br>(0.167)
+</td>
+<td style="text-align:center;">
+0.0464<br>(0.164)
+</td>
+<td style="text-align:center;">
+0.0439<br>(0.164)
+</td>
+<td style="text-align:center;">
+0.0424<br>(0.164)
+</td>
+<td style="text-align:center;">
+0.0424<br>(0.164)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: SALMON
+</td>
+<td style="text-align:center;">
+-0.876<br>(0.782)
+</td>
+<td style="text-align:center;">
+-0.9<br>(0.799)
+</td>
+<td style="text-align:center;">
+-0.647<br>(0.793)
+</td>
+<td style="text-align:center;">
+-0.89<br>(0.782)
+</td>
+<td style="text-align:center;">
+-0.806<br>(0.781)
+</td>
+<td style="text-align:center;">
+-0.777<br>(0.78)
+</td>
+<td style="text-align:center;">
+-0.793<br>(0.779)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: SPOKANE
+</td>
+<td style="text-align:center;">
+0.339<br>(0.463)
+</td>
+<td style="text-align:center;">
+0.435<br>(0.473)
+</td>
+<td style="text-align:center;">
+0.377<br>(0.47)
+</td>
+<td style="text-align:center;">
+0.335<br>(0.464)
+</td>
+<td style="text-align:center;">
+0.31<br>(0.463)
+</td>
+<td style="text-align:center;">
+0.303<br>(0.462)
+</td>
+<td style="text-align:center;">
+0.311<br>(0.462)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: UPPER COLUMBIA
+</td>
+<td style="text-align:center;">
+-0.313<br>(0.196)
+</td>
+<td style="text-align:center;">
+-0.333*<br>(0.2)
+</td>
+<td style="text-align:center;">
+-0.323<br>(0.199)
+</td>
+<td style="text-align:center;">
+-0.314<br>(0.196)
+</td>
+<td style="text-align:center;">
+-0.314<br>(0.196)
+</td>
+<td style="text-align:center;">
+-0.312<br>(0.196)
+</td>
+<td style="text-align:center;">
+-0.31<br>(0.195)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: UPPER SACRAMENTO
+</td>
+<td style="text-align:center;">
+0.056<br>(0.518)
+</td>
+<td style="text-align:center;">
+0.126<br>(0.529)
+</td>
+<td style="text-align:center;">
+0.215<br>(0.526)
+</td>
+<td style="text-align:center;">
+0.0589<br>(0.519)
+</td>
+<td style="text-align:center;">
+0.107<br>(0.518)
+</td>
+<td style="text-align:center;">
+0.188<br>(0.518)
+</td>
+<td style="text-align:center;">
+0.231<br>(0.519)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: WASHINGTON COASTAL
+</td>
+<td style="text-align:center;">
+-0.0767<br>(0.171)
+</td>
+<td style="text-align:center;">
+-0.113<br>(0.175)
+</td>
+<td style="text-align:center;">
+-0.128<br>(0.174)
+</td>
+<td style="text-align:center;">
+-0.0798<br>(0.172)
+</td>
+<td style="text-align:center;">
+-0.0941<br>(0.171)
+</td>
+<td style="text-align:center;">
+-0.0987<br>(0.171)
+</td>
+<td style="text-align:center;">
+-0.0946<br>(0.171)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;border-bottom: 1px solid">
+Basin: WILLAMETTE
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+-0.227***<br>(0.0757)
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+-0.228***<br>(0.0773)
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+-0.247***<br>(0.0768)
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+-0.227***<br>(0.0757)
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+-0.234***<br>(0.0756)
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+-0.23***<br>(0.0755)
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+-0.224***<br>(0.0755)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Adj. R2
+</td>
+<td style="text-align:center;">
+0.382
+</td>
+<td style="text-align:center;">
+0.356
+</td>
+<td style="text-align:center;">
+0.364
+</td>
+<td style="text-align:center;">
+0.382
+</td>
+<td style="text-align:center;">
+0.384
+</td>
+<td style="text-align:center;">
+0.386
+</td>
+<td style="text-align:center;">
+0.387
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+AIC
+</td>
+<td style="text-align:center;">
+4827.2
+</td>
+<td style="text-align:center;">
+4896.5
+</td>
+<td style="text-align:center;">
+4874.4
+</td>
+<td style="text-align:center;">
+4828.9
+</td>
+<td style="text-align:center;">
+4823.3
+</td>
+<td style="text-align:center;">
+4819.2
+</td>
+<td style="text-align:center;">
+4816.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+BIC
+</td>
+<td style="text-align:center;">
+5130.4
+</td>
+<td style="text-align:center;">
+5199.7
+</td>
+<td style="text-align:center;">
+5177.6
+</td>
+<td style="text-align:center;">
+5137.5
+</td>
+<td style="text-align:center;">
+5131.9
+</td>
+<td style="text-align:center;">
+5133.2
+</td>
+<td style="text-align:center;">
+5131
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;border-bottom: 1px solid">
+N
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1659
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1659
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1659
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1659
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1659
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1659
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1659
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; border:0;" colspan="100%">
+<sup></sup> * p &lt; 0.1, ** p &lt; 0.05, *** p &lt; 0.01
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+<div id="no-fixed-effects" class="section level3">
+<h3>No Fixed Effects</h3>
+<table class="table table-hover" style="margin-left: auto; margin-right: auto;">
+<caption>
+Pilot models, no fixed effects
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Term
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+NOFE-1
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+NOFE-2
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+NOFE-3
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+NOFE-4
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+NOFE-5
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+NOFE-6
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+NOFE-7
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Intercept
+</td>
+<td style="text-align:center;">
+10.8***<br>(0.0418)
+</td>
+<td style="text-align:center;">
+10.6***<br>(0.032)
+</td>
+<td style="text-align:center;">
+10.8***<br>(0.0336)
+</td>
+<td style="text-align:center;">
+10.8***<br>(0.0423)
+</td>
+<td style="text-align:center;">
+10.9***<br>(0.0409)
+</td>
+<td style="text-align:center;">
+10***<br>(0.0896)
+</td>
+<td style="text-align:center;">
+9.85***<br>(0.209)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Number of culverts
+</td>
+<td style="text-align:center;">
+-0.155***<br>(0.0191)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+-0.145***<br>(0.0208)
+</td>
+<td style="text-align:center;">
+-0.0775***<br>(0.0206)
+</td>
+<td style="text-align:center;">
+-0.0787***<br>(0.0212)
+</td>
+<td style="text-align:center;">
+-0.0769***<br>(0.0205)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Mean distance between work sites
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+-0.0000743***<br>(0.0000174)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+-0.0000228<br>(0.0000187)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+0.0000143<br>(0.0000186)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Mean distance between work sites, log
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+-0.142***<br>(0.0124)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+-0.12***<br>(0.0136)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+0.0325<br>(0.034)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;border-bottom: 1px solid">
+Single work site (dummy)
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+‒
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+‒
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+‒
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+‒
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+‒
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+0.857***<br>(0.0854)
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1.03***<br>(0.21)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Adj. R2
+</td>
+<td style="text-align:center;">
+0.0373
+</td>
+<td style="text-align:center;">
+0.0102
+</td>
+<td style="text-align:center;">
+0.0725
+</td>
+<td style="text-align:center;">
+0.0376
+</td>
+<td style="text-align:center;">
+0.0798
+</td>
+<td style="text-align:center;">
+0.0921
+</td>
+<td style="text-align:center;">
+0.0923
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+AIC
+</td>
+<td style="text-align:center;">
+5528.9
+</td>
+<td style="text-align:center;">
+5575.2
+</td>
+<td style="text-align:center;">
+5466.9
+</td>
+<td style="text-align:center;">
+5529.4
+</td>
+<td style="text-align:center;">
+5454.8
+</td>
+<td style="text-align:center;">
+5433.3
+</td>
+<td style="text-align:center;">
+5433
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+BIC
+</td>
+<td style="text-align:center;">
+5545.1
+</td>
+<td style="text-align:center;">
+5591.4
+</td>
+<td style="text-align:center;">
+5483.2
+</td>
+<td style="text-align:center;">
+5551.1
+</td>
+<td style="text-align:center;">
+5476.5
+</td>
+<td style="text-align:center;">
+5460.4
+</td>
+<td style="text-align:center;">
+5460.1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;border-bottom: 1px solid">
+N
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1664
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1664
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1664
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1664
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1664
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1664
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1664
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; border:0;" colspan="100%">
+<sup></sup> * p &lt; 0.1, ** p &lt; 0.05, *** p &lt; 0.01
+</td>
+</tr>
+</tfoot>
+</table>
+<p><a href="#results">Back to top</a></p>
+</div>
+<div id="number-of-culverts-binned" class="section level3">
+<h3>Number of Culverts Binned</h3>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:800px; ">
+<table class="table table-hover" style="margin-left: auto; margin-right: auto;">
+<caption>
+Pilot models, number of culverts binned
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Term
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+BIN-1
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+BIN-2
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+BIN-3
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+BIN-4
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+BIN-5
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Intercept
+</td>
+<td style="text-align:center;">
+9.81***<br>(0.247)
+</td>
+<td style="text-align:center;">
+9.81***<br>(0.247)
+</td>
+<td style="text-align:center;">
+9.81***<br>(0.247)
+</td>
+<td style="text-align:center;">
+9.64***<br>(0.301)
+</td>
+<td style="text-align:center;">
+9.36***<br>(0.341)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Number of culverts: 2
+</td>
+<td style="text-align:center;">
+-0.306***<br>(0.0762)
+</td>
+<td style="text-align:center;">
+-0.302***<br>(0.0769)
+</td>
+<td style="text-align:center;">
+-0.345***<br>(0.12)
+</td>
+<td style="text-align:center;">
+-0.164<br>(0.161)
+</td>
+<td style="text-align:center;">
+-0.143<br>(0.16)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Number of culverts: 3
+</td>
+<td style="text-align:center;">
+-0.618***<br>(0.174)
+</td>
+<td style="text-align:center;">
+-0.606***<br>(0.177)
+</td>
+<td style="text-align:center;">
+-0.665***<br>(0.207)
+</td>
+<td style="text-align:center;">
+-0.47**<br>(0.225)
+</td>
+<td style="text-align:center;">
+-0.493**<br>(0.225)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Number of culverts: 4
+</td>
+<td style="text-align:center;">
+-0.841***<br>(0.175)
+</td>
+<td style="text-align:center;">
+-0.836***<br>(0.176)
+</td>
+<td style="text-align:center;">
+-0.886***<br>(0.204)
+</td>
+<td style="text-align:center;">
+-0.688***<br>(0.233)
+</td>
+<td style="text-align:center;">
+-0.672***<br>(0.232)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Number of culverts: 5 or more
+</td>
+<td style="text-align:center;">
+-1.32***<br>(0.196)
+</td>
+<td style="text-align:center;">
+-1.29***<br>(0.214)
+</td>
+<td style="text-align:center;">
+-1.38***<br>(0.231)
+</td>
+<td style="text-align:center;">
+-1.18***<br>(0.242)
+</td>
+<td style="text-align:center;">
+-1.27***<br>(0.238)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Mean distance between work sites
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+-0.00000627<br>(0.0000164)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+-0.00000321<br>(0.0000167)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Mean distance between work sites, log
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+0.00881<br>(0.0206)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+0.049*<br>(0.0294)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Single work site (dummy)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+0.167<br>(0.172)
+</td>
+<td style="text-align:center;">
+0.461*<br>(0.241)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Culvert installation (dummy)
+</td>
+<td style="text-align:center;">
+0.049<br>(0.13)
+</td>
+<td style="text-align:center;">
+0.0463<br>(0.131)
+</td>
+<td style="text-align:center;">
+0.0541<br>(0.131)
+</td>
+<td style="text-align:center;">
+0.0366<br>(0.131)
+</td>
+<td style="text-align:center;">
+0.0467<br>(0.131)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Culvert removal (dummy)
+</td>
+<td style="text-align:center;">
+-0.0492<br>(0.0769)
+</td>
+<td style="text-align:center;">
+-0.0499<br>(0.0769)
+</td>
+<td style="text-align:center;">
+-0.0469<br>(0.0771)
+</td>
+<td style="text-align:center;">
+-0.0538<br>(0.077)
+</td>
+<td style="text-align:center;">
+-0.0484<br>(0.077)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: BLM
+</td>
+<td style="text-align:center;">
+0.881***<br>(0.123)
+</td>
+<td style="text-align:center;">
+0.882***<br>(0.123)
+</td>
+<td style="text-align:center;">
+0.881***<br>(0.123)
+</td>
+<td style="text-align:center;">
+0.881***<br>(0.123)
+</td>
+<td style="text-align:center;">
+0.882***<br>(0.123)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: BPA
+</td>
+<td style="text-align:center;">
+1.04*<br>(0.54)
+</td>
+<td style="text-align:center;">
+1.04*<br>(0.541)
+</td>
+<td style="text-align:center;">
+1.07*<br>(0.546)
+</td>
+<td style="text-align:center;">
+0.916*<br>(0.555)
+</td>
+<td style="text-align:center;">
+0.89<br>(0.554)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: GRMWP
+</td>
+<td style="text-align:center;">
+-0.465<br>(0.555)
+</td>
+<td style="text-align:center;">
+-0.456<br>(0.556)
+</td>
+<td style="text-align:center;">
+-0.465<br>(0.556)
+</td>
+<td style="text-align:center;">
+-0.471<br>(0.556)
+</td>
+<td style="text-align:center;">
+-0.496<br>(0.555)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: HABITAT WORK SCHEDULE
+</td>
+<td style="text-align:center;">
+1.33***<br>(0.221)
+</td>
+<td style="text-align:center;">
+1.34***<br>(0.222)
+</td>
+<td style="text-align:center;">
+1.33***<br>(0.222)
+</td>
+<td style="text-align:center;">
+1.34***<br>(0.222)
+</td>
+<td style="text-align:center;">
+1.32***<br>(0.222)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: NMFS
+</td>
+<td style="text-align:center;">
+1.59*<br>(0.835)
+</td>
+<td style="text-align:center;">
+1.6*<br>(0.835)
+</td>
+<td style="text-align:center;">
+1.59*<br>(0.835)
+</td>
+<td style="text-align:center;">
+1.59*<br>(0.835)
+</td>
+<td style="text-align:center;">
+1.58*<br>(0.834)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: NOAA RESTORATION
+</td>
+<td style="text-align:center;">
+0.994***<br>(0.23)
+</td>
+<td style="text-align:center;">
+0.993***<br>(0.23)
+</td>
+<td style="text-align:center;">
+0.997***<br>(0.23)
+</td>
+<td style="text-align:center;">
+0.98***<br>(0.231)
+</td>
+<td style="text-align:center;">
+0.975***<br>(0.23)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: NRRSS
+</td>
+<td style="text-align:center;">
+1.44***<br>(0.365)
+</td>
+<td style="text-align:center;">
+1.45***<br>(0.368)
+</td>
+<td style="text-align:center;">
+1.44***<br>(0.365)
+</td>
+<td style="text-align:center;">
+1.45***<br>(0.368)
+</td>
+<td style="text-align:center;">
+1.42***<br>(0.365)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: REO
+</td>
+<td style="text-align:center;">
+0.881***<br>(0.0791)
+</td>
+<td style="text-align:center;">
+0.883***<br>(0.0792)
+</td>
+<td style="text-align:center;">
+0.882***<br>(0.0791)
+</td>
+<td style="text-align:center;">
+0.882***<br>(0.0792)
+</td>
+<td style="text-align:center;">
+0.88***<br>(0.079)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: SRFBD
+</td>
+<td style="text-align:center;">
+1.66***<br>(0.243)
+</td>
+<td style="text-align:center;">
+1.66***<br>(0.243)
+</td>
+<td style="text-align:center;">
+1.67***<br>(0.244)
+</td>
+<td style="text-align:center;">
+1.63***<br>(0.245)
+</td>
+<td style="text-align:center;">
+1.62***<br>(0.245)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: WA RCO
+</td>
+<td style="text-align:center;">
+0.955***<br>(0.162)
+</td>
+<td style="text-align:center;">
+0.954***<br>(0.162)
+</td>
+<td style="text-align:center;">
+0.962***<br>(0.163)
+</td>
+<td style="text-align:center;">
+0.929***<br>(0.164)
+</td>
+<td style="text-align:center;">
+0.925***<br>(0.164)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: WDOT
+</td>
+<td style="text-align:center;">
+2.64***<br>(0.327)
+</td>
+<td style="text-align:center;">
+2.64***<br>(0.328)
+</td>
+<td style="text-align:center;">
+2.64***<br>(0.328)
+</td>
+<td style="text-align:center;">
+2.63***<br>(0.328)
+</td>
+<td style="text-align:center;">
+2.63***<br>(0.327)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 1997
+</td>
+<td style="text-align:center;">
+-0.447<br>(0.274)
+</td>
+<td style="text-align:center;">
+-0.447<br>(0.274)
+</td>
+<td style="text-align:center;">
+-0.454*<br>(0.275)
+</td>
+<td style="text-align:center;">
+-0.44<br>(0.274)
+</td>
+<td style="text-align:center;">
+-0.466*<br>(0.274)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 1998
+</td>
+<td style="text-align:center;">
+0.086<br>(0.261)
+</td>
+<td style="text-align:center;">
+0.0868<br>(0.261)
+</td>
+<td style="text-align:center;">
+0.0804<br>(0.261)
+</td>
+<td style="text-align:center;">
+0.0935<br>(0.261)
+</td>
+<td style="text-align:center;">
+0.0745<br>(0.261)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 1999
+</td>
+<td style="text-align:center;">
+0.211<br>(0.261)
+</td>
+<td style="text-align:center;">
+0.211<br>(0.261)
+</td>
+<td style="text-align:center;">
+0.207<br>(0.262)
+</td>
+<td style="text-align:center;">
+0.212<br>(0.261)
+</td>
+<td style="text-align:center;">
+0.192<br>(0.261)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2000
+</td>
+<td style="text-align:center;">
+0.402<br>(0.259)
+</td>
+<td style="text-align:center;">
+0.405<br>(0.259)
+</td>
+<td style="text-align:center;">
+0.395<br>(0.259)
+</td>
+<td style="text-align:center;">
+0.415<br>(0.259)
+</td>
+<td style="text-align:center;">
+0.394<br>(0.259)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2001
+</td>
+<td style="text-align:center;">
+0.402<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.404<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.395<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.412<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.391<br>(0.263)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2002
+</td>
+<td style="text-align:center;">
+0.544**<br>(0.258)
+</td>
+<td style="text-align:center;">
+0.544**<br>(0.259)
+</td>
+<td style="text-align:center;">
+0.538**<br>(0.259)
+</td>
+<td style="text-align:center;">
+0.549**<br>(0.259)
+</td>
+<td style="text-align:center;">
+0.524**<br>(0.259)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2003
+</td>
+<td style="text-align:center;">
+0.716***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.716***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.712***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.72***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.704***<br>(0.26)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2004
+</td>
+<td style="text-align:center;">
+1.06***<br>(0.261)
+</td>
+<td style="text-align:center;">
+1.06***<br>(0.261)
+</td>
+<td style="text-align:center;">
+1.06***<br>(0.261)
+</td>
+<td style="text-align:center;">
+1.07***<br>(0.261)
+</td>
+<td style="text-align:center;">
+1.05***<br>(0.261)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2005
+</td>
+<td style="text-align:center;">
+0.784***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.785***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.778***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.792***<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.772***<br>(0.26)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2006
+</td>
+<td style="text-align:center;">
+0.851***<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.85***<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.848***<br>(0.264)
+</td>
+<td style="text-align:center;">
+0.855***<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.847***<br>(0.263)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2007
+</td>
+<td style="text-align:center;">
+0.993***<br>(0.268)
+</td>
+<td style="text-align:center;">
+0.993***<br>(0.269)
+</td>
+<td style="text-align:center;">
+0.991***<br>(0.269)
+</td>
+<td style="text-align:center;">
+0.997***<br>(0.269)
+</td>
+<td style="text-align:center;">
+0.989***<br>(0.268)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2008
+</td>
+<td style="text-align:center;">
+0.559*<br>(0.305)
+</td>
+<td style="text-align:center;">
+0.559*<br>(0.305)
+</td>
+<td style="text-align:center;">
+0.558*<br>(0.305)
+</td>
+<td style="text-align:center;">
+0.555*<br>(0.305)
+</td>
+<td style="text-align:center;">
+0.541*<br>(0.305)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2009
+</td>
+<td style="text-align:center;">
+0.684**<br>(0.302)
+</td>
+<td style="text-align:center;">
+0.681**<br>(0.302)
+</td>
+<td style="text-align:center;">
+0.685**<br>(0.302)
+</td>
+<td style="text-align:center;">
+0.676**<br>(0.302)
+</td>
+<td style="text-align:center;">
+0.674**<br>(0.301)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2010
+</td>
+<td style="text-align:center;">
+0.684**<br>(0.292)
+</td>
+<td style="text-align:center;">
+0.681**<br>(0.292)
+</td>
+<td style="text-align:center;">
+0.685**<br>(0.292)
+</td>
+<td style="text-align:center;">
+0.675**<br>(0.292)
+</td>
+<td style="text-align:center;">
+0.665**<br>(0.292)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2011
+</td>
+<td style="text-align:center;">
+0.665**<br>(0.304)
+</td>
+<td style="text-align:center;">
+0.664**<br>(0.304)
+</td>
+<td style="text-align:center;">
+0.664**<br>(0.304)
+</td>
+<td style="text-align:center;">
+0.661**<br>(0.304)
+</td>
+<td style="text-align:center;">
+0.65**<br>(0.304)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2012
+</td>
+<td style="text-align:center;">
+0.655**<br>(0.328)
+</td>
+<td style="text-align:center;">
+0.657**<br>(0.328)
+</td>
+<td style="text-align:center;">
+0.652**<br>(0.329)
+</td>
+<td style="text-align:center;">
+0.655**<br>(0.328)
+</td>
+<td style="text-align:center;">
+0.636*<br>(0.328)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2013
+</td>
+<td style="text-align:center;">
+0.374<br>(0.301)
+</td>
+<td style="text-align:center;">
+0.374<br>(0.301)
+</td>
+<td style="text-align:center;">
+0.371<br>(0.301)
+</td>
+<td style="text-align:center;">
+0.372<br>(0.301)
+</td>
+<td style="text-align:center;">
+0.354<br>(0.301)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2014
+</td>
+<td style="text-align:center;">
+0.506<br>(0.319)
+</td>
+<td style="text-align:center;">
+0.508<br>(0.319)
+</td>
+<td style="text-align:center;">
+0.504<br>(0.319)
+</td>
+<td style="text-align:center;">
+0.497<br>(0.319)
+</td>
+<td style="text-align:center;">
+0.472<br>(0.319)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2015
+</td>
+<td style="text-align:center;">
+0.898**<br>(0.408)
+</td>
+<td style="text-align:center;">
+0.93**<br>(0.417)
+</td>
+<td style="text-align:center;">
+0.898**<br>(0.409)
+</td>
+<td style="text-align:center;">
+0.897**<br>(0.419)
+</td>
+<td style="text-align:center;">
+0.852**<br>(0.409)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: CLEARWATER
+</td>
+<td style="text-align:center;">
+0.523<br>(0.752)
+</td>
+<td style="text-align:center;">
+0.514<br>(0.753)
+</td>
+<td style="text-align:center;">
+0.491<br>(0.756)
+</td>
+<td style="text-align:center;">
+0.646<br>(0.765)
+</td>
+<td style="text-align:center;">
+0.701<br>(0.763)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: DESCHUTES
+</td>
+<td style="text-align:center;">
+0.267<br>(0.219)
+</td>
+<td style="text-align:center;">
+0.267<br>(0.219)
+</td>
+<td style="text-align:center;">
+0.266<br>(0.219)
+</td>
+<td style="text-align:center;">
+0.269<br>(0.219)
+</td>
+<td style="text-align:center;">
+0.267<br>(0.219)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: JOHN DAY
+</td>
+<td style="text-align:center;">
+-0.199<br>(0.187)
+</td>
+<td style="text-align:center;">
+-0.199<br>(0.187)
+</td>
+<td style="text-align:center;">
+-0.202<br>(0.187)
+</td>
+<td style="text-align:center;">
+-0.19<br>(0.187)
+</td>
+<td style="text-align:center;">
+-0.195<br>(0.187)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: KLAMATH
+</td>
+<td style="text-align:center;">
+0.0479<br>(0.379)
+</td>
+<td style="text-align:center;">
+0.0494<br>(0.379)
+</td>
+<td style="text-align:center;">
+0.0426<br>(0.379)
+</td>
+<td style="text-align:center;">
+0.0562<br>(0.379)
+</td>
+<td style="text-align:center;">
+0.039<br>(0.379)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: KOOTENAI
+</td>
+<td style="text-align:center;">
+-0.786<br>(0.809)
+</td>
+<td style="text-align:center;">
+-0.802<br>(0.81)
+</td>
+<td style="text-align:center;">
+-0.78<br>(0.809)
+</td>
+<td style="text-align:center;">
+-0.801<br>(0.81)
+</td>
+<td style="text-align:center;">
+-0.771<br>(0.808)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: LOWER COLUMBIA
+</td>
+<td style="text-align:center;">
+0.0259<br>(0.13)
+</td>
+<td style="text-align:center;">
+0.027<br>(0.13)
+</td>
+<td style="text-align:center;">
+0.0262<br>(0.13)
+</td>
+<td style="text-align:center;">
+0.0253<br>(0.13)
+</td>
+<td style="text-align:center;">
+0.0247<br>(0.13)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: LOWER SNAKE
+</td>
+<td style="text-align:center;">
+0.889***<br>(0.317)
+</td>
+<td style="text-align:center;">
+0.892***<br>(0.317)
+</td>
+<td style="text-align:center;">
+0.882***<br>(0.317)
+</td>
+<td style="text-align:center;">
+0.902***<br>(0.317)
+</td>
+<td style="text-align:center;">
+0.881***<br>(0.317)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: MIDDLE COLUMBIA
+</td>
+<td style="text-align:center;">
+-0.426*<br>(0.25)
+</td>
+<td style="text-align:center;">
+-0.427*<br>(0.25)
+</td>
+<td style="text-align:center;">
+-0.43*<br>(0.251)
+</td>
+<td style="text-align:center;">
+-0.406<br>(0.251)
+</td>
+<td style="text-align:center;">
+-0.39<br>(0.251)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: MIDDLE SNAKE-BOISE
+</td>
+<td style="text-align:center;">
+0.0182<br>(0.465)
+</td>
+<td style="text-align:center;">
+0.0186<br>(0.465)
+</td>
+<td style="text-align:center;">
+0.0181<br>(0.465)
+</td>
+<td style="text-align:center;">
+0.018<br>(0.466)
+</td>
+<td style="text-align:center;">
+0.0163<br>(0.465)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: MIDDLE SNAKE-POWDER
+</td>
+<td style="text-align:center;">
+-1.37<br>(1.03)
+</td>
+<td style="text-align:center;">
+-1.37<br>(1.03)
+</td>
+<td style="text-align:center;">
+-1.37<br>(1.03)
+</td>
+<td style="text-align:center;">
+-1.37<br>(1.03)
+</td>
+<td style="text-align:center;">
+-1.38<br>(1.03)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: NORTHERN CALIFORNIA COASTAL
+</td>
+<td style="text-align:center;">
+-1.36<br>(1.03)
+</td>
+<td style="text-align:center;">
+-1.36<br>(1.03)
+</td>
+<td style="text-align:center;">
+-1.35<br>(1.03)
+</td>
+<td style="text-align:center;">
+-1.37<br>(1.03)
+</td>
+<td style="text-align:center;">
+-1.36<br>(1.03)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: NORTHERN OREGON COASTAL
+</td>
+<td style="text-align:center;">
+-0.331***<br>(0.0878)
+</td>
+<td style="text-align:center;">
+-0.328***<br>(0.0881)
+</td>
+<td style="text-align:center;">
+-0.337***<br>(0.0888)
+</td>
+<td style="text-align:center;">
+-0.318***<br>(0.0887)
+</td>
+<td style="text-align:center;">
+-0.33***<br>(0.0888)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: OREGON CLOSED BASINS
+</td>
+<td style="text-align:center;">
+0.762**<br>(0.302)
+</td>
+<td style="text-align:center;">
+0.762**<br>(0.302)
+</td>
+<td style="text-align:center;">
+0.763**<br>(0.302)
+</td>
+<td style="text-align:center;">
+0.761**<br>(0.302)
+</td>
+<td style="text-align:center;">
+0.763**<br>(0.302)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: PEND OREILLE
+</td>
+<td style="text-align:center;">
+-0.551<br>(0.355)
+</td>
+<td style="text-align:center;">
+-0.554<br>(0.356)
+</td>
+<td style="text-align:center;">
+-0.552<br>(0.355)
+</td>
+<td style="text-align:center;">
+-0.545<br>(0.356)
+</td>
+<td style="text-align:center;">
+-0.535<br>(0.355)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: PUGET SOUND
+</td>
+<td style="text-align:center;">
+0.0399<br>(0.164)
+</td>
+<td style="text-align:center;">
+0.04<br>(0.165)
+</td>
+<td style="text-align:center;">
+0.0401<br>(0.165)
+</td>
+<td style="text-align:center;">
+0.0384<br>(0.165)
+</td>
+<td style="text-align:center;">
+0.0372<br>(0.164)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: SALMON
+</td>
+<td style="text-align:center;">
+-0.678<br>(0.784)
+</td>
+<td style="text-align:center;">
+-0.692<br>(0.785)
+</td>
+<td style="text-align:center;">
+-0.682<br>(0.785)
+</td>
+<td style="text-align:center;">
+-0.674<br>(0.786)
+</td>
+<td style="text-align:center;">
+-0.674<br>(0.784)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: SPOKANE
+</td>
+<td style="text-align:center;">
+0.272<br>(0.464)
+</td>
+<td style="text-align:center;">
+0.271<br>(0.465)
+</td>
+<td style="text-align:center;">
+0.271<br>(0.465)
+</td>
+<td style="text-align:center;">
+0.278<br>(0.465)
+</td>
+<td style="text-align:center;">
+0.285<br>(0.464)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: UPPER COLUMBIA
+</td>
+<td style="text-align:center;">
+-0.296<br>(0.196)
+</td>
+<td style="text-align:center;">
+-0.297<br>(0.197)
+</td>
+<td style="text-align:center;">
+-0.293<br>(0.197)
+</td>
+<td style="text-align:center;">
+-0.306<br>(0.197)
+</td>
+<td style="text-align:center;">
+-0.304<br>(0.197)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: UPPER SACRAMENTO
+</td>
+<td style="text-align:center;">
+0.178<br>(0.52)
+</td>
+<td style="text-align:center;">
+0.18<br>(0.521)
+</td>
+<td style="text-align:center;">
+0.182<br>(0.521)
+</td>
+<td style="text-align:center;">
+0.196<br>(0.521)
+</td>
+<td style="text-align:center;">
+0.244<br>(0.521)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Basin: WASHINGTON COASTAL
+</td>
+<td style="text-align:center;">
+-0.11<br>(0.172)
+</td>
+<td style="text-align:center;">
+-0.112<br>(0.172)
+</td>
+<td style="text-align:center;">
+-0.107<br>(0.172)
+</td>
+<td style="text-align:center;">
+-0.118<br>(0.172)
+</td>
+<td style="text-align:center;">
+-0.113<br>(0.172)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;border-bottom: 1px solid">
+Basin: WILLAMETTE
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+-0.236***<br>(0.0758)
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+-0.236***<br>(0.0759)
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+-0.235***<br>(0.0759)
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+-0.237***<br>(0.0759)
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+-0.231***<br>(0.0759)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Adj. R2
+</td>
+<td style="text-align:center;">
+0.38
+</td>
+<td style="text-align:center;">
+0.38
+</td>
+<td style="text-align:center;">
+0.38
+</td>
+<td style="text-align:center;">
+0.38
+</td>
+<td style="text-align:center;">
+0.381
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+AIC
+</td>
+<td style="text-align:center;">
+4834.7
+</td>
+<td style="text-align:center;">
+4836.5
+</td>
+<td style="text-align:center;">
+4836.5
+</td>
+<td style="text-align:center;">
+4837.6
+</td>
+<td style="text-align:center;">
+4834.7
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+BIC
+</td>
+<td style="text-align:center;">
+5154.1
+</td>
+<td style="text-align:center;">
+5161.4
+</td>
+<td style="text-align:center;">
+5161.4
+</td>
+<td style="text-align:center;">
+5167.8
+</td>
+<td style="text-align:center;">
+5165
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;border-bottom: 1px solid">
+N
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1659
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1659
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1659
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1659
+</td>
+<td style="text-align:center;border-bottom: 1px solid">
+1659
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; border:0;" colspan="100%">
+<sup></sup> * p &lt; 0.1, ** p &lt; 0.05, *** p &lt; 0.01
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+</div>
+<div id="preferred-model-interpretation" class="section level2 tabset tabset-pills">
+<h2>Preferred Model Interpretation</h2>
+<p>Preferred model interpretation (n_culverts, log dist_mean, worksite dummy, with fixed effects) Our preferred model is <strong>FE-7</strong>, the specification with linear numer of culverts, log mean distance with a dummy for single work site projects, and the full suite of fixed effects. This model has the highest <strong>adjusted R<sup>2</sup></strong> (<strong>0.387</strong>) and lowest <strong>AIC</strong> (<strong>4816.9</strong>). Its fit is marginally better than alternatives, though the results described below largely hold across models. Below are fitted value vs. residuals plots and a Q-Q plot of the residuals for the preferred model.</p>
+<p><img src="figure/culvertspilotreg_report_2020april3.Rmd/fig-diagnostic-1.png" width="768" style="display: block; margin: auto;" /><br />
+<em>Color indicates funding source.</em></p>
+<p><strong>Evidence of economies of scale</strong><br />
+The preferred model suggests that for every additional culvert under a project, project average costs fall <strong>12.1%</strong> on average. This result is consistent across alternative specifications. Falling average costs as the number of culverts increases is consistent with the hypothesis of economies of scale. Presumably, economies of scale fall at some point, though the binned models suggest that this inflection point is somewhere beyond five culverts and outside the range of the observed data.</p>
+<p><strong>Little support for distance hypothesis</strong><br />
+We find some weak support for the distance hypothesis. In the preferred model, the log mean distance betweeen work sites coefficient is positive, but statistically insignificant at the 10% level. For a 10% increase in the distance between work sites, project average costs increase only <strong>0.4%</strong>. (Note that in model <strong>BIN-5</strong>, the coefficient is statistically significant at the 10% level and in this model, a 10% increase in distance is associated with a <strong>0.5%</strong>.)</p>
+<p>In models where mean distance between work sites is included without number of culverts, the coefficients are negative and statistically significant, and this effect persists for log mean distance specifications. This is likely due to collinearity (and ommited variable bias) between the number of culverts and the mean distance between work sites, which confounds scale effects of increasing the number of culverts and worksites with the distance effect of when worksites are further away. This effect is likely especially pronounced when projects increase from one culvert and one work site (and therefore zero distance between work sites by definition) to multiple work sites. Including the single work site dummy alleviates this effect.</p>
+</div>
+<div id="results-figures" class="section level2 tabset tabset-pills">
+<h2>Results Figures</h2>
+<p>We can compare fixed effects to identify trends in project average costs over time, differences in levels between basins or reporting sources. To do so, we plot the exponentiated coefficients for each model with fixed effects (<strong>FE</strong> and <strong>BIN</strong> models), which gives the ratio of the expected average costs for projects in a given category (i.e. <em>year</em> or <em>basin</em>) relative to the base category (i.e. <em>1996</em> or <em>Southern Oregon Coastal</em>), conditional on the other covariates.</p>
+<div id="year-fixed-effects" class="section level3">
+<h3>Year Fixed Effects</h3>
+<p><img src="figure/culvertspilotreg_report_2020april3.Rmd/fig-year-1.png" width="768" style="display: block; margin: auto;" /></p>
+<blockquote>
+<p><strong>Observation:</strong> Average costs were higher between 2002 and 2007 before falling to a lower level between 2008 and 2011. Average costs fell to pre-2002 levels in 2013 before spiking again to early 2000s levels in 2015.</p>
+</blockquote>
+</div>
+<div id="source-fixed-effects" class="section level3">
+<h3>Source Fixed Effects</h3>
+<p><img src="figure/culvertspilotreg_report_2020april3.Rmd/fig-source-1.png" width="768" style="display: block; margin: auto;" /> <a href="#sources">Source glossery</a></p>
+<blockquote>
+<p><strong>Observation:</strong> <strong>WSDOT</strong> reports unusually high average costs. Projects reported by <strong>OWRI</strong> (the base level) have average costs that are relatively low. These effects swamp basin effects observed in the next figure.</p>
+</blockquote>
+</div>
+<div id="basin-fixed-effects" class="section level3">
+<h3>Basin Fixed Effects</h3>
+<p><img src="figure/culvertspilotreg_report_2020april3.Rmd/fig-basin-1.png" width="768" style="display: block; margin: auto;" /></p>
+<blockquote>
+<p><strong>Observation:</strong> Average costs are unsually high in the <strong>Lower Snake</strong> and <strong>Oregon Closed</strong> basins. Projects in the <strong>Willamette</strong> and <strong>Northern Oregon Coastal</strong> basins have average costs that are significatnly lower than projects in the <strong>Southern Oregon Coastal</strong> basin.</p>
+</blockquote>
+</div>
+<div id="effect-size-by-number-of-culverts" class="section level3">
+<h3>Effect Size by Number of Culverts</h3>
+<p><img src="figure/culvertspilotreg_report_2020april3.Rmd/fig-culverts-1.png" width="768" style="display: block; margin: auto;" /></p>
+<blockquote>
+<p><strong>Observation:</strong> Average costs are <strong>lower</strong> for projects that deal with more culverts, suggesting <em>economies of scale</em>. This result is consistent with evidence from the preferred model.</p>
+</blockquote>
+</div>
+</div>
+</div>
+<div id="next-steps" class="section level1">
+<h1>Next Steps</h1>
+<p>In this section, we brainstorm potential variables that we may be able to layer upon the existing models to improve predictive power and utility or test additional hypotheses. We then also brainstorm potential applications for future models.</p>
+<div id="potential-additional-variables" class="section level2">
+<h2>Potential Additional Variables</h2>
+<div id="road-variables" class="section level4">
+<h4>Road Variables</h4>
+<p><strong>Examples:</strong> Road width at culvert, road classification (i.e. four-lane highway, two-land highway, etc.), average monthly traffic, years since maintenance<br />
+<strong>Potential Sources:</strong> OpenStreetMaps road data, others (?)<br />
+<strong>Technical Barriers:</strong> Developing efficient algorithm for identifying and measuring nearest road, possibility that ArcGIS has superior methods<br />
+<strong>Other Notes:</strong> These variables will be tough to get, but it should be possible. Work site coordinates are likely not exactly on the roads due to accuracy, so identifying the nearest road instead of the exact overlap will likely be necessary. OpenStreetData is the only database I’ve checked so far, but there are likely other more detailed road inventories available. Culverts on smaller roads will require more detailed road data, which is even more computationally demanding.<br />
+</p>
+</div>
+<div id="stream-variables" class="section level4">
+<h4>Stream Variables</h4>
+<p><strong>Examples:</strong> Stream width at culvert, flow at culvert, depth at culvert<br />
+<strong>Potential Sources:</strong> OpenStreetMaps stream data, nearest observation stations along streams if available, others (?)<br />
+<strong>Technical Barriers:</strong> Developing efficient algorithm for identifying nearest stream or observation station, possibility that ArcGIS has superior methods<br />
+<strong>Other Notes:</strong> These variables are likely even harder to generate than the road ones. All of the same caveats apply, but exact stream characteristics vary a lot year-to-year, so tracking down reliable data might be difficult.<br />
+</p>
+</div>
+<div id="geo-spatial-variables" class="section level4">
+<h4>Geo-spatial Variables</h4>
+<p><strong>Examples:</strong> Number of other work sites in <em>r</em> radius in past <em>y</em> years, spatial auto-correlation methods (Moran’s <em>I</em>, Cliff-Ord type models), distance to nearest population center<br />
+<strong>Potential Sources:</strong> Already possible with existing coordinates<br />
+<strong>Technical Barriers:</strong> Developing efficient algorithm for counting other projects in radius over time and space, identifying appropriate econometric techniques<br />
+<strong>Other Notes:</strong> Building in these sorts of methods might be computationally taxing but is surely possible in the near-term. The value of adding these sorts of methods will increase once other co-variates are added.<br />
+</p>
+</div>
+<div id="socio-economic-variables" class="section level4">
+<h4>Socio-economic Variables</h4>
+<p><strong>Examples:</strong> Population density in county, distribution of jobs across sectors in county, unemployment in county, median income in county<br />
+<strong>Potential Sources:</strong> US Census Bureau, others (?)<br />
+<strong>Technical Barriers:</strong> Accessing Census Bureau API, identifying time series with appropriate temporal/geographic resolution, identifying county by coordinates<br />
+<strong>Other Notes:</strong> This seems to be the low-hanging fruit. Work on this can start immediately.<br />
+</p>
+</div>
+</div>
+<div id="example-applications" class="section level2">
+<h2>Example Applications</h2>
+<div id="predicting-costs-for-future-culvert-projects" class="section level4">
+<h4>Predicting Costs for Future Culvert Projects</h4>
+<p>Using data from state culvert inventories, we may be able to use these models to develop cost predictions for future culvert projects. These predictions can be integrated into prioritization methods used by state and local agencies. Maps and examples with different prioritization algorithms (e.g. with or without accounting for costs) can demonstrate value of including cost modeling in restoration planning.</p>
+</div>
+<div id="quantity-vs.-expenditure-plots" class="section level4">
+<h4>Quantity vs. Expenditure Plots</h4>
+<p>With a sufficiently accurate model and a optimization algorithm, we could estimate the minimum expenditures on culvert projects that would be necessary to achieve a given level of additional stream access. We could further prioritize different streams by habitat quality and ECU population ranges to demonstrate cost-conservation target trade-offs. We could also demonstrate the effects of distributing funding uniformly over municipalities versus in a more targeted fashion.</p>
+</div>
+<div id="other-extensions" class="section level4">
+<h4>Other Extensions</h4>
+<p>The PNSHP database includes projects for other restoration actions. Models like these may be extendable to some other actions. Specifically, actions like the installation of in-stream large woody debris and other discrete riparian actions seem to be prime candidates to extend these methods to in parallel models.</p>
+</div>
+</div>
+</div>
+<div id="sources" class="section level1">
+<h1>Appendix: Source Glossary</h1>
+<p>Thirty-eight different organizations, referred to as <em>sources</em>, contribute data to PNSHP. Below you will find a glossary of each source code.</p>
+<blockquote>
+<p><strong>ASOTIN</strong> - Asotin County Conservation District (Asotin County is the southeastern-most county in Washington and contains important Snake River watersheds)<br />
+<strong>BLM</strong> - Bureau of Land Management<br />
+<strong>BOR</strong> - Bureau of Reclamation (Department of the Interior agency responsible for water storage and irrigation, including federal dams)<br />
+<strong>BPA</strong> - Bonneville Power Administration<br />
+<strong>CBFWA</strong> - Columbia Basin Fish and Wildlife Authority (Now defunct group of state, federal, and tribal agencies organized to advise BPA on habitat improvement efforts)<br />
+<strong>CHEHALIS</strong> - Chehalis Tribe (Southwestern Washington)<br />
+<strong>COLVILLE</strong> - Colville Tribe (Northeastern Washington)<br />
+<strong>COQUILLE</strong> - Coquille Tribe (Southwestern Oregon)<br />
+<strong>COWLITZ</strong> - Cowlitz Tribe (Northeastern Washington)<br />
+<strong>CRITFC</strong> - Columbia River Inter-Tribal Fisheries Commission<br />
+<strong>DUCKS UNLIMITED</strong> - Ducks Unlimited<br />
+<strong>FISHER FISHERIES</strong> - Fisher Fisheries Consultancy<br />
+<strong>GRAND RONDE</strong> - Grand Ronde Tribe (Central Western Oregon)<br />
+<strong>GRMWP</strong> - Grande Ronde Model Watershed Program (Northeastern Oregon river)<br />
+<strong>HABITAT WORK SCHEDULE</strong> - Washington State program for tracking projects by the 27 “Lead Entities”, local boards responsible for managing state salmon habitat spending<br />
+<strong>ID OSC</strong> - Idaho Office of Species Conservation<br />
+<strong>IDAHODEQ</strong> - Idaho Department of Environmental Quality<br />
+<strong>IDFG</strong> - Idaho Department of Fish and Game<br />
+<strong>IDFG SCREEN SHOP</strong> - Fish screen efforts for IDFG<br />
+<strong>KRITFWC</strong> - Klamath River Inter-Tribal Fish and Water Commission (Southern Oregon river)<br />
+<strong>MONTANA WATER CENTER</strong> - Research institute based at Montana State<br />
+<strong>NMFS</strong> - NOAA Fisheries<br />
+<strong>NOAA RESTORATION</strong> - NOAA Restoration Center<br />
+<strong>NRRSS</strong> - National River Restoration Science Synthesis project (a project of American Rivers)<br />
+<strong>NWIFC</strong> - Northwest Indian Fisheries Commission<br />
+<strong>OR WATER TRUST</strong> - Oregon Water Trust<br />
+<strong>OWRI</strong> - Oregon Watershed Restoration Inventory<br />
+<strong>PCSRF</strong> - Pacific Coastal Salmon Recovery Fund (federal grant program administered by NOAA)<br />
+<strong>REO</strong> - United States Forest Service Region 6 Regional Ecosystem Office<br />
+<strong>SHOSHONE-BANNOCK</strong> - Shoshone-Bannock Tribes (Southeastern Idaho)<br />
+<strong>SRFBD</strong> - Salmon Funding Recovery Board Database (Washington State Recreation and Conservation Office grant program)<br />
+<strong>STREAMNET</strong> - Data project of the Pacific States Marine Fisheries Commission<br />
+<strong>WA DOE</strong> - Washington State Department of Ecology<br />
+<strong>WA RCO</strong> - Washington State Recreation and Conservation Office<br />
+<strong>WA WATER TRUST</strong> - Washington Water Trust<br />
+<strong>WDFW FISHWAY</strong> - Washington State Department of Fish and Wildlife (WDFW) Fishway Program<br />
+<strong>WDFW WRIP</strong> - WDFW Watershed Recovery Inventory Project<br />
+<strong>WDOT</strong> - Washington Department of Transportation</p>
+</blockquote>
+</div>
+<div id="end-matter" class="section level1">
+<h1>End Matter</h1>
+<pre><code>[1] &quot;2020-10-23 12:26:02 PDT&quot;</code></pre>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19041)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] grid      stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] here_0.1         broom_0.7.0      kableExtra_1.1.0 knitr_1.29      
+ [5] scales_1.1.1     ggfortify_0.4.10 ggthemes_4.2.0   janitor_2.0.1   
+ [9] forcats_0.5.0    stringr_1.4.0    dplyr_1.0.1      purrr_0.3.4     
+[13] readr_1.3.1      tidyr_1.1.1      tibble_3.0.4     ggplot2_3.3.2   
+[17] tidyverse_1.3.0  workflowr_1.6.2 
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.5        lubridate_1.7.9   ps_1.3.3          assertthat_0.2.1 
+ [5] rprojroot_1.3-2   digest_0.6.25     R6_2.4.1          cellranger_1.1.0 
+ [9] backports_1.1.8   reprex_0.3.0      evaluate_0.14     highr_0.8        
+[13] httr_1.4.2        pillar_1.4.6      rlang_0.4.8       readxl_1.3.1     
+[17] rstudioapi_0.11   blob_1.2.1        rmarkdown_2.3     labeling_0.3     
+[21] webshot_0.5.2     munsell_0.5.0     compiler_4.0.2    httpuv_1.5.4     
+[25] modelr_0.1.8      xfun_0.16         pkgconfig_2.0.3   htmltools_0.5.0  
+[29] tidyselect_1.1.0  gridExtra_2.3     viridisLite_0.3.0 fansi_0.4.1      
+[33] crayon_1.3.4      dbplyr_1.4.4      withr_2.2.0       later_1.1.0.1    
+[37] jsonlite_1.7.1    gtable_0.3.0      lifecycle_0.2.0   DBI_1.1.0        
+[41] git2r_0.27.1      magrittr_1.5      cli_2.1.0         stringi_1.4.6    
+[45] farver_2.0.3      fs_1.4.2          promises_1.1.1    snakecase_0.11.0 
+[49] xml2_1.3.2        ellipsis_0.3.1    generics_0.0.2    vctrs_0.3.4      
+[53] tools_4.0.2       glue_1.4.2        hms_0.5.3         yaml_2.2.1       
+[57] colorspace_1.4-1  rvest_0.3.6       haven_2.3.1      </code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19041)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] grid      stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] here_0.1         broom_0.7.0      kableExtra_1.1.0 knitr_1.29      
+ [5] scales_1.1.1     ggfortify_0.4.10 ggthemes_4.2.0   janitor_2.0.1   
+ [9] forcats_0.5.0    stringr_1.4.0    dplyr_1.0.1      purrr_0.3.4     
+[13] readr_1.3.1      tidyr_1.1.1      tibble_3.0.4     ggplot2_3.3.2   
+[17] tidyverse_1.3.0  workflowr_1.6.2 
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_1.0.5        lubridate_1.7.9   ps_1.3.3          assertthat_0.2.1 
+ [5] rprojroot_1.3-2   digest_0.6.25     R6_2.4.1          cellranger_1.1.0 
+ [9] backports_1.1.8   reprex_0.3.0      evaluate_0.14     highr_0.8        
+[13] httr_1.4.2        pillar_1.4.6      rlang_0.4.8       readxl_1.3.1     
+[17] rstudioapi_0.11   blob_1.2.1        rmarkdown_2.3     labeling_0.3     
+[21] webshot_0.5.2     munsell_0.5.0     compiler_4.0.2    httpuv_1.5.4     
+[25] modelr_0.1.8      xfun_0.16         pkgconfig_2.0.3   htmltools_0.5.0  
+[29] tidyselect_1.1.0  gridExtra_2.3     viridisLite_0.3.0 fansi_0.4.1      
+[33] crayon_1.3.4      dbplyr_1.4.4      withr_2.2.0       later_1.1.0.1    
+[37] jsonlite_1.7.1    gtable_0.3.0      lifecycle_0.2.0   DBI_1.1.0        
+[41] git2r_0.27.1      magrittr_1.5      cli_2.1.0         stringi_1.4.6    
+[45] farver_2.0.3      fs_1.4.2          promises_1.1.1    snakecase_0.11.0 
+[49] xml2_1.3.2        ellipsis_0.3.1    generics_0.0.2    vctrs_0.3.4      
+[53] tools_4.0.2       glue_1.4.2        hms_0.5.3         yaml_2.2.1       
+[57] colorspace_1.4-1  rvest_0.3.6       haven_2.3.1      </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

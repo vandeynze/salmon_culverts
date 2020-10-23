@@ -7,4 +7,4 @@ editor_options:
   chunk_output_type: console
 ---
 
-Describe your project.
+This project aims to measure cost variability and drivers of costs for culvert improvements in the Pacific Northwest. The repository is managed by Braeden Van Deynze. Contributors to this project can be found on the repository page.

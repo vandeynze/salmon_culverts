@@ -8,4 +8,10 @@ editor_options:
   chunk_output_type: console
 ---
 
-Welcome to my research website.
+Research reports for the salmon_culverts repository.
+
+1. **[PNSHP Spending and Project Summaries](https://vandeynze.github.io/salmon_culverts/PNSHP_report_2020mar10.html)**
+2. **[PNSHP Culvert Report](https://vandeynze.github.io/salmon_culverts/culverts_report_2020mar27.html)**
+3. **[Culvert Cost Pilot Models](https://vandeynze.github.io/salmon_culverts/culvertspilotreg_report_2020april3.html)**
+4. **[Explore spatially-derived variables for culvert work sites](https://vandeynze.github.io/salmon_culverts/spatialexplore.html)**
+5. **[Culvert cost models with spatially explicit data](https://vandeynze.github.io/salmon_culverts/spatialcostmodels.html)**

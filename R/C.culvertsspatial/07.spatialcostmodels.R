@@ -1,0 +1,1411 @@
+#' ---
+#' title: "Culvert cost models with spatially explicit data"
+#' author: "B. Van Deynze"
+#' date: '`r format(Sys.Date(), "%B %d, %Y")`'
+#' output:
+#'    html_document:
+#'       number_sections: true
+#'       toc: true
+#'       toc_float:
+#'          collapsed: true
+#' ---
+#' 
+#+ include=F
+# Prepare environment and data ----
+rm(list = ls())
+
+library(MASS)
+library(tidyverse)
+library(janitor)
+library(here)
+library(scales)
+library(knitr)
+library(kableExtra)
+library(broom)
+library(margins)
+library(ggeffects)
+library(forcats)
+library(readxl)
+library(mctest)
+library(ggcorrplot)
+
+
+opts_chunk$set(echo=FALSE)
+
+# Introduction and theory ----
+#+
+
+#' # Incorporating costs in conservation planning
+
+#' Niche: use of cost data in conservation plans
+#' 
+#' - Just as benefits, variability in costs can be large
+#'   - Including spatial variability and variability in scope and scale of project
+#'   - Understanding this variability can improve planning outcomes
+#' 
+#' Key cites
+#' Babcock et al. 1997: Describes relative efficiency of management rules under different joint distributions of costs and benefits.
+#'   - Alternative targeting instruments considered incl. cost-targeting, benefit-targeting, and ratio-targeting
+#'   - Relative variability of benefits and costs, and correlation between the two, determine effects of sub-optimal targeting
+#'   
+
+set.seed(123456)
+sigma = matrix( 
+  c(2, 0, 0, 1), # the data elements 
+  nrow=2,              # number of rows 
+  ncol=2,              # number of columns 
+  byrow = TRUE
+)        # fill matrix by rows
+xy <- mvrnorm(100, c(0, 0), sigma)
+cov(xy)
+cor(xy)
+xy <- data.frame(xy)
+   
+ggplot(xy) +
+  # geom_rect(
+  #   aes(
+  #     xmax = c(0.5, 1, 0.5, 1),
+  #     xmin = c(0, 0.5, 0, 0.5),
+  #     ymax = c(1, 1, 0.5, 0.5),
+  #     ymin = c(0.5, 0.5, 0, 0)
+  #   ),
+  #   fill = c("green", "yellow", "yellow", "red")
+  # ) +
+  geom_point(
+    aes(
+      x = X1,
+      y = X2
+    )
+  ) +
+  stat_ellipse(
+    aes(
+      x = X1,
+      y = X2
+    )
+  ) +
+  geom_abline(
+    slope = 1, intercept = 0,
+    size = 1.2
+  ) +
+  geom_vline(
+    xintercept = 0,
+    size = 1.2
+  ) +
+  geom_hline(
+    yintercept = 0,
+    size = 1.2
+  ) +
+  # geom_text(
+  #   aes(
+  #     x = c(0.25, 0.75, 0.25, 0.75),
+  #     y = c(0.75, 0.75, 0.25, 0.25)
+  #   ),
+  #   label = 
+  #     c(
+  #       "I. High-benefit, low-cost", 
+  #       "II. High-benefit, high-cost", 
+  #       "III. Low-benefit, low-cost", 
+  #       "IV. Low-benefit, high-cost"
+  #     ),
+  #   size = 6
+  # ) +
+  labs(
+    title = "Projects in cost-benefit space",
+    x = "Cost",
+    y = "Benefit"
+  ) +
+  ggthemes::theme_clean() +
+  theme(
+    plot.title.position = "plot",
+    axis.text = element_blank(),
+    axis.ticks = element_blank()
+  ) +
+  coord_fixed(xlim = c(-3, 3), ylim = c(-3, 3))
+
+
+
+
+#' Naidoo et al. 2006:
+#'   - Types of costs: acquisition, management, transaction (and opportunity, damage costs)
+#'     - (Can be continuous or one-off)
+#'   - Often based on non-monetary proxies
+#'     - Most often area
+#'     - Sometimes weighted but in often arbitrary ways
+#'   - Efficiency gains from incorporating costs
+#' 
+#' - Past looks at culverts have focused on benefits and used simplified cost models
+#' - Past looks at conservation costs have focused on land acquisition costs rather than restoration efforts
+#'   - Unique features of culvert improvement in PNW: upstream land access model, lots of streams/roads, large variation in slope and stream size
+#' 
+#' - Examine variability in cost levels and drivers of costs across culvert projects in PNW
+#' - Compare levels and variability of costs to (possibly several) benefit measures
+#' - Apply model to extant culverts to compare costs/benefit distributions over...
+#'   - Space: where are high benefit, low cost culverts?
+#'   - Observed projects vs. all culverts: what kind of decision rule is distribution of projects consistent with?
+#' - Timely b/c Washington culvert case
+#' 
+#' 
+#' RQ1: How much variability is there in costs for culvert improvements?
+#'   - Over space?
+#'   - For observed projects vs. potential projects?
+#'   - Relative to variability in benefits? (And implications for planning rules/future research)
+#' RQ2: What are drivers of culvert improvement costs?
+#'   - Economic drivers: economies of scale, transaction costs
+#'   - Geophysical drivers: stream features, terrain features
+
+#+ include=F
+
+# Load NLCD key
+key_nlcd <-
+  read_xlsx(
+    here(
+      "data/Culverts spatial overlays v 06Aug2020.xlsx"
+    ), 
+    sheet = 3
+  ) %>% 
+  as_tibble() %>%
+  clean_names() %>%
+  rename(
+    nlcd_current_class = class,
+    nlcd_current_fullclass = classification
+  ) %>%
+  mutate(across(where(is_character), str_to_sentence)) %>%
+  filter(across(description, ~!str_detect(., "Alaska only"))) %>%
+  select(-description)
+
+# Load data
+df_culv <-
+  read_csv(here("output", "culverts_pure_modelling.csv")) %>%
+  mutate(
+    # project_year = ordered(project_year),
+    project_source = relevel(factor(project_source), ref = "OWRI"),
+    basin = relevel(factor(basin), ref = "SOUTHERN OREGON COASTAL"),
+    fips = factor(fips),
+    state_fips = factor(state_fips),
+    # here_class = ordered(here_class)
+  ) %>%
+  left_join(
+    key_nlcd, 
+    by = c("nlcd_current" = "value")
+  )
+  
+  
+names(df_culv)
+
+# Data description ----
+#+ echo=F
+#' # Data description
+#' 
+options(knitr.kable.NA = '')
+df_culv %>%
+  drop_na(emp_agforest, slope, slope_deg) %>%
+  select(
+    `Cost per culvert ($USD2019)` = cost_per_culvert,
+    `Number of culverts (count)` = n_culverts,
+    `Mean distance between work sites (m)` = dist_mean,
+    `Stream slope (%)` = slope,
+    `Bankfull width (m)` = bankfull_width,
+    `Paved road` = here_paved,
+    `Road class` = here_class,
+    `Terrain slope (deg)` = slope_deg,
+    `Land cover class` = nlcd_current_class,
+    `Housing density (units per sq. km)` = hdens_cat,
+    `Construction employment (jobs)` = emp_const,
+    `Ag/forestry employment (jobs)` = emp_agforest,
+    `Basin` = basin,
+    `Year` = project_year,
+    `Reporting source` = project_source
+  ) %>%
+  mutate(
+    `Road class` = factor(`Road class`),
+    `Paved road` = factor(`Paved road`),
+    `Land cover class` = factor(`Land cover class`),
+    Year = ordered(Year)
+  ) %>%
+  summarize(
+    across(where(is.numeric), list(Mean = mean, `Std. dev.` = sd), .names = "{col}_{fn}", na.rm = TRUE),
+    across(where(is.factor), list(`Number of levels` = nlevels), .names = "{col}_{fn}")
+  ) %>%
+  pivot_longer(everything(), names_to = c("Variable", "stat"), names_sep = "_") %>%
+  rowwise() %>%
+  mutate(across(where(is.numeric), ~(format(signif(., digits = 3), scientific = FALSE, big.mark = ",")))) %>%
+  pivot_wider(Variable, names_from = stat, values_from = value) %>%
+  # print(n = Inf)
+  kable(
+    caption = paste0("Descriptive statistics (n = ", comma(nrow(df_culv %>% drop_na(emp_agforest, slope, slope_deg))), ")"),
+    # escape = FALSE,
+  ) %>%
+  kable_styling("hover", fixed_thead = TRUE) %>%
+  column_spec(1 , bold = TRUE) %>%
+  scroll_box(height = "800px")
+
+
+
+
+#' ## Stream hydrological features  
+#' 
+#' - **Stream slope (% grade)**: slope of stream at road crossing can require more
+#' expensive crossing design; identified via COMID matching with NHDPlus
+#' attributes.  
+#' - **Bankfull width (m)**: bankfull width is the preferred measure of stream width
+#' at road crossing, accounting for potential width during high-water events;
+#' identified via COMID matching with NHDPlus attributes.  
+
+#+ echo=F
+#' ## Road features  
+#' 
+#' - **Road paved (indicator)**: modification of a paved road is more expensive;
+#' may also proxy for higher traffic volumes; measured via HERE road data for
+#' nearest object.  
+#' - **Road class (categorical)**: wider roads with more traffic are expected to
+#' be more expensive; measured via HERE road data for nearest object; classes range from 2 (largest) to 5 (smallest)
+#' 
+#+ echo=F
+key_here <- read_xlsx(here("data/Culverts spatial overlays v 20Aug2020.xlsx"), sheet = 3) %>%
+  as_tibble() %>%
+  mutate(Classification = str_to_sentence(Classification), Description = str_to_sentence(Description)) %>%
+  bind_rows(
+    tibble(
+      "Classification" = "Functional class",
+      "Value" = 6,
+      "Description" = '"Roads" associated with work sites > 150m from the nearest HERE road for here_class_badmatch.'
+    )
+  )
+
+key_here %>%
+  filter(Classification == "Functional class") %>%
+  arrange(Classification) %>%
+  kable(caption = "Value key for HERE road variables") %>%
+  kable_styling() %>%
+  collapse_rows(
+    1,
+    valign = "top",
+    row_group_label_position = "stacked",
+    headers_to_remove = 1
+  )
+#' ## Terrain features  
+#' 
+#' - **Terrain slope (degrees)**: steeper terrain is expected to require more
+#' expensive projects; measured by the
+#' [GTOPO30](https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-global-30-arc-second-elevation-gtopo30?qt-science_center_objects=0#qt-science_center_objects)
+#' grid cell the work site falls in.
+#'
+#' - **Land cover (categorical)**: different land covers may be associated more
+#' expensive projects (e.g. less accessible sites in forest, difficult soils in
+#' welands, etc.); identified via cover with work site coordinates and NLCD land
+#' cover layer for nearest available year; here we use the broader NLCD Group
+#' definition rather than the more detailed classification (see below).  
+#' 
+#+ echo=F
+(
+  key_nlcd <-
+    read_xlsx(
+      here(
+        "data/Culverts spatial overlays v 06Aug2020.xlsx"
+      ), 
+      sheet = 3
+    ) %>% 
+    as_tibble() %>%
+    clean_names("sentence") %>% 
+    mutate(across(where(is_character), str_to_sentence)) %>%
+    rename(Group = Class) %>%
+    filter(across(Description, ~!str_detect(., "Alaska only")))
+) %>%
+  # print(n = 20)
+  knitr::kable() %>%
+  kableExtra::kable_styling()
+#+ echo=F
+#' ## Population features  
+#'
+#' - **Housing density (units per sq. km)**: more parcels near work site
+#' introduces complexities related to site access and available areas for
+#' staging, etc.; measured for the immediate catchment of stream identified via
+#' matching with NHDPlus attribute data.  
+#' - **Employment in ag/forestry (jobs in county)**: availability of skilled
+#' labor may reduce project costs; employment data from
+#' county the work site is located in via [County Business
+#' Patterns](https://www.census.gov/programs-surveys/cbp.html) data.  
+#' - **Employment in construction (jobs in county)**: see above.  
+#'   
+#+ echo=F
+#' ## Scale and scope controls  
+#'
+#' - **Number of culverts associated with project (count):** addressing multiple
+#' culverts under the same project may provide scale benefits, but might also
+#' increase complexity; measured via PNSHP database.  
+#' - **Distance between project work sites (m)**: more dispersed work sites
+#' under a single project may increase project costs due to increased
+#' transportation costs (and time); measured as the log of the average euclidean distance
+#' between work sites for multiple work site projects (plus one to define the variable at zero); a dummy for single work
+#' site projects is also included to disentangle scale and distance effects.  
+#' - **Action type (categorical):** PNSHP distinguishes between culvert removals
+#' and culvert installations, in addition to culvert improvements (the dominate
+#' category); we expect removals to be cheapest, followed by improvements and
+#' installations; dummies are included when a project includes one or more
+#' culverts flagged as either removals or installations.  
+#'   
+#+ echo=F
+#' ## Fixed effects  
+#' 
+#' - **Year**: the year the project was completed  
+#' - **Basin**: the basin (HUC6) where the work site is located  
+#' - **Reporting source**: the reporting source for the project  
+
+# Simple correlations across variables ----
+# +
+#' # Simple correlations across variables  
+#' 
+#' Here we present a couple measures of correlation between potential continuous
+#' explanatory variables. The figure below show provides Pearson's correlation
+#' coefficients for each pair of continuous explanatory variables included in
+#' the initial models, along side the dependent variable. Also included is the
+#' Variance Inflation Factor for each variable as calculated when all presented
+#' variables are included in a simple log-linear model, with cost per culvert as
+#' the dependent variable. Because of previously mentioned high correlation
+#' between housing density and population density, we include only housing
+#' density.
+
+#+ fig.width=10, fig.height=10, echo=F, message=F, warning=F
+# Grab only variables needed for corr. plot
+df_corr <-
+  df_culv %>%
+  select(
+    # employment vars
+    `Employment, construction` = emp_const, `Employment, ag/forestry` = emp_agforest,
+    # pop vars
+    `Housing density` = hdens_cat,
+    # popdens_cat,
+    # stream vars
+    `Stream slope` = slope, `Bankfull width` = bankfull_width,
+    `Terrain slope` = slope_deg, 
+    `Mean distance between sites` = dist_mean, `Number of culverts` = n_culverts,
+    `Cost per culvert` = cost_per_culvert
+  ) %>%
+  drop_na()
+
+mat_corr <-
+  df_corr %>%
+  cor() %>%
+  as.matrix()
+
+
+mat_vifs <- imcdiag(lm(log(`Cost per culvert`) ~ ., df_corr), method = "VIF")[[1]] %>% as.matrix
+mat_vifs <- rbind(mat_vifs, c(NA, NA))
+diag(mat_corr) <- mat_vifs[,1] %>% round(1)
+mat_corr[upper.tri(mat_corr)] <- NA
+
+ggcorrplot(
+  mat_corr,
+  lab = TRUE, lab_size = 3,
+  colors = c("#6D9EC1", "white", "#E46726")
+) + 
+  theme(
+    plot.title.position = "plot",
+    panel.grid = element_blank(),
+    panel.grid.major.y = element_line(color = "#ADADAD", linetype = "dashed"),
+    axis.text.x = element_text(angle = 60, vjust = 1),
+    # plot.margin = unit(c(0.5, 0, 1.5, 0), "cm")
+  ) +
+  scale_fill_gradient2(
+    name = "Corr. coef. (r)",
+    limits = c(-1, 1),
+    low = "#F8766D",
+    mid = "#FFFFFF",
+    high = "#619CFF",
+    na.value = "#EAEAEA"
+  ) +
+  ggtitle(
+    "Correlations among potential covariates",
+    "VIF along diagonal"
+  ) +
+  coord_fixed(
+    # ylim = c(0, 20),
+    # xlim = c(0, 20),
+    expand = FALSE,
+    clip = "off"
+  )
+
+#+
+#' It looks like mean distance between work sites and the number of culverts is
+#' positively correlated, and both are negatively correlated with average
+#' project costs. We would expect distance to increase costs but the
+#' number of culverts to decrease costs (due to economies of scale), all else
+#' equal. The strong positive correlation between number of culverts and
+#' distance between sites. Disentangling these effects should be possible with
+#' multiple regression.
+#' 
+#' Stream slope is negatively correlated with bankfull width, which means wider
+#' streams tend to be less steep. Stream slope is also positively correlated
+#' with terrain slope, as mentioned earlier. None of the three are strongly
+#' correlated with costs.
+#' 
+#' Finally, the two employment variables are positively correlated, and
+#' construction employment is positively correlated with housing density.
+#' Ag/forestry employment is weakly positively correlated with measures that
+#' indicate more rugged terrain such as stream and terrain slope. Housing density
+#' and to a lesser degree construction employment are positively correlated with
+#' costs.
+#' 
+#' No variables have particularly large VIFs, suggesting little potential for
+#' error-inflating multicollinearity.  
+
+#+ estimate, include=F
+# Estimate models ----
+# Full model
+mod_full <- 
+  lm(
+    log(cost_per_culvert) ~
+      # Scale/scope of project controls: number of culverts, distance between work sites, type of culvert work
+      n_culverts + log(dist_mean+1) + factor(I(n_worksites == 1)) +
+      action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+      # Stream features at work site: slope, bankfull width
+      slope * bankfull_width + 
+      # Road features at work site: paved, road class
+      here_paved + factor(here_class) +
+      # Physical features of work site: terrain slope, land cover
+      slope_deg + factor(nlcd_current_class) +
+      # Population features: housing density, jobs in construction, jobs in ag/forestry
+      hdens_cat + emp_const + emp_agforest +
+      # Fixed effects
+      basin + factor(project_year) + project_source,
+    df_culv
+  )
+
+# Remove some variables
+# Remove scale/scope controls
+# mod_drop_scale <-
+#   mod_full %>% update(. ~ . - (n_culverts + log(dist_mean+1) + factor(I(n_worksites == 1))))
+# mod_drop_scope <-
+#   mod_full %>% update(. ~ . - (n_culverts + log(dist_mean+1) + factor(I(n_worksites == 1)) + action_fishpass_culvrem_prj + action_fishpass_culvinst_prj))
+# 
+# # Remove physical work site features
+# mod_drop_phys <-
+#   mod_full %>% update(. ~ . - (slope_deg + factor(nlcd_current)))
+# 
+# # Remove pop features
+# mod_drop_pop <-
+#   mod_full %>% update(. ~ . - (hdens_cat + emp_const + emp_agforest))
+# mod_drop_emp <-
+#   mod_full %>% update(. ~ . - (emp_const + emp_agforest))
+
+# Remove everything but streams and roads
+# mod_drop_streamsonly <-
+#   mod_full %>% update(
+#     . ~ . - (
+#       n_culverts + log(dist_mean + 1) + factor(I(n_worksites == 1)) +
+#         action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+#         here_paved + factor(here_class) +
+#         slope_deg + factor(nlcd_current) +
+#         hdens_cat + emp_const + emp_agforest
+#     )
+#   )
+# 
+# mod_drop_roadsonly <-
+#   mod_full %>% update(
+#     . ~ . - (
+#       n_culverts + log(dist_mean + 1) + factor(I(n_worksites == 1)) +
+#         action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+#         slope * bankfull_width +
+#         slope_deg + factor(nlcd_current) +
+#         hdens_cat + emp_const + emp_agforest
+#     )
+#   )
+# 
+# mod_drop_roadsandstreams <-
+#   mod_full %>% update(
+#     . ~ . - (
+#       n_culverts + log(dist_mean + 1) + factor(I(n_worksites == 1)) +
+#         action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
+#         slope_deg + factor(nlcd_current) +
+#         hdens_cat + emp_const + emp_agforest
+#     )
+#   )
+
+# Remove fixed effects
+mod_nofe <-
+  mod_full %>% update(. ~ . - (basin + factor(project_year) + project_source))
+mod_nofe_onlysource <-
+  mod_full %>% update(. ~ . - (basin + factor(project_year)))
+mod_nofe_onlyyear <-
+  mod_full %>% update(. ~ . - (basin + project_source))
+mod_nofe_onlybasin <-
+  mod_full %>% update(. ~ . - (factor(project_year) + project_source))
+mod_nofe_nobasin <-
+  mod_full %>% update(. ~ . - basin)
+mod_nofe_noyear <-
+  mod_full %>% update(. ~ . - factor(project_year))
+mod_nofe_nosource <-
+  mod_full %>% update(. ~ . - project_source)
+
+# Focus on certain basins
+mod_basins_wore <-
+  mod_full %>% update(data = df_culv %>% filter(basin %in% c("SOUTHERN OREGON COASTAL", "NORTHERN OREGON COASTAL", "WILLAMETTE")))
+mod_basins_wwash <-
+  mod_full %>% update(data = df_culv %>% filter(basin %in% c("WASHINGTON COASTAL", "PUGET SOUND")))
+mod_basins_core <-
+  mod_full %>% update(data = df_culv %>% filter(basin %in% c("WASHINGTON COASTAL", "PUGET SOUND", "SOUTHERN OREGON COASTAL", "NORTHERN OREGON COASTAL", "WILLAMETTE")))
+
+# Focus on certain sources
+mod_sources_owri <-
+  mod_full %>% update(. ~ . - project_source, data = df_culv %>% filter(project_source == "OWRI"))
+mod_sources_warco <-
+  mod_full %>% update(. ~ . - project_source, data = df_culv %>% filter(project_source == "WA RCO"))
+mod_sources_core <-
+  mod_full %>% update(. ~ . - project_source, data = df_culv %>% filter(project_source %in% c("WA RCO", "OWRI", "HABITAT WORK SCHEDULE", "BLM", "REO")))
+
+#+ methods, echo=F
+#' # Estimation  
+#' 
+#' We estimate log-linear models estimated via OLS, with the average project
+#' cost as the dependent variable and the work site as the unit of observation.
+#' Stream slope and bankfull width are interacted in this specification.
+#' Recommendations in culvert engineering reports indicate that more expensive
+#' culvert designs are particularly necessary when both of these variables are
+#' extreme, and an interaction term can capture this effect.
+#'
+#' In addition to the fully specified model (mod_full), we present thirteen
+#' alternative models that include different fixed effects configurations or
+#' only sub-samples of the data focused on basin or reporting source criteria.
+#' For basins, we provide results estimated on a "core" group representing the
+#' five most frequently represented basins (Washington Coastal, Puget Sound,
+#' Southern Oregon Coastal, Northern Oregon Coastal, Willamette), as well as
+#' that core separated into basins primarily in Western Washington and Oregon
+#' respectively. For reporting sources, we focus on a similar "core" group (
+#' "Washington Recreation and Conservation Office, Oregon Water Resources
+#' Inventory, Habitat Work Schedule, Bureau of Land Management, Regional
+#' Ecosystem Office [an interagency group]), as well as versions estimated only
+#' on OWRI and WA RCO projects.
+#'
+#' The resulting coefficients for the fixed effects and categorical variables,
+#' when exponentiated, can be interpreted as the ratio of average costs for that
+#' group relative those of the base group. Results for continuous variables are
+#' presented as exponentiated average marginal effect of a single standard
+#' deviation change, which can be interpreted as the ratio of costs relative to
+#' a work site with a standard deviation lower for the variable.  
+#'
+#' ## Coefficient estimates  
+#+ echo=F
+# Present model estimates ----
+mods <- mget(ls(patter = "mod_"))
+mods <- mods[c(4, 1:3, 5:14)]
+mods_pars <-
+  map_df(mods, tidy, .id = "model") %>%
+  complete(model, term) %>%
+  mutate(
+    stars = case_when(
+      p.value < 0.01 ~ "***",
+      p.value < 0.05 ~ "**",
+      p.value < 0.1 ~ "*",
+      TRUE ~ ""
+    ),
+    full.est = if_else(
+      is.na(estimate),
+      "&#8210;",
+      paste0(
+        format(signif(estimate, 3), scientific = FALSE, drop0trailing = TRUE, trim = TRUE),
+        stars,
+        "<br>(", format(signif(std.error, 3), scientific = FALSE, drop0trailing = TRUE, trim = TRUE), ")"
+      )
+    ),
+    term = case_when(
+      term == "(Intercept)" ~ "Intercept",
+      term == "action_fishpass_culvinst_prj" ~ "Culvert installation (dummy)",
+      term == "action_fishpass_culvrem_prj" ~ "Culvert removal (dummy)",
+      term == "n_culverts" ~ "Number of culverts",
+      term == "dist_mean" ~ "Mean distance between work sites",
+      term == "log(dist_mean + 1)" ~ "Mean distance between work sites, log",
+      term == "factor(I(n_worksites == 1))TRUE" ~ "Single work site (dummy)",
+      term == "slope" ~ "Stream slope",
+      term == "bankfull_width" ~ "Bankfull width",
+      term == "here_pavedY" ~ "Road paved (dummy)",
+      term == "slope_deg" ~ "Terrain slope",
+      term == "hdens_cat" ~ "Housing density",
+      term == "emp_const" ~ "Construction employment",
+      term == "emp_agforest" ~ "Ag/forestry employment",
+      term == "slope:bankfull_width" ~ "Stream slope X bankfull width",
+      TRUE ~ term
+    ),
+    term = str_replace(term, "project_source", "Project source: "),
+    term = str_replace(term, "basin", "Basin: "),
+    term = str_replace(term, "factor[(]project_year[)]", "Year: "),
+    term = str_replace(term, "factor[(]nlcd_current_class[)]", "Land cover: "),
+    term = str_replace(term, "factor[(]here_class[)]", "Road class: ")
+  ) %>%
+  select(
+    model, term, full.est
+  ) %>%
+  pivot_wider(id_cols = model, names_from = term, values_from = full.est) %>%
+  select(
+    model,
+    Intercept,
+    # Stream features
+    "Stream slope",
+    "Bankfull width",
+    "Stream slope X bankfull width",
+    # Road features
+    starts_with("Road"),
+    # Land features
+    "Terrain slope",
+    starts_with("Land cover"),
+    # Pop features
+    "Housing density",
+    ends_with("employment"),
+    # Scale/scope features
+    "Number of culverts",
+    starts_with("Mean distance between "),
+    "Single work site (dummy)",
+    starts_with("Culvert "),
+    starts_with("Project source: "),
+    starts_with("Year: "),
+    starts_with("Basin: ")
+  )
+mods_stats <-
+  map_df(mods, glance, .id = "model") %>%
+  mutate(
+    `Adj. R2` = signif(adj.r.squared, 3),
+    AIC = round(AIC, 1),
+    BIC = round(BIC, 1),
+    N = df + df.residual
+  ) %>%
+  select(model, `Adj. R2`, AIC, BIC, N) %>%
+  mutate_all(~as.character(.))
+mods_pars %>%
+  left_join(mods_stats, by = "model") %>%
+  pivot_longer(-model, names_to = "Term", values_to = "Value") %>%
+  pivot_wider(id_cols = Term, names_from = model, values_from = Value) %>%
+  select(Term, mod_full, contains("nofe"), contains("basins"), contains("sources")) %>%
+  # kable() %>%
+  kable(
+    caption = "Pilot models",
+    escape = FALSE,
+    align = 
+      paste0(
+        "l", 
+        paste(
+          rep(
+            "c",
+            length(mods)
+            ), 
+          collapse = ""
+          )
+        )
+    ) %>%
+  kable_styling("hover", fixed_thead = TRUE) %>%
+  column_spec(1 , bold = TRUE) %>%
+  add_header_above(
+    c(
+      " " = 1,
+      " " = 1,
+      "Alternative fixed effects" = 7,
+      "Sub-sample: basins" = 3,
+      "Sub-sample: sources" = 3
+    )
+  ) %>%
+  row_spec(c(ncol(mods_pars) - 1, ncol(mods_pars) + ncol(mods_stats) - 2), extra_css = "border-bottom: 1px solid") %>%
+  add_footnote("* p < 0.1, ** p < 0.05, *** p < 0.01", notation = "none") %>%
+  scroll_box(height = "800px")
+#' ## Model fit discussion  
+#'
+#' The full model has an adjusted R-squared of 0.44, indicating a decent model
+#' fit. The version of the model with no fixed effects has an adjusted R-squared
+#' of 0.276, indicating that a significant amount of variability is explained by
+#' the additional explanatory variables. When fixed effect categories are
+#' removed, we can check with fixed effects explain the most variation relative
+#' to each other. It looks like reporting source accounts for the most
+#' variation, followed by basin then year.  
+#'
+#' When the model is fit only on culverts in the "core" basins, adjusted
+#' R-squared improves slightly, indicating the model performs better in these
+#' basins relative to the ones with less representation in the sample. This is
+#' particularly true for the Western Oregon basins where the model still has a
+#' pretty high R-squared. It's harder to say whether the reduced R-squared for
+#' the Western Washington basins is due to weaker model fit or simply small
+#' sample size.  
+#' 
+#' When the model is fit only on the "core" reporting sources, R-squared drops
+#' significantly. This might be evidence that including the additional sources
+#' is important for improving the overall fit of the model, even though less
+#' than 100 observations are lost.  
+
+#+ echo=F, message=F, warning=F
+# Plot figures ----
+#' # Model visualizations  
+#'
+#' ## Slope and bankfull width interaction effect  
+#' 
+#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+# ____ Slope and width effect space ----
+# Wraps long subtitles in ggplot
+wrapper <- function(label, dev_width = dev.size("in")[1], dev_scaler = 12)  {   
+  paste(strwrap(label, dev_width * dev_scaler), collapse = "\n") 
+}
+
+predict_cost_interaction <-
+  function(model, var1 = "slope", var2 = "bankfull_width", lims1 = c(0, 0.3), lims2 = c(0, 50), by1 = 0.01, by2 = 5) {
+    model %>%
+      ggpredict(
+        c(
+          paste0(var1, " [", paste(lims1, collapse = ":"), " by=", by1, "]"),
+          paste0(var2, " [", paste(lims2, collapse = ":"), " by=", by2, "]")
+        )
+      ) %>%
+      tibble %>%
+      mutate(
+        !!var2 := as.numeric(as.character(group)),
+        !!var1 := x,
+        x = NULL,
+        group = NULL
+      )
+  }
+
+map_df(mods["mod_full"], predict_cost_interaction, .id = "model") %>%
+  # filter(model == "mod_full") %>%
+  ggplot() +
+  aes(
+    x = slope,
+    y = bankfull_width,
+    z = predicted
+  ) +
+  geom_contour_filled(
+    breaks = c(
+      0,
+      5000,
+      7500,
+      10000,
+      12500,
+      15000,
+      20000,
+      40000,
+      80000,
+      160000,
+      Inf
+    )
+  ) +
+  scale_fill_brewer(
+    name = wrapper("Predicted cost per culvert ($USD)"),
+    direction = -1,
+    palette = "Spectral",
+    labels = c(
+      "$5,001 to $7,500",
+      "$7,501 to $10,000",
+      "$10,001 to $12,500",
+      "$12,501 to $15,000",
+      "$15,001 to $20,000",
+      "$20,001 to $40,000",
+      "$40,001 to $80,000",
+      "$80,001 to $160,000",
+      "Over $160,000"
+    )
+  ) +
+  # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
+  geom_point(
+    aes(
+      x = slope,
+      y = bankfull_width,
+      z = NULL
+    ),
+    data = df_culv,
+    color = "grey30",
+    alpha = 0.3,
+    size = 0.2
+  ) +
+  theme(
+    # legend.position = "bottom" 
+  ) +
+  coord_fixed(0.3/50) +
+  labs(
+    title = "Predicted average costs by bankfull width (m) and slope (% grade)",
+    subtitle = wrapper("Predictions based on full model with other continuous variables at means and categorical variables at their modes; points represent underlying observations"),
+    x = "Slope",
+    y = "Bankfull width"
+  )
+
+df_culv %>%
+  ggplot() +
+  aes(
+    x = slope,
+    y = bankfull_width,
+    color = cost_per_culvert
+  ) +
+  geom_point() +
+  scale_color_fermenter(
+    name = "Cost per culvert ($USD)",
+    breaks = c(
+      0,
+      5000,
+      7500,
+      10000,
+      12500,
+      15000,
+      20000,
+      40000,
+      80000,
+      160000,
+      Inf
+    ),
+    direction = -1,
+    labels = label_dollar(),
+    palette = "Spectral",
+    # guide = "legend"
+  ) +
+  theme(
+    legend.position = c(0.9, 0.8),
+    legend.key.size = unit(1, "cm")
+  ) +
+  labs(
+    title = "Observed average cost by bankfull width (m) and slope (% grade)",
+    subtitle = "Difficult to see pattern in raw data, likely due large underlying variation resulting from fixed effects (different basins, years, etc.)",
+    x = "Slope",
+    y = "Bankfull width"
+  )
+#+
+#' Work sites are distributed along a slope - bankfull width convex curve, with
+#' few projects both high slope and high width. This pattern mirrors the cost
+#' contours over slope - bankfull width space. Comparing the observed projects
+#' to other culverts in the Washington or Oregon inventories will show whether
+#' this relationship exists for all culverts or whether projects were selected
+#' along the cost curve. That is, would projects that did not occur exist in the
+#' upper-right space?  
+#' 
+#' ## Continuous variables  
+#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+# ____ Marginal effects plots ----
+# Custom wrapper of margins::margins for use with map_df
+margins_custom <-
+  function(mod, terms) { # Takes a model and a character vector of terms
+    margins(mod, variables = terms, change = "sd") %>% summary %>% clean_names # Returns marginal effect of a 1 s.d. change in variable
+  }
+
+map_df(
+  mods, 
+  margins_custom,
+  terms =
+    c(
+      "bankfull_width",
+      "slope",
+      "slope_deg",
+      "n_culverts",
+      "hdens_cat",
+      "emp_const",
+      "emp_agforest"
+    ),
+  .id = "model"
+  ) %>%
+  mutate(
+    factor = case_when(
+      factor == "bankfull_width" ~ "Bankfull width",
+      factor == "slope" ~ "Stream slope",
+      factor == "slope_deg" ~ "Terrain slope",
+      factor == "n_culverts" ~ "Number of culverts",
+      factor == "hdens_cat" ~ "Housing density",
+      factor == "emp_const" ~ "Construction employment",
+      factor == "emp_agforest" ~ "Ag/forestry employment"
+    ),
+    group = case_when(
+      factor %in% c("Bankfull width", "Stream slope") ~ "Stream features",
+      factor %in% c("Terrain slope", "Number of culverts") ~ "Others",
+      factor %in% c("Construction employment", "Ag/forestry employment", "Housing density") ~ "Population features",
+    ),
+    estimate = exp(ame),
+    conf.low = exp(lower),
+    conf.high = exp(upper),
+    p.value = I(p < 0.05),
+    mod.color = case_when(
+      p.value == TRUE & model == "mod_full" ~ "sig-pref",
+      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+    ),
+    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+  ) %>%
+  select(model, factor, estimate, conf.low, conf.high, mod.color, group) %>%
+  ggplot() +
+  geom_pointrange(
+    aes(
+      y = reorder(factor, estimate),
+      x = estimate,
+      xmin = conf.low,
+      xmax = conf.high,
+      group = model,
+      color = mod.color
+    ),
+    position = position_dodge(width = 0.8)
+  ) +
+  scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  labs(
+    y = NULL,
+    x = "Project average costs", 
+    title = "Marginal effects for continuous variables",
+    subtitle = "Project average costs relative to a single standard deviation shift",
+    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+  ) +
+  theme(
+    legend.position = "none",
+  ) +
+  facet_wrap("group", ncol = 1, scales = "free_y")
+
+#' A standard deviation change in both terrain slope and number of culverts both
+#' reduce average costs by about 10 percent and half respectively in the
+#' preferred model. The number of culverts result suggests evidence of returns
+#' to scale. The cost-reducing effect of terrain slope is unituitive, and may be
+#' picking up other cost-reducing effects in more remote, rugged, isolated
+#' areas.  
+#'
+#' The average marginal effects for all three population features are
+#' insignificant in the preferred model. However, in some several of the
+#' alternative models, ag/forestry employment and housing density each have
+#' slightly positive effects, suggesting that each increase costs. The housing
+#' density effect might be evidence of increased access costs due to negotiating
+#' with multiple landowners. The employment effect is less intuitive, but may
+#' also be picking up on cost increases in more rural areas, rather than a true
+#' population effect.  
+#' 
+#' Bankfull width and stream slope both significant positive effects in the
+#' preferred models. A standard deviation increase in either results in about a
+#' fifty percent increase in costs when the other is held at its mean. As seen
+#' in the earlier figure and raw coefficients, this effect is driven largely by
+#' the interaction term in the model. Note that the models for which the effects
+#' are insignificant are those estimated using only Washington data, over either
+#' the Washington basins only or WA RCO projects.  
+#' 
+#' ## Fixed effects and categorical variables  
+# ____ Fixed effects plots ----
+#' ### Year effects  
+#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+
+# Year FE
+map_df(mods[-4], tidy, conf.int = TRUE, .id = "model") %>%
+  filter(str_detect(term, "year")) %>%
+  mutate(
+    estimate = exp(estimate),
+    conf.low = exp(conf.low),
+    conf.high = exp(conf.high),
+    year = str_remove(term, "factor[(]project_year[)]"),
+    p.value = I(p.value < 0.05),
+    mod.color = case_when(
+      p.value == TRUE & model == "mod_full" ~ "sig-pref",
+      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+    ),
+    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+  ) %>%
+  select(model, year, estimate, conf.low, conf.high, mod.color) %>%
+  # left_join(mods_years_counts, by = c("year" = "completed_year")) %>%
+  # mutate(
+  #   year_n = paste0(
+  #     year,
+  #     "\n(n = ",
+  #     comma(n),
+  #     ")"
+  #   )
+  # ) %>%
+  ggplot() +
+  geom_pointrange(
+    aes(
+      x = year,
+      y = estimate,
+      ymin = conf.low,
+      ymax = conf.high,
+      group = model,
+      color = mod.color
+    ),
+    position = position_dodge(width = 0.8)
+  ) +
+  scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  labs(
+    x = "Year", 
+    y = "Project average costs", 
+    title = "Year fixed effects",
+    subtitle = "Project average costs relative to 2001 levels",
+    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(
+      angle = 90,
+      hjust = 1,
+      vjust = 0.75
+    )
+  )
+
+#' For the preferred model, project average costs are nearly twice as high than
+#' 2001 levels between 2004 and 2010, with the exception of 2008, when other
+#' factors are controlled for. Other models generally follow this pattern, while the
+#' models for Western Washington basins/sources have fairly extreme standard
+#' errors caused by small sample size.  
+#' 
+#' ### Reporting source effects  
+#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+
+# Source FE
+map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
+  filter(str_detect(term, "source")) %>%
+  mutate(
+    source = str_remove(term, "project_source"),
+    estimate = exp(estimate),
+    conf.low = exp(conf.low),
+    conf.high = exp(conf.high),
+    p.value = I(p.value < 0.05),
+    mod.color = case_when(
+      p.value == TRUE & model == "mod_full" ~ "sig-pref",
+      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+    ),
+    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+  ) %>%
+  group_by(source) %>%
+  select(model, source, estimate, conf.low, conf.high, mod.color) %>%
+  ggplot() +
+  geom_pointrange(
+    aes(
+      y = reorder(source, estimate),
+      x = estimate,
+      xmin = conf.low,
+      xmax = conf.high,
+      group = model,
+      color = mod.color
+    ),
+    position = position_dodge(width = 0.6)
+  ) +
+  scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  labs(
+    y = NULL, 
+    x = "Project average costs", 
+    title = "Reporting source fixed effects",
+    subtitle = "Project average costs relative to OWRI",
+    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+  ) +
+  # theme_clean() +
+  theme(
+    legend.position = "none",
+    strip.background = element_blank(),
+    strip.text.x = element_blank(),
+    plot.background = element_rect(color = NA),
+    plot.title.position = "plot",
+    plot.caption.position = "plot"
+  )
+
+#' WDOT projects have average costs over five times as large as OWRI projects,
+#' even when accounting for other factors. The standard errors on this estimate
+#' are quite large though, suggesting a more accurate estimate might be possible
+#' with more data from this source. Other sources lie BLM and REO have tightly
+#' estimated positive effects. OWRI projects have among the lowest average costs.  
+#' 
+#' ### Basin effects  
+#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+
+# Basin FE
+map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
+  filter(str_detect(term, "basin")) %>%
+  mutate(
+    basin = str_remove(term, "basin"),
+    estimate = exp(estimate),
+    conf.low = exp(conf.low),
+    conf.high = exp(conf.high),
+    p.value = I(p.value < 0.05),
+    mod.color = case_when(
+      p.value == TRUE & model == "mod_full" ~ "sig-pref",
+      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+    ),
+    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+  ) %>%
+  group_by(basin) %>%
+  select(model, basin, estimate, conf.low, conf.high, mod.color) %>%
+  ggplot() +
+  geom_pointrange(
+    aes(
+      y = reorder(basin, estimate),
+      x = estimate,
+      xmin = conf.low,
+      xmax = conf.high,
+      group = model,
+      color = mod.color
+    ),
+    position = position_dodge(width = 0.6)
+  ) +
+  scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  labs(
+    y = NULL, 
+    x = "Project average costs", 
+    title = "Basin fixed effects",
+    subtitle = "Project average costs relative to Southern Oregon Coastal",
+    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+  ) +
+  # theme_clean() +
+  theme(
+    legend.position = "none",
+    strip.background = element_blank(),
+    strip.text.x = element_blank(),
+    plot.background = element_rect(color = NA),
+    plot.title.position = "plot",
+    plot.caption.position = "plot"
+  )
+
+#' After controlling for other factors with the preferred model, projects in the
+#' Lower Snake Basin have the highest average costs, followed by the Middle
+#' Columbia Basin, with average costs roughly four and three times those in the
+#' Southern Oregon Coastal Basin. The Western Washington basins (Puget Sound and
+#' Washington Coastal) both have typical average costs about double those in the
+#' reference basin. These effects are tightly estimated, though the basins with
+#' the smallest standard errors are Nothern Oregon Coastal and Willamette.  
+#' 
+#' ### Land cover effects  
+# Land class
+#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+
+map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
+  filter(str_detect(term, "nlcd")) %>%
+  mutate(
+    nlcd_current = str_sub(term, 27),
+    estimate = exp(estimate),
+    conf.low = exp(conf.low),
+    conf.high = exp(conf.high),
+    p.value = I(p.value < 0.05),
+    mod.color = case_when(
+      p.value == TRUE & model == "mod_full" ~ "sig-pref",
+      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+    ),
+    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+  ) %>%
+  group_by(nlcd_current) %>%
+  select(model, nlcd_current, estimate, conf.low, conf.high, mod.color) %>%
+  ggplot() +
+  geom_pointrange(
+    aes(
+      y = reorder(nlcd_current, estimate),
+      x = estimate,
+      xmin = conf.low,
+      xmax = conf.high,
+      group = model,
+      color = mod.color
+    ),
+    position = position_dodge(width = 0.6)
+  ) +
+  scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  labs(
+    y = NULL, 
+    x = "Project average costs", 
+    title = "NLCD land cover effects",
+    subtitle = "Project average costs relative to Developed",
+    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+  ) +
+  # theme_clean() +
+  theme(
+    legend.position = "none",
+    strip.background = element_blank(),
+    strip.text.x = element_blank(),
+    plot.background = element_rect(color = NA),
+    plot.title.position = "plot",
+    plot.caption.position = "plot"
+  )
+
+#' Work sites in areas with the land cover classifications in the developed
+#' group (the reference level) have among the highest costs, though those in the
+#' planted-cultivated and water groups have high costs as well. Work sites in
+#' forests and herbaceous land cover areas have average costs around a quarter
+#' lower than the reference group.  
+#' 
+#' ### Road feature effects  
+#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+
+# Road features
+map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
+  filter(str_detect(term, "here")) %>%
+  mutate(
+    here_var = case_when(
+      term == "here_pavedY" ~ "Road paved (dummy)",
+      str_detect(term, "factor") ~ str_replace(term, "factor[(]here_class[])]", "Road class: ")
+      ),
+    estimate = exp(estimate),
+    conf.low = exp(conf.low),
+    conf.high = exp(conf.high),
+    p.value = I(p.value < 0.05),
+    mod.color = case_when(
+      p.value == TRUE & model == "mod_full" ~ "sig-pref",
+      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+    ),
+    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+  ) %>%
+  group_by(here_var) %>%
+  select(model, here_var, estimate, conf.low, conf.high, mod.color) %>%
+  ggplot() +
+  geom_pointrange(
+    aes(
+      y = here_var,
+      x = estimate,
+      xmin = conf.low,
+      xmax = conf.high,
+      group = model,
+      color = mod.color
+    ),
+    position = position_dodge(width = 0.6)
+  ) +
+  scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  labs(
+    y = NULL, 
+    x = "Project average costs", 
+    title = "Road feature effects",
+    subtitle = "Project average costs relative to class 2",
+    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+  ) +
+  # theme_clean() +
+  theme(
+    legend.position = "none",
+    strip.background = element_blank(),
+    strip.text.x = element_blank(),
+    plot.background = element_rect(color = NA),
+    plot.title.position = "plot",
+    plot.caption.position = "plot"
+  )
+
+#' The only consistent effect found among the road feature variables is its
+#' paved status. Paved roads are associated with work sites roughly 50 percent higher than unpaved work sites.  
+#' 
+#' ### Scope and scale effects  
+#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+
+# Project scope effects
+map_df(mods[-14], tidy, conf.int = TRUE, .id = "model") %>%
+  filter(str_detect(term, "action")) %>%
+  mutate(
+    action_var = case_when(
+      str_detect(term, "culvrem") ~ "Culvert removal (dummy)",
+      str_detect(term, "culvinst") ~ "Culvert installation (dummy)"
+    ),
+    estimate = exp(estimate),
+    conf.low = exp(conf.low),
+    conf.high = exp(conf.high),
+    p.value = I(p.value < 0.05),
+    mod.color = case_when(
+      p.value == TRUE & model == "mod_full" ~ "sig-pref",
+      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+    ),
+    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+  ) %>%
+  group_by(action_var) %>%
+  select(model, action_var, estimate, conf.low, conf.high, mod.color) %>%
+  ggplot() +
+  geom_pointrange(
+    aes(
+      y = action_var,
+      x = estimate,
+      xmin = conf.low,
+      xmax = conf.high,
+      group = model,
+      color = mod.color
+    ),
+    position = position_dodge(width = 0.6)
+  ) +
+  scale_color_manual(values = c("darkolivegreen3", "grey60", "grey80")) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  labs(
+    y = NULL, 
+    x = "Project average costs", 
+    title = "Project scope effects",
+    subtitle = "Project average costs relative to a project with only culvert improvements",
+    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+  ) +
+  # theme_clean() +
+  theme(
+    legend.position = "none",
+    strip.background = element_blank(),
+    strip.text.x = element_blank(),
+    plot.background = element_rect(color = NA),
+    plot.title.position = "plot",
+    plot.caption.position = "plot"
+  )
+
+#' There is some evidence from the alternative models that installations are
+#' more expensive than improvements, which are more expensive than removals,
+#' though this effect largely washes out when the full suite of fixed effects is
+#' included.  
+#' 
+#' # Benefit - cost visualizations  
+#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+
+# ____ Benefits and costs plots ----
+#' As a simple examination of what kind of decision rule might be in play for
+#' determining which culverts were selected, we plot as a benefit proxy total
+#' upstream length (in km) versus observed cost per culvert. Under a
+#' cost-targeting rule, all work sites would be to the left of a cost threshold,
+#' while for a benefit-targeting rule all would be above a benefit threshold. A
+#' benefit-cost ratio standard would be above an upward sloping line.  
+
+#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+df_culv %>%
+  mutate(
+    # basin = fct_lump_lowfreq(basin, "OTHER"),
+    basin = fct_lump_min(basin, 35, other_level = "OTHER")
+  ) %>%
+  ggplot() + 
+  aes(
+    x = cost_per_culvert,
+    y = tot_stream_length,
+    color = project_year
+  ) + 
+  geom_point() +
+  scale_y_log10("Total upstream length (km)", label = label_comma(1)) +
+  scale_x_log10("Cost per culvert (K $USD)", label = label_dollar(1, scale = 0.001)) +
+  scale_color_fermenter("Project year", palette = "Spectral", show.limits = TRUE, guide = guide_colorsteps(barwidth = 10, title.position = "top")) +
+  theme(legend.position = "bottom") +
+  facet_wrap("basin") +
+  ggtitle("Work sites in cost - benefit space", "Both on a log scale for clarity")
+
+#' No evidence that projects are selected on cost or benefit-cost ratio basis.
+#' It does somewhat appear that the observed projects follow a benefit targeting
+#' pattern with a fairly low benefit cut-off, as evidenced by the horizontal
+#' pattern among the data. For the Southern Oregon Coastal and Willamette
+#' Basins, there appears to be a slight upward tilt in the higher-cost region,
+#' indicating that benefit-cost targeting may be more frequent for higher-cost projects.  
+#' 
+
+#' Adding culverts where no project is observed with costs predicted via the
+#' above models could reveal where observed projects exisit in the space
+#' relative to the universe of potential projects, which should provide more
+#' clarity to the above analysis.  
+
+#+ echo=F, warning=F, message=F
+#' # Conclusions  
+#' ## Key findings  
+# Key findings ----
+#' 1. Stream features slope and bankfull width increase average costs, especially when they are both high.  
+#' 2. Paved roads are more expensive to improve, while other road variables have no discernible effect.  
+#' 3. Strangely, terrain slope at work site has a negative effect. Could this be picking up on some other 
+#' factor associated with more rugged or remote work sites?  
+#' 
+#+
+#' ## Next steps  
+# Next steps ----
+#' 1. More variables: density of culvert project measures (issues w/ inconsistent reporting across space), distance to pop. center (euclidean or routed with HERE roads from Blake)  
+#' 2. Improved benefit estimates: total upstream distance by species and habitat use, weighted by catchment road density, etc.  
+#' 3. Forecast costs/benefits for culvert inventories from Oregon and Washington.  
+#' 
+
+#+ end
+#' # End Matter  
+# Created on...
+Sys.time()
+
+# Using...
+sessionInfo()
+
+# Render output
+# rmarkdown::render(here::here("R/C.culvertsspatial/07.spatialcostmodels.R"), output_file = here::here("output/culvertsmodels_report_2020oct06.html"))
+
+

@@ -46,21 +46,56 @@ if(
 # View available layers
 # st_layers(dsn = here("data/NHDPlusNationalData/NHDPlusV21_National_Seamless_Flattened_Lower48.gdb"))
 
+# Set nhdplus path
+nhdplus_path(here("data", "NHDPlusNationalData", "NHDPlusV21_National_Seamless_Flattened_Lower48.gdb"))
+
 # Load flowline network data (Really big! This might take awhile)
 fln <- read_sf(dsn = here("data/NHDPlusNationalData/NHDPlusV21_National_Seamless_Flattened_Lower48.gdb"), 
-                layer = "NHDFlowline_Network") 
+                layer = "NHDFlowline_Network")
 
 # Reformat to meet sf standards
 fln <- st_zm(fln)
 
 # List stream data variable names
 names(fln)
+st_crs(fln)
+
+# Check flowlind ids
+
+sample_flines <- sf::read_sf(system.file("extdata",
+                                         "petapsco_flowlines.gpkg",
+                                         package = "nhdplusTools"))
+system.time(get_flowline_index(sample_flines,
+                   sf::st_sfc(sf::st_point(c(-76.87479,
+                                             39.48233)),
+                              crs = 4326)))
+
+# Takes much longer with the full fln, so let's crop it
+st_bbox(df_culv)
+df_culv <- st_transform(df_culv, st_crs(fln))
+st_bbox(df_culv)
+
+fln_sml <-
+  st_crop(
+    fln,
+    df_culv
+  )
+# Much better
+write_rds(fln_sml, here("output","spatial","nhdplus_fln_sml.rds"))
+
+# TODO Write if exists functionality
+fln_sml <- read_rds(here("output","spatial","nhdplus_fln_sml.rds"))
+fln_sml_ls <- st_cast(fln_sml, "LINESTRING")
+
+get_flowline_index(fln_sml_ls, df_culv %>% slice(1))
+
+# We have lift-off for a COMID and distance ("offset")
 
 # Build function to calculate total potential upstream habitat from point (does not account for other blockages)
-upst_km <- function(x, nhd_source = fln) {
+upst_km <- function(x, nhd_source = fln_sml_ls) {
   # require(nhdplusTools)  
   start_point <- x
-  start_comid <- discover_nhdplus_id(start_point)
+  start_comid <- get_flowline_index(nhd_source, start_point)
   UT_comids <- get_UT(nhd_source, start_comid) #upstream with tributaries
   
   fln_sub <- nhd_source %>% 
@@ -69,12 +104,12 @@ upst_km <- function(x, nhd_source = fln) {
 }
 
 # Build function to grab stream slope
-strm_slope <- function(x, nhd_source = fln) {
-  # require(nhdplusTools)
-  comid <- discover_nhdplus_id(x)
-  fln %>% filter(COMID == comid) %>% pull(SLOPE)
-}
-
+# strm_slope <- function(x, nhd_source = fln) {
+#   # require(nhdplusTools)
+#   comid <- discover_nhdplus_id(x)
+#   fln %>% filter(COMID == comid) %>% pull(SLOPE)
+# }
+# Done better by just joining on the fln_sml
 
 # Test on subset
 set.seed(832020)
@@ -103,17 +138,12 @@ for(i in 1:nrow(df_test)){
   slope[i] <- tryCatch({strm_slope(df_test$geometry[i])}, error = function(e) {NA})
 }
 
-upst_dist <- numeric(nrow(df_test))
-for(i in 1:nrow(df_test)){
-  upst_dist[i] <- tryCatch({upst_km(df_test$geometry[i])}, error = function(e) {NA})
-}
-
 comid <- numeric(nrow(df_test))
 for(i in 1:nrow(df_test)){
   comid[i] <- tryCatch({discover_nhdplus_id(df_test$geometry[i])}, error = function(e) {NA})
 }
 
-df_stream <- tibble(comid, slope, upst_dist)
+df_stream <- tibble(comid, slope)
 
 df_test <- bind_cols(df_test, df_stream)
 
@@ -141,7 +171,6 @@ ggplot() +
   ggthemes::theme_map() +
   theme(legend.position = "right")
 
-sum(is.na(df_culv$upst_km))
 # wrn <- warnings()
 
 # Run on full
@@ -161,40 +190,14 @@ for(i in 1:nrow(df_culv)){
   slope[i] <- tryCatch({strm_slope(df_culv$geometry[i])}, error = function(e) {NA})
 }
 
-upst_dist <- numeric(nrow(df_culv))
-for(i in 1:nrow(df_culv)){
-  upst_dist[i] <- tryCatch({upst_km(df_culv$geometry[i])}, error = function(e) {NA})
-}
-
 comid <- numeric(nrow(df_culv))
 for(i in 1:nrow(df_culv)){
   comid[i] <- discover_nhdplus_id(df_culv$geometry[i])
 }
-# Bugs out at 585
-comid[585] <- NA
-for(i in 586:nrow(df_culv)){
-  comid[i] <- tryCatch({discover_nhdplus_id(df_culv$geometry[i])}, error = function(e) {NA})
-}
 
-# Bugs out at 594
-comid[594] <- NA
-for(i in 595:nrow(df_culv)){
-  comid[i] <- discover_nhdplus_id(df_culv$geometry[i])
-}
 
-# Bugs out at 603
-comid[603] <- NA
-for(i in 604:nrow(df_culv)){
-  comid[i] <- tryCatch({discover_nhdplus_id(df_culv$geometry[i])}, error = function(e) {0})
-}
 
-# Bugs out at 5010
-comid[5010] <- NA
-for(i in 5011:nrow(df_culv)){
-  comid[i] <- tryCatch({discover_nhdplus_id(df_culv$geometry[i])}, error = function(e) {0})
-}
-
-df_stream <- tibble(comid, slope, upst_dist)
+df_stream <- tibble(comid, slope)
 
 df_culv <- bind_cols(df_culv %>% select(-(comid:upst_dist)), df_stream)
 
