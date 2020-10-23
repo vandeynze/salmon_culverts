@@ -33,6 +33,11 @@ library(ggcorrplot)
 
 opts_chunk$set(echo=FALSE)
 
+# Wraps long subtitles in ggplot
+wrapper <- function(label, dev_width = dev.size("in")[1], dev_scaler = 12)  {   
+  paste(strwrap(label, dev_width * dev_scaler), collapse = "\n") 
+}
+
 # Introduction and theory ----
 ```
 ```{r }
@@ -41,14 +46,15 @@ opts_chunk$set(echo=FALSE)
 # Incorporating costs in conservation planning
 Niche: use of cost data in conservation plans
 
-- Just as benefits, variability in costs can be large
-  - Including spatial variability and variability in scope and scale of project
-  - Understanding this variability can improve planning outcomes
+- Just as benefits, variability in costs can be large  
+  - Including spatial variability and variability across scope and scale of project  
+  - Understanding this variability can improve planning outcomes  
 
-Key cites
-Babcock et al. 1997: Describes relative efficiency of management rules under different joint distributions of costs and benefits.
-  - Alternative targeting instruments considered incl. cost-targeting, benefit-targeting, and ratio-targeting
-  - Relative variability of benefits and costs, and correlation between the two, determine effects of sub-optimal targeting
+Key cites  
+Babcock et al. 1997: [https://doi.org/10.2307/3147171]  
+  - Describes relative efficiency of management rules under different joint distributions of costs and benefits  
+  - Alternative targeting instruments considered incl. cost-targeting, benefit-targeting, and marginal cost-targeting (cost per benefit targeting)  
+  - Relative variability of benefits and costs, and correlation between the two, determine effects of sub-optimal targeting  
   
 
 ```{r }
@@ -60,11 +66,26 @@ sigma = matrix(
   byrow = TRUE
 )        # fill matrix by rows
 xy <- mvrnorm(100, c(0, 0), sigma)
-cov(xy)
-cor(xy)
+# cov(xy)
+# cor(xy)
 xy <- data.frame(xy)
    
-ggplot(xy) +
+ggplot() +
+  geom_text(
+    aes(
+      x = c(-3, 1, -3, 1),
+      y = c(3, 3, -2.95, -2.95)
+    ),
+    label =
+      c(
+        "I. High-benefit, low-cost",
+        "II. High-benefit, high-cost",
+        "III. Low-benefit, low-cost",
+        "IV. Low-benefit, high-cost"
+      ),
+    hjust = 0,
+    size = 5
+  ) +
   # geom_rect(
   #   aes(
   #     xmax = c(0.5, 1, 0.5, 1),
@@ -78,55 +99,51 @@ ggplot(xy) +
     aes(
       x = X1,
       y = X2
-    )
+    ),
+    data = xy
   ) +
-  stat_ellipse(
-    aes(
-      x = X1,
-      y = X2
-    )
-  ) +
+  # stat_ellipse(
+  #   aes(
+  #     x = X1,
+  #     y = X2
+  #   )
+  # ) +
   geom_abline(
-    slope = 1, intercept = 0,
+    aes(color = "Marginal cost (C/B) targeting",
+    slope = 1, intercept = 0),
     size = 1.2
   ) +
   geom_vline(
-    xintercept = 0,
+    aes(color = "Cost targeting",
+    xintercept = 0),
     size = 1.2
   ) +
   geom_hline(
-    yintercept = 0,
+    aes(color = "Benefit targeting",
+    yintercept = 0),
     size = 1.2
   ) +
-  # geom_text(
-  #   aes(
-  #     x = c(0.25, 0.75, 0.25, 0.75),
-  #     y = c(0.75, 0.75, 0.25, 0.25)
-  #   ),
-  #   label = 
-  #     c(
-  #       "I. High-benefit, low-cost", 
-  #       "II. High-benefit, high-cost", 
-  #       "III. Low-benefit, low-cost", 
-  #       "IV. Low-benefit, high-cost"
-  #     ),
-  #   size = 6
-  # ) +
   labs(
-    title = "Projects in cost-benefit space",
+    title = "Potential projects in cost-benefit space",
+    subtitle = wrapper("Lines illustrate thresholds for which projects would be selected under different targeting schemes; Projects above and to the left of each line would be selected under each scheme"),
     x = "Cost",
-    y = "Benefit"
+    y = "Benefit",
+    caption = "Recreation of figures 1-3 of Babcock et al. (1997)"
   ) +
   ggthemes::theme_clean() +
+  scale_color_discrete("Targeting scheme") +
   theme(
     plot.title.position = "plot",
     axis.text = element_blank(),
-    axis.ticks = element_blank()
+    axis.ticks = element_blank(),
+    plot.background = element_blank(),
+    legend.background = element_blank(),
+    legend.position = "bottom"
   ) +
   coord_fixed(xlim = c(-3, 3), ylim = c(-3, 3))
 ```
 
-Naidoo et al. 2006:
+Naidoo et al. 2006: [https://doi.org/10.1016/j.tree.2006.10.003]:
   - Types of costs: acquisition, management, transaction (and opportunity, damage costs)
     - (Can be continuous or one-off)
   - Often based on non-monetary proxies
@@ -200,6 +217,10 @@ names(df_culv)
 
 # Data description
 
+Explanatory variables included in the empirical model are described below,
+including a brief justification for inclusion. A more in-depth exploration of
+these variables can be found in [this
+report](https://vandeynze.github.io/salmon_culverts/spatialexplore.html).  
 
 ```{r }
 options(knitr.kable.NA = '')
@@ -241,9 +262,7 @@ df_culv %>%
     caption = paste0("Descriptive statistics (n = ", comma(nrow(df_culv %>% drop_na(emp_agforest, slope, slope_deg))), ")"),
     # escape = FALSE,
   ) %>%
-  kable_styling("hover", fixed_thead = TRUE) %>%
-  column_spec(1 , bold = TRUE) %>%
-  scroll_box(height = "800px")
+  kable_styling("hover", fixed_thead = TRUE)
 ```
 
 ## Stream hydrological features  
@@ -591,6 +610,13 @@ Recommendations in culvert engineering reports indicate that more expensive
 culvert designs are particularly necessary when both of these variables are
 extreme, and an interaction term can capture this effect.
 
+
+```{r }
+library(equatiomatic)
+extract_eq(mod_full)
+```
+
+
 In addition to the fully specified model (mod_full), we present thirteen
 alternative models that include different fixed effects configurations or
 only sub-samples of the data focused on basin or reporting source criteria.
@@ -769,10 +795,7 @@ than 100 observations are lost.
 
 ```{r echo=F, message=F, warning=F, fig.dim=c(8,8)}
 # ____ Slope and width effect space ----
-# Wraps long subtitles in ggplot
-wrapper <- function(label, dev_width = dev.size("in")[1], dev_scaler = 12)  {   
-  paste(strwrap(label, dev_width * dev_scaler), collapse = "\n") 
-}
+
 
 predict_cost_interaction <-
   function(model, var1 = "slope", var2 = "bankfull_width", lims1 = c(0, 0.3), lims2 = c(0, 50), by1 = 0.01, by2 = 5) {
@@ -1468,6 +1491,7 @@ factor associated with more rugged or remote work sites?
 1. More variables: density of culvert project measures (issues w/ inconsistent reporting across space), distance to pop. center (euclidean or routed with HERE roads from Blake)  
 2. Improved benefit estimates: total upstream distance by species and habitat use, weighted by catchment road density, etc.  
 3. Forecast costs/benefits for culvert inventories from Oregon and Washington.  
+4. Integrate Lorenz curve and Gini coefficient analysis from Babcock et al. (1997).
 
 
 ```{r end}

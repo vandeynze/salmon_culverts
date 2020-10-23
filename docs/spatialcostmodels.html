@@ -363,12 +363,6 @@ div.tocify {
         <li>
   <a href="index.html">Home</a>
 </li>
-<li>
-  <a href="about.html">About</a>
-</li>
-<li>
-  <a href="license.html">License</a>
-</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -400,19 +394,18 @@ div.tocify {
 <ul>
 <li>Just as benefits, variability in costs can be large
 <ul>
-<li>Including spatial variability and variability in scope and scale of project</li>
+<li>Including spatial variability and variability across scope and scale of project<br />
+</li>
 <li>Understanding this variability can improve planning outcomes</li>
 </ul></li>
 </ul>
-<p>Key cites Babcock et al. 1997: Describes relative efficiency of management rules under different joint distributions of costs and benefits. - Alternative targeting instruments considered incl. cost-targeting, benefit-targeting, and ratio-targeting - Relative variability of benefits and costs, and correlation between the two, determine effects of sub-optimal targeting</p>
-<pre><code>           [,1]       [,2]
-[1,]  1.9740819 -0.2967237
-[2,] -0.2967237  0.9680470</code></pre>
-<pre><code>           [,1]       [,2]
-[1,]  1.0000000 -0.2146453
-[2,] -0.2146453  1.0000000</code></pre>
+<p>Key cites<br />
+Babcock et al. 1997: [<a href="https://doi.org/10.2307/3147171" class="uri">https://doi.org/10.2307/3147171</a>]<br />
+- Describes relative efficiency of management rules under different joint distributions of costs and benefits<br />
+- Alternative targeting instruments considered incl. cost-targeting, benefit-targeting, and marginal cost-targeting (cost per benefit targeting)<br />
+- Relative variability of benefits and costs, and correlation between the two, determine effects of sub-optimal targeting</p>
 <p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Naidoo et al. 2006: - Types of costs: acquisition, management, transaction (and opportunity, damage costs) - (Can be continuous or one-off) - Often based on non-monetary proxies - Most often area - Sometimes weighted but in often arbitrary ways - Efficiency gains from incorporating costs</p>
+<p>Naidoo et al. 2006: [<a href="https://doi.org/10.1016/j.tree.2006.10.003" class="uri">https://doi.org/10.1016/j.tree.2006.10.003</a>]: - Types of costs: acquisition, management, transaction (and opportunity, damage costs) - (Can be continuous or one-off) - Often based on non-monetary proxies - Most often area - Sometimes weighted but in often arbitrary ways - Efficiency gains from incorporating costs</p>
 <ul>
 <li>Past looks at culverts have focused on benefits and used simplified cost models</li>
 <li>Past looks at conservation costs have focused on land acquisition costs rather than restoration efforts
@@ -432,30 +425,30 @@ div.tocify {
 </div>
 <div id="data-description" class="section level1">
 <h1>Data description</h1>
-<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:800px; ">
+<p>Explanatory variables included in the empirical model are described below, including a brief justification for inclusion. A more in-depth exploration of these variables can be found in <a href="https://vandeynze.github.io/salmon_culverts/spatialexplore.html">this report</a>.</p>
 <table class="table table-hover" style="margin-left: auto; margin-right: auto;">
 <caption>
 Descriptive statistics (n = 1,391)
 </caption>
 <thead>
 <tr>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 Variable
 </th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 Mean
 </th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 Std. dev.
 </th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 Number of levels
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Cost per culvert ($USD2019)
 </td>
 <td style="text-align:left;">
@@ -468,7 +461,7 @@ Cost per culvert ($USD2019)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Number of culverts (count)
 </td>
 <td style="text-align:left;">
@@ -481,7 +474,7 @@ Number of culverts (count)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Mean distance between work sites (m)
 </td>
 <td style="text-align:left;">
@@ -494,7 +487,7 @@ Mean distance between work sites (m)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Stream slope (%)
 </td>
 <td style="text-align:left;">
@@ -507,7 +500,7 @@ Stream slope (%)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Bankfull width (m)
 </td>
 <td style="text-align:left;">
@@ -520,7 +513,7 @@ Bankfull width (m)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Terrain slope (deg)
 </td>
 <td style="text-align:left;">
@@ -533,7 +526,7 @@ Terrain slope (deg)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Housing density (units per sq. km)
 </td>
 <td style="text-align:left;">
@@ -546,7 +539,7 @@ Housing density (units per sq. km)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Construction employment (jobs)
 </td>
 <td style="text-align:left;">
@@ -559,7 +552,7 @@ Construction employment (jobs)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Ag/forestry employment (jobs)
 </td>
 <td style="text-align:left;">
@@ -572,7 +565,7 @@ Ag/forestry employment (jobs)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Paved road
 </td>
 <td style="text-align:left;">
@@ -584,7 +577,7 @@ Paved road
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Road class
 </td>
 <td style="text-align:left;">
@@ -596,7 +589,7 @@ Road class
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Land cover class
 </td>
 <td style="text-align:left;">
@@ -608,7 +601,7 @@ Land cover class
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Basin
 </td>
 <td style="text-align:left;">
@@ -620,7 +613,7 @@ Basin
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Year
 </td>
 <td style="text-align:left;">
@@ -632,7 +625,7 @@ Year
 </td>
 </tr>
 <tr>
-<td style="text-align:left;font-weight: bold;">
+<td style="text-align:left;">
 Reporting source
 </td>
 <td style="text-align:left;">
@@ -645,7 +638,6 @@ Reporting source
 </tr>
 </tbody>
 </table>
-</div>
 <div id="stream-hydrological-features" class="section level2">
 <h2>Stream hydrological features</h2>
 <ul>
@@ -1027,6 +1019,10 @@ Areas where perennial herbaceous vegetation accounts for greater than 80% of veg
 <div id="estimation" class="section level1">
 <h1>Estimation</h1>
 <p>We estimate log-linear models estimated via OLS, with the average project cost as the dependent variable and the work site as the unit of observation. Stream slope and bankfull width are interacted in this specification. Recommendations in culvert engineering reports indicate that more expensive culvert designs are particularly necessary when both of these variables are extreme, and an interaction term can capture this effect.</p>
+<pre><code>Warning: package &#39;equatiomatic&#39; was built under R version 4.0.3</code></pre>
+<pre><code>$$
+\operatorname{log(cost\_per\_culvert)} = \alpha + \beta_{1}(\operatorname{n\_culverts}) + \beta_{2}(\operatorname{log(dist\_mean\ +\ 1)}) + \beta_{3}(\operatorname{factor(I(n\_worksites\ ==\ 1))}_{\operatorname{TRUE}}) + \beta_{4}(\operatorname{action\_fishpass\_culvrem\_prj}) + \beta_{5}(\operatorname{action\_fishpass\_culvinst\_prj}) + \beta_{6}(\operatorname{slope}) + \beta_{7}(\operatorname{bankfull\_width}) + \beta_{8}(\operatorname{here\_paved}_{\operatorname{Y}}) + \beta_{9}(\operatorname{factor(here\_class)}_{\operatorname{3}}) + \beta_{10}(\operatorname{factor(here\_class)}_{\operatorname{4}}) + \beta_{11}(\operatorname{factor(here\_class)}_{\operatorname{5}}) + \beta_{12}(\operatorname{slope}_{\operatorname{\_deg}} \times \operatorname{slope\_deg}) + \beta_{13}(\operatorname{factor(nlcd\_current\_class)}_{\operatorname{Forest}}) + \beta_{14}(\operatorname{factor(nlcd\_current\_class)}_{\operatorname{Herbaceous}}) + \beta_{15}(\operatorname{factor(nlcd\_current\_class)}_{\operatorname{Planted-cultivated}}) + \beta_{16}(\operatorname{factor(nlcd\_current\_class)}_{\operatorname{Shrubland}}) + \beta_{17}(\operatorname{factor(nlcd\_current\_class)}_{\operatorname{Water}}) + \beta_{18}(\operatorname{factor(nlcd\_current\_class)}_{\operatorname{Wetlands}}) + \beta_{19}(\operatorname{hdens\_cat}) + \beta_{20}(\operatorname{emp\_const}) + \beta_{21}(\operatorname{emp\_agforest}) + \beta_{22}(\operatorname{basin}_{\operatorname{DESCHUTES}}) + \beta_{23}(\operatorname{basin}_{\operatorname{JOHN\ DAY}}) + \beta_{24}(\operatorname{basin}_{\operatorname{LOWER\ COLUMBIA}}) + \beta_{25}(\operatorname{basin}_{\operatorname{LOWER\ SNAKE}}) + \beta_{26}(\operatorname{basin}_{\operatorname{MIDDLE\ COLUMBIA}}) + \beta_{27}(\operatorname{basin}_{\operatorname{NORTHERN\ OREGON\ COASTAL}}) + \beta_{28}(\operatorname{basin}_{\operatorname{PUGET\ SOUND}}) + \beta_{29}(\operatorname{basin}_{\operatorname{UPPER\ COLUMBIA}}) + \beta_{30}(\operatorname{basin}_{\operatorname{WASHINGTON\ COASTAL}}) + \beta_{31}(\operatorname{basin}_{\operatorname{WILLAMETTE}}) + \beta_{32}(\operatorname{factor(project\_year)}_{\operatorname{2002}}) + \beta_{33}(\operatorname{factor(project\_year)}_{\operatorname{2003}}) + \beta_{34}(\operatorname{factor(project\_year)}_{\operatorname{2004}}) + \beta_{35}(\operatorname{factor(project\_year)}_{\operatorname{2005}}) + \beta_{36}(\operatorname{factor(project\_year)}_{\operatorname{2006}}) + \beta_{37}(\operatorname{factor(project\_year)}_{\operatorname{2007}}) + \beta_{38}(\operatorname{factor(project\_year)}_{\operatorname{2008}}) + \beta_{39}(\operatorname{factor(project\_year)}_{\operatorname{2009}}) + \beta_{40}(\operatorname{factor(project\_year)}_{\operatorname{2010}}) + \beta_{41}(\operatorname{factor(project\_year)}_{\operatorname{2011}}) + \beta_{42}(\operatorname{factor(project\_year)}_{\operatorname{2012}}) + \beta_{43}(\operatorname{factor(project\_year)}_{\operatorname{2013}}) + \beta_{44}(\operatorname{factor(project\_year)}_{\operatorname{2014}}) + \beta_{45}(\operatorname{factor(project\_year)}_{\operatorname{2015}}) + \beta_{46}(\operatorname{project\_source}_{\operatorname{BLM}}) + \beta_{47}(\operatorname{project\_source}_{\operatorname{BPA}}) + \beta_{48}(\operatorname{project\_source}_{\operatorname{GRMWP}}) + \beta_{49}(\operatorname{project\_source}_{\operatorname{HABITAT\ WORK\ SCHEDULE}}) + \beta_{50}(\operatorname{project\_source}_{\operatorname{NOAA\ RESTORATION}}) + \beta_{51}(\operatorname{project\_source}_{\operatorname{NRRSS}}) + \beta_{52}(\operatorname{project\_source}_{\operatorname{REO}}) + \beta_{53}(\operatorname{project\_source}_{\operatorname{SRFBD}}) + \beta_{54}(\operatorname{project\_source}_{\operatorname{WA\ RCO}}) + \beta_{55}(\operatorname{project\_source}_{\operatorname{WDOT}}) + \beta_{56}(\operatorname{slope} \times \operatorname{bankfull\_width}) + \epsilon
+$$</code></pre>
 <p>In addition to the fully specified model (mod_full), we present thirteen alternative models that include different fixed effects configurations or only sub-samples of the data focused on basin or reporting source criteria. For basins, we provide results estimated on a “core” group representing the five most frequently represented basins (Washington Coastal, Puget Sound, Southern Oregon Coastal, Northern Oregon Coastal, Willamette), as well as that core separated into basins primarily in Western Washington and Oregon respectively. For reporting sources, we focus on a similar “core” group ( "Washington Recreation and Conservation Office, Oregon Water Resources Inventory, Habitat Work Schedule, Bureau of Land Management, Regional Ecosystem Office [an interagency group]), as well as versions estimated only on OWRI and WA RCO projects.</p>
 <p>The resulting coefficients for the fixed effects and categorical variables, when exponentiated, can be interpreted as the ratio of average costs for that group relative those of the base group. Results for continuous variables are presented as exponentiated average marginal effect of a single standard deviation change, which can be interpreted as the ratio of costs relative to a work site with a standard deviation lower for the variable.</p>
 <div id="coefficient-estimates" class="section level2">
@@ -3996,12 +3992,12 @@ N
 <h1>Model visualizations</h1>
 <div id="slope-and-bankfull-width-interaction-effect" class="section level2">
 <h2>Slope and bankfull width interaction effect</h2>
-<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-18-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-18-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-19-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-19-2.png" width="768" style="display: block; margin: auto;" /></p>
 <p>Work sites are distributed along a slope - bankfull width convex curve, with few projects both high slope and high width. This pattern mirrors the cost contours over slope - bankfull width space. Comparing the observed projects to other culverts in the Washington or Oregon inventories will show whether this relationship exists for all culverts or whether projects were selected along the cost curve. That is, would projects that did not occur exist in the upper-right space?</p>
 </div>
 <div id="continuous-variables" class="section level2">
 <h2>Continuous variables</h2>
-<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-20-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-21-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>A standard deviation change in both terrain slope and number of culverts both reduce average costs by about 10 percent and half respectively in the preferred model. The number of culverts result suggests evidence of returns to scale. The cost-reducing effect of terrain slope is unituitive, and may be picking up other cost-reducing effects in more remote, rugged, isolated areas.</p>
 <p>The average marginal effects for all three population features are insignificant in the preferred model. However, in some several of the alternative models, ag/forestry employment and housing density each have slightly positive effects, suggesting that each increase costs. The housing density effect might be evidence of increased access costs due to negotiating with multiple landowners. The employment effect is less intuitive, but may also be picking up on cost increases in more rural areas, rather than a true population effect.</p>
 <p>Bankfull width and stream slope both significant positive effects in the preferred models. A standard deviation increase in either results in about a fifty percent increase in costs when the other is held at its mean. As seen in the earlier figure and raw coefficients, this effect is driven largely by the interaction term in the model. Note that the models for which the effects are insignificant are those estimated using only Washington data, over either the Washington basins only or WA RCO projects.</p>
@@ -4010,32 +4006,32 @@ N
 <h2>Fixed effects and categorical variables</h2>
 <div id="year-effects" class="section level3">
 <h3>Year effects</h3>
-<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-22-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-23-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>For the preferred model, project average costs are nearly twice as high than 2001 levels between 2004 and 2010, with the exception of 2008, when other factors are controlled for. Other models generally follow this pattern, while the models for Western Washington basins/sources have fairly extreme standard errors caused by small sample size.</p>
 </div>
 <div id="reporting-source-effects" class="section level3">
 <h3>Reporting source effects</h3>
-<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-23-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-24-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>WDOT projects have average costs over five times as large as OWRI projects, even when accounting for other factors. The standard errors on this estimate are quite large though, suggesting a more accurate estimate might be possible with more data from this source. Other sources lie BLM and REO have tightly estimated positive effects. OWRI projects have among the lowest average costs.</p>
 </div>
 <div id="basin-effects" class="section level3">
 <h3>Basin effects</h3>
-<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-24-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-25-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>After controlling for other factors with the preferred model, projects in the Lower Snake Basin have the highest average costs, followed by the Middle Columbia Basin, with average costs roughly four and three times those in the Southern Oregon Coastal Basin. The Western Washington basins (Puget Sound and Washington Coastal) both have typical average costs about double those in the reference basin. These effects are tightly estimated, though the basins with the smallest standard errors are Nothern Oregon Coastal and Willamette.</p>
 </div>
 <div id="land-cover-effects" class="section level3">
 <h3>Land cover effects</h3>
-<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-26-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-27-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>Work sites in areas with the land cover classifications in the developed group (the reference level) have among the highest costs, though those in the planted-cultivated and water groups have high costs as well. Work sites in forests and herbaceous land cover areas have average costs around a quarter lower than the reference group.</p>
 </div>
 <div id="road-feature-effects" class="section level3">
 <h3>Road feature effects</h3>
-<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-27-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-28-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>The only consistent effect found among the road feature variables is its paved status. Paved roads are associated with work sites roughly 50 percent higher than unpaved work sites.</p>
 </div>
 <div id="scope-and-scale-effects" class="section level3">
 <h3>Scope and scale effects</h3>
-<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-28-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-29-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>There is some evidence from the alternative models that installations are more expensive than improvements, which are more expensive than removals, though this effect largely washes out when the full suite of fixed effects is included.</p>
 </div>
 </div>
@@ -4043,7 +4039,7 @@ N
 <div id="benefit---cost-visualizations" class="section level1">
 <h1>Benefit - cost visualizations</h1>
 <p>As a simple examination of what kind of decision rule might be in play for determining which culverts were selected, we plot as a benefit proxy total upstream length (in km) versus observed cost per culvert. Under a cost-targeting rule, all work sites would be to the left of a cost threshold, while for a benefit-targeting rule all would be above a benefit threshold. A benefit-cost ratio standard would be above an upward sloping line.</p>
-<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-30-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-31-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>No evidence that projects are selected on cost or benefit-cost ratio basis. It does somewhat appear that the observed projects follow a benefit targeting pattern with a fairly low benefit cut-off, as evidenced by the horizontal pattern among the data. For the Southern Oregon Coastal and Willamette Basins, there appears to be a slight upward tilt in the higher-cost region, indicating that benefit-cost targeting may be more frequent for higher-cost projects.</p>
 <p>Adding culverts where no project is observed with costs predicted via the above models could reveal where observed projects exisit in the space relative to the universe of potential projects, which should provide more clarity to the above analysis.</p>
 </div>
@@ -4066,13 +4062,15 @@ N
 </li>
 <li>Improved benefit estimates: total upstream distance by species and habitat use, weighted by catchment road density, etc.<br />
 </li>
-<li>Forecast costs/benefits for culvert inventories from Oregon and Washington.</li>
+<li>Forecast costs/benefits for culvert inventories from Oregon and Washington.<br />
+</li>
+<li>Integrate Lorenz curve and Gini coefficient analysis from Babcock et al. (1997).</li>
 </ol>
 </div>
 </div>
 <div id="end-matter" class="section level1">
 <h1>End Matter</h1>
-<pre><code>[1] &quot;2020-10-23 13:37:49 PDT&quot;</code></pre>
+<pre><code>[1] &quot;2020-10-23 15:01:27 PDT&quot;</code></pre>
 <pre><code>R version 4.0.2 (2020-06-22)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 Running under: Windows 10 x64 (build 19041)
@@ -4090,12 +4088,12 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] ggcorrplot_0.1.3 mctest_1.3.1     readxl_1.3.1     ggeffects_0.15.1
- [5] margins_0.3.23   broom_0.7.0      kableExtra_1.1.0 knitr_1.29      
- [9] scales_1.1.1     here_0.1         janitor_2.0.1    forcats_0.5.0   
-[13] stringr_1.4.0    dplyr_1.0.1      purrr_0.3.4      readr_1.3.1     
-[17] tidyr_1.1.1      tibble_3.0.4     ggplot2_3.3.2    tidyverse_1.3.0 
-[21] MASS_7.3-51.6    workflowr_1.6.2 
+ [1] equatiomatic_0.1.0 ggcorrplot_0.1.3   mctest_1.3.1       readxl_1.3.1      
+ [5] ggeffects_0.15.1   margins_0.3.23     broom_0.7.0        kableExtra_1.1.0  
+ [9] knitr_1.29         scales_1.1.1       here_0.1           janitor_2.0.1     
+[13] forcats_0.5.0      stringr_1.4.0      dplyr_1.0.1        purrr_0.3.4       
+[17] readr_1.3.1        tidyr_1.1.1        tibble_3.0.4       ggplot2_3.3.2     
+[21] tidyverse_1.3.0    MASS_7.3-51.6      workflowr_1.6.2   
 
 loaded via a namespace (and not attached):
  [1] fs_1.4.2           lubridate_1.7.9    RColorBrewer_1.1-2 insight_0.9.0     
@@ -4139,12 +4137,12 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] ggcorrplot_0.1.3 mctest_1.3.1     readxl_1.3.1     ggeffects_0.15.1
- [5] margins_0.3.23   broom_0.7.0      kableExtra_1.1.0 knitr_1.29      
- [9] scales_1.1.1     here_0.1         janitor_2.0.1    forcats_0.5.0   
-[13] stringr_1.4.0    dplyr_1.0.1      purrr_0.3.4      readr_1.3.1     
-[17] tidyr_1.1.1      tibble_3.0.4     ggplot2_3.3.2    tidyverse_1.3.0 
-[21] MASS_7.3-51.6    workflowr_1.6.2 
+ [1] equatiomatic_0.1.0 ggcorrplot_0.1.3   mctest_1.3.1       readxl_1.3.1      
+ [5] ggeffects_0.15.1   margins_0.3.23     broom_0.7.0        kableExtra_1.1.0  
+ [9] knitr_1.29         scales_1.1.1       here_0.1           janitor_2.0.1     
+[13] forcats_0.5.0      stringr_1.4.0      dplyr_1.0.1        purrr_0.3.4       
+[17] readr_1.3.1        tidyr_1.1.1        tibble_3.0.4       ggplot2_3.3.2     
+[21] tidyverse_1.3.0    MASS_7.3-51.6      workflowr_1.6.2   
 
 loaded via a namespace (and not attached):
  [1] fs_1.4.2           lubridate_1.7.9    RColorBrewer_1.1-2 insight_0.9.0     
