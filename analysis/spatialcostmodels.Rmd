@@ -15,6 +15,7 @@ output:
 # Prepare environment and data ----
 rm(list = ls())
 
+library(equatiomatic)
 library(MASS)
 library(tidyverse)
 library(janitor)
@@ -612,7 +613,6 @@ extreme, and an interaction term can capture this effect.
 
 
 ```{r }
-library(equatiomatic)
 extract_eq(mod_full)
 ```
 
