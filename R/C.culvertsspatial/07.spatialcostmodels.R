@@ -585,7 +585,7 @@ mod_sources_core <-
 #' extreme, and an interaction term can capture this effect.
 #' 
 
-extract_eq(mod_full)
+#' `r extract_eq(mod_full)`
 
 #'
 #' In addition to the fully specified model (mod_full), we present thirteen
