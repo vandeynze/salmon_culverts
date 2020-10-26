@@ -11,7 +11,7 @@
 
 <meta name="author" content="B. Van Deynze" />
 
-<meta name="date" content="2020-10-23" />
+<meta name="date" content="2020-10-26" />
 
 <title>Culvert cost models with spatially explicit data</title>
 
@@ -383,7 +383,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Culvert cost models with spatially explicit data</h1>
 <h4 class="author">B. Van Deynze</h4>
-<h4 class="date">October 23, 2020</h4>
+<h4 class="date">October 26, 2020</h4>
 
 </div>
 
@@ -400,28 +400,45 @@ div.tocify {
 </ul></li>
 </ul>
 <p>Key cites<br />
-Babcock et al. 1997: [<a href="https://doi.org/10.2307/3147171" class="uri">https://doi.org/10.2307/3147171</a>]<br />
+Babcock et al. 1997: <a href="https://doi.org/10.2307/3147171" class="uri">https://doi.org/10.2307/3147171</a><br />
 - Describes relative efficiency of management rules under different joint distributions of costs and benefits<br />
 - Alternative targeting instruments considered incl. cost-targeting, benefit-targeting, and marginal cost-targeting (cost per benefit targeting)<br />
 - Relative variability of benefits and costs, and correlation between the two, determine effects of sub-optimal targeting</p>
-<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Naidoo et al. 2006: [<a href="https://doi.org/10.1016/j.tree.2006.10.003" class="uri">https://doi.org/10.1016/j.tree.2006.10.003</a>]: - Types of costs: acquisition, management, transaction (and opportunity, damage costs) - (Can be continuous or one-off) - Often based on non-monetary proxies - Most often area - Sometimes weighted but in often arbitrary ways - Efficiency gains from incorporating costs</p>
+<p><img src="figure/spatialcostmodels.Rmd/unnamed-chunk-3-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Naidoo et al. 2006: <a href="https://doi.org/10.1016/j.tree.2006.10.003" class="uri">https://doi.org/10.1016/j.tree.2006.10.003</a><br />
+- Types of costs: acquisition, management, transaction (and opportunity, damage costs)<br />
+- (Can be continuous or one-off)<br />
+- Often based on non-monetary proxies<br />
+- Most often area<br />
+- Sometimes weighted but in often arbitrary ways<br />
+- Efficiency gains from incorporating costs</p>
 <ul>
-<li>Past looks at culverts have focused on benefits and used simplified cost models</li>
+<li>Past looks at culverts have focused on benefits and used simplified cost models<br />
+</li>
 <li>Past looks at conservation costs have focused on land acquisition costs rather than restoration efforts
 <ul>
 <li>Unique features of culvert improvement in PNW: upstream land access model, lots of streams/roads, large variation in slope and stream size</li>
 </ul></li>
-<li>Examine variability in cost levels and drivers of costs across culvert projects in PNW</li>
-<li>Compare levels and variability of costs to (possibly several) benefit measures</li>
+<li>Examine variability in cost levels and drivers of costs across culvert projects in PNW<br />
+</li>
+<li>Compare levels and variability of costs to (possibly several) benefit measures<br />
+</li>
 <li>Apply model to extant culverts to compare costs/benefit distributions over…
 <ul>
-<li>Space: where are high benefit, low cost culverts?</li>
-<li>Observed projects vs. all culverts: what kind of decision rule is distribution of projects consistent with?</li>
+<li>Space: where are high benefit, low cost culverts?<br />
+</li>
+<li>Observed projects vs. all culverts: what kind of decision rule is distribution of projects consistent with?<br />
+</li>
 </ul></li>
 <li>Timely b/c Washington culvert case</li>
 </ul>
-<p>RQ1: How much variability is there in costs for culvert improvements? - Over space? - For observed projects vs. potential projects? - Relative to variability in benefits? (And implications for planning rules/future research) RQ2: What are drivers of culvert improvement costs? - Economic drivers: economies of scale, transaction costs - Geophysical drivers: stream features, terrain features</p>
+<p><strong>RQ1:</strong> How much variability is there in costs for culvert improvements?<br />
+- Over space?<br />
+- For observed projects vs. potential projects?<br />
+- Relative to variability in benefits? (And implications for planning rules/future research)<br />
+<strong>RQ2:</strong> What are drivers of culvert improvement costs?<br />
+- Economic drivers: economies of scale, transaction costs<br />
+- Geophysical drivers: stream features, terrain features</p>
 </div>
 <div id="data-description" class="section level1">
 <h1>Data description</h1>
@@ -1023,7 +1040,7 @@ Areas where perennial herbaceous vegetation accounts for greater than 80% of veg
 <pre><code>$$
 \operatorname{log(cost\_per\_culvert)} = \alpha + \beta_{1}(\operatorname{n\_culverts}) + \beta_{2}(\operatorname{log(dist\_mean\ +\ 1)}) + \beta_{3}(\operatorname{factor(I(n\_worksites\ ==\ 1))}_{\operatorname{TRUE}}) + \beta_{4}(\operatorname{action\_fishpass\_culvrem\_prj}) + \beta_{5}(\operatorname{action\_fishpass\_culvinst\_prj}) + \beta_{6}(\operatorname{slope}) + \beta_{7}(\operatorname{bankfull\_width}) + \beta_{8}(\operatorname{here\_paved}_{\operatorname{Y}}) + \beta_{9}(\operatorname{factor(here\_class)}_{\operatorname{3}}) + \beta_{10}(\operatorname{factor(here\_class)}_{\operatorname{4}}) + \beta_{11}(\operatorname{factor(here\_class)}_{\operatorname{5}}) + \beta_{12}(\operatorname{slope}_{\operatorname{\_deg}} \times \operatorname{slope\_deg}) + \beta_{13}(\operatorname{factor(nlcd\_current\_class)}_{\operatorname{Forest}}) + \beta_{14}(\operatorname{factor(nlcd\_current\_class)}_{\operatorname{Herbaceous}}) + \beta_{15}(\operatorname{factor(nlcd\_current\_class)}_{\operatorname{Planted-cultivated}}) + \beta_{16}(\operatorname{factor(nlcd\_current\_class)}_{\operatorname{Shrubland}}) + \beta_{17}(\operatorname{factor(nlcd\_current\_class)}_{\operatorname{Water}}) + \beta_{18}(\operatorname{factor(nlcd\_current\_class)}_{\operatorname{Wetlands}}) + \beta_{19}(\operatorname{hdens\_cat}) + \beta_{20}(\operatorname{emp\_const}) + \beta_{21}(\operatorname{emp\_agforest}) + \beta_{22}(\operatorname{basin}_{\operatorname{DESCHUTES}}) + \beta_{23}(\operatorname{basin}_{\operatorname{JOHN\ DAY}}) + \beta_{24}(\operatorname{basin}_{\operatorname{LOWER\ COLUMBIA}}) + \beta_{25}(\operatorname{basin}_{\operatorname{LOWER\ SNAKE}}) + \beta_{26}(\operatorname{basin}_{\operatorname{MIDDLE\ COLUMBIA}}) + \beta_{27}(\operatorname{basin}_{\operatorname{NORTHERN\ OREGON\ COASTAL}}) + \beta_{28}(\operatorname{basin}_{\operatorname{PUGET\ SOUND}}) + \beta_{29}(\operatorname{basin}_{\operatorname{UPPER\ COLUMBIA}}) + \beta_{30}(\operatorname{basin}_{\operatorname{WASHINGTON\ COASTAL}}) + \beta_{31}(\operatorname{basin}_{\operatorname{WILLAMETTE}}) + \beta_{32}(\operatorname{factor(project\_year)}_{\operatorname{2002}}) + \beta_{33}(\operatorname{factor(project\_year)}_{\operatorname{2003}}) + \beta_{34}(\operatorname{factor(project\_year)}_{\operatorname{2004}}) + \beta_{35}(\operatorname{factor(project\_year)}_{\operatorname{2005}}) + \beta_{36}(\operatorname{factor(project\_year)}_{\operatorname{2006}}) + \beta_{37}(\operatorname{factor(project\_year)}_{\operatorname{2007}}) + \beta_{38}(\operatorname{factor(project\_year)}_{\operatorname{2008}}) + \beta_{39}(\operatorname{factor(project\_year)}_{\operatorname{2009}}) + \beta_{40}(\operatorname{factor(project\_year)}_{\operatorname{2010}}) + \beta_{41}(\operatorname{factor(project\_year)}_{\operatorname{2011}}) + \beta_{42}(\operatorname{factor(project\_year)}_{\operatorname{2012}}) + \beta_{43}(\operatorname{factor(project\_year)}_{\operatorname{2013}}) + \beta_{44}(\operatorname{factor(project\_year)}_{\operatorname{2014}}) + \beta_{45}(\operatorname{factor(project\_year)}_{\operatorname{2015}}) + \beta_{46}(\operatorname{project\_source}_{\operatorname{BLM}}) + \beta_{47}(\operatorname{project\_source}_{\operatorname{BPA}}) + \beta_{48}(\operatorname{project\_source}_{\operatorname{GRMWP}}) + \beta_{49}(\operatorname{project\_source}_{\operatorname{HABITAT\ WORK\ SCHEDULE}}) + \beta_{50}(\operatorname{project\_source}_{\operatorname{NOAA\ RESTORATION}}) + \beta_{51}(\operatorname{project\_source}_{\operatorname{NRRSS}}) + \beta_{52}(\operatorname{project\_source}_{\operatorname{REO}}) + \beta_{53}(\operatorname{project\_source}_{\operatorname{SRFBD}}) + \beta_{54}(\operatorname{project\_source}_{\operatorname{WA\ RCO}}) + \beta_{55}(\operatorname{project\_source}_{\operatorname{WDOT}}) + \beta_{56}(\operatorname{slope} \times \operatorname{bankfull\_width}) + \epsilon
 $$</code></pre>
-<p>In addition to the fully specified model (mod_full), we present thirteen alternative models that include different fixed effects configurations or only sub-samples of the data focused on basin or reporting source criteria. For basins, we provide results estimated on a “core” group representing the five most frequently represented basins (Washington Coastal, Puget Sound, Southern Oregon Coastal, Northern Oregon Coastal, Willamette), as well as that core separated into basins primarily in Western Washington and Oregon respectively. For reporting sources, we focus on a similar “core” group ( "Washington Recreation and Conservation Office, Oregon Water Resources Inventory, Habitat Work Schedule, Bureau of Land Management, Regional Ecosystem Office [an interagency group]), as well as versions estimated only on OWRI and WA RCO projects.</p>
+<p>In addition to the fully specified model (mod_full), we present thirteen alternative models that include different fixed effects configurations or only sub-samples of the data focused on basin or reporting source criteria. For basins, we provide results estimated on a “core” group representing the five most frequently represented basins (Washington Coastal, Puget Sound, Southern Oregon Coastal, Northern Oregon Coastal, Willamette), as well as that core separated into basins primarily in Western Washington and Oregon respectively. For reporting sources, we focus on a similar “core” group ( Washington Recreation and Conservation Office, Oregon Water Resources Inventory, Habitat Work Schedule, Bureau of Land Management, Regional Ecosystem Office [an interagency group]), as well as versions estimated only on OWRI and WA RCO projects.</p>
 <p>The resulting coefficients for the fixed effects and categorical variables, when exponentiated, can be interpreted as the ratio of average costs for that group relative those of the base group. Results for continuous variables are presented as exponentiated average marginal effect of a single standard deviation change, which can be interpreted as the ratio of costs relative to a work site with a standard deviation lower for the variable.</p>
 <div id="coefficient-estimates" class="section level2">
 <h2>Coefficient estimates</h2>
@@ -4070,7 +4087,7 @@ N
 </div>
 <div id="end-matter" class="section level1">
 <h1>End Matter</h1>
-<pre><code>[1] &quot;2020-10-23 15:01:27 PDT&quot;</code></pre>
+<pre><code>[1] &quot;2020-10-26 10:22:03 PDT&quot;</code></pre>
 <pre><code>R version 4.0.2 (2020-06-22)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
 Running under: Windows 10 x64 (build 19041)
@@ -4093,7 +4110,7 @@ other attached packages:
  [9] knitr_1.29         scales_1.1.1       here_0.1           janitor_2.0.1     
 [13] forcats_0.5.0      stringr_1.4.0      dplyr_1.0.1        purrr_0.3.4       
 [17] readr_1.3.1        tidyr_1.1.1        tibble_3.0.4       ggplot2_3.3.2     
-[21] tidyverse_1.3.0    MASS_7.3-51.6      workflowr_1.6.2   
+[21] tidyverse_1.3.0    MASS_7.3-51.6     
 
 loaded via a namespace (and not attached):
  [1] fs_1.4.2           lubridate_1.7.9    RColorBrewer_1.1-2 insight_0.9.0     
@@ -4112,7 +4129,8 @@ loaded via a namespace (and not attached):
 [53] reshape2_1.4.4     reprex_0.3.0       glue_1.4.2         evaluate_0.14     
 [57] data.table_1.13.0  modelr_0.1.8       vctrs_0.3.4        httpuv_1.5.4      
 [61] selectr_0.4-2      cellranger_1.1.0   gtable_0.3.0       assertthat_0.2.1  
-[65] xfun_0.16          later_1.1.0.1      viridisLite_0.3.0  ellipsis_0.3.1    </code></pre>
+[65] xfun_0.16          later_1.1.0.1      viridisLite_0.3.0  workflowr_1.6.2   
+[69] ellipsis_0.3.1    </code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -4142,7 +4160,7 @@ other attached packages:
  [9] knitr_1.29         scales_1.1.1       here_0.1           janitor_2.0.1     
 [13] forcats_0.5.0      stringr_1.4.0      dplyr_1.0.1        purrr_0.3.4       
 [17] readr_1.3.1        tidyr_1.1.1        tibble_3.0.4       ggplot2_3.3.2     
-[21] tidyverse_1.3.0    MASS_7.3-51.6      workflowr_1.6.2   
+[21] tidyverse_1.3.0    MASS_7.3-51.6     
 
 loaded via a namespace (and not attached):
  [1] fs_1.4.2           lubridate_1.7.9    RColorBrewer_1.1-2 insight_0.9.0     
@@ -4161,7 +4179,8 @@ loaded via a namespace (and not attached):
 [53] reshape2_1.4.4     reprex_0.3.0       glue_1.4.2         evaluate_0.14     
 [57] data.table_1.13.0  modelr_0.1.8       vctrs_0.3.4        httpuv_1.5.4      
 [61] selectr_0.4-2      cellranger_1.1.0   gtable_0.3.0       assertthat_0.2.1  
-[65] xfun_0.16          later_1.1.0.1      viridisLite_0.3.0  ellipsis_0.3.1    </code></pre>
+[65] xfun_0.16          later_1.1.0.1      viridisLite_0.3.0  workflowr_1.6.2   
+[69] ellipsis_0.3.1    </code></pre>
 </div>
 </div>
 
