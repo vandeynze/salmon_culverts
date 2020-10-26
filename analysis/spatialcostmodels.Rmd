@@ -51,11 +51,12 @@ Niche: use of cost data in conservation plans
   - Including spatial variability and variability across scope and scale of project  
   - Understanding this variability can improve planning outcomes  
 
-Key cites  
+**Key cites**  
 Babcock et al. 1997: https://doi.org/10.2307/3147171  
-  - Describes relative efficiency of management rules under different joint distributions of costs and benefits  
-  - Alternative targeting instruments considered incl. cost-targeting, benefit-targeting, and marginal cost-targeting (cost per benefit targeting)  
-  - Relative variability of benefits and costs, and correlation between the two, determine effects of sub-optimal targeting  
+  
+- Describes relative efficiency of management rules under different joint distributions of costs and benefits  
+- Alternative targeting instruments considered incl. cost-targeting, benefit-targeting, and marginal cost-targeting (cost per benefit targeting)  
+- Relative variability of benefits and costs, and correlation between the two, determine effects of sub-optimal targeting  
   
 
 ```{r fig.width=10, fig.height=10, echo=F, message=F, warning=F}
@@ -145,17 +146,16 @@ ggplot() +
 ```
 
 Naidoo et al. 2006: https://doi.org/10.1016/j.tree.2006.10.003  
-  - Types of costs: acquisition, management, transaction (and opportunity, damage costs)  
-    - (Can be continuous or one-off)  
-  - Often based on non-monetary proxies  
-    - Most often area  
-    - Sometimes weighted but in often arbitrary ways  
-  - Efficiency gains from incorporating costs  
   
+- Types of costs: acquisition, management, transaction (and opportunity, damage costs)  
+  - (Can be continuous or one-off)  
+- Often based on non-monetary proxies  
+  - Most often area  
+  - Sometimes weighted but in often arbitrary ways  
+  - Efficiency gains from incorporating costs  
 - Past looks at culverts have focused on benefits and used simplified cost models  
 - Past looks at conservation costs have focused on land acquisition costs rather than restoration efforts  
   - Unique features of culvert improvement in PNW: upstream land access model, lots of streams/roads, large variation in slope and stream size  
-  
 - Examine variability in cost levels and drivers of costs across culvert projects in PNW  
 - Compare levels and variability of costs to (possibly several) benefit measures  
 - Apply model to extant culverts to compare costs/benefit distributions over...  
@@ -613,7 +613,8 @@ extreme, and an interaction term can capture this effect.
 
 
 ```{r }
-extract_eq(mod_full)
+# Giving up on rendering the equation for now
+# extract_eq(mod_full)
 ```
 
 
