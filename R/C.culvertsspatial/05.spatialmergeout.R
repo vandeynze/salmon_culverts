@@ -27,13 +27,13 @@ df_culv <- read_csv(here("output/culverts_full_mapping.csv")) %>%
 
 # Load other outputs
 
-# 01.countycensustests.R - CBP jobs data
+# 01.countycensus.R - CBP jobs data
 df_cbp <- read_csv(here("output/spatial/culverts_cbp.csv"))
 # 02.culvertsdensitytets.R - Density measures for nearby culverts
 # df_density <- read_csv(here("output/spatial/culverts_density.csv"))
 # 03.culvertsroadstets.R - OSM streets data
 # df_osmroads <- read_csv(here("output/spatial/culverts_osmroads.csv"))
-# 04.culvertsstreamtest.R - NHDPlus V2.1 stream data
+# 04.culvertsstreams.R - NHDPlus V2.1 stream data
 df_nhdstreams <- read_csv(here("output/spatial/culverts_nhdstreams.csv")) %>% select(worksite_id, project_year, comid, slope, upst_dist)
 
 # Blake's ArcGIS pulls
@@ -133,7 +133,7 @@ supp_urls <-
     "https://www.sciencebase.gov/catalog/item/57bf5c07e4b0f2f0ceb75b1b",
     "https://www.sciencebase.gov/catalog/item/57bf5e25e4b0f2f0ceb75b77",
     "https://www.sciencebase.gov/catalog/item/5787ea72e4b0d27deb377b6d",
-    "https://www.sciencebase.gov/catalog/item/5669a8e3e4b08895842a1d4f",
+    "https://www.sciencebase.gov/catalog/item/5cf02bdae4b0b51330e22b85",
     "https://www.sciencebase.gov/catalog/item/5669a8e3e4b08895842a1d4f"
   )
 
@@ -325,11 +325,12 @@ rm(basin_filenames, df_basin)
 
 sf_elev <-
   df_culv %>%
-  # st_crop(
-  #  y = c(xmin = -120, ymin = 42, xmax = -119, ymax = 48)
-  # ) %>%
+  st_crop(
+   y = c(xmin = -120, ymin = 42, xmax = -119, ymax = 48)
+  ) %>%
   get_elev_raster(z = 11) %>% # Guide to zoom levels: https://github.com/tilezen/joerd/blob/master/docs/data-sources.md#what-is-the-ground-resolution
-  vrm(9)
+  vrm(9) # Download successful but DRM reprojection step still did not complete after 48hrs
+
 raster::plot(sf_elev)
 
 
