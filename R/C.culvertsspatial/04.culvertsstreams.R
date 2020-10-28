@@ -141,5 +141,5 @@ qplot(x = log(upst_dist), data = df_culv, facets = ~ basin)
 
 # Write out
 df_culv %>%
-  st_drop_geometry() %>%
+  # st_drop_geometry() %>%
   write_csv(here("output/spatial/culverts_nhdstreams.csv"))
