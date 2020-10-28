@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="B. Van Deynze" />
+
+<meta name="date" content="2020-10-28" />
+
+<title>Summary of Spatially Derived Variables for Culvert Projects</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">salmon_culverts</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/vandeynze/salmon_culverts">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Summary of Spatially Derived Variables for Culvert Projects</h1>
+<h4 class="author">B. Van Deynze</h4>
+<h4 class="date">October 28, 2020</h4>
+
+</div>
+
+
+<p>This document summarizes spatially-derived variables for PNSHP culvert work sites. These variables are collected by linking the work site points to other spatial data sets via polygon covers or identifying the nearest line. Variables were selected for their value as either potential drivers of project cost, or as potential proxies for ecological benefits.</p>
+<p>As of right now, we have data from Blake on roads, streams, habitat use, slope, and land cover. I also have collected some county-level data on employment levels in relevant sectors. With some help from Sunny, I also pulled the nearest NHD+ stream COMID, which was used to link a number of additional variables related to stream, land cover, and population features of the stream and upstream basins.</p>
+<p>In the first section, I summarize data sources and define important variables. In the next section, I evaluate the quality of matches for road and stream data. In the third sections, I present descriptive figures for the new variables. And, finally, I close with some early regression results incorporating the new variables.</p>
+<div id="data-sources-and-variable-definitions" class="section level1">
+<h1>Data sources and variable definitions</h1>
+<div id="culvert-work-site-data" class="section level2">
+<h2>Culvert work site data</h2>
+<p>Data on culvert work site locations and associated project information (reporting source, project cost, year, work site coordinates), are from the <strong><em>Pacific Northwest Salmon Habitat Projects</em></strong> database, which documents projects relevant to salmonid habitat restoration, including culvert improvements. We restrict the sample to projects that:<br />
+1) Only include culvert actions across any work sites;<br />
+2) Were completed between 1996 and 2015;<br />
+3) Consisted of work sites only in Washington or Oregon;<br />
+4) Consisted of work sites only located within basins with over 20 work sites;<br />
+5) Reported project costs per culvert between $2,000 and $750,000 (roughly 5th and 95th percentiles).</p>
+</div>
+</div>
+<div id="evaluating-accuracy-of-stream-and-road-matches" class="section level1">
+<h1>Evaluating accuracy of stream and road matches</h1>
+<p>First thing we’ll do is check how accurate the culvert work site points match up with the road and stream data recovered from three sources: (1) <a href="https://gii.dhs.gov/hifld/sites/default/files/2019-08/HIFLD%20Licensed%20HERE%20One%20Pager.pdf">HERE</a> for network-able road features, (2) <a href="https://hydro.nationalmap.gov/arcgis/rest/services/NHDPlus_HR/MapServer">NHDPlus HR</a> for stream/river classification and features, (3) <a href="https://www.streamnet.org/data/interactive-maps-and-gis-data/">StreamNet</a> for salmonid habitat use data by species. We will evaluate the precision of matches using distance to the “matching” line, measured in meters.</p>
+<p>We suspect two possible sources of imprecision. First, work site points may be reported with imprecision, in which case the match would represent the most likely feature, but with less certainty than if distance was lower. Second, the work site may be on a road or stream that is not represented in our source data. In this case, the matched feature would misrepresent the true feature we are trying to identify for the work site.</p>
+<p>In either case, we will need to identify and decide how to deal with “poor” matches. For now, we will <strong><em>define poor matches as work sites over 150m from the target feature</em></strong> (i.e. road or stream), represented in the figures below with a red horizontal line. This threshold is easily adjustable, and sensitivity to this threshold will also be examined.</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-5-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-5-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-5-3.png" width="960" style="display: block; margin: auto;" /></p>
+<div id="dealing-with-poor-matches" class="section level2">
+<h2>Dealing with poor matches</h2>
+<p>So <strong><em>StreamNet</em></strong>’s less dense streams have the worst matches, while NHDPlus has very close matches. StreamNet is most useful for salmon habitat identification, though HUC code based habitat maps can be used instead (e.g. maps seen in <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0217711">Crozier et al. (2018)</a>). I think using this approach might be preferred for consistency, given the large number of poor matches in the StreamNet data. For the cost modeling stage, this variables is less important. For StreamNet, <strong><em>wait for next steps.</em></strong></p>
+<pre class="r"><code># sf_culv &lt;-
+#   sf_culv %&gt;%
+#   select(-starts_with(&quot;snet_&quot;))</code></pre>
+<p>The HERE roads have lots of close matches, but also plenty that are far off the mark. For poor matches, we can consider two approaches. First, we can assume all poor matches are on “small roads” (e.g.. back roads, private access roads, logging roads, etc.) and <strong><em>assign to lowest HERE road class, and unpaved</em></strong>. Alternatively, we can drop these observations, or assign them to their own class.</p>
+<pre class="r"><code>sf_culv &lt;-
+  sf_culv %&gt;%
+  rowwise() %&gt;%
+  mutate(
+    # Class bad matches
+    here_class_0 = here_class,
+    here_class = case_when(
+      here_distm &gt; 150 ~ &quot;5&quot;,
+      TRUE ~ as.character(here_class)
+    ),
+    here_class_badmatch = case_when(
+      here_distm &gt; 150 ~ &quot;6&quot;,
+      TRUE ~ as.character(here_class)
+    ),
+    here_class_namatch = case_when(
+      here_distm &gt; 150 ~ NA_character_,
+      TRUE ~ as.character(here_class)
+    ),
+    # Speed bad matches
+    here_speed_0 = here_speed,
+    here_speed = case_when(
+      here_distm &gt; 150 ~ &quot;8&quot;,
+      TRUE ~ as.character(here_speed)
+    ),
+    here_speed_badmatch = case_when(
+      here_distm &gt; 150 ~ &quot;9&quot;,
+      TRUE ~ as.character(here_speed)
+    ),
+    # Paved bad matches
+    here_paved_0 = here_paved,
+    here_paved = case_when(
+      here_distm &gt; 150 ~ &quot;N&quot;,
+      TRUE ~ as.character(here_paved)
+    )
+  )</code></pre>
+<p>For <strong><em>NHDPlus</em></strong>, because the vast majority of the work sites are close matches, we can <strong><em>drop the poor match work sites</em></strong>, defined as sites more than 150m from the nearest stream line.</p>
+<pre class="r"><code>sf_culv &lt;-
+  sf_culv %&gt;%
+  filter(
+    nhd_dist_m &lt; 150
+  )</code></pre>
+</div>
+</div>
+<div id="descriptive-figures" class="section level1">
+<h1>Descriptive figures</h1>
+<div id="here-roads-speed-functional-class-and-paved" class="section level2">
+<h2>HERE roads: Speed, functional class, and paved</h2>
+<p>The HERE data provides variables for <em>speed class</em>, <em>functional class</em>, <em>paved</em>, and <em>public</em>. Paved status, speed class, and road type are potential cost drivers, indicating busier, larger roads that require longer fish crossings, more expensive construction on the affected road, and expected flagging costs associated with traffic diversion. Plots for all three are provided below.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Value key for HERE road variables
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Classification
+</th>
+<th style="text-align:right;">
+Value
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;vertical-align: top !important;" rowspan="6">
+Functional class
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+Roads that allow for high volume, maximum speed traffic movement between and through major metropolitan areas. Functional class = 1 is applied to roads with very few, if any, speed changes. Access to the road is usually controlled.
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+Roads that are used to channel traffic to functional class = 1 roads for travel between and through cities in the shortest amount of time. Functional class = 2 is applied to roads with very few, if any speed changes that allow for high volume, high speed traffic movement.
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+Roads which interconnect functional class = 2 roads and provide a high volume of traffic movement at a lower level of mobility than functional class = 2 roads.
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+Roads which provide for a high volume of traffic movement at moderate speeds between neighbourhoods. These roads connect with higher functional class roads to collect and distribute traffic between neighbourhoods.
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+Roads whose volume and traffic movement are below the level of any functional class. In addition, walkways, truck only roads, bus only roads, and emergency vehicle only roads receive functional class = 5. The following also receive functional class = 5: access roads, parking lanes, and connections internal to select pois in north america. Roads in marginal and illegal settlements in developing countries
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+“Roads” associated with work sites &gt; 150m from the nearest HERE road for here_class_badmatch.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;vertical-align: top !important;" rowspan="8">
+Speed category
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+&gt; 130 kph / &gt; 80 mph
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+101-130 kph / 65-80 mph
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+91-100 kph / 55-64 mph
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+71-90 kph / 41-54 mph
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+51-70 kph / 31-40 mph
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+31-50 kph / 21-30 mph
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+11-30 kph / 6-20 mph
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:left;">
+&lt; 11 kph / &lt; 6 mph
+</td>
+</tr>
+</tbody>
+</table>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-10-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-10-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-10-3.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-10-4.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-10-5.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-10-6.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="salmonnet-salmon-habitat-use" class="section level2">
+<h2>SalmonNet: Salmon habitat use</h2>
+<p>The StreamNet data provides variables for <em>species</em> and <em>habitat use</em>. These variables will be valuable for modeling benefits of culvert improvement, but may also lead to stricter design requirements if in the habitat of ESA listed species.</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-12-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-12-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-12-3.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-12-4.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Key takeaway is that the culverts projects in Washington and Oregon are on distinctly different streams. In Washington, reported projects are more frequently on migration streams. These streams are likely to open up more upstream territory, but may also be wider and require more complex culvert designs. In Oregon, the reported projects are overwhelmingly on spawning and rearing streams, which (I believe) tend to be smaller and therefore would require less complex designs.</p>
+<p>We can dig into attributes of associated NHDPlus streams and their associated catchments to further dig into this finding on the stream side.</p>
+</div>
+<div id="nhdplus-attributes-slope-bankfull-width-and-more" class="section level2">
+<h2>NHDPlus attributes: Slope, bankfull width, and more</h2>
+<p>Stream characteristics are likely critical cost drivers. All state culvert design guidelines point to specific design needs for stream crossings when the crossing is either particularly wide (as measured by <strong><em>bankfull width</em></strong>) or at a steep slope (as measured by <strong><em>slope</em></strong>).</p>
+<p>We gather these variables from <a href="https://www.sciencebase.gov/catalog/item/5669a79ee4b08895842a1d47">NHDPlus Selected Attributes Version 2.1 (Wiezorek, Jackson, &amp; Schwarz, 2018)</a>. by identifying the nearest NHDPlus stream object’s COMID and matching that COMID with the appropriate attributes. From the same database, we also gather <strong><em>population density</em></strong>, <strong><em>housing density</em></strong>, <strong><em>annual precipitation</em></strong>, <strong><em>road density</em></strong>, <strong><em>stream density</em></strong>, <strong><em>stream length</em></strong>, <strong><em>basin area</em></strong>, and <strong><em>NLCD land cover class share</em></strong> in the stream’s catchment.</p>
+<p>These variables area also available aggregated over upstream networked NHDPlus streams and catchments, allowing for measures such as <strong><em>total upstream length</em></strong> and habitat features for associated catchments (e.g. road density, land cover, precipitation). These aggregated variables are calculated via two methods. Using the <em>total</em> method, all area in upstream catchments is weighted equally. Using the <em>accumulated</em> methods, area in upstream catchments is weighted by the proportion of flow that reaches the target catchment, accounting for natural and anthropogenic diversions.</p>
+<p>For cost modeling, we focus on the <strong><em>bankfull width</em></strong> and <strong><em>slope</em></strong> variables. In the next steps, when benefit proxies are constructed for each culvert work site, we can use the remaining variables to characterize upstream habitat with restored access.</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-15-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-15-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-15-3.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-15-4.png" width="960" style="display: block; margin: auto;" /></p>
+<p>So it looks like the slope variable is pretty well behaved. We will <strong><em>drop work sites with bankfull width over 50m</em></strong> to remove extreme outliers.</p>
+<pre class="r"><code>sf_culv &lt;-
+  sf_culv %&gt;%
+  filter(
+    bankfull_width &lt; 50
+  )</code></pre>
+<p>Otherwise, these variables show good behavior across these two physical attributes. Culverts in Washington are associated with larger streams, which will likely mean more expensive projects.</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-18-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-18-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-18-3.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-18-4.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Population and housing density are highly correlated (Pearson’s coef. = 0.991), so we have to pick one or the other. Design documents point to site access as a crucial driver in project cost, and note that negotiating with private landowners can complicate projects. Housing density is a good proxy for this driver. Population density can be a good proxy for road traffic, which can increase flagging costs. Both effects are likely to increase costs. While we won’t be able to distinguish a mechanism, including either can control for density effects.</p>
+<p>We should also consider alternative measures here that might better capture the hypothetical mechanisms at play. For example, variables such as the number of distinct parcels in the catchment, whether the work site point is on public land, or the proportion of the catchment that is in public land might better capture increased costs due to access issues.</p>
+</div>
+<div id="slope-at-work-site" class="section level2">
+<h2>Slope at work site</h2>
+<p>The slope at the work site may increase project cost by restricting access to the culvert. We measure slope using the slope in degrees of the <a href="https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-global-30-arc-second-elevation-gtopo30?qt-science_center_objects=0#qt-science_center_objects">GTOPO30</a> grid cell the work site falls in.</p>
+<p>Note that slope at work sites and the stream slope are distinct, both in their measurement and the mechanism through which they influence costs. Stream slope is our best available proxy for the slope of the stream at the culvert, which can require more complex, expensive culvert design to ensure fish passage. Slope at work site is the <em>land</em> slope in the immediate vicinity of the culvert, which can restrict site access and available staging area, increasing project costs. While closely related, these are distinct (Pearson’s coef. = 0.479).</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-20-1.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="land-cover-at-work-sites" class="section level2">
+<h2>Land cover at work sites</h2>
+<p>Land cover can proxy for land use, which can effect how difficult it is to access and perform construction activities at the work site, which may increase costs. It may also be correlated with road features (surface material, typical traffic, etc.) or stream features, and could be useful for providing more information for work sites where matches to roads and streams are poor.</p>
+<p>The table below presents the NLCD land cover classifications. We use the “class” level of detail in the figures that follow.</p>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Class
+</th>
+<th style="text-align:right;">
+Value
+</th>
+<th style="text-align:left;">
+Classification
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Barren
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:left;">
+Barren land (rock/sand/clay)
+</td>
+<td style="text-align:left;">
+Areas of bedrock, desert pavement, scarps, talus, slides, volcanic material, glacial debris, sand dunes, strip mines, gravel pits and other accumulations of earthen material. Generally, vegetation accounts for less than 15% of total cover.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Developed
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:left;">
+Developed, open space
+</td>
+<td style="text-align:left;">
+Areas with a mixture of some constructed materials, but mostly vegetation in the form of lawn grasses. Impervious surfaces account for less than 20% of total cover. These areas most commonly include large-lot single-family housing units, parks, golf courses, and vegetation planted in developed settings for recreation, erosion control, or aesthetic purposes.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Developed
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:left;">
+Developed, low intensity
+</td>
+<td style="text-align:left;">
+Areas with a mixture of constructed materials and vegetation. Impervious surfaces account for 20% to 49% percent of total cover. These areas most commonly include single-family housing units.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Developed
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:left;">
+Developed, medium intensity
+</td>
+<td style="text-align:left;">
+Areas with a mixture of constructed materials and vegetation. Impervious surfaces account for 50% to 79% of the total cover. These areas most commonly include single-family housing units.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Developed
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:left;">
+Developed high intensity
+</td>
+<td style="text-align:left;">
+Highly developed areas where people reside or work in high numbers. Examples include apartment complexes, row houses and commercial/industrial. Impervious surfaces account for 80% to 100% of the total cover.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Forest
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:left;">
+Deciduous forest
+</td>
+<td style="text-align:left;">
+Areas dominated by trees generally greater than 5 meters tall, and greater than 20% of total vegetation cover. More than 75% of the tree species shed foliage simultaneously in response to seasonal change.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Forest
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:left;">
+Evergreen forest
+</td>
+<td style="text-align:left;">
+Areas dominated by trees generally greater than 5 meters tall, and greater than 20% of total vegetation cover. More than 75% of the tree species maintain their leaves all year. Canopy is never without green foliage.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Forest
+</td>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:left;">
+Mixed forest
+</td>
+<td style="text-align:left;">
+Areas dominated by trees generally greater than 5 meters tall, and greater than 20% of total vegetation cover. Neither deciduous nor evergreen species are greater than 75% of total tree cover.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Herbaceous
+</td>
+<td style="text-align:right;">
+71
+</td>
+<td style="text-align:left;">
+Grassland/herbaceous
+</td>
+<td style="text-align:left;">
+Areas dominated by gramanoid or herbaceous vegetation, generally greater than 80% of total vegetation. These areas are not subject to intensive management such as tilling, but can be utilized for grazing.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Planted-cultivated
+</td>
+<td style="text-align:right;">
+81
+</td>
+<td style="text-align:left;">
+Pasture/hay-areas of grasses, legumes, or grass
+</td>
+<td style="text-align:left;">
+Legume mixtures planted for livestock grazing or the production of seed or hay crops, typically on a perennial cycle. Pasture/hay vegetation accounts for greater than 20% of total vegetation.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Planted-cultivated
+</td>
+<td style="text-align:right;">
+82
+</td>
+<td style="text-align:left;">
+Cultivated crops
+</td>
+<td style="text-align:left;">
+Areas used for the production of annual crops, such as corn, soybeans, vegetables, tobacco, and cotton, and also perennial woody crops such as orchards and vineyards. Crop vegetation accounts for greater than 20% of total vegetation. This class also includes all land being actively tilled.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Shrubland
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:left;">
+Shrub/scrub
+</td>
+<td style="text-align:left;">
+Areas dominated by shrubs; less than 5 meters tall with shrub canopy typically greater than 20% of total vegetation. This class includes true shrubs, young trees in an early successional stage or trees stunted from environmental conditions.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Water
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:left;">
+Open water
+</td>
+<td style="text-align:left;">
+Areas of open water, generally with less than 25% cover of vegetation or soil.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Water
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:left;">
+Perennial ice/snow
+</td>
+<td style="text-align:left;">
+Areas characterized by a perennial cover of ice and/or snow, generally greater than 25% of total cover.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wetlands
+</td>
+<td style="text-align:right;">
+90
+</td>
+<td style="text-align:left;">
+Woody wetlands
+</td>
+<td style="text-align:left;">
+Areas where forest or shrubland vegetation accounts for greater than 20% of vegetative cover and the soil or substrate is periodically saturated with or covered with water.
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Wetlands
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:left;">
+Emergent herbaceous wetlands
+</td>
+<td style="text-align:left;">
+Areas where perennial herbaceous vegetation accounts for greater than 80% of vegetative cover and the soil or substrate is periodically saturated with or covered with water.
+</td>
+</tr>
+</tbody>
+</table>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-22-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-22-2.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="job-shares-in-relevant-sectors" class="section level2">
+<h2>Job shares in relevant sectors</h2>
+<p>To capture labor market patterns that might affect culvert costs, we collect the number of jobs for construction and ag/forestry NAICS codes for the county the work site is located in via <a href="https://www.census.gov/programs-surveys/cbp.html">County Business Patterns</a>. Access to experienced labor can keep costs down. These variables are intended to capture that effect.</p>
+<p>Because counties are so large in Oregon and Washington, this is not the ideal measure of job patterns. For example, culverts in rural King County will have jobs numbers driven largely by patterns in Seattle, despite being as much as 40 miles away. Other ideas on how to capture these effects would be appreciated!</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-24-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-24-2.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="pnshp-culvert-project-costs" class="section level2">
+<h2>PNSHP: Culvert project costs</h2>
+<p>Culvert project costs are the primary dependent variable in this study. We calculate cost per culvert at the project level by first tallying the number of culverts installed, upgraded, or removed at the project level. We then divide project-level costs by the number of culverts. This cost per culvert measure is assigned to each work site associated with that project.</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-26-1.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+</div>
+<div id="key-takeaways" class="section level1">
+<h1>Key takeaways</h1>
+<p>There are noticeable differences between Washington and Oregon culvert projects represented in the data. Washington projects tend to more frequently be on migration routes and on paved roads, and on wider streams. Oregon projects are more likely to be on spawning and rearing streams, unpaved roads, and on narrower streams. This likely goes a long way in explaining the large differences in costs across the two states.</p>
+</div>
+<div id="end-matter" class="section level1">
+<h1>End Matter</h1>
+<pre class="r"><code># Created on...
+Sys.time()</code></pre>
+<pre><code>[1] &quot;2020-10-28 13:30:11 PDT&quot;</code></pre>
+<pre class="r"><code># Using...
+sessionInfo()</code></pre>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19041)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] mctest_1.3.1     ggcorrplot_0.1.3 kableExtra_1.1.0 knitr_1.29      
+ [5] rmarkdown_2.3    janitor_2.0.1    readxl_1.3.1     sf_0.9-5        
+ [9] here_0.1         forcats_0.5.0    stringr_1.4.0    dplyr_1.0.1     
+[13] purrr_0.3.4      readr_1.3.1      tidyr_1.1.1      tibble_3.0.4    
+[17] ggplot2_3.3.2    tidyverse_1.3.0  scales_1.1.1     workflowr_1.6.2 
+
+loaded via a namespace (and not attached):
+ [1] httr_1.4.2         jsonlite_1.7.1     viridisLite_0.3.0  modelr_0.1.8      
+ [5] assertthat_0.2.1   highr_0.8          selectr_0.4-2      blob_1.2.1        
+ [9] cellranger_1.1.0   yaml_2.2.1         pillar_1.4.6       backports_1.1.8   
+[13] glue_1.4.2         digest_0.6.25      promises_1.1.1     rvest_0.3.6       
+[17] snakecase_0.11.0   colorspace_1.4-1   htmltools_0.5.0    httpuv_1.5.4      
+[21] pkgconfig_2.0.3    broom_0.7.0        haven_2.3.1        webshot_0.5.2     
+[25] later_1.1.0.1      git2r_0.27.1       generics_0.0.2     farver_2.0.3      
+[29] ellipsis_0.3.1     withr_2.2.0        cli_2.1.0          magrittr_1.5      
+[33] crayon_1.3.4       evaluate_0.14      ps_1.3.3           fs_1.4.2          
+[37] fansi_0.4.1        xml2_1.3.2         class_7.3-17       tools_4.0.2       
+[41] hms_0.5.3          lifecycle_0.2.0    munsell_0.5.0      reprex_0.3.0      
+[45] compiler_4.0.2     e1071_1.7-3        rlang_0.4.8        classInt_0.4-3    
+[49] units_0.6-7        grid_4.0.2         rstudioapi_0.11    labeling_0.3      
+[53] gtable_0.3.0       DBI_1.1.0          R6_2.4.1           lubridate_1.7.9   
+[57] utf8_1.1.4         rprojroot_1.3-2    KernSmooth_2.23-17 stringi_1.4.6     
+[61] Rcpp_1.0.5         vctrs_0.3.4        dbplyr_1.4.4       tidyselect_1.1.0  
+[65] xfun_0.16         </code></pre>
+<pre class="r"><code># Render output
+# rmarkdown::render(here::here(&quot;R/C.culvertsspatial/06.spatialexplore.R&quot;), output_file = here::here(&quot;output/culvertsspatial_report_2020sep24.html&quot;))</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19041)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] mctest_1.3.1     ggcorrplot_0.1.3 kableExtra_1.1.0 knitr_1.29      
+ [5] rmarkdown_2.3    janitor_2.0.1    readxl_1.3.1     sf_0.9-5        
+ [9] here_0.1         forcats_0.5.0    stringr_1.4.0    dplyr_1.0.1     
+[13] purrr_0.3.4      readr_1.3.1      tidyr_1.1.1      tibble_3.0.4    
+[17] ggplot2_3.3.2    tidyverse_1.3.0  scales_1.1.1     workflowr_1.6.2 
+
+loaded via a namespace (and not attached):
+ [1] httr_1.4.2         jsonlite_1.7.1     viridisLite_0.3.0  modelr_0.1.8      
+ [5] assertthat_0.2.1   highr_0.8          selectr_0.4-2      blob_1.2.1        
+ [9] cellranger_1.1.0   yaml_2.2.1         pillar_1.4.6       backports_1.1.8   
+[13] glue_1.4.2         digest_0.6.25      promises_1.1.1     rvest_0.3.6       
+[17] snakecase_0.11.0   colorspace_1.4-1   htmltools_0.5.0    httpuv_1.5.4      
+[21] pkgconfig_2.0.3    broom_0.7.0        haven_2.3.1        webshot_0.5.2     
+[25] later_1.1.0.1      git2r_0.27.1       generics_0.0.2     farver_2.0.3      
+[29] ellipsis_0.3.1     withr_2.2.0        cli_2.1.0          magrittr_1.5      
+[33] crayon_1.3.4       evaluate_0.14      ps_1.3.3           fs_1.4.2          
+[37] fansi_0.4.1        xml2_1.3.2         class_7.3-17       tools_4.0.2       
+[41] hms_0.5.3          lifecycle_0.2.0    munsell_0.5.0      reprex_0.3.0      
+[45] compiler_4.0.2     e1071_1.7-3        rlang_0.4.8        classInt_0.4-3    
+[49] units_0.6-7        grid_4.0.2         rstudioapi_0.11    labeling_0.3      
+[53] gtable_0.3.0       DBI_1.1.0          R6_2.4.1           lubridate_1.7.9   
+[57] utf8_1.1.4         rprojroot_1.3-2    KernSmooth_2.23-17 stringi_1.4.6     
+[61] Rcpp_1.0.5         vctrs_0.3.4        dbplyr_1.4.4       tidyselect_1.1.0  
+[65] xfun_0.16         </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

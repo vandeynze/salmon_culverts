@@ -1,5 +1,5 @@
 #' ---
-#' title: "Culvert cost models with spatially explicit data"
+#' title: "Culvert Cost Models with Spatially Explicit Data"
 #' author: "B. Van Deynze"
 #' date: '`r format(Sys.Date(), "%B %d, %Y")`'
 #' output:

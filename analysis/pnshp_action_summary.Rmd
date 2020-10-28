@@ -1,5 +1,5 @@
 ---
-title: "PNSHP Spending and Project Summaries"
+title: "Spending and Activity for Pacific Northwest Salmon Habitat Restoration"
 author: "B. Van Deynze"
 date: "March 10, 2020"
 output:

@@ -20,11 +20,11 @@ library(knitr)
 
 # Copy reports generated from .R rather than in .Rmd
 spin(here("R/C.culvertsspatial/06.spatialexplore.R"), knit = FALSE, format = "Rmd", precious = TRUE)
-file.copy(here("R/C.culvertsspatial/06.spatialexplore.Rmd"), to = here("analysis/spatialexplore.Rmd"), overwrite = TRUE)
+file.copy(here("R/C.culvertsspatial/06.spatialexplore.Rmd"), to = here("analysis/spatial_variables_summary.Rmd"), overwrite = TRUE)
 file.remove(here("R/C.culvertsspatial/06.spatialexplore.Rmd"))
 
 spin(here("R/C.culvertsspatial/07.spatialcostmodels.R"), knit = FALSE, format = "Rmd", precious = TRUE)
-file.copy(here("R/C.culvertsspatial/07.spatialcostmodels.Rmd"), to = here("analysis/spatialcostmodels.Rmd"), overwrite = TRUE)
+file.copy(here("R/C.culvertsspatial/07.spatialcostmodels.Rmd"), to = here("analysis/spatial_cost_models.Rmd"), overwrite = TRUE)
 file.remove(here("R/C.culvertsspatial/07.spatialcostmodels.Rmd"))
 
 

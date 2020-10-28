@@ -1,5 +1,5 @@
 #' ---
-#' title: "Explore spatially-derived variables for culvert work sites"
+#' title: "Summary of Spatially Derived Variables for Culvert Projects"
 #' author: "B. Van Deynze"
 #' date: '`r format(Sys.Date(), "%B %d, %Y")`'
 #' output:
