@@ -14,6 +14,7 @@
 # Prepare environment and data ----
 rm(list = ls())
 
+library(equatiomatic)
 library(MASS)
 library(tidyverse)
 library(janitor)
@@ -40,21 +41,23 @@ wrapper <- function(label, dev_width = dev.size("in")[1], dev_scaler = 12)  {
 # Introduction and theory ----
 #+
 
-#' # Incorporating costs in conservation planning
+#' # Incorporating costs in conservation planning  
 
-#' Niche: use of cost data in conservation plans
+#' Niche: use of cost data in conservation plans  
 #' 
 #' - Just as benefits, variability in costs can be large  
 #'   - Including spatial variability and variability across scope and scale of project  
 #'   - Understanding this variability can improve planning outcomes  
 #' 
-#' Key cites  
-#' Babcock et al. 1997: [https://doi.org/10.2307/3147171]  
-#'   - Describes relative efficiency of management rules under different joint distributions of costs and benefits  
-#'   - Alternative targeting instruments considered incl. cost-targeting, benefit-targeting, and marginal cost-targeting (cost per benefit targeting)  
-#'   - Relative variability of benefits and costs, and correlation between the two, determine effects of sub-optimal targeting  
+#' **Key cites**  
+#' Babcock et al. 1997: https://doi.org/10.2307/3147171  
+#'   
+#' - Describes relative efficiency of management rules under different joint distributions of costs and benefits  
+#' - Alternative targeting instruments considered incl. cost-targeting, benefit-targeting, and marginal cost-targeting (cost per benefit targeting)  
+#' - Relative variability of benefits and costs, and correlation between the two, determine effects of sub-optimal targeting  
 #'   
 
+#+ fig.width=10, fig.height=10, echo=F, message=F, warning=F
 set.seed(123456)
 sigma = matrix( 
   c(2, 0, 0, 1), # the data elements 
@@ -142,33 +145,32 @@ ggplot() +
 
 
 
-#' Naidoo et al. 2006: [https://doi.org/10.1016/j.tree.2006.10.003]:
-#'   - Types of costs: acquisition, management, transaction (and opportunity, damage costs)
-#'     - (Can be continuous or one-off)
-#'   - Often based on non-monetary proxies
-#'     - Most often area
-#'     - Sometimes weighted but in often arbitrary ways
-#'   - Efficiency gains from incorporating costs
+#' Naidoo et al. 2006: https://doi.org/10.1016/j.tree.2006.10.003  
+#'   
+#' - Types of costs: acquisition, management, transaction (and opportunity, damage costs)  
+#'   - (Can be continuous or one-off)  
+#' - Often based on non-monetary proxies  
+#'   - Most often area  
+#'   - Sometimes weighted but in often arbitrary ways  
+#'   - Efficiency gains from incorporating costs  
+#' - Past looks at culverts have focused on benefits and used simplified cost models  
+#' - Past looks at conservation costs have focused on land acquisition costs rather than restoration efforts  
+#'   - Unique features of culvert improvement in PNW: upstream land access model, lots of streams/roads, large variation in slope and stream size  
+#' - Examine variability in cost levels and drivers of costs across culvert projects in PNW  
+#' - Compare levels and variability of costs to (possibly several) benefit measures  
+#' - Apply model to extant culverts to compare costs/benefit distributions over...  
+#'   - Space: where are high benefit, low cost culverts?  
+#'   - Observed projects vs. all culverts: what kind of decision rule is distribution of projects consistent with?  
+#' - Timely b/c Washington culvert case  
 #' 
-#' - Past looks at culverts have focused on benefits and used simplified cost models
-#' - Past looks at conservation costs have focused on land acquisition costs rather than restoration efforts
-#'   - Unique features of culvert improvement in PNW: upstream land access model, lots of streams/roads, large variation in slope and stream size
 #' 
-#' - Examine variability in cost levels and drivers of costs across culvert projects in PNW
-#' - Compare levels and variability of costs to (possibly several) benefit measures
-#' - Apply model to extant culverts to compare costs/benefit distributions over...
-#'   - Space: where are high benefit, low cost culverts?
-#'   - Observed projects vs. all culverts: what kind of decision rule is distribution of projects consistent with?
-#' - Timely b/c Washington culvert case
-#' 
-#' 
-#' RQ1: How much variability is there in costs for culvert improvements?
-#'   - Over space?
-#'   - For observed projects vs. potential projects?
-#'   - Relative to variability in benefits? (And implications for planning rules/future research)
-#' RQ2: What are drivers of culvert improvement costs?
-#'   - Economic drivers: economies of scale, transaction costs
-#'   - Geophysical drivers: stream features, terrain features
+#' **RQ1:** How much variability is there in costs for culvert improvements?  
+#'   - Over space?  
+#'   - For observed projects vs. potential projects?  
+#'   - Relative to variability in benefits? (And implications for planning rules/future research)  
+#' **RQ2:** What are drivers of culvert improvement costs?  
+#'   - Economic drivers: economies of scale, transaction costs  
+#'   - Geophysical drivers: stream features, terrain features  
 
 #+ include=F
 
@@ -572,7 +574,7 @@ mod_sources_warco <-
 mod_sources_core <-
   mod_full %>% update(. ~ . - project_source, data = df_culv %>% filter(project_source %in% c("WA RCO", "OWRI", "HABITAT WORK SCHEDULE", "BLM", "REO")))
 
-#+ methods, echo=F
+#+ methods, echo=F, message=F, warning=F
 #' # Estimation  
 #' 
 #' We estimate log-linear models estimated via OLS, with the average project
@@ -583,8 +585,8 @@ mod_sources_core <-
 #' extreme, and an interaction term can capture this effect.
 #' 
 
-library(equatiomatic)
-extract_eq(mod_full)
+# Giving up on rendering the equation for now
+# extract_eq(mod_full)
 
 #'
 #' In addition to the fully specified model (mod_full), we present thirteen
@@ -595,7 +597,7 @@ extract_eq(mod_full)
 #' Southern Oregon Coastal, Northern Oregon Coastal, Willamette), as well as
 #' that core separated into basins primarily in Western Washington and Oregon
 #' respectively. For reporting sources, we focus on a similar "core" group (
-#' "Washington Recreation and Conservation Office, Oregon Water Resources
+#' Washington Recreation and Conservation Office, Oregon Water Resources
 #' Inventory, Habitat Work Schedule, Bureau of Land Management, Regional
 #' Ecosystem Office [an interagency group]), as well as versions estimated only
 #' on OWRI and WA RCO projects.
