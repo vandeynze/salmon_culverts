@@ -626,13 +626,13 @@ Speed category
   )</code></pre>
 <p>Otherwise, these variables show good behavior across these two physical attributes. Culverts in Washington are associated with larger streams, which will likely mean more expensive projects.</p>
 <p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-18-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-18-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-18-3.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-18-4.png" width="960" style="display: block; margin: auto;" /></p>
-<p>Population and housing density are highly correlated (Pearson’s coef. = 0.991), so we have to pick one or the other. Design documents point to site access as a crucial driver in project cost, and note that negotiating with private landowners can complicate projects. Housing density is a good proxy for this driver. Population density can be a good proxy for road traffic, which can increase flagging costs. Both effects are likely to increase costs. While we won’t be able to distinguish a mechanism, including either can control for density effects.</p>
+<p>Population and housing density are highly correlated (Pearson’s coef. = 0.987), so we have to pick one or the other. Design documents point to site access as a crucial driver in project cost, and note that negotiating with private landowners can complicate projects. Housing density is a good proxy for this driver. Population density can be a good proxy for road traffic, which can increase flagging costs. Both effects are likely to increase costs. While we won’t be able to distinguish a mechanism, including either can control for density effects.</p>
 <p>We should also consider alternative measures here that might better capture the hypothetical mechanisms at play. For example, variables such as the number of distinct parcels in the catchment, whether the work site point is on public land, or the proportion of the catchment that is in public land might better capture increased costs due to access issues.</p>
 </div>
 <div id="slope-at-work-site" class="section level2">
 <h2>Slope at work site</h2>
 <p>The slope at the work site may increase project cost by restricting access to the culvert. We measure slope using the slope in degrees of the <a href="https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-global-30-arc-second-elevation-gtopo30?qt-science_center_objects=0#qt-science_center_objects">GTOPO30</a> grid cell the work site falls in.</p>
-<p>Note that slope at work sites and the stream slope are distinct, both in their measurement and the mechanism through which they influence costs. Stream slope is our best available proxy for the slope of the stream at the culvert, which can require more complex, expensive culvert design to ensure fish passage. Slope at work site is the <em>land</em> slope in the immediate vicinity of the culvert, which can restrict site access and available staging area, increasing project costs. While closely related, these are distinct (Pearson’s coef. = 0.479).</p>
+<p>Note that slope at work sites and the stream slope are distinct, both in their measurement and the mechanism through which they influence costs. Stream slope is our best available proxy for the slope of the stream at the culvert, which can require more complex, expensive culvert design to ensure fish passage. Slope at work site is the <em>land</em> slope in the immediate vicinity of the culvert, which can restrict site access and available staging area, increasing project costs. While closely related, these are distinct (Pearson’s coef. = 0.512).</p>
 <p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-20-1.png" width="960" style="display: block; margin: auto;" /></p>
 </div>
 <div id="land-cover-at-work-sites" class="section level2">
@@ -905,7 +905,7 @@ Areas where perennial herbaceous vegetation accounts for greater than 80% of veg
 <h1>End Matter</h1>
 <pre class="r"><code># Created on...
 Sys.time()</code></pre>
-<pre><code>[1] &quot;2020-10-28 13:30:11 PDT&quot;</code></pre>
+<pre><code>[1] &quot;2020-10-28 13:45:52 PDT&quot;</code></pre>
 <pre class="r"><code># Using...
 sessionInfo()</code></pre>
 <pre><code>R version 4.0.2 (2020-06-22)

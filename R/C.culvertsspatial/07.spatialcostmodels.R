@@ -49,11 +49,11 @@ wrapper <- function(label, dev_width = dev.size("in")[1], dev_scaler = 12)  {
 #'   - Including spatial variability and variability across scope and scale of project  
 #'   - Understanding this variability can improve planning outcomes  
 #' 
-#' **Key cites**  
-#' Babcock et al. 1997: https://doi.org/10.2307/3147171  
+#' ***Key cites***  
+#' **Babcock et al. 1997:** https://doi.org/10.2307/3147171  
 #'   
 #' - Describes relative efficiency of management rules under different joint distributions of costs and benefits  
-#' - Alternative targeting instruments considered incl. cost-targeting, benefit-targeting, and marginal cost-targeting (cost per benefit targeting)  
+#' - Alternative targeting instruments considered incl. cost-targeting, benefit-targeting, and ratio-targeting (cost per benefit targeting)  
 #' - Relative variability of benefits and costs, and correlation between the two, determine effects of sub-optimal targeting  
 #'   
 
@@ -109,7 +109,7 @@ ggplot() +
   #   )
   # ) +
   geom_abline(
-    aes(color = "Marginal cost (C/B) targeting",
+    aes(color = "Ratio cost (C/B) targeting",
     slope = 1, intercept = 0),
     size = 1.2
   ) +
@@ -145,7 +145,7 @@ ggplot() +
 
 
 
-#' Naidoo et al. 2006: https://doi.org/10.1016/j.tree.2006.10.003  
+#' **Naidoo et al. 2006:** https://doi.org/10.1016/j.tree.2006.10.003  
 #'   
 #' - Types of costs: acquisition, management, transaction (and opportunity, damage costs)  
 #'   - (Can be continuous or one-off)  
@@ -153,24 +153,34 @@ ggplot() +
 #'   - Most often area  
 #'   - Sometimes weighted but in often arbitrary ways  
 #'   - Efficiency gains from incorporating costs  
+#'   
+#' **Gap**
+#'   
 #' - Past looks at culverts have focused on benefits and used simplified cost models  
 #' - Past looks at conservation costs have focused on land acquisition costs rather than restoration efforts  
 #'   - Unique features of culvert improvement in PNW: upstream land access model, lots of streams/roads, large variation in slope and stream size  
-#' - Examine variability in cost levels and drivers of costs across culvert projects in PNW  
+#' - Timely b/c Washington culvert case  
+#'   
+#' **Research approach**
+#'   
+#' - Examine variability in cost levels and drivers of costs across culvert projects in PNW using statistical model  
 #' - Compare levels and variability of costs to (possibly several) benefit measures  
 #' - Apply model to extant culverts to compare costs/benefit distributions over...  
 #'   - Space: where are high benefit, low cost culverts?  
 #'   - Observed projects vs. all culverts: what kind of decision rule is distribution of projects consistent with?  
-#' - Timely b/c Washington culvert case  
 #' 
 #' 
-#' **RQ1:** How much variability is there in costs for culvert improvements?  
-#'   - Over space?  
-#'   - For observed projects vs. potential projects?  
-#'   - Relative to variability in benefits? (And implications for planning rules/future research)  
-#' **RQ2:** What are drivers of culvert improvement costs?  
-#'   - Economic drivers: economies of scale, transaction costs  
-#'   - Geophysical drivers: stream features, terrain features  
+#' *RQ1:* How much variability is there in costs for culvert improvements?  
+#'   
+#' - Over space?  
+#' - For observed projects vs. potential projects?  
+#' - Relative to variability in benefits? (And implications for planning rules/future research)  
+#'   
+#' *RQ2:* What are drivers of culvert improvement costs?  
+#'   
+#' - Economic drivers: economies of scale, transaction costs  
+#' - Geophysical drivers: stream features, terrain features  
+#' 
 
 #+ include=F
 
@@ -216,10 +226,23 @@ names(df_culv)
 #' # Data description
 #' 
 
-#' Explanatory variables included in the empirical model are described below,
+#' The unit of observation in our data is a **culvert work site**. These data
+#' include all unique work sites associated with a culvert action in the PNSHP
+#' data between 2001 and 2015. Each work site is associated with a *project*, a
+#' set of geographic coordinates, and the number of culverts at the site.
+#' Projects are associated with a year, a reporting source, and a unique cost.
+#' We also calculate the number of culverts associated with the project (methods
+#' found
+#' [here](https://vandeynze.github.io/salmon_culverts/culverts_summary.html#Appendix:_Creating_a_Consistent_Project-level_Culvert_Count)).
+#' Note that a project may be associated with multiple related work sites,
+#' though `r tabyl(df_culv$n_worksites) %>% slice(1) %>% pull(percent) %>%
+#' percent` of work sites are uniquely identified to a project.
+
+#'
+#' Dependent and explanatory variables included in the empirical model are described below,
 #' including a brief justification for inclusion. A more in-depth exploration of
 #' these variables can be found in [this
-#' report](https://vandeynze.github.io/salmon_culverts/spatialexplore.html).  
+#' report](https://https://vandeynze.github.io/salmon_culverts/spatial_variables_summary.html).  
 
 options(knitr.kable.NA = '')
 df_culv %>%
@@ -262,6 +285,14 @@ df_culv %>%
   ) %>%
   kable_styling("hover", fixed_thead = TRUE)
 
+#' ## Cost estimates  
+#'   
+
+#' **Cost per culvert ($USD, 2019)** is our primary dependent variable. This
+#' variable can also be interpreted as the *project average costs* at the work
+#' site. This variable is constructed by dividing the provided project costs by
+#' the number of culverts associated with the project.  
+#'   
 
 #' ## Stream hydrological features  
 #' 
@@ -873,11 +904,12 @@ df_culv %>%
   ) +
   theme(
     legend.position = c(0.9, 0.8),
-    legend.key.size = unit(1, "cm")
+    legend.key.size = unit(1, "cm"),
+    plot.title.position = "plot"
   ) +
   labs(
     title = "Observed average cost by bankfull width (m) and slope (% grade)",
-    subtitle = "Difficult to see pattern in raw data, likely due large underlying variation resulting from fixed effects (different basins, years, etc.)",
+    subtitle = wrapper("Difficult to see pattern in raw data, likely due large underlying variation resulting from fixed effects (different basins, years, etc.)"),
     x = "Slope",
     y = "Bankfull width"
   )
@@ -890,7 +922,19 @@ df_culv %>%
 #' along the cost curve. That is, would projects that did not occur exist in the
 #' upper-right space?  
 #' 
-#' ## Continuous variables  
+#' ### Continuous variables  
+#' 
+
+#' To display how costs vary across the continuous explanatory variables, we
+#' plot average marginal effects. These are scaled to a standard deviation
+#' change for each variable. Average marginal effects are calculated with other
+#' variables held at their means, which is most relevant for slope and bankfull
+#' width for which the model allows an interaction effect. The resulting
+#' estimate is exponentiated so that it can be interpreted as the expected ratio
+#' of costs resulting from a standard deviation change in the continuous
+#' variable.
+#' 
+
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 # ____ Marginal effects plots ----
 # Custom wrapper of margins::margins for use with map_df
@@ -965,11 +1009,12 @@ map_df(
   ) +
   theme(
     legend.position = "none",
+    plot.title.position = "plot"
   ) +
   facet_wrap("group", ncol = 1, scales = "free_y")
 
-#' A standard deviation change in both terrain slope and number of culverts both
-#' reduce average costs by about 10 percent and half respectively in the
+#' A standard deviation increase in terrain slope and number of culverts 
+#' are associated with lower average costs by about ten percent and half respectively in the
 #' preferred model. The number of culverts result suggests evidence of returns
 #' to scale. The cost-reducing effect of terrain slope is unituitive, and may be
 #' picking up other cost-reducing effects in more remote, rugged, isolated
@@ -985,14 +1030,22 @@ map_df(
 #' population effect.  
 #' 
 #' Bankfull width and stream slope both significant positive effects in the
-#' preferred models. A standard deviation increase in either results in about a
-#' fifty percent increase in costs when the other is held at its mean. As seen
+#' preferred models. A standard deviation increase in either is associated with about
+#' fifty percent higher average costs when the other is held at its mean. As seen
 #' in the earlier figure and raw coefficients, this effect is driven largely by
 #' the interaction term in the model. Note that the models for which the effects
 #' are insignificant are those estimated using only Washington data, over either
 #' the Washington basins only or WA RCO projects.  
 #' 
 #' ## Fixed effects and categorical variables  
+#'   
+
+#' We can examine the fixed effect estimates to compare relative expected costs
+#' across groups. We do this by exponentiating the point estimates. The
+#' resulting value can be interpreted as the ratio of costs in a given group
+#' relative to a base group
+#' 
+
 # ____ Fixed effects plots ----
 #' ### Year effects  
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
@@ -1051,7 +1104,8 @@ map_df(mods[-4], tidy, conf.int = TRUE, .id = "model") %>%
       angle = 90,
       hjust = 1,
       vjust = 0.75
-    )
+    ),
+    plot.title.position = "plot"
   )
 
 #' For the preferred model, project average costs are nearly twice as high than
@@ -1064,7 +1118,7 @@ map_df(mods[-4], tidy, conf.int = TRUE, .id = "model") %>%
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 
 # Source FE
-map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
+plotdata <- map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
   filter(str_detect(term, "source")) %>%
   mutate(
     source = str_remove(term, "project_source"),
@@ -1081,8 +1135,8 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
     mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
   ) %>%
   group_by(source) %>%
-  select(model, source, estimate, conf.low, conf.high, mod.color) %>%
-  ggplot() +
+  select(model, source, estimate, conf.low, conf.high, mod.color)
+ggplot() +
   geom_pointrange(
     aes(
       y = reorder(source, estimate),
@@ -1092,9 +1146,20 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
       group = model,
       color = mod.color
     ),
-    position = position_dodge(width = 0.6)
+    position = position_dodge(width = 0.6),
+    data = plotdata
   ) +
+  # geom_text(
+  #   aes(
+  #     x = c(0.5, 1.5),
+  #     y = c(0.6, 0.6),
+  #     hjust = c(1, 0),
+  #     label = c("← Lower costs", "Higher costs →")
+  #   ),
+  #   size = 3.5
+  # ) +
   scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
+  # scale_x_continuous(breaks = waiver()) +
   geom_vline(xintercept = 1, linetype = "dashed") +
   labs(
     y = NULL, 
@@ -1335,7 +1400,7 @@ map_df(mods[-14], tidy, conf.int = TRUE, .id = "model") %>%
     ),
     position = position_dodge(width = 0.6)
   ) +
-  scale_color_manual(values = c("darkolivegreen3", "grey60", "grey80")) +
+  scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
   geom_vline(xintercept = 1, linetype = "dashed") +
   labs(
     y = NULL, 
@@ -1354,7 +1419,7 @@ map_df(mods[-14], tidy, conf.int = TRUE, .id = "model") %>%
     plot.caption.position = "plot"
   )
 
-#' There is some evidence from the alternative models that installations are
+#' There is some evidence from the models that installations are
 #' more expensive than improvements, which are more expensive than removals,
 #' though this effect largely washes out when the full suite of fixed effects is
 #' included.  
@@ -1379,14 +1444,18 @@ df_culv %>%
   ggplot() + 
   aes(
     x = cost_per_culvert,
-    y = tot_stream_length,
+    y = upst_dist,
+    # y = tot_stream_length,
     color = project_year
   ) + 
   geom_point() +
   scale_y_log10("Total upstream length (km)", label = label_comma(1)) +
   scale_x_log10("Cost per culvert (K $USD)", label = label_dollar(1, scale = 0.001)) +
   scale_color_fermenter("Project year", palette = "Spectral", show.limits = TRUE, guide = guide_colorsteps(barwidth = 10, title.position = "top")) +
-  theme(legend.position = "bottom") +
+  theme(
+    legend.position = "bottom",
+    plot.title.position = "plot"
+  ) +
   facet_wrap("basin") +
   ggtitle("Work sites in cost - benefit space", "Both on a log scale for clarity")
 
@@ -1406,19 +1475,28 @@ df_culv %>%
 #+ echo=F, warning=F, message=F
 #' # Conclusions  
 #' ## Key findings  
+#'   
+
 # Key findings ----
 #' 1. Stream features slope and bankfull width increase average costs, especially when they are both high.  
 #' 2. Paved roads are more expensive to improve, while other road variables have no discernible effect.  
 #' 3. Strangely, terrain slope at work site has a negative effect. Could this be picking up on some other 
 #' factor associated with more rugged or remote work sites?  
-#' 
+#' 4. Some evidence of economies of scale, in that work sites associated with
+#' projects associated with more culverts tend to have lower average costs.  
+#'   
 #+
 #' ## Next steps  
+#'   
 # Next steps ----
-#' 1. More variables: density of culvert project measures (issues w/ inconsistent reporting across space), distance to pop. center (euclidean or routed with HERE roads from Blake)  
+#' 1. More variables: density of culvert project measures (issues w/
+#' inconsistent reporting across space), distance to pop. center (euclidean or
+#' routed with HERE roads from Blake), alternative "terrain ruggedness" measures, etc.  
 #' 2. Improved benefit estimates: total upstream distance by species and habitat use, weighted by catchment road density, etc.  
 #' 3. Forecast costs/benefits for culvert inventories from Oregon and Washington.  
-#' 4. Integrate Lorenz curve and Gini coefficient analysis from Babcock et al. (1997).
+#' 4. Integrate Lorenz curve and Gini coefficient analysis from Babcock et al. (1997).  
+#' 5. Dig more into potential pitfalls of assigning project-level costs to work site-level observations.  
+#' 6. Incorporate Robby's findings on spatially dependent error structures.  
 #' 
 
 #+ end

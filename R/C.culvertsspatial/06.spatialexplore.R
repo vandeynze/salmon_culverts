@@ -85,6 +85,7 @@ summary(sf_culv)
 #' ***Pacific Northwest Salmon Habitat Projects*** database, which documents
 #' projects relevant to salmonid habitat restoration, including culvert
 #' improvements. We restrict the sample to projects that:  
+#' 
 #' 1) Only include culvert actions across any work sites;  
 #' 2) Were completed between 1996 and 2015;  
 #' 3) Consisted of work sites only in Washington or Oregon;  
