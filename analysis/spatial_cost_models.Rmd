@@ -45,7 +45,7 @@ wrapper <- function(label, dev_width = dev.size("in")[1], dev_scaler = 12)  {
 ```
 
 # Incorporating costs in conservation planning  
-Niche: use of cost data in conservation plans  
+**Niche:** use of cost data in conservation plans  
 
 - Just as benefits, variability in costs can be large  
   - Including spatial variability and variability across scope and scale of project  
@@ -521,7 +521,10 @@ and to a lesser degree construction employment are positively correlated with
 costs.
 
 No variables have particularly large VIFs, suggesting little potential for
-error-inflating multicollinearity.  
+error-inflating multicollinearity. (A high VIF indicates that the variable is
+strongly correlated with the other variables in the model, leading to
+inflated standard errors and limiting the model's usefulness for prediction
+or inference.)
 
 ```{r estimate, include=F}
 # Estimate models ----

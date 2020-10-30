@@ -29,4 +29,11 @@ file.remove(here("R/C.culvertsspatial/07.spatialcostmodels.Rmd"))
 
 
 # Build site
-wflow_build(files = list.files(here("analysis"), "*.Rmd", full.names = TRUE))
+wflow_build(
+  files = list.files(
+    here("analysis"), 
+    "*.Rmd",
+    # "spatial_cost_models.Rmd",
+    full.names = TRUE
+  )
+)
