@@ -18,6 +18,7 @@ library(spatialEco)
 library(elevatr)
 library(data.table)
 library(crayon)
+library(nngeo)
 
 # Base Data ----
 # Load base work site data
@@ -39,7 +40,7 @@ df_nhdstreams <- read_csv(here("output/spatial/culverts_nhdstreams.csv")) %>% se
 # Blake's ArcGIS pulls
 df_blake <- read_xlsx(here("data/Culverts spatial overlays v 20Aug2020.xlsx"), sheet = 1) %>% as_tibble() %>% clean_names() %>% mutate(pure_culv = as.logical(pure_culv))
 
-# NHDPlus attributes ----
+# NHDPlus Attributes ----
 # From https://www.sciencebase.gov/catalog/item/5669a79ee4b08895842a1d47
 
 # Need to recognize difference between "total" (or *_tot) vs. "diversion" (or
@@ -323,25 +324,106 @@ rm(basin_filenames, df_basin)
 # Data from USGS National Elevation Dataset accessed via elevatr
 # ~ 30min to download the full set for the region
 
-sf_elev <-
+# sf_elev <-
+#   df_culv %>%
+#   st_crop(
+#    y = c(xmin = -120, ymin = 42, xmax = -119, ymax = 48)
+#   ) %>%
+#   get_elev_raster(z = 11) %>% # Guide to zoom levels: https://github.com/tilezen/joerd/blob/master/docs/data-sources.md#what-is-the-ground-resolution
+#   vrm(9) # Download successful but DRM reprojection step still did not complete after 48hrs
+# 
+# raster::plot(sf_elev)
+
+
+# Urban Area ----
+# Measure distance to nearest urbanized area/urbanized cluster per US Census
+# Urbanized area: area containing more than 50k people
+# Urbanized cluster: area containing more than 2.5k but fewer than 50k
+# Metadata: https://catalog.data.gov/harvest/object/92477d59-a105-41a6-ae23-e3bad1031ae8/html
+
+
+# Conditional download and unzip of urban area shapes from census
+if(!file.exists(here("data/tl_2019_us_uac10.zip"))){
+  download.file(
+    "https://www2.census.gov/geo/tiger/TIGER2019/UAC/tl_2019_us_uac10.zip",
+    here("data")
+  )
+}
+if(!file.exists(here("data/tl_2019_us_uac10/tl_2019_us_uac10.shp"))){
+  unzip(
+    here("data/tl_2019_us_uac10.zip"),
+    exdir = here("data/tl_2019_us_uac10/")
+  )
+}
+
+# Load urban area shapes
+sf_uac <-
+  read_sf(here("data/tl_2019_us_uac10/tl_2019_us_uac10.shp")) %>%
+  filter(str_ends(NAME10, "WA") | str_ends(NAME10, "OR")) %>%
+  st_transform(4326)
+# Key variable is UATYP10 which indicates whether the shape is a "cluster" (C) or an "area" (A)
+tabyl(sf_uac$UATYP10)
+
+# We will compute distance (m) to the nearest (1) area or cluster (uc_dist) and (2) area (ua_dist)
+
+if(!file.exists(here("output/spatial/culverts_uacdist.csv"))) {
+df_dist_uc <- 
   df_culv %>%
-  st_crop(
-   y = c(xmin = -120, ymin = 42, xmax = -119, ymax = 48)
+  # slice(1:10) %>%
+  st_nn(
+    sf_uac,
+    returnDist = TRUE
   ) %>%
-  get_elev_raster(z = 11) %>% # Guide to zoom levels: https://github.com/tilezen/joerd/blob/master/docs/data-sources.md#what-is-the-ground-resolution
-  vrm(9) # Download successful but DRM reprojection step still did not complete after 48hrs
+  as_tibble() %>%
+  mutate(across(everything(), unlist)) %>%
+  rename(uc_nn_index = nn, uc_dist = dist) %>%
+  left_join(
+    sf_uac %>% st_drop_geometry() %>% select(uc_nn_name = NAMELSAD10) %>% rowid_to_column(),
+    by = c("uc_nn_index" = "rowid")
+  ) %>%
+  select(-uc_nn_index)
+df_dist_ua <- 
+  df_culv %>%
+  # slice(1:10) %>%
+  st_nn(
+    sf_uac %>% filter(UATYP10 == "U"),
+    returnDist = TRUE
+  ) %>%
+  as_tibble() %>%
+  mutate(across(everything(), unlist)) %>%
+  rename(ua_nn_index = nn, ua_dist = dist) %>%
+  left_join(
+    sf_uac %>% filter(UATYP10 == "U") %>% st_drop_geometry() %>% select(ua_nn_name = NAMELSAD10) %>% rowid_to_column(),
+    by = c("ua_nn_index" = "rowid")
+  ) %>%
+  select(-ua_nn_index)
 
-raster::plot(sf_elev)
 
+df_culv <-
+  df_culv %>% bind_cols(df_dist_uc)
+df_culv <-
+  df_culv %>% bind_cols(df_dist_ua)
+
+
+# Save a copy of the matches to save time later
+df_dist_ua %>%
+  bind_cols(df_dist_uc) %>%
+  write_csv(here("output/spatial/culverts_uacdist.csv"))
+
+} else {
+  df_dist_uac <- read_csv(here("output/spatial/culverts_uacdist.csv"))
+  df_culv <- df_culv %>% bind_cols(df_dist_uac)
+}
 
 # FIPS Codes ----
 # Add fips codes for culverts
 # Load county data to ID missing counties
 temp <- tempfile()
 tempdir <- tempdir()
-download.file("https://www2.census.gov/geo/tiger/TIGER2018/COUNTY/tl_2018_us_county.zip", temp)
+download.file("https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_county_500k.zip", temp)
 unzip(temp, exdir = tempdir)
-sf_counties <- read_sf(paste0(tempdir, "\\tl_2018_us_county.shp")) %>%
+sf_counties <-
+  read_sf(paste0(tempdir, "\\cb_2018_us_county_500k.shp")) %>%
   st_transform(crs = 4326) %>%
   clean_names() %>%
   select(fips = geoid, county = name, state_fips = statefp)
@@ -412,4 +494,3 @@ df_culv_out_pure <-
 
 df_culv_out_pure %>%
   write_csv(here("output/culverts_pure_spatial.csv"))
-
