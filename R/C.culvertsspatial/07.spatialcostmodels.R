@@ -367,7 +367,7 @@ key_here %>%
   knitr::kable() %>%
   kableExtra::kable_styling()
 #+ echo=F
-#' ## Population features  
+#' ## Economic, social, and built-environment characteristics features  
 #'
 #' - **Housing density (units per sq. km)**: more parcels near work site
 #' introduces complexities related to site access and available areas for
