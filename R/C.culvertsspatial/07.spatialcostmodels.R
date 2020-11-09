@@ -1289,7 +1289,7 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
     y = NULL, 
     x = "Project average costs", 
     title = "NLCD land cover effects",
-    subtitle = "Project average costs relative to Developed",
+    subtitle = "Project average costs relative to Barren",
     caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
   ) +
   # theme_clean() +
@@ -1303,11 +1303,13 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
   )
 
 #' Work sites in areas with the land cover classifications in the developed
-#' group (the reference level) have among the highest costs, though those in the
-#' planted-cultivated and water groups have high costs as well. Work sites in
-#' forests and herbaceous land cover areas have average costs around a quarter
-#' lower than the reference group.  
+#' group have among the highest costs, though those in the planted-cultivated
+#' and water groups (i.e. those that drain into larger bodies of water like
+#' lakes, etc.) have high costs as well. Work sites in forests and herbaceous
+#' land cover areas have average costs around a quarter lower than the reference
+#' group.
 #' 
+
 #' ### Road feature effects  
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 
