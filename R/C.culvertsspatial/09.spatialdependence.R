@@ -213,7 +213,7 @@ InvDist_buff <- mat2listw(as.matrix(InvDist_buff), style="W")
 #' where d_ij is the distance between worksite_i and worksite_j (assumes
 #' dependence decays with distance), and;  
 
-#' 3. *Hybrid specfication*: weights are inverse distances when worksite pair is
+#' 3. *Hybrid specification*: weights are inverse distances when worksite pair is
 #' within buffer, and zero otherwise.  
 
 #' For each of these specifications, we estimate the core model and perform a suite of tests of spatial dependence:  
@@ -225,13 +225,51 @@ InvDist_buff <- mat2listw(as.matrix(InvDist_buff), style="W")
 
 #' 2. *Anselin's Lagrange multiplier tests*: these tests of linear restrictions
 #' identify mispecification due to spatial dependence, distinguishing whether
-#' the source is due to missing spatial lags of the dependent variable or the error.
+#' the source is due to missing spatial lags of the dependent variable or
+#' missing spatial error structure, or both.
 #' 
 
 ##TESTS OF SPATIAL DEPENDENCE
 
+# Goal is to build a table with rows as tests and columns as spatial matrix specification
 
+# Let's put together a function that gathers the test stats based on a model and a weighting matrix
+# Built for use with map_dfc
 
+spdep_suite <-
+  function(
+    model,
+    listw
+  ){
+    if(exists("y", model)) {
+      y <- model$y
+    } else {
+      model_y <- update(model, y = TRUE)
+      y <- model_y$y
+    }
+    moran.dep.test <- moran.test(y, listw)
+      moran.dep.stat <- moran.dep.test$statistic
+      moran.dep.p <- moran.dep.test$p.value
+    moran.lm.test <- lm.morantest(model, listw, alternative = "two.sided")
+      moran.lm.stat <- moran.lm.test$statistic
+      moran.lm.p <- moran.lm.test$p.value
+    LM_test.test <- lm.LMtests(model, listw, test = "all")
+      for(i in 1:length(LM_test.test)) {
+        assign(
+          paste0(names(LM_test.test)[i], ".stat"),
+          LM_test.test[[i]]$statistic
+        )
+        assign(
+          paste0(names(LM_test.test)[i], ".p"),
+          LM_test.test[[i]]$p.value
+        )
+      }
+    tibble(
+      test_name = ls(pattern = "*.test"),
+      test_stat = ls(pattern = "*.stat") %>% sapply("get") %>% flatten(),
+      test_p = ls(pattern = "*.stat") %>% sapply("get") %>% flatten(),
+    )
+  }
 
 #A - Neighbor specification
 #Moran's I test on on dependent variable - H0: No spatial dependence
