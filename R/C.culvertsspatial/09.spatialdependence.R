@@ -247,64 +247,44 @@ spdep_suite <-
       model_y <- update(model, y = TRUE)
       y <- model_y$y
     }
+    #Moran's I test on on dependent variable - H0: No spatial dependence
     moran.dep.test <- moran.test(y, listw)
       moran.dep.stat <- moran.dep.test$statistic
       moran.dep.p <- moran.dep.test$p.value
+    #Moran's I test on residuals
     moran.lm.test <- lm.morantest(model, listw, alternative = "two.sided")
       moran.lm.stat <- moran.lm.test$statistic
       moran.lm.p <- moran.lm.test$p.value
+    #Lagrange Multiplier test for spatially model specification -- SAR? AR? SARAR?, SARA if all rejected.
     LM_test.test <- lm.LMtests(model, listw, test = "all")
+    LM_test.stat <- c()
+    LM_test.p <- c()
       for(i in 1:length(LM_test.test)) {
-        assign(
-          paste0(names(LM_test.test)[i], ".stat"),
-          LM_test.test[[i]]$statistic
-        )
-        assign(
-          paste0(names(LM_test.test)[i], ".p"),
-          LM_test.test[[i]]$p.value
-        )
+        LM_test.stat[i] <- LM_test.test[[i]]$statistic
+        LM_test.p[i] <- LM_test.test[[i]]$p.value
       }
+    # names(LM_test.stat) <- names(LM_test)
+    # names(LM_test.p) <- names(LM_test)
     tibble(
-      test_name = ls(pattern = "*.test"),
-      test_stat = ls(pattern = "*.stat") %>% sapply("get") %>% flatten(),
-      test_p = ls(pattern = "*.stat") %>% sapply("get") %>% flatten(),
-    )
+      test_name = c("MoranDep", "MoranResid", names(LM_test)),
+      test_stat = c(moran.dep.stat, moran.lm.stat, LM_test.stat),
+      test_p = c(moran.dep.p, moran.lm.p, LM_test.p),
+    ) %>% 
+      mutate(
+        test_stat = format(test_stat, digits = 3),
+        test_p = format.pval(test_p, digits = 3, eps = 0.001)
+      ) %>%
+      transmute(test_name, test_out = paste0(test_stat, " (", test_p, ")"))
   }
 
 #A - Neighbor specification
-#Moran's I test on on dependent variable - H0: No spatial dependence
-moran.dep <- moran.test(log(df_culv_sp$cost_per_culvert), neigh)
-print(moran.dep)
-#Moran's I test on residuals
-moran.lm<-lm.morantest(mod_full_sp, neigh, alternative="two.sided")
-print(moran.lm)
-
-#Lagrange Multiplier test for spatially model specification -- SAR? AR? SARAR?, SARA if all rejected.
-LM_test<-lm.LMtests(mod_full_sp, neigh, test="all")
-print(LM_test)
-summary(LM_test)
+spdep_suite(mod_full_sp, neigh)
 
 #B - InvDist specification
-#Moran's I tests
-moran.dep <- moran.test(log(df_culv_sp$cost_per_culvert), InvDist)
-print(moran.dep)
-moran.lm<-lm.morantest(mod_full_sp, InvDist, alternative="two.sided")
-print(moran.lm) 
-#Lagrange Multiplier test 
-LM_test<-lm.LMtests(mod_full_sp, InvDist, test="all")
-print(LM_test) 
-summary(LM_test)
+spdep_suite(mod_full_sp, InvDist)
 
 #C - InvDist with buffer specification
-#Moran's I tests
-moran.dep <- moran.test(log(df_culv_sp$cost_per_culvert), InvDist_buff)
-print(moran.dep)
-moran.lm<-lm.morantest(mod_full_sp, InvDist_buff, alternative="two.sided")
-print(moran.lm) # -> reject
-#Lagrange Multiplier test
-LM_test<-lm.LMtests(mod_full_sp, InvDist_buff, test="all")
-print(LM_test)
-summary(LM_test)
+spdep_suite(mod_full_sp, InvDist_buff)
 
 # ESTIMATE MODELS via GMM (Kelejian & Prucha 2010)
 #Neighbors
