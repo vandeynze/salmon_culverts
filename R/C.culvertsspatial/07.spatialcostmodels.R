@@ -14,6 +14,14 @@
 # Prepare environment and data ----
 rm(list = ls())
 
+library(ggmap)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(sf)
+library(osmdata)
+library(raster)
+library(searchable)
+library(ggthemes)
 library(equatiomatic)
 library(MASS)
 library(tidyverse)
@@ -1430,8 +1438,226 @@ map_df(mods[-14], tidy, conf.int = TRUE, .id = "model") %>%
 #' though this effect largely washes out when the full suite of fixed effects is
 #' included.  
 #' 
+
+# ____ Maps ----
+#' ## Residual and predicted value maps  
+#' 
+
+#' In this section, we map both the residuals and predicted values for each
+#' in-sample worksite. Patterns will reveal areas where costs are more expensive
+#' and where missing expanatory variables may be effecting costs over a specific
+#' region.
+#' 
+
+sf_us <- getData("GADM", country = "USA", download = TRUE, path = here("output"), level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c('California', 'Nevada', 'Utah', 'Wyoming', 'Montana', 'Idaho', 'Oregon', 'Washington'))
+sf_canada <- getData("GADM", country = "CAN", download = TRUE, path = here("output"), level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c("British Columbia", "Alberta"))
+sf_base <- 
+  rbind(sf_us, sf_canada)
+
+# sf_roads <-
+#   opq(
+#     bbox = c(-126, 40, -110, 49.5),
+#     timeout = 3000,
+#     memsize = 4e+9
+#   ) %>%
+#   add_osm_feature(
+#     key = "highway",
+#     value = c(
+#       "motorway",
+#       "trunk",
+#       "primary"
+#     )
+#   ) %>%
+#   osmdata_sf() %>%
+#   unname_osmdata_sf()
+# 
+# sf_rivers <-
+#   opq(
+#     bbox = c(-126, 40, -110, 49.5),
+#     # bbox = c(-122.5, 47.5, -122, 48), # Seattle area check
+#     timeout = 3000,
+#     memsize = 4e+9
+#   ) %>%
+#   add_osm_feature(
+#     key = "waterway",
+#     value = c(
+#       # "streams", # Can also add "streams" and other levels for lower level streams, but dramatically increases file size
+#       # "canal",
+#       # "brook",
+#       "river",
+#       "riverbank"
+#     )
+#   ) %>%
+#   osmdata_sf()
+# 
+# sf_lakes <-
+#   opq(
+#     bbox = c(-126, 40, -110, 49.5),
+#     # bbox = c(-122.5, 47.5, -122, 48), # Seattle area check
+#     timeout = 3000,
+#     memsize = 4e+9
+#   ) %>%
+#   add_osm_feature(
+#     key = "water",
+#     value = c(
+#       "lake"
+#     )
+#   ) %>%
+#   osmdata_sf()
+
+# Fix broken osm_multipolygons names for plotting (https://github.com/rstudio/leaflet/issues/631#issuecomment-504729274)
+# for(i in seq(nrow(sf_lakes$osm_multipolygons))) {
+#   names(sf_lakes$osm_multipolygons$geometry[i][[1]]) = NULL
+#   names(sf_lakes$osm_multipolygons$geometry[[i]][[1]]) = NULL
+# }
+# sf_rivers <- unname_osmdata_sf(sf_rivers) # Doesn't seem to work
+# names(sf_rivers$osm_multipolygons$geometry) = NULL
+# for(i in seq(nrow(sf_rivers$osm_multipolygons))) {
+#   names(sf_rivers$osm_multipolygons$geometry[i][[1]]) = NULL
+#   names(sf_rivers$osm_multipolygons$geometry[[i]][[1]]) = NULL
+# }
+
+# Build base map 
+# base_map <-
+#   ggplot() +
+#   geom_sf(data = sf_base, fill = "antiquewhite1", color = NA) +
+#   geom_sf(data = sf_rivers$osm_lines, color = "steelblue1", fill = "steelblue1", size = 0.3) +
+#   geom_sf(data = sf_rivers$osm_multilines, color = "steelblue1", fill = "steelblue1", size = 0.3) +
+#   geom_sf(data = sf_rivers$osm_polygons, color = "steelblue1", fill = "steelblue1", size = 0.3) +
+#   geom_sf(data = sf_rivers$osm_multipolygons, color = "steelblue1", fill = "steelblue1", size = 0.3) +
+#   geom_sf(data = sf_lakes$osm_lines, color = "steelblue1", fill = "steelblue1") +
+#   geom_sf(data = sf_lakes$osm_polygons %>% filter(water == "lake"), color = "steelblue1", fill = "steelblue1") +
+#   geom_sf(data = sf_lakes$osm_multipolygons, color = "steelblue1", fill = "steelblue1") +
+#   geom_sf(data = sf_lakes$osm_polygons %>% filter(is.na(water) & !is.na(place)), color = "steelblue1", fill = "antiquewhite1") +
+#   geom_sf(data = sf_roads$osm_lines, color = "firebrick1", size = 0.3) +
+#   geom_sf(data = sf_base, fill = NA, color = "black") +
+#   coord_sf(
+#     xlim = c(-126, -111.5), ylim = c(41.5, 49.5),
+#     # xlim = c(-122.5, -122), ylim = c(47.5, 48), # Seattle area check
+#     expand = FALSE
+#   ) +
+#   theme_bw() +
+#   theme(
+#     panel.background = element_rect(fill = "aliceblue", size = 1),
+#     axis.text = element_blank(),
+#     axis.ticks = element_blank(),
+#     legend.position = c(0.99, 0.01),
+#     legend.justification = c("right", "bottom"),
+#     legend.box.background = element_rect(color = "black", size = 1),
+#     legend.title = element_text(size = 10)
+#   ) +
+#   labs(
+#     x = NULL,
+#     y = NULL
+#   )
+
+base_map_draft <-
+  ggplot() +
+  geom_sf(data = sf_base, fill = "antiquewhite1", color = "black") +
+  coord_sf(
+    xlim = c(-126, -111.5),
+    ylim = c(41.5, 49.5),
+    expand = FALSE
+  ) +
+  theme_bw() +
+  theme(
+    panel.background = element_rect(fill = "aliceblue", size = 1),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = c(0.99, 0.01),
+    legend.justification = c("right", "bottom"),
+    legend.box.background = element_rect(color = "black", size = 1),
+    legend.title = element_text(size = 10)
+  ) +
+  labs(
+    x = NULL,
+    y = NULL
+  )
+
+# Residuals map
+sf_culv <-
+  df_culv %>%
+  drop_na(
+    cost_per_culvert, n_culverts, dist_mean, n_worksites, action_fishpass_culvinst_prj, action_fishpass_culvrem_prj,
+    slope, bankfull_width, here_class, slope_deg, here_paved, nlcd_current_class, hdens_cat, emp_const, emp_agforest, basin, project_year, project_source
+  ) %>%
+  mutate(
+    latlong = str_sub(geometry, 3, nchar(geometry)-1),
+    long = as.numeric( word(latlong, 1, sep = ", ")),
+    lat = as.numeric( word(latlong, 2, sep = ", ")),
+    latlong = NULL,
+    geometry = NULL
+  ) %>%
+  st_as_sf(coords = c("long", "lat")) %>% st_set_crs("WGS84") %>%
+  bind_cols(residuals = mod_nofe_nobasin$residuals)
+
+base_map_draft +
+  # base_map +
+  geom_sf(
+    data = sf_culv,
+    aes(
+      # x = longitude,
+      # y = latitude,
+      # geometry = geometry,
+      fill = residuals
+    ),
+    shape = 21,
+    color = "black",
+    stroke = 0.1,
+    size = 1.9
+  ) +
+  scale_fill_distiller(
+    "Model residual",
+    # palette = "YlGn",
+    # palette = "Spectral",
+    palette = "RdBu",
+    # labels = dollar,
+    direction = 1,
+    # trans = "log10",
+    na.value = "grey70"
+  ) +
+  ggtitle("Map of residuals", "Residuals measured on log scale \n  ") +
+  coord_sf(
+    xlim = c(-126, -117),
+    ylim = c(41.5, 49.5),
+    expand = FALSE
+  )
+
+# Predicted values
+base_map_draft +
+  # base_map +
+  geom_sf(
+    data = sf_culv %>% bind_cols(yhat_2015_owri = exp(predict(mod_nofe_nobasin, sf_culv %>% mutate(project_year = 2015, n_culverts = 1, n_worksites = 1, dist_mean = 0, project_source = "OWRI")))),
+    aes(
+      # x = longitude,
+      # y = latitude,
+      fill = yhat_2015_owri
+    ),
+    shape = 21,
+    color = "black",
+    stroke = 0.1,
+    size = 1.9
+  ) +
+  scale_fill_distiller(
+    "Predicted cost",
+    # palette = "YlGn",
+    # palette = "Spectral",
+    palette = "RdYlGn",
+    labels = dollar_format(accuracy = 1),
+    direction = -1,
+    trans = "log10",
+    na.value = "grey70"
+  ) +
+  ggtitle("Map of predicted values", str_wrap("Year set to 2015, source set to OWRI, and number of culverts set to one for all worksites")) +
+  coord_sf(
+    xlim = c(-126, -117),
+    ylim = c(41.5, 49.5),
+    expand = FALSE
+  )
+
 #' # Benefit - cost visualizations  
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+
 
 # ____ Benefits and costs plots ----
 #' As a simple examination of what kind of decision rule might be in play for
