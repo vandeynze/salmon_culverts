@@ -11,7 +11,7 @@
 
 <meta name="author" content="B. Van Deynze" />
 
-<meta name="date" content="2020-10-28" />
+<meta name="date" content="2020-11-14" />
 
 <title>Summary of Spatially Derived Variables for Culvert Projects</title>
 
@@ -27,7 +27,10 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -38,6 +41,15 @@ div.section {
   padding-top: 12px;
 }
 </style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -383,7 +395,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Summary of Spatially Derived Variables for Culvert Projects</h1>
 <h4 class="author">B. Van Deynze</h4>
-<h4 class="date">October 28, 2020</h4>
+<h4 class="date">November 14, 2020</h4>
 
 </div>
 
@@ -395,12 +407,18 @@ div.tocify {
 <h1>Data sources and variable definitions</h1>
 <div id="culvert-work-site-data" class="section level2">
 <h2>Culvert work site data</h2>
-<p>Data on culvert work site locations and associated project information (reporting source, project cost, year, work site coordinates), are from the <strong><em>Pacific Northwest Salmon Habitat Projects</em></strong> database, which documents projects relevant to salmonid habitat restoration, including culvert improvements. We restrict the sample to projects that:<br />
-1) Only include culvert actions across any work sites;<br />
-2) Were completed between 1996 and 2015;<br />
-3) Consisted of work sites only in Washington or Oregon;<br />
-4) Consisted of work sites only located within basins with over 20 work sites;<br />
-5) Reported project costs per culvert between $2,000 and $750,000 (roughly 5th and 95th percentiles).</p>
+<p>Data on culvert work site locations and associated project information (reporting source, project cost, year, work site coordinates), are from the <strong><em>Pacific Northwest Salmon Habitat Projects</em></strong> database, which documents projects relevant to salmonid habitat restoration, including culvert improvements. We restrict the sample to projects that:</p>
+<ol style="list-style-type: decimal">
+<li>Only include culvert actions across any work sites;<br />
+</li>
+<li>Were completed between 1996 and 2015;<br />
+</li>
+<li>Consisted of work sites only in Washington or Oregon;<br />
+</li>
+<li>Consisted of work sites only located within basins with over 20 work sites;<br />
+</li>
+<li>Reported project costs per culvert between $2,000 and $750,000 (roughly 5th and 95th percentiles).</li>
+</ol>
 </div>
 </div>
 <div id="evaluating-accuracy-of-stream-and-road-matches" class="section level1">
@@ -905,12 +923,12 @@ Areas where perennial herbaceous vegetation accounts for greater than 80% of veg
 <h1>End Matter</h1>
 <pre class="r"><code># Created on...
 Sys.time()</code></pre>
-<pre><code>[1] &quot;2020-10-28 13:45:52 PDT&quot;</code></pre>
+<pre><code>[1] &quot;2020-11-14 14:18:54 PST&quot;</code></pre>
 <pre class="r"><code># Using...
 sessionInfo()</code></pre>
 <pre><code>R version 4.0.2 (2020-06-22)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 19041)
+Running under: Windows 10 x64 (build 18363)
 
 Matrix products: default
 
@@ -925,30 +943,30 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] mctest_1.3.1     ggcorrplot_0.1.3 kableExtra_1.1.0 knitr_1.29      
- [5] rmarkdown_2.3    janitor_2.0.1    readxl_1.3.1     sf_0.9-5        
- [9] here_0.1         forcats_0.5.0    stringr_1.4.0    dplyr_1.0.1     
-[13] purrr_0.3.4      readr_1.3.1      tidyr_1.1.1      tibble_3.0.4    
+ [1] mctest_1.3.1     ggcorrplot_0.1.3 kableExtra_1.3.1 knitr_1.30      
+ [5] rmarkdown_2.5    janitor_2.0.1    readxl_1.3.1     sf_0.9-6        
+ [9] here_0.1         forcats_0.5.0    stringr_1.4.0    dplyr_1.0.2     
+[13] purrr_0.3.4      readr_1.4.0      tidyr_1.1.2      tibble_3.0.4    
 [17] ggplot2_3.3.2    tidyverse_1.3.0  scales_1.1.1     workflowr_1.6.2 
 
 loaded via a namespace (and not attached):
  [1] httr_1.4.2         jsonlite_1.7.1     viridisLite_0.3.0  modelr_0.1.8      
  [5] assertthat_0.2.1   highr_0.8          selectr_0.4-2      blob_1.2.1        
- [9] cellranger_1.1.0   yaml_2.2.1         pillar_1.4.6       backports_1.1.8   
-[13] glue_1.4.2         digest_0.6.25      promises_1.1.1     rvest_0.3.6       
+ [9] cellranger_1.1.0   yaml_2.2.1         pillar_1.4.6       backports_1.1.10  
+[13] glue_1.4.2         digest_0.6.26      promises_1.1.1     rvest_0.3.6       
 [17] snakecase_0.11.0   colorspace_1.4-1   htmltools_0.5.0    httpuv_1.5.4      
-[21] pkgconfig_2.0.3    broom_0.7.0        haven_2.3.1        webshot_0.5.2     
+[21] pkgconfig_2.0.3    broom_0.7.2        haven_2.3.1        webshot_0.5.2     
 [25] later_1.1.0.1      git2r_0.27.1       generics_0.0.2     farver_2.0.3      
-[29] ellipsis_0.3.1     withr_2.2.0        cli_2.1.0          magrittr_1.5      
-[33] crayon_1.3.4       evaluate_0.14      ps_1.3.3           fs_1.4.2          
+[29] ellipsis_0.3.1     withr_2.3.0        cli_2.1.0          magrittr_1.5      
+[33] crayon_1.3.4       evaluate_0.14      ps_1.4.0           fs_1.5.0          
 [37] fansi_0.4.1        xml2_1.3.2         class_7.3-17       tools_4.0.2       
 [41] hms_0.5.3          lifecycle_0.2.0    munsell_0.5.0      reprex_0.3.0      
-[45] compiler_4.0.2     e1071_1.7-3        rlang_0.4.8        classInt_0.4-3    
-[49] units_0.6-7        grid_4.0.2         rstudioapi_0.11    labeling_0.3      
+[45] compiler_4.0.2     e1071_1.7-4        rlang_0.4.8        classInt_0.4-3    
+[49] units_0.6-7        grid_4.0.2         rstudioapi_0.11    labeling_0.4.2    
 [53] gtable_0.3.0       DBI_1.1.0          R6_2.4.1           lubridate_1.7.9   
-[57] utf8_1.1.4         rprojroot_1.3-2    KernSmooth_2.23-17 stringi_1.4.6     
+[57] utf8_1.1.4         rprojroot_1.3-2    KernSmooth_2.23-17 stringi_1.5.3     
 [61] Rcpp_1.0.5         vctrs_0.3.4        dbplyr_1.4.4       tidyselect_1.1.0  
-[65] xfun_0.16         </code></pre>
+[65] xfun_0.18         </code></pre>
 <pre class="r"><code># Render output
 # rmarkdown::render(here::here(&quot;R/C.culvertsspatial/06.spatialexplore.R&quot;), output_file = here::here(&quot;output/culvertsspatial_report_2020sep24.html&quot;))</code></pre>
 <br>
@@ -961,7 +979,7 @@ loaded via a namespace (and not attached):
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.0.2 (2020-06-22)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 19041)
+Running under: Windows 10 x64 (build 18363)
 
 Matrix products: default
 
@@ -976,30 +994,30 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] mctest_1.3.1     ggcorrplot_0.1.3 kableExtra_1.1.0 knitr_1.29      
- [5] rmarkdown_2.3    janitor_2.0.1    readxl_1.3.1     sf_0.9-5        
- [9] here_0.1         forcats_0.5.0    stringr_1.4.0    dplyr_1.0.1     
-[13] purrr_0.3.4      readr_1.3.1      tidyr_1.1.1      tibble_3.0.4    
+ [1] mctest_1.3.1     ggcorrplot_0.1.3 kableExtra_1.3.1 knitr_1.30      
+ [5] rmarkdown_2.5    janitor_2.0.1    readxl_1.3.1     sf_0.9-6        
+ [9] here_0.1         forcats_0.5.0    stringr_1.4.0    dplyr_1.0.2     
+[13] purrr_0.3.4      readr_1.4.0      tidyr_1.1.2      tibble_3.0.4    
 [17] ggplot2_3.3.2    tidyverse_1.3.0  scales_1.1.1     workflowr_1.6.2 
 
 loaded via a namespace (and not attached):
  [1] httr_1.4.2         jsonlite_1.7.1     viridisLite_0.3.0  modelr_0.1.8      
  [5] assertthat_0.2.1   highr_0.8          selectr_0.4-2      blob_1.2.1        
- [9] cellranger_1.1.0   yaml_2.2.1         pillar_1.4.6       backports_1.1.8   
-[13] glue_1.4.2         digest_0.6.25      promises_1.1.1     rvest_0.3.6       
+ [9] cellranger_1.1.0   yaml_2.2.1         pillar_1.4.6       backports_1.1.10  
+[13] glue_1.4.2         digest_0.6.26      promises_1.1.1     rvest_0.3.6       
 [17] snakecase_0.11.0   colorspace_1.4-1   htmltools_0.5.0    httpuv_1.5.4      
-[21] pkgconfig_2.0.3    broom_0.7.0        haven_2.3.1        webshot_0.5.2     
+[21] pkgconfig_2.0.3    broom_0.7.2        haven_2.3.1        webshot_0.5.2     
 [25] later_1.1.0.1      git2r_0.27.1       generics_0.0.2     farver_2.0.3      
-[29] ellipsis_0.3.1     withr_2.2.0        cli_2.1.0          magrittr_1.5      
-[33] crayon_1.3.4       evaluate_0.14      ps_1.3.3           fs_1.4.2          
+[29] ellipsis_0.3.1     withr_2.3.0        cli_2.1.0          magrittr_1.5      
+[33] crayon_1.3.4       evaluate_0.14      ps_1.4.0           fs_1.5.0          
 [37] fansi_0.4.1        xml2_1.3.2         class_7.3-17       tools_4.0.2       
 [41] hms_0.5.3          lifecycle_0.2.0    munsell_0.5.0      reprex_0.3.0      
-[45] compiler_4.0.2     e1071_1.7-3        rlang_0.4.8        classInt_0.4-3    
-[49] units_0.6-7        grid_4.0.2         rstudioapi_0.11    labeling_0.3      
+[45] compiler_4.0.2     e1071_1.7-4        rlang_0.4.8        classInt_0.4-3    
+[49] units_0.6-7        grid_4.0.2         rstudioapi_0.11    labeling_0.4.2    
 [53] gtable_0.3.0       DBI_1.1.0          R6_2.4.1           lubridate_1.7.9   
-[57] utf8_1.1.4         rprojroot_1.3-2    KernSmooth_2.23-17 stringi_1.4.6     
+[57] utf8_1.1.4         rprojroot_1.3-2    KernSmooth_2.23-17 stringi_1.5.3     
 [61] Rcpp_1.0.5         vctrs_0.3.4        dbplyr_1.4.4       tidyselect_1.1.0  
-[65] xfun_0.16         </code></pre>
+[65] xfun_0.18         </code></pre>
 </div>
 </div>
 
@@ -1026,7 +1044,7 @@ footer is added to webpages before the MathJax javascript. -->
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();

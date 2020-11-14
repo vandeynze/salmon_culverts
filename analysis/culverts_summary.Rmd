@@ -559,44 +559,44 @@ This section includes plots of the frequency of culvert projects and actions, th
 ## Action Counts
 ### Action Counts
 *Counts of culvert-related actions by action-type, year, basin, and reporting source, separated by project cost availability. Only actions associated with pure culvert projects included.*
-![](.\figs\culverts\fig_countcost_action.png)
-![](.\figs\culverts\fig_countcost_year.png)
-![](.\figs\culverts\fig_countcost_basin.png)
-![](.\figs\culverts\fig_countcost_source.png)
+![](..\output\figs\culverts\fig_countcost_action.png)
+![](..\output\figs\culverts\fig_countcost_year.png)
+![](..\output\figs\culverts\fig_countcost_basin.png)
+![](..\output\figs\culverts\fig_countcost_source.png)
 [Source glossery](#sources)
-![](.\figs\culverts\fig_countcost_action_year.png)
-![](.\figs\culverts\fig_countcost_source_action.png)
+![](..\output\figs\culverts\fig_countcost_action_year.png)
+![](..\output\figs\culverts\fig_countcost_source_action.png)
 [Source glossery](#sources)
-![](.\figs\culverts\fig_countcost_basin_action.png)
-![](.\figs\culverts\fig_countcost_basin_year.png)
-![](.\figs\culverts\fig_countcost_source_year.png)
+![](..\output\figs\culverts\fig_countcost_basin_action.png)
+![](..\output\figs\culverts\fig_countcost_basin_year.png)
+![](..\output\figs\culverts\fig_countcost_source_year.png)
 [Source glossery](#sources)
-![](.\figs\culverts\fig_countcost_basin_source.png)
+![](..\output\figs\culverts\fig_countcost_basin_source.png)
 [Source glossery](#sources)\
 [Back to top](#pills)
 
 ## Project Counts
 ### Project Counts {#project}
 *Counts of culvert-related projects by year, basin, and reporting source, separated by project cost availability. Only pure culvert projects included.*
-![](.\figs\culverts\fig_prjcost_year.png)
+![](..\output\figs\culverts\fig_prjcost_year.png)
 
 > **Observation:** Activity increases dramatically in the late '90s before falling off in the late '00s.
 
-![](.\figs\culverts\fig_prjcost_basin.png)
+![](..\output\figs\culverts\fig_prjcost_basin.png)
 
 > **Observation:** While overall cost availability is good, costs are reported less frequently in Washington than they are in Oregon.
 
 > **Observation:** There have been far more culvert projects in Oregon than Washington over the years.
 
-![](.\figs\culverts\fig_prjcost_source.png)
+![](..\output\figs\culverts\fig_prjcost_source.png)
 [Source glossery](#sources)
-![](.\figs\culverts\fig_prjcost_basin_year.png)
-![](.\figs\culverts\fig_prjcost_source_year.png)
+![](..\output\figs\culverts\fig_prjcost_basin_year.png)
+![](..\output\figs\culverts\fig_prjcost_source_year.png)
 [Source glossery](#sources)
 
 > **Observation:** The activity trends are driven largely by Oregon, especially dramatic drop-offs in reports by OWRI and REO.
 
-![](.\figs\culverts\fig_prjcost_basin_source.png)
+![](..\output\figs\culverts\fig_prjcost_basin_source.png)
 [Source glossery](#sources)\
 
 > **Observation:** OWRI reports by far the most projects, and only projects in Oregon. REO is the only organization that reports projects across all eight of the basins with the most activity, though their activity is centered around Oregon as well.
@@ -606,14 +606,14 @@ This section includes plots of the frequency of culvert projects and actions, th
 ## Culvert Spending
 ### Culvert Spending
 *Total spending on culverts by year, basin, and reporting source. Only includes spending on pure culvert projects.*
-![](.\figs\culverts\fig_cost_year.png)
-![](.\figs\culverts\fig_cost_basin.png)
-![](.\figs\culverts\fig_cost_source.png)
+![](..\output\figs\culverts\fig_cost_year.png)
+![](..\output\figs\culverts\fig_cost_basin.png)
+![](..\output\figs\culverts\fig_cost_source.png)
 [Source glossery](#sources)
-![](.\figs\culverts\fig_cost_year_basin.png)
-![](.\figs\culverts\fig_cost_year_source.png)
+![](..\output\figs\culverts\fig_cost_year_basin.png)
+![](..\output\figs\culverts\fig_cost_year_source.png)
 [Source glossery](#sources)
-![](.\figs\culverts\fig_cost_source_basin.png)
+![](..\output\figs\culverts\fig_cost_source_basin.png)
 [Source glossery](#sources)\
 
 > **Observation:** Following patterns in the number of projects, spending rose dramatically during the late '90s before falling off to a lower level in 2007. This pattern is mostly driven by REO's heavy investment along the southern Oregon coast in the early '00s. The drop-off corresponds with a drop in spending by OWRI.
@@ -623,16 +623,16 @@ This section includes plots of the frequency of culvert projects and actions, th
 ## Cost per Culvert Distributions
 ### Cost per Culvert Distributions
 *Violin plots and box plots for project costs per culvert, on a log scale. Only includes pure culvert projects. Details on how the number of culverts is identified can be found in the [appendix](#count).*
-![](.\figs\culverts\fig_costdist_action.png)
+![](..\output\figs\culverts\fig_costdist_action.png)
 
 > **Observation:** Culvert installations are the most expensive, followed by culvert upgrades and culvert removals, though with considerable overlap in the distributions.
 
-![](.\figs\culverts\fig_costdist_year.png)
+![](..\output\figs\culverts\fig_costdist_year.png)
 
 > **Observation:** Cost per culvert seems to be rising from 1995 through around 2004 when they flatten out. From 2008 through 2011, costs are more concentrated near the median.
 
-![](.\figs\culverts\fig_costdist_basin.png)
-![](.\figs\culverts\fig_costdist_source.png)
+![](..\output\figs\culverts\fig_costdist_basin.png)
+![](..\output\figs\culverts\fig_costdist_source.png)
 [Source glossery](#sources)\
 
 > **Observation:** There is a pretty wide range of costs across basins, but OWRI reports notably cheaper projects while WDOT's projects are much more expensive. OWRI also reports the bulk of projects, so if their costs are systemically under-reported, then we may have a problem.
@@ -643,15 +643,15 @@ This section includes plots of the frequency of culvert projects and actions, th
 ### Maps
 *Maps show work sites associated with pure culvert projects. To trim outliers, only projects with cost per culvert above $2,000 are included. Road and river data from OpenStreetMap API.*
 
-![](.\maps\culverts\fig_map_cost.png)
+![](..\output\maps\culverts\fig_map_cost.png)
 
 > **Observation:** The cheapest projects are clustered along the northern Oregon coast, while the most expensive appear mostly in Washington. Projects in the middle of the distribution are well distributed across the region.
 
-![](.\maps\culverts\fig_map_year.png)
+![](..\output\maps\culverts\fig_map_year.png)
 
 > **Observation:** The earliest projects are clustered along the northern Oregon coast, and are also the cheapest. Washington projects tend to be more recent.
 
-![](.\maps\culverts\fig_map_source.png)
+![](..\output\maps\culverts\fig_map_source.png)
 [Source glossery](#sources)\
 
 > **Observation:** There is little geographic overlap between reporting sources, which may make mixing sources in a model difficult. Reporting source also closely corresponds with year and cost per culvert.
