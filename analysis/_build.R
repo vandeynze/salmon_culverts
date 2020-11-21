@@ -36,7 +36,10 @@ file.remove(here("R/C.culvertsspatial/09.spatialdependence.Rmd"))
 wflow_build(
   files = list.files(
     here("analysis"), 
-    "*.Rmd",
+    ".Rmd",
     full.names = TRUE
-  )
+  ),
+  clean_fig_files = TRUE,
+  delete_cache = TRUE
 )
+

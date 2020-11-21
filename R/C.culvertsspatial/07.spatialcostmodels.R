@@ -77,7 +77,8 @@ xy <- mvrnorm(100, c(0, 0), sigma)
 # cov(xy)
 # cor(xy)
 xy <- data.frame(xy)
-   
+xy <- xy %>% mutate(c_target = I(X1<0), b_target = I(X2>0), r_target = I(X1<0 & X2>0 | ((X1/X2)>1 & X2<0) | ((X1/X2)<1 & X2>0)))
+  
 ggplot() +
   geom_text(
     aes(
@@ -106,7 +107,10 @@ ggplot() +
   geom_point(
     aes(
       x = X1,
-      y = X2
+      y = X2,
+      # alpha = c_target
+      # alpha = b_target
+      alpha = r_target
     ),
     data = xy
   ) +
@@ -117,31 +121,43 @@ ggplot() +
   #   )
   # ) +
   geom_abline(
-    aes(color = "Ratio cost (C/B) targeting",
-    slope = 1, intercept = 0),
-    size = 1.2
+    aes(
+      # color = "Ratio cost (C/B) targeting",
+      slope = 1, intercept = 0
+    ),
+    size = 1.2,
+    color = "#4DAF4A"
   ) +
   geom_vline(
-    aes(color = "Cost targeting",
-    xintercept = 0),
+    aes(
+      # color = "Cost targeting",
+      xintercept = 0
+    ),
+    color = "#377EB8",
     size = 1.2
   ) +
   geom_hline(
-    aes(color = "Benefit targeting",
-    yintercept = 0),
+    aes(
+      # color = "Benefit targeting",
+      yintercept = 0
+    ),
+    color = "#E41A1C",
     size = 1.2
   ) +
   labs(
     title = "Potential projects in cost-benefit space",
-    subtitle = wrapper("Lines illustrate thresholds for which projects would be selected under different targeting schemes; Projects above and to the left of each line would be selected under each scheme"),
+    # subtitle = wrapper("Lines illustrate thresholds for which projects would be selected under different targeting schemes; Projects above and to the left of each line would be selected under each scheme"),
+    # subtitle = wrapper(" \n "),
     x = "Cost",
     y = "Benefit",
     caption = "Recreation of figures 1-3 of Babcock et al. (1997)"
   ) +
   ggthemes::theme_clean() +
-  scale_color_discrete("Targeting scheme") +
+  scale_alpha_discrete(c(1,0.8), guide = NULL) +
+  scale_color_discrete("Targeting scheme", guide = NULL) +
   theme(
     plot.title.position = "plot",
+    text = element_text(),
     axis.text = element_blank(),
     axis.ticks = element_blank(),
     plot.background = element_blank(),
@@ -219,7 +235,9 @@ df_culv <-
     basin = relevel(factor(basin), ref = "SOUTHERN OREGON COASTAL"),
     fips = factor(fips),
     state_fips = factor(state_fips),
-    # here_class = ordered(here_class)
+    here_class = as.character(here_class),
+    relevel(factor(here_speed), ref = 6),
+    tot_dist = I(n_worksites * dist_mean)
   ) %>%
   left_join(
     key_nlcd, 
@@ -227,6 +245,7 @@ df_culv <-
   )
   
   
+
 names(df_culv)
 
 # Data description ----
@@ -255,15 +274,16 @@ names(df_culv)
 options(knitr.kable.NA = '')
 df_culv %>%
   drop_na(emp_agforest, slope, slope_deg) %>%
+  mutate(`Distance between work sites (m)` = I(dist_mean*n_worksites)) %>%
   select(
     `Cost per culvert ($USD2019)` = cost_per_culvert,
-    `Number of culverts (count)` = n_culverts,
-    `Mean distance between work sites (m)` = dist_mean,
+    `Number of worksites (count)` = n_worksites,
+    `Distance between work sites (m)`,
     `Stream slope (%)` = slope,
     `Bankfull width (m)` = bankfull_width,
     `Paved road` = here_paved,
-    `Road class` = here_class,
-    `Terrain slope (deg)` = slope_deg,
+    `Road speed class` = here_speed,
+    `Terrain slope (deg)` = cat_basin_slope,
     `Land cover class` = nlcd_current_class,
     `Housing density (units per sq. km)` = hdens_cat,
     `Construction employment (jobs)` = emp_const,
@@ -273,7 +293,7 @@ df_culv %>%
     `Reporting source` = project_source
   ) %>%
   mutate(
-    `Road class` = factor(`Road class`),
+    `Road speed class` = factor(`Road speed class`),
     `Paved road` = factor(`Paved road`),
     `Land cover class` = factor(`Land cover class`),
     Year = ordered(Year)
@@ -317,8 +337,8 @@ df_culv %>%
 #' - **Road paved (indicator)**: modification of a paved road is more expensive;
 #' may also proxy for higher traffic volumes; measured via HERE road data for
 #' nearest object.  
-#' - **Road class (categorical)**: wider roads with more traffic are expected to
-#' be more expensive; measured via HERE road data for nearest object; classes range from 2 (largest) to 5 (smallest)
+#' - **Road speed class (categorical)**: wider roads with more traffic are expected to
+#' be more expensive; measured via HERE road data for nearest object; classes range from  2 (fastest) to 7 (slowest).
 #' 
 #+ echo=F
 key_here <- read_xlsx(here("data/Culverts spatial overlays v 20Aug2020.xlsx"), sheet = 3) %>%
@@ -347,14 +367,16 @@ key_here %>%
 #' 
 #' - **Terrain slope (degrees)**: steeper terrain is expected to require more
 #' expensive projects; measured by the
-#' [GTOPO30](https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-global-30-arc-second-elevation-gtopo30?qt-science_center_objects=0#qt-science_center_objects)
-#' grid cell the work site falls in.
+#' ~~[GTOPO30](https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-global-30-arc-second-elevation-gtopo30?qt-science_center_objects=0#qt-science_center_objects)
+#' grid cell the work site falls in~~ slope recorded for the *catchment* the stream is associated with, as opposed to the stream slope.
 #'
 #' - **Land cover (categorical)**: different land covers may be associated more
 #' expensive projects (e.g. less accessible sites in forest, difficult soils in
 #' welands, etc.); identified via cover with work site coordinates and NLCD land
 #' cover layer for nearest available year; here we use the broader NLCD Group
 #' definition rather than the more detailed classification (see below).  
+#' 
+#' - **Elevation (m)**: mean elevation in meters in NHDPlus catchment.
 #' 
 #+ echo=F
 (
@@ -386,18 +408,20 @@ key_here %>%
 #' county the work site is located in via [County Business
 #' Patterns](https://www.census.gov/programs-surveys/cbp.html) data.  
 #' - **Employment in construction (jobs in county)**: see above.  
-#'   
+#' - **Distance to urban area (m)**: euclidean distance to the nearest census
+#' designated urban area, defined as contiguous area with at least 50,000 residents.  
+#' 
 #+ echo=F
 #' ## Scale and scope controls  
 #'
-#' - **Number of culverts associated with project (count):** addressing multiple
+#' - **Number of worksites associated with project (count):** addressing multiple
 #' culverts under the same project may provide scale benefits, but might also
 #' increase complexity; measured via PNSHP database.  
 #' - **Distance between project work sites (m)**: more dispersed work sites
 #' under a single project may increase project costs due to increased
-#' transportation costs (and time); measured as the log of the average euclidean distance
-#' between work sites for multiple work site projects (plus one to define the variable at zero); a dummy for single work
-#' site projects is also included to disentangle scale and distance effects.  
+#' transportation costs (and time); measured as the total euclidean distance
+#' between work sites for multiple work site projects. This variable is interacted 
+#' with the number of worksites to allow flexible corrdination/scale effects.  
 #' - **Action type (categorical):** PNSHP distinguishes between culvert removals
 #' and culvert installations, in addition to culvert improvements (the dominate
 #' category); we expect removals to be cheapest, followed by improvements and
@@ -429,16 +453,17 @@ key_here %>%
 # Grab only variables needed for corr. plot
 df_corr <-
   df_culv %>%
+  mutate(`Distance between sites` = I(dist_mean*n_worksites)) %>%
   select(
     # employment vars
     `Employment, construction` = emp_const, `Employment, ag/forestry` = emp_agforest,
     # pop vars
-    `Housing density` = hdens_cat,
+    `Housing density` = hdens_cat, `Distance to urban area` = ua_dist,
     # popdens_cat,
     # stream vars
     `Stream slope` = slope, `Bankfull width` = bankfull_width,
-    `Terrain slope` = slope_deg, 
-    `Mean distance between sites` = dist_mean, `Number of culverts` = n_culverts,
+    `Terrain slope` = cat_basin_slope, `Elevation` = cat_elev_mean,
+    `Distance between sites`, `Number of worksites` = n_worksites,
     `Cost per culvert` = cost_per_culvert
   ) %>%
   drop_na()
@@ -519,17 +544,19 @@ ggcorrplot(
 mod_full <- 
   lm(
     log(cost_per_culvert) ~
+    # log(I(adj_cost / n_worksites)) ~
       # Scale/scope of project controls: number of culverts, distance between work sites, type of culvert work
-      n_culverts + log(dist_mean+1) + factor(I(n_worksites == 1)) +
+      n_worksites * tot_dist + # factor(I(n_worksites == 1)) +
       action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
       # Stream features at work site: slope, bankfull width
       slope * bankfull_width + 
       # Road features at work site: paved, road class
-      here_paved + factor(here_class) +
+      factor(here_paved) + here_speed +
       # Physical features of work site: terrain slope, land cover
-      slope_deg + factor(nlcd_current_class) +
+      # slope_deg + factor(nlcd_current_class) +
+      cat_basin_slope + cat_elev_mean + factor(nlcd_current_class) +
       # Population features: housing density, jobs in construction, jobs in ag/forestry
-      hdens_cat + emp_const + emp_agforest +
+      hdens_cat + emp_const + emp_agforest + ua_dist + # factor(publand) +
       # Fixed effects
       basin + factor(project_year) + project_source,
     df_culv
@@ -680,25 +707,28 @@ mods_pars <-
       term == "(Intercept)" ~ "Intercept",
       term == "action_fishpass_culvinst_prj" ~ "Culvert installation (dummy)",
       term == "action_fishpass_culvrem_prj" ~ "Culvert removal (dummy)",
-      term == "n_culverts" ~ "Number of culverts",
-      term == "dist_mean" ~ "Mean distance between work sites",
-      term == "log(dist_mean + 1)" ~ "Mean distance between work sites, log",
-      term == "factor(I(n_worksites == 1))TRUE" ~ "Single work site (dummy)",
+      term == "n_worksites" ~ "Number of worksites",
+      term == "tot_dist" ~ "Distance between work sites",
+      # term == "log(dist_mean + 1)" ~ "Mean distance between work sites, log",
+      # term == "factor(I(n_worksites == 1))TRUE" ~ "Single work site (dummy)",
       term == "slope" ~ "Stream slope",
       term == "bankfull_width" ~ "Bankfull width",
       term == "here_pavedY" ~ "Road paved (dummy)",
-      term == "slope_deg" ~ "Terrain slope",
+      term == "cat_basin_slope" ~ "Terrain slope",
+      term == "cat_elev_mean" ~ "Elevation",
       term == "hdens_cat" ~ "Housing density",
       term == "emp_const" ~ "Construction employment",
       term == "emp_agforest" ~ "Ag/forestry employment",
+      term == "ua_dist" ~ "Distance to urban area",
       term == "slope:bankfull_width" ~ "Stream slope X bankfull width",
+      term == "n_worksites:tot_dist" ~ "Number of worksites X distance",
       TRUE ~ term
     ),
     term = str_replace(term, "project_source", "Project source: "),
     term = str_replace(term, "basin", "Basin: "),
     term = str_replace(term, "factor[(]project_year[)]", "Year: "),
     term = str_replace(term, "factor[(]nlcd_current_class[)]", "Land cover: "),
-    term = str_replace(term, "factor[(]here_class[)]", "Road class: ")
+    term = str_replace(term, "factor[(]here_speed[)]", "Road speed class: ")
   ) %>%
   select(
     model, term, full.est
@@ -714,15 +744,16 @@ mods_pars <-
     # Road features
     starts_with("Road"),
     # Land features
-    "Terrain slope",
+    "Terrain slope", "Elevation",
     starts_with("Land cover"),
     # Pop features
     "Housing density",
     ends_with("employment"),
+    "Distance to urban area",
     # Scale/scope features
-    "Number of culverts",
-    starts_with("Mean distance between "),
-    "Single work site (dummy)",
+    "Number of worksites",
+    starts_with("Distance between "),
+    "Number of worksites X distance",
     starts_with("Culvert "),
     starts_with("Project source: "),
     starts_with("Year: "),
@@ -745,7 +776,7 @@ mods_pars %>%
   select(Term, mod_full, contains("nofe"), contains("basins"), contains("sources")) %>%
   # kable() %>%
   kable(
-    caption = "Pilot models",
+    caption = "Cost models",
     escape = FALSE,
     align = 
       paste0(
@@ -834,34 +865,22 @@ map_df(mods["mod_full"], predict_cost_interaction, .id = "model") %>%
   ) +
   geom_contour_filled(
     breaks = c(
-      0,
-      5000,
-      7500,
-      10000,
-      12500,
-      15000,
-      20000,
-      40000,
-      80000,
-      160000,
+      0,10000, 20000, 30000, 40000,
+      50000, 60000, 70000, 80000, 100000,
       Inf
     )
   ) +
   scale_fill_brewer(
-    name = wrapper("Predicted cost per culvert ($USD)"),
+    name = wrapper("Predicted cost per culvert"),
     direction = -1,
     palette = "Spectral",
-    labels = c(
-      "$5,001 to $7,500",
-      "$7,501 to $10,000",
-      "$10,001 to $12,500",
-      "$12,501 to $15,000",
-      "$15,001 to $20,000",
-      "$20,001 to $40,000",
-      "$40,001 to $80,000",
-      "$80,001 to $160,000",
-      "Over $160,000"
-    )
+    # labels = c(
+    #   "$5,001 to $7,500",
+    #   "$7,501 to $10,000",
+    #   "$10,001 to $12,500",
+    #   "$12,501 to $15,000",
+    #   "Over $15,000"
+    # )
   ) +
   # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
   geom_point(
@@ -880,7 +899,7 @@ map_df(mods["mod_full"], predict_cost_interaction, .id = "model") %>%
   ) +
   coord_fixed(0.3/50) +
   labs(
-    title = "Predicted average costs by bankfull width (m) and slope (% grade)",
+    title = wrapper("Predicted average costs by bankfull width (m) and slope (% grade)"),
     subtitle = wrapper("Predictions based on full model with other continuous variables at means and categorical variables at their modes; points represent underlying observations"),
     x = "Slope",
     y = "Bankfull width"
@@ -962,11 +981,14 @@ map_df(
     c(
       "bankfull_width",
       "slope",
-      "slope_deg",
-      "n_culverts",
+      "cat_basin_slope",
+      "cat_elev_mean",
+      "n_worksites",
+      "tot_dist",
       "hdens_cat",
       "emp_const",
-      "emp_agforest"
+      "emp_agforest",
+      "ua_dist"
     ),
   .id = "model"
   ) %>%
@@ -974,16 +996,19 @@ map_df(
     factor = case_when(
       factor == "bankfull_width" ~ "Bankfull width",
       factor == "slope" ~ "Stream slope",
-      factor == "slope_deg" ~ "Terrain slope",
-      factor == "n_culverts" ~ "Number of culverts",
+      factor == "cat_basin_slope" ~ "Terrain slope",
+      factor == "cat_elev_mean" ~ "Elevation",
+      factor == "n_worksites" ~ "Number of worksites",
+      factor == "tot_dist" ~ "Distance between worksites",
       factor == "hdens_cat" ~ "Housing density",
       factor == "emp_const" ~ "Construction employment",
-      factor == "emp_agforest" ~ "Ag/forestry employment"
+      factor == "emp_agforest" ~ "Ag/forestry employment",
+      factor == "ua_dist" ~ "Distance to urban area"
     ),
     group = case_when(
       factor %in% c("Bankfull width", "Stream slope") ~ "Stream features",
-      factor %in% c("Terrain slope", "Number of culverts") ~ "Others",
-      factor %in% c("Construction employment", "Ag/forestry employment", "Housing density") ~ "Population features",
+      factor %in% c("Terrain slope", "Elevation", "Distance between worksites", "Number of worksites") ~ "Others",
+      factor %in% c("Construction employment", "Ag/forestry employment", "Housing density", "Distance to urban area") ~ "Population features",
     ),
     estimate = exp(ame),
     conf.low = exp(lower),
@@ -1012,6 +1037,7 @@ map_df(
   ) +
   scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
   geom_vline(xintercept = 1, linetype = "dashed") +
+  xlim(0, 10) +
   labs(
     y = NULL,
     x = "Project average costs", 
@@ -1028,9 +1054,7 @@ map_df(
 #' A standard deviation increase in terrain slope and number of culverts 
 #' are associated with lower average costs by about ten percent and half respectively in the
 #' preferred model. The number of culverts result suggests evidence of returns
-#' to scale. The cost-reducing effect of terrain slope is unituitive, and may be
-#' picking up other cost-reducing effects in more remote, rugged, isolated
-#' areas.  
+#' to scale.  
 #'
 #' The average marginal effects for all three population features are
 #' insignificant in the preferred model. However, in some several of the
@@ -1055,7 +1079,7 @@ map_df(
 #' We can examine the fixed effect estimates to compare relative expected costs
 #' across groups. We do this by exponentiating the point estimates. The
 #' resulting value can be interpreted as the ratio of costs in a given group
-#' relative to a base group
+#' relative to a base group.  
 #' 
 
 # ____ Fixed effects plots ----
@@ -1291,14 +1315,14 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
     ),
     position = position_dodge(width = 0.6)
   ) +
-  scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
+  scale_color_manual(values = c("darkolivegreen3", "grey60", "grey80")) +
   geom_vline(xintercept = 1, linetype = "dashed") +
   labs(
     y = NULL, 
     x = "Project average costs", 
     title = "NLCD land cover effects",
     subtitle = "Project average costs relative to Barren",
-    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+    caption = "Lines indicate 95% confidence interval; \nPreferred model highlighted in dark; Significant coefficients highlighted in color"
   ) +
   # theme_clean() +
   theme(
@@ -1362,14 +1386,14 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
     x = "Project average costs", 
     title = "Road feature effects",
     subtitle = "Project average costs relative to class 2",
-    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+    caption = "Lines indicate 95% confidence interval; \nPreferred model highlighted in dark; Significant coefficients highlighted in color"
   ) +
   # theme_clean() +
   theme(
     legend.position = "none",
     strip.background = element_blank(),
     strip.text.x = element_blank(),
-    plot.background = element_rect(color = NA),
+    plot.background = element_rect(color = "white"),
     plot.title.position = "plot",
     plot.caption.position = "plot"
   )
@@ -1579,12 +1603,12 @@ sf_culv <-
   df_culv %>%
   drop_na(
     cost_per_culvert, n_culverts, dist_mean, n_worksites, action_fishpass_culvinst_prj, action_fishpass_culvrem_prj,
-    slope, bankfull_width, here_class, slope_deg, here_paved, nlcd_current_class, hdens_cat, emp_const, emp_agforest, basin, project_year, project_source
+    slope, bankfull_width, here_class, cat_basin_slope, cat_elev_mean, ua_dist, here_paved, nlcd_current_class, hdens_cat, emp_const, emp_agforest, basin, project_year, project_source
   ) %>%
   mutate(
     latlong = str_sub(geometry, 3, nchar(geometry)-1),
-    long = as.numeric( word(latlong, 1, sep = ", ")),
-    lat = as.numeric( word(latlong, 2, sep = ", ")),
+    long = as.numeric(stringr::word(latlong, 1, sep = ", ")),
+    lat = as.numeric(stringr::word(latlong, 2, sep = ", ")),
     latlong = NULL,
     geometry = NULL
   ) %>%
@@ -1604,7 +1628,7 @@ base_map_draft +
     shape = 21,
     color = "black",
     stroke = 0.1,
-    size = 1.9
+    size = 2.5
   ) +
   scale_fill_distiller(
     "Model residual",
@@ -1616,7 +1640,10 @@ base_map_draft +
     # trans = "log10",
     na.value = "grey70"
   ) +
-  ggtitle("Map of residuals", "Residuals measured on log scale \n  ") +
+  ggtitle(
+    "Map of residuals",
+    # "Residuals measured on log scale \n  "
+  ) +
   coord_sf(
     xlim = c(-126, -117),
     ylim = c(41.5, 49.5),
@@ -1627,7 +1654,7 @@ base_map_draft +
 base_map_draft +
   # base_map +
   geom_sf(
-    data = sf_culv %>% bind_cols(yhat_2015_owri = exp(predict(mod_nofe_nobasin, sf_culv %>% mutate(project_year = 2015, n_culverts = 1, n_worksites = 1, dist_mean = 0, project_source = "OWRI")))),
+    data = sf_culv %>% bind_cols(yhat_2015_owri = exp(predict(mod_nofe_nobasin, sf_culv %>% mutate(project_year = 2015, n_worksites = 1, tot_dist = 0, project_source = "OWRI")))),
     aes(
       # x = longitude,
       # y = latitude,
@@ -1636,7 +1663,7 @@ base_map_draft +
     shape = 21,
     color = "black",
     stroke = 0.1,
-    size = 1.9
+    size = 2.5
   ) +
   scale_fill_distiller(
     "Predicted cost",
@@ -1648,7 +1675,10 @@ base_map_draft +
     trans = "log10",
     na.value = "grey70"
   ) +
-  ggtitle("Map of predicted values", str_wrap("Year set to 2015, source set to OWRI, and number of culverts set to one for all worksites")) +
+  ggtitle(
+    "Map of predicted values",
+    # str_wrap("Year set to 2015, source set to OWRI, and number of culverts set to one for all worksites")
+  ) +
   coord_sf(
     xlim = c(-126, -117),
     ylim = c(41.5, 49.5),
@@ -1668,17 +1698,18 @@ base_map_draft +
 #' benefit-cost ratio standard would be above an upward sloping line.  
 
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
-df_culv %>%
+sf_culv %>% bind_cols(yhat_2015_owri = exp(predict(mod_nofe_nobasin, sf_culv %>% mutate(project_year = 2015, n_worksites = 1, tot_dist = 0, project_source = "OWRI")))) %>%
   mutate(
     # basin = fct_lump_lowfreq(basin, "OTHER"),
     basin = fct_lump_min(basin, 35, other_level = "OTHER")
   ) %>%
   ggplot() + 
   aes(
-    x = cost_per_culvert,
+    # x = cost_per_culvert,
+    x = yhat_2015_owri,
     y = upst_dist,
     # y = tot_stream_length,
-    color = project_year
+    # color = project_year
   ) + 
   geom_point() +
   scale_y_log10("Total upstream length (km)", label = label_comma(1)) +
@@ -1688,8 +1719,9 @@ df_culv %>%
     legend.position = "bottom",
     plot.title.position = "plot"
   ) +
-  facet_wrap("basin") +
+  # facet_wrap("basin") +
   ggtitle("Work sites in cost - benefit space", "Both on a log scale for clarity")
+  # coord_fixed(0.75)
 
 #' No evidence that projects are selected on cost or benefit-cost ratio basis.
 #' It does somewhat appear that the observed projects follow a benefit targeting
