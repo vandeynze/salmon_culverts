@@ -288,6 +288,7 @@ df_culv %>%
     `Housing density (units per sq. km)` = hdens_cat,
     `Construction employment (jobs)` = emp_const,
     `Ag/forestry employment (jobs)` = emp_agforest,
+    `Distance to urban area (m)` = dist_ua,
     `Basin` = basin,
     `Year` = project_year,
     `Reporting source` = project_source
@@ -343,17 +344,17 @@ df_culv %>%
 #+ echo=F
 key_here <- read_xlsx(here("data/Culverts spatial overlays v 20Aug2020.xlsx"), sheet = 3) %>%
   as_tibble() %>%
-  mutate(Classification = str_to_sentence(Classification), Description = str_to_sentence(Description)) %>%
-  bind_rows(
-    tibble(
-      "Classification" = "Functional class",
-      "Value" = 6,
-      "Description" = '"Roads" associated with work sites > 150m from the nearest HERE road for here_class_badmatch.'
-    )
-  )
+  mutate(Classification = str_to_sentence(Classification), Description = str_to_sentence(Description))
+  # bind_rows(
+  #   tibble(
+  #     "Classification" = "Functional class",
+  #     "Value" = 6,
+  #     "Description" = '"Roads" associated with work sites > 150m from the nearest HERE road for here_class_badmatch.'
+  #   )
+  # )
 
 key_here %>%
-  filter(Classification == "Functional class") %>%
+  filter(Classification == "Speed category") %>%
   arrange(Classification) %>%
   kable(caption = "Value key for HERE road variables") %>%
   kable_styling() %>%
@@ -551,7 +552,7 @@ mod_full <-
       # Stream features at work site: slope, bankfull width
       slope * bankfull_width + 
       # Road features at work site: paved, road class
-      factor(here_paved) + here_speed +
+      factor(here_paved) + factor(here_speed) +
       # Physical features of work site: terrain slope, land cover
       # slope_deg + factor(nlcd_current_class) +
       cat_basin_slope + cat_elev_mean + factor(nlcd_current_class) +
@@ -713,7 +714,7 @@ mods_pars <-
       # term == "factor(I(n_worksites == 1))TRUE" ~ "Single work site (dummy)",
       term == "slope" ~ "Stream slope",
       term == "bankfull_width" ~ "Bankfull width",
-      term == "here_pavedY" ~ "Road paved (dummy)",
+      str_detect(term, "here_paved") ~ "Road paved (dummy)",
       term == "cat_basin_slope" ~ "Terrain slope",
       term == "cat_elev_mean" ~ "Elevation",
       term == "hdens_cat" ~ "Housing density",
