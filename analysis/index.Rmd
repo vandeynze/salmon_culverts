@@ -12,6 +12,6 @@ Research reports for the salmon_culverts repository.
 
 1. **[Spending and Activity for Pacific Northwest Salmon Habitat Restoration](./pnshp_action_summary.html)**: A summary of the PNSHP data  
 2. **[Culvert Projects Summary](./culverts_summary.html)**: A summary of where and when culvert projects occur in the PNSHP data  
-3. **[Culvert Cost Pilot Models](./culverts_pilot_models.html)**: A first-cut attempt to model culvert costs using just the PNSHP data  
+3. **[Culvert Cost Pilot Models](./culvert_pilot_models.html)**: A first-cut attempt to model culvert costs using just the PNSHP data  
 4. **[Summary of Spatially Derived Variables for Culvert Projects](./spatial_variables_summary.html)**: A summary of the additional explanatory variables gathered for cost models  
 5. **[Culvert Cost Models with Spatially Explicit Data](./spatial_cost_models.html)**: An expansion of the early cost models with data gathered from geospatial databases  
