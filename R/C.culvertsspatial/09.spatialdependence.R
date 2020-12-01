@@ -34,13 +34,18 @@
 #' 
 
 #' We use these tools on the base model found in [this
-#' report](https://vandeynze.github.io/salmon_culverts/spatial_cost_models.html),
-#' with one key change. After initial testing, we found including spatial fixed
-#' effects like `basin` along side band-based spatial weighting schemes (i.e.
-#' those that enforce a strict maximum distance beyond which weights are zero)
-#' can result in a singular (or at least computationally singular) model matrix.
-#' **Therefore, the `basin` fixed effect is removed in the models presented and
-#' examined below.**  
+#' report](../spatial_cost_models.html), with one key change. After initial
+#' testing, we found including spatial fixed effects like `basin` along side
+#' band-based spatial weighting schemes (i.e. those that enforce a strict
+#' maximum distance beyond which weights are zero) can result in a singular (or
+#' at least computationally singular) model matrix. We also found that including
+#' either `total distance between worksites` or `distance to nearest urban area`
+#' result in similar singularities, likely because they closely track the same
+#' processes which spatial weighting structures are intended to account for.
+#' **Therefore, the `basin` fixed effect and both `distance to nearest urban
+#' area` and `total distance between worksites` are removed in the models
+#' presented and examined below.**  
+#' 
 
 #+ include=F
 #
@@ -96,10 +101,12 @@ df_culv <-
     basin = relevel(factor(basin), ref = "SOUTHERN OREGON COASTAL"),
     fips = factor(fips),
     state_fips = factor(state_fips),
+    here_class = as.character(here_class),
+    relevel(factor(here_speed), ref = 6),
+    tot_dist = I(n_worksites * dist_mean),
     latlong = str_sub(geometry, 3, nchar(geometry)-1),
     long = as.numeric( word(latlong, 1, sep = ", ")),
     lat = as.numeric( word(latlong, 2, sep = ", "))
-    # here_class = ordered(here_class)
   ) %>%
   left_join(
     key_nlcd, 
@@ -116,24 +123,28 @@ df_culv <-
 dep <- "log(cost_per_culvert)"
 indep <-
   c(
-    "n_culverts" , "log(dist_mean+1)" , "factor(I(n_worksites==1))" , "action_fishpass_culvrem_prj" , "action_fishpass_culvinst_prj" ,
+    "n_worksites", # "tot_dist",
+    "action_fishpass_culvrem_prj", "action_fishpass_culvinst_prj",
     # Stream features at work site: slope, bankfull width
-    "slope * bankfull_width" , 
+    "slope * bankfull_width",
     # Road features at work site: paved, road class
-    "here_paved" , "factor(here_class)" ,
+    "factor(here_paved)", "factor(here_speed)",
     # Physical features of work site: ground slope, land cover
-    "slope_deg" , "factor(nlcd_current_class)" ,
+    "cat_basin_slope",
+    "cat_elev_mean",
+    "factor(nlcd_current_class)",
     # Population features: housing density, jobs in construction, jobs in ag/forestry
-    "hdens_cat" , "emp_const" , "emp_agforest",
+    "hdens_cat", "emp_const", "emp_agforest", # "ua_dist",
     # Fixed effects
     # "basin",
-    "factor(project_year)" ,
+    "factor(project_year)",
     "project_source"
   )
 f <- as.formula(
   paste(dep,
         paste(indep, collapse = "+"),
-        sep = "~"))
+        sep = "~")
+  )
 
 mod_full <- 
   lm(f, df_culv)
@@ -353,10 +364,8 @@ map(
 #' rejecting the null in all cases. For the band specification, the robust LM
 #' tests indicate a spatial error model with no spatial lag, while the hybrid
 #' specification tests suggest the inclusion of spatial lag terms. For the decay
-#' specification, we reject both tests for no spatial error and no lag, but the
-#' small test statistics suggest that this weighting scheme may be the weakest,
-#' regardless of model form. Because we observe a stronger test statistic for
-#' the RLMerr test, we choose a spatial error model without a lag term.
+#' specification, we also reject the robust test for no lag.  
+#' 
 
 #+ include=F
 # Estimate new models ----
@@ -366,7 +375,7 @@ mod_band <- gstslshet(f, data = df_culv_sp, listw = w_band, zero.policy = F, na.
 summary(mod_band)
 
 # Decay (inverse distance)
-mod_decay <- gstslshet(f, data = df_culv_sp, listw = w_decay, zero.policy = F, na.omit, inverse = T, sarar = F, initial.value = "SAR") 
+mod_decay <- gstslshet(f, data = df_culv_sp, listw = w_decay, zero.policy = F, na.omit, inverse = T, sarar = T, initial.value = "SAR") 
 summary(mod_decay)
 
 # Hybrid (inverse distance w/ neighborhood cut-off)
@@ -424,18 +433,21 @@ mods_pars <-
       term == "(Intercept)" ~ "Intercept",
       term == "action_fishpass_culvinst_prj" ~ "Culvert installation (dummy)",
       term == "action_fishpass_culvrem_prj" ~ "Culvert removal (dummy)",
-      term == "n_culverts" ~ "Number of culverts",
-      term == "dist_mean" ~ "Mean distance between work sites",
-      term == "log(dist_mean + 1)" ~ "Mean distance between work sites, log",
-      term == "factor(I(n_worksites == 1))TRUE" ~ "Single work site (dummy)",
+      term == "n_worksites" ~ "Number of worksites",
+      # term == "tot_dist" ~ "Distance between worksites",
+      # term == "log(dist_mean + 1)" ~ "Mean distance between worksites, log",
+      # term == "factor(I(n_worksites == 1))TRUE" ~ "Single worksite (dummy)",
       term == "slope" ~ "Stream slope",
       term == "bankfull_width" ~ "Bankfull width",
-      term == "here_pavedY" ~ "Road paved (dummy)",
-      term == "slope_deg" ~ "Terrain slope",
+      str_detect(term, "here_paved") ~ "Road paved (dummy)",
+      term == "cat_basin_slope" ~ "Terrain slope",
+      term == "cat_elev_mean" ~ "Elevation",
       term == "hdens_cat" ~ "Housing density",
       term == "emp_const" ~ "Construction employment",
       term == "emp_agforest" ~ "Ag/forestry employment",
+      # term == "ua_dist" ~ "Distance to urban area",
       term == "slope:bankfull_width" ~ "Stream slope X bankfull width",
+      term == "n_worksites:tot_dist" ~ "Number of worksites X distance",
       term == "lambda" ~ "Lambda (lag parameter)",
       term == "rho" ~ "Rho (error parameter)",
       TRUE ~ term
@@ -444,7 +456,7 @@ mods_pars <-
     # term = str_replace(term, "basin", "Basin: "),
     term = str_replace(term, "factor[(]project_year[)]", "Year: "),
     term = str_replace(term, "factor[(]nlcd_current_class[)]", "Land cover: "),
-    term = str_replace(term, "factor[(]here_class[)]", "Road class: ")
+    term = str_replace(term, "factor[(]here_speed[)]", "Road speed class: ")
   ) %>%
   select(
     model, term, full.est
@@ -460,19 +472,19 @@ mods_pars <-
     # Road features
     starts_with("Road"),
     # Land features
-    "Terrain slope",
+    "Terrain slope", "Elevation",
     starts_with("Land cover"),
     # Pop features
     "Housing density",
     ends_with("employment"),
+    # "Distance to urban area",
     # Scale/scope features
-    "Number of culverts",
-    starts_with("Mean distance between "),
-    "Single work site (dummy)",
+    "Number of worksites",
+    # starts_with("Distance between "),
+    # "Number of worksites X distance",
     starts_with("Culvert "),
     starts_with("Project source: "),
     starts_with("Year: "),
-    # starts_with("Basin: "),
     "Lambda (lag parameter)",
     "Rho (error parameter)"
   )
@@ -510,22 +522,26 @@ mods_pars %>%
   add_footnote("* p < 0.1, ** p < 0.05, *** p < 0.01", notation = "none") %>%
   scroll_box(height = "1200px")
 
-#'  
-#' The point estimates and standard errors for the primary coefficients and
-#' fixed effects are roughly equivalent. Interestingly, accounting for spatial
-#' dependence results ins much more tightly estimated land cover parameters. And
-#' the pattern of increased costs on smaller roads (after accounting for paved
-#' status) is more pronounced.  
+#' The models that account for spatial dependence have three main differences
+#' when compared to the base model. First, the spatial models do not have
+#' statistically significant stream feature (stream slope, bankfull width)
+#' parameters, including on the interaction between the two. Second, the effects
+#' of road size, as measured by road speed class and paved status, is less pronounced and the
+#' associated parameters are more less tightly estimated. Third, accounting for spatial dependence results in
+#' much more tightly estimated land cover parameters. Taken together, these three
+#' differences represent a shift in the importance of stream features and road
+#' features to landscape features as cost drivers.  
 #' 
 
-#' All spatial dependence parameters are positive and statistically significant,
-#' indicating positive spatial spillovers in the both the error and, in the case
-#' of the hybrid weights matrix, nearby costs. One cause of positive spillover
-#' in the errors may be missing explanatory variables that affect costs at a
-#' geographic scale that encompasses other worksites within range of the
-#' weighting scheme (e.g. the band distance). The positive lambda indicates that
-#' more expensive worksites in one location drive up costs nearby. A possible
-#' mechanism may be competition for scarce resources (e.g. labor, machinery, etc.).  
+#' The spatial dependence parameters on all models are positive and
+#' statistically significant, indicating positive spatial spillovers in the both
+#' the error for the band model and, in the case of the hybrid and decay
+#' specifications, nearby costs. One cause of positive spillover in the errors
+#' may be missing explanatory variables that affect costs at a geographic scale
+#' that encompasses other worksites within range of the weighting scheme (e.g.
+#' the band distance). The positive lambdas indicate that more expensive
+#' worksites in one location drive up costs nearby. A possible mechanism may be
+#' competition for scarce resources (e.g. labor, machinery, etc.).
 #' 
 
 #+ echo=F
