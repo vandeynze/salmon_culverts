@@ -43,14 +43,15 @@ sf_allculv_wdfw %>% tabyl(feature_type)
 # Lots of culverts! Over 35k!
 summary(sf_allculv_wdfw$lineal_gain_measurement)
 # Big distribution of lineal gain, though unclear how this is calculated; appears to be in meters
-sf_allculv_wdfw %>% tabyl(fish_passage_feature_type_code)
-sf_allculv_wdfw %>% tabyl(fish_passage_barrier_status_code)
-sf_allculv_wdfw %>% tabyl(percent_fish_passable_code)
-sf_allculv_wdfw %>% tabyl(owner_type_code)
-sf_allculv_wdfw %>% tabyl(potential_species)
-sf_allculv_wdfw %>% tabyl(fish_use_code)
-sf_allculv_wdfw %>% tabyl(case_area_flag)
-sf_allculv_wdfw %>% tabyl(huc12name)
+sf_allculv_wdfw %>% tabyl(fish_passage_feature_type_code) # Codes needed (1 = culvert, 2 = non-culvert xing, 3 = dam, 4 = other, 5 = natural barrier)
+sf_allculv_wdfw %>% tabyl(fish_passage_barrier_status_code) # Codes needed (0 = NA, 10 = Barrier, 20 = Not a barrier, 99 = Unknown)
+sf_allculv_wdfw %>% tabyl(percent_fish_passable_code) # Codes needed (0 = NA, 10 = 0, 20 = 33, 30 = 66, 40 = 100, 99 = Unknown)
+sf_allculv_wdfw %>% tabyl(owner_type_code) # Codes needed (1 = "city", 2 = "county", 3 = "federal", 4 = "private", 5 = "state", 6 = "tribal", 7 = "other", 8 = "port", 9 = "drainage district, 11 = "irrigation district", 12 = "unknown")
+sf_allculv_wdfw %>% filter(feature_type == "Culvert", significant_reach_code == 10) %>% st_drop_geometry() %>% tabyl(owner_type_code, fish_passage_barrier_status_code) %>% pivot_longer(-1, "passage_status") %>% ggplot(aes(x = factor(owner_type_code), y = value, fill = passage_status)) + geom_col(position = "dodge") + ggtitle("Passage status by ownership type")
+sf_allculv_wdfw %>% tabyl(potential_species) # Presented as list of potential species, will need to be separated with stringr tools
+sf_allculv_wdfw %>% tabyl(fish_use_code) # Codes needed (0 = NA, 10 = Yes, 20 = No, 99 = Unknown)
+sf_allculv_wdfw %>% tabyl(significant_reach_code) # Codes needed (0 = NA, 10 = Yes, 20 = No, 99 = Unknown)
+sf_allculv_wdfw %>% tabyl(case_area_flag) # No values
 # Lotds of codes, will probably need to request a code book from WDFW
 
 
