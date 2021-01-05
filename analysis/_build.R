@@ -27,13 +27,19 @@ spin(here("R/C.culvertsspatial/07.spatialcostmodels.R"), knit = FALSE, format = 
 file.copy(here("R/C.culvertsspatial/07.spatialcostmodels.Rmd"), to = here("analysis/spatial_cost_models.Rmd"), overwrite = TRUE)
 file.remove(here("R/C.culvertsspatial/07.spatialcostmodels.Rmd"))
 
+spin(here("R/C.culvertsspatial/09.spatialdependence.R"), knit = FALSE, format = "Rmd", precious = TRUE)
+file.copy(here("R/C.culvertsspatial/09.spatialdependence.Rmd"), to = here("analysis/spatial_dependence_models.Rmd"), overwrite = TRUE)
+file.remove(here("R/C.culvertsspatial/09.spatialdependence.Rmd"))
+
 
 # Build site
 wflow_build(
   files = list.files(
     here("analysis"), 
     "*.Rmd",
-    # "spatial_cost_models.Rmd",
     full.names = TRUE
-  )
+  ),
+  clean_fig_files = TRUE,
+  delete_cache = TRUE
 )
+

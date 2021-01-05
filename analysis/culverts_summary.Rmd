@@ -49,6 +49,13 @@ knitr::opts_chunk$set(fig.dim = c(8, 6))
 rm(list = ls())
 
 # Set libraries
+library(ggmap)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(sf)
+library(osmdata)
+library(raster)
+
 library(tidyverse)
 library(janitor)
 library(ggthemes)
@@ -65,6 +72,7 @@ theme_update(
   plot.background = element_rect(color = NA),
   plot.title.position = "plot"
 )
+
 
 # Set top-level working directory
 # wd <- "C:/Users/braeden.vandeynze/Documents/Salmon Cost Project/Analysis/"  # For Braeden; comment out for other users
@@ -555,107 +563,957 @@ df_culv_prj_pure %>%
 
 # Descriptive Figures for Culvert Projects {.tabset .tabset-fade .tabset-pills #pills}
 This section includes plots of the frequency of culvert projects and actions, the total spending on these projects, and the distributions of cost per culvert (project cost divided by the culvert counts constructed above), separated out by action type, basin, year, and reporting source. It also includes maps of where these culvert projects are distributed.
+```{r fig_prep, include=F}
+df_culv_pure <- read_csv(here("/output/culverts_full_working.csv"))
+df_culv_wrk_pure <- read_csv(here("/output/culverts_wrk_working.csv"))
+df_culv_prj_pure <- read_csv(here("/output/culverts_prj_working.csv"))
+
+# Build base figures and keys ====
+base_countcost_bar <-
+  ggplot(
+    df_culv_prj_pure
+  ) +
+  geom_col(    
+    aes(
+      y = n, 
+      fill = cost_avail, 
+      group = cost_avail
+    )
+  ) +
+  # stat_summary(
+  #   aes(
+  #     y = n,
+  #     label = comma(after_stat(y)),
+  #     hjust = "left"
+  #   ),
+  #   geom = "text",
+  #   fun = "sum"
+  # ) +
+  scale_x_discrete(
+    name = NULL
+  ) +
+  scale_y_continuous(
+    name = "Count",
+    labels = label_comma(),
+    position = "right"
+  ) +
+  scale_fill_brewer(
+    "Costs Reported", 
+    palette = "Paired",
+    labels = c("No", "Yes")
+  ) +
+  theme(
+    legend.position = c(0.85, 0.1)
+  ) +
+  coord_flip()
+
+base_countcost_line <-
+  ggplot(
+    df_culv_prj_pure,
+    aes(
+      x = completed_year,
+      y = n,
+      fill = cost_avail,
+      group = cost_avail
+    )
+  ) +
+  geom_vline(
+    xintercept = seq(1990, 2015, 5),
+    alpha = 0.5,
+    linetype = "dashed"
+  ) +
+  geom_area() +
+  scale_x_continuous(
+    name = NULL
+  ) +
+  scale_y_continuous(
+    name = "Count",
+    labels = label_comma()
+  ) +
+  scale_fill_brewer(
+    "Costs Reported", 
+    palette = "Paired",
+    labels = c("No", "Yes")
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 90,
+      hjust = 0,
+      vjust = 0.5
+    ),
+    legend.position = c(0.85, 0.90)
+  )
+
+base_cost_bar <-
+  ggplot(
+    df_culv_prj_pure,
+    aes(
+      y = adj_cost/1000
+    )
+  ) +
+  geom_col(
+    aes(
+      fill = -log(adj_cost)
+    )
+  ) +
+  scale_x_discrete(
+    name = NULL
+  ) +
+  scale_y_continuous(
+    name = NULL,
+    labels = label_comma(),
+    position = "right"
+  ) +
+  scale_fill_distiller(palette = "YlGn") +
+  theme(
+    legend.position = "none"
+  ) +
+  coord_flip()
+
+base_cost_line <-
+  ggplot(
+    df_culv_prj_pure,
+    aes(
+      x = completed_year,
+      y = adj_cost/1000
+    )
+  ) +
+  geom_vline(
+    xintercept = seq(1990, 2015, 5),
+    alpha = 0.5,
+    linetype = "dashed"
+  ) +
+  geom_area(
+    fill = "#A1D99B"
+  ) +
+  scale_x_continuous(
+    name = NULL
+  ) +
+  scale_y_continuous(
+    name = NULL,
+    labels = label_comma()
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 90, hjust = 0, vjust = 0.5)
+  )
+
+base_costdist_violin <-
+  ggplot(
+    df_culv_prj_pure,
+    aes(
+      y = cost_per_culvert
+    )
+  ) +
+  geom_violin(
+    alpha = 0.6
+  ) +
+  geom_boxplot(
+    width = 0.1,
+    fill = "white"
+  ) +
+  # geom_jitter(
+  #   aes(
+  #     size = n_culverts
+  #   ),
+  #   stroke = 1,
+  #   fill = "white",
+  #   shape = 21,
+  #   position = position_jitter(0.2)
+  # ) +
+  # stat_summary(
+  #   fun = mean,
+  #   shape = "cross",
+  #   stroke = 1.5,
+  #   geom = "point"
+  # ) +
+  # coord_flip() +
+  scale_fill_brewer(
+    palette = "Greens",
+    guide = NULL,
+    direction = -1
+  ) +
+  scale_y_log10(
+    "Cost per Culvert",
+    labels = label_dollar()
+  ) +
+  scale_x_discrete(
+    name = NULL
+  ) +
+  theme(
+    legend.position = "none"
+  )
+
+# Set up ordered levels and action key
+action_key <-
+  c(
+    "FISH PASSAGE - CULVERT IMPROVEMENTS OR UPGRADES" = "fishpass_culvimp",
+    "FISH PASSAGE - CULVERT INSTALLATION" = "fishpass_culvinst",
+    "FISH PASSAGE - CULVERT REMOVAL" = "fishpass_culvrem"
+  )
+
+basin_levels <-
+  df_culv_pure %>%
+  tabyl(basin) %>%
+  arrange(-n) %>%
+  pull(basin)
+
+source_levels <-
+  df_culv_pure %>%
+  tabyl(project_source) %>%
+  arrange(-n) %>%
+  pull(project_source)
+
+action_levels <-
+  df_culv_pure %>%
+  mutate(action = recode(action, !!!invert(action_key))) %>%
+  tabyl(action) %>%
+  arrange(n) %>%
+  pull(action)
+
+basin_costdist_levels <-
+  df_culv_prj_pure %>%
+  filter(basin %in% basin_levels[1:8]) %>%
+  group_by(basin) %>%
+  summarize(cost_per_culvert = median(cost_per_culvert, na.rm = TRUE)) %>%
+  arrange(-cost_per_culvert) %>%
+  pull(basin)
+
+source_costdist_levels <-
+  df_culv_prj_pure %>%
+  filter(project_source %in% source_levels[1:6]) %>%
+  group_by(project_source) %>%
+  summarize(cost_per_culvert = median(cost_per_culvert, na.rm = TRUE)) %>%
+  arrange(-cost_per_culvert) %>%
+  pull(project_source)
+
+action_costdist_levels <-
+  df_culv_pure %>%
+  group_by(action = recode(action, !!!invert(action_key))) %>%
+  summarize(cost_per_culvert = median(cost_per_culvert, na.rm = TRUE)) %>%
+  arrange(-cost_per_culvert) %>%
+  pull(action)
+```
 
 ## Action Counts
 ### Action Counts
 *Counts of culvert-related actions by action-type, year, basin, and reporting source, separated by project cost availability. Only actions associated with pure culvert projects included.*
-![](.\figs\culverts\fig_countcost_action.png)
-![](.\figs\culverts\fig_countcost_year.png)
-![](.\figs\culverts\fig_countcost_basin.png)
-![](.\figs\culverts\fig_countcost_source.png)
-[Source glossery](#sources)
-![](.\figs\culverts\fig_countcost_action_year.png)
-![](.\figs\culverts\fig_countcost_source_action.png)
-[Source glossery](#sources)
-![](.\figs\culverts\fig_countcost_basin_action.png)
-![](.\figs\culverts\fig_countcost_basin_year.png)
-![](.\figs\culverts\fig_countcost_source_year.png)
-[Source glossery](#sources)
-![](.\figs\culverts\fig_countcost_basin_source.png)
+```{r action_count, echo=F, message=F}
+unfactor <-
+  function(x) {
+    as.numeric(as.character(x))
+  }
+
+# By action type
+(
+  fig_countcost_action <-
+    base_countcost_bar %+%
+    (df_culv_pure %>%
+       group_by(
+         action = recode(action, !!!invert(action_key)) %>% ordered(action_levels),
+         cost_avail = factor(cost_avail)
+       ) %>%
+       count() %>%
+       drop_na()
+    ) +
+    aes(
+      x = action
+    ) +
+    ggtitle("Culvert action count, by action type")
+)
+
+# By year
+(
+  fig_countcost_year <-
+    base_countcost_line %+%
+    (df_culv_pure %>%
+       group_by(
+         completed_year = ordered(completed_year),
+         cost_avail = factor(cost_avail),
+         .drop = FALSE
+       ) %>%
+       count() %>%
+       ungroup() %>%
+       mutate(
+         completed_year = unfactor(completed_year)
+       )
+    ) +
+    ggtitle("Culvert action count, by year")
+)
+
+# By basin
+(
+  fig_countcost_basin <-
+    base_countcost_bar %+%
+    (df_culv_pure %>%
+       group_by(
+         basin = ordered(basin, basin_levels) %>% fct_explicit_na(),
+         cost_avail = factor(cost_avail)
+       ) %>%
+       count() %>%
+       drop_na()
+    ) +
+    aes(
+      x = fct_rev(basin)
+    ) +
+    ggtitle("Culvert action count, by basin")
+)
+
+# By source
+(
+  fig_countcost_source <-
+    base_countcost_bar %+%
+    (df_culv_pure %>%
+       group_by(
+         project_source = ordered(project_source, source_levels),
+         cost_avail = factor(cost_avail)
+       ) %>%
+       count() %>%
+       drop_na()
+    ) +
+    aes(
+      x = fct_rev(project_source)
+    ) +
+    ggtitle("Culvert action count, by reporting source")
+)
+# By action and year
+(
+  fig_countcost_action_year <-
+    base_countcost_line %+%
+    (df_culv_pure %>%
+       group_by(
+         completed_year = ordered(completed_year),
+         action = recode(action, !!!invert(action_key)) %>% ordered(action_levels),
+         cost_avail = factor(cost_avail),
+         .drop = FALSE
+       ) %>%
+       count() %>%
+       ungroup() %>%
+       mutate(
+         completed_year = unfactor(completed_year)
+       )
+    ) +
+    ggtitle("Culvert action count, by action type and year") +
+    facet_wrap(~ action, ncol = 1)
+)
+
+# By basin and year
+(
+  fig_countcost_basin_year <-
+    base_countcost_line %+%
+    (df_culv_pure %>%
+       group_by(
+         completed_year = ordered(completed_year),
+         basin = ordered(basin, basin_levels) %>% fct_explicit_na(),
+         cost_avail = factor(cost_avail),
+         .drop = FALSE
+       ) %>%
+       count() %>%
+       ungroup() %>%
+       mutate(
+         completed_year = unfactor(completed_year)
+       ) %>%
+       filter(
+         basin %in% basin_levels[1:8]
+       )
+    ) +
+    ggtitle("Culvert action count, by basin and year", "8 basins (of 27) with most actions") +
+    facet_wrap(~ basin, ncol = 2) +
+    theme(
+      legend.position = "bottom" 
+    )
+)
+  
+# By source and year
+(
+  fig_countcost_source_year <-
+    base_countcost_line %+%
+    (df_culv_pure %>%
+       group_by(
+         completed_year = ordered(completed_year),
+         project_source = ordered(project_source, source_levels),
+         cost_avail = factor(cost_avail),
+         .drop = FALSE
+       ) %>%
+       count() %>%
+       ungroup() %>%
+       mutate(
+         completed_year = unfactor(completed_year)
+       ) %>%
+       filter(
+         project_source %in% source_levels[1:6]
+       )
+    ) +
+    ggtitle("Culvert action count, by reporting source and year", "6 sources (of 20) with most actions") +
+    facet_wrap(~ project_source, ncol = 2) +
+    theme(legend.position = "bottom")
+)
+
+# By basin and action
+fig_countcost_basin_action <-
+  base_countcost_bar %+%
+  (df_culv_pure %>%
+     group_by(
+       action = recode(action, !!!invert(action_key)) %>% ordered(action_levels),
+       basin = ordered(basin, basin_levels) %>% fct_explicit_na(),
+       cost_avail = factor(cost_avail)
+     ) %>%
+     count() %>%
+     filter(
+       basin %in% basin_levels[1:8]
+     )
+  ) +
+  aes(
+    x = fct_rev(basin)
+  ) +
+  ggtitle("Culvert action count, by basin and action type", "8 basins (of 47) with most actions") +
+  facet_wrap(~ action, ncol = 1)
+fig_countcost_basin_action
+
+# By basin and source
+fig_countcost_basin_source <-
+  base_countcost_bar %+%
+  (df_culv_pure %>%
+     group_by(
+       project_source = ordered(project_source, source_levels),
+       basin = ordered(basin, basin_levels) %>% fct_explicit_na(),
+       cost_avail = factor(cost_avail)
+     ) %>%
+     count() %>%
+     filter(
+       project_source %in% source_levels[1:6]
+     ) %>%
+     filter(
+       basin %in% basin_levels[1:8]
+     )
+  ) +
+  aes(
+    x = fct_rev(basin)
+  ) +
+  ggtitle("Culvert action count, by basin and reporting source", "8 basins (of 47) and 6 sources (of 38) with most actions") +
+  facet_wrap(~ project_source, ncol = 2)
+fig_countcost_basin_source
+
+# By source and action
+fig_countcost_source_action <-
+  base_countcost_bar %+%
+  (df_culv_pure %>%
+     group_by(
+       action = recode(action, !!!invert(action_key)) %>% ordered(action_levels),
+       project_source = ordered(project_source, source_levels),
+       cost_avail = factor(cost_avail)
+     ) %>%
+     count() %>%
+     filter(
+       project_source %in% source_levels[1:6]
+     )
+  ) +
+  aes(
+    x = fct_rev(project_source)
+  ) +
+  ggtitle("Culvert action count, by reporting source and action type", "6 sources (of 38) with most actions") +
+  facet_wrap(~ action, ncol = 1)
+fig_countcost_source_action
+
+```
 [Source glossery](#sources)\
 [Back to top](#pills)
 
 ## Project Counts
 ### Project Counts {#project}
 *Counts of culvert-related projects by year, basin, and reporting source, separated by project cost availability. Only pure culvert projects included.*
-![](.\figs\culverts\fig_prjcost_year.png)
+```{r prj_count, echo=F, message=F}
+# By year
+fig_prjcost_year <-
+  base_countcost_line %+%
+  (df_culv_prj_pure %>%
+     group_by(
+       completed_year = ordered(completed_year),
+       cost_avail = factor(cost_avail),
+       .drop = FALSE
+     ) %>%
+     count() %>%
+     ungroup() %>%
+     mutate(
+       completed_year = unfactor(completed_year)
+     )
+  ) +
+  ggtitle("Culvert project count, by year")
+fig_prjcost_year
 
-> **Observation:** Activity increases dramatically in the late '90s before falling off in the late '00s.
+# By basin
+fig_prjcost_basin <-
+  base_countcost_bar %+%
+  (df_culv_prj_pure %>%
+     group_by(
+       basin = ordered(basin, basin_levels) %>% fct_explicit_na(),
+       cost_avail = factor(cost_avail)
+     ) %>%
+     count() %>%
+     drop_na()
+  ) +
+  aes(
+    x = fct_rev(basin)
+  ) +
+  ggtitle("Culvert project count, by basin")
+fig_prjcost_basin
 
-![](.\figs\culverts\fig_prjcost_basin.png)
+# By source
+fig_prjcost_source <-
+  base_countcost_bar %+%
+  (df_culv_prj_pure %>%
+     group_by(
+       project_source = ordered(project_source, source_levels),
+       cost_avail = factor(cost_avail)
+     ) %>%
+     count() %>%
+     drop_na()
+  ) +
+  aes(
+    x = fct_rev(project_source)
+  ) +
+  ggtitle("Culvert project count, by source")
+fig_prjcost_source
 
-> **Observation:** While overall cost availability is good, costs are reported less frequently in Washington than they are in Oregon.
+# By source and year
+fig_prjcost_source_year <-
+  base_countcost_line %+%
+  (df_culv_prj_pure %>%
+     group_by(
+       completed_year = ordered(completed_year),
+       project_source = ordered(project_source, source_levels),
+       cost_avail = factor(cost_avail),
+       .drop = FALSE
+     ) %>%
+     count() %>%
+     ungroup() %>%
+     mutate(
+       completed_year = unfactor(completed_year)
+     ) %>%
+     filter(
+       project_source %in% source_levels[1:6]
+     )
+  ) +
+  ggtitle("Culvert project count, by source and year", "6 sources (of 20) with most actions") +
+  facet_wrap(~ project_source, ncol = 2)
+fig_prjcost_source_year
 
-> **Observation:** There have been far more culvert projects in Oregon than Washington over the years.
+# By basin and year
+fig_prjcost_basin_year <-
+  base_countcost_line %+%
+  (df_culv_prj_pure %>%
+     group_by(
+       completed_year = ordered(completed_year),
+       basin = ordered(basin, basin_levels) %>% fct_explicit_na(),
+       cost_avail = factor(cost_avail),
+       .drop = FALSE
+     ) %>%
+     count() %>%
+     ungroup() %>%
+     mutate(
+       completed_year = unfactor(completed_year)
+     ) %>%
+     filter(
+       basin %in% basin_levels[1:8]
+     )
+  ) +
+  ggtitle("Culvert project count, by basin and year", "8 basins (of 27) with most actions") +
+  facet_wrap(~ basin, ncol = 2)
+fig_prjcost_basin_year
 
-![](.\figs\culverts\fig_prjcost_source.png)
-[Source glossery](#sources)
-![](.\figs\culverts\fig_prjcost_basin_year.png)
-![](.\figs\culverts\fig_prjcost_source_year.png)
-[Source glossery](#sources)
+# By basin and funding
+fig_prjcost_basin_source <-
+  base_countcost_bar %+%
+  (df_culv_prj_pure %>%
+     group_by(
+       project_source = ordered(project_source, source_levels),
+       basin = ordered(basin, basin_levels) %>% fct_explicit_na(),
+       cost_avail = factor(cost_avail)
+     ) %>%
+     count() %>%
+     filter(
+       project_source %in% source_levels[1:6]
+     ) %>%
+     filter(
+       basin %in% basin_levels[1:8]
+     )
+  ) +
+  aes(
+    x = fct_rev(basin)
+  ) +
+  ggtitle("Culvert project count, by basin and source", "8 basins (of 47) and 6 sources (of 38) with most actions") +
+  facet_wrap(~ project_source, ncol = 2)
+fig_prjcost_basin_source
 
-> **Observation:** The activity trends are driven largely by Oregon, especially dramatic drop-offs in reports by OWRI and REO.
 
-![](.\figs\culverts\fig_prjcost_basin_source.png)
+```
+
+> **Observation:** Activity increases dramatically in the late '90s before falling off in the late '00s.  
+
+> **Observation:** While overall cost availability is good, costs are reported less frequently in Washington than they are in Oregon.  
+
+> **Observation:** There have been far more culvert projects in Oregon than Washington over the years.  
+
+> **Observation:** The activity trends are driven largely by Oregon, especially dramatic drop-offs in reports by OWRI and REO.  
+
+> **Observation:** OWRI reports by far the most projects, and only projects in Oregon. REO is the only organization that reports projects across all eight of the basins with the most activity, though their activity is centered around Oregon as well.  
+
 [Source glossery](#sources)\
-
-> **Observation:** OWRI reports by far the most projects, and only projects in Oregon. REO is the only organization that reports projects across all eight of the basins with the most activity, though their activity is centered around Oregon as well.
-
 [Back to top](#pills)
 
 ## Culvert Spending
 ### Culvert Spending
 *Total spending on culverts by year, basin, and reporting source. Only includes spending on pure culvert projects.*
-![](.\figs\culverts\fig_cost_year.png)
-![](.\figs\culverts\fig_cost_basin.png)
-![](.\figs\culverts\fig_cost_source.png)
-[Source glossery](#sources)
-![](.\figs\culverts\fig_cost_year_basin.png)
-![](.\figs\culverts\fig_cost_year_source.png)
-[Source glossery](#sources)
-![](.\figs\culverts\fig_cost_source_basin.png)
+```{r spending, echo=F, message=F}
+# Total costs ====
+# By year
+fig_cost_year <-
+  base_cost_line %+%
+  (df_culv_prj_pure %>%
+     group_by(completed_year) %>%
+     summarize(adj_cost = sum(adj_cost, na.rm = TRUE))
+  ) +
+  ggtitle("Expenditures on culverts ($thou), by year")
+fig_cost_year
+
+# By basin
+fig_cost_basin <-
+  base_cost_bar %+%
+  (df_culv_prj_pure %>%
+     group_by(basin) %>%
+     summarize(adj_cost = sum(adj_cost, na.rm = TRUE)) %>%
+     drop_na()
+  ) +
+  aes(
+    x = reorder(basin, adj_cost)
+  ) +
+  ggtitle("Expenditures on culverts ($thou), by basin")
+fig_cost_basin
+
+# By source
+fig_cost_source <-
+  base_cost_bar %+%
+  (df_culv_prj_pure %>%
+     group_by(project_source) %>%
+     summarize(adj_cost = sum(adj_cost, na.rm = TRUE)) %>%
+     drop_na()
+  ) +
+  aes(
+    x = reorder(project_source, adj_cost)
+  ) +
+  ggtitle("Expenditures on culverts ($thou), by reporting source")
+fig_cost_source
+
+# By year and basin
+fig_cost_year_basin <-
+  base_cost_line %+%
+  (df_culv_prj_pure %>%
+     group_by(completed_year, basin) %>%
+     summarize(adj_cost = sum(adj_cost, na.rm = TRUE)) %>%
+     drop_na() %>%
+     mutate(basin_fac = factor(basin, basin_levels, ordered = TRUE)) %>%
+     filter(basin %in% basin_levels[1:8])
+  ) + 
+  ggtitle("Expenditures on culverts ($thou), by year and basin", "8 (of 47) basins with most projects") +
+  facet_wrap(~ basin_fac, ncol = 2)
+fig_cost_year_basin
+
+# By year and source
+fig_cost_year_source <-
+  base_cost_line %+%
+  (df_culv_prj_pure %>%
+     group_by(completed_year, project_source) %>%
+     summarize(adj_cost = sum(adj_cost, na.rm = TRUE)) %>%
+     drop_na() %>%
+     mutate(source_fac = factor(project_source, source_levels, ordered = TRUE)) %>%
+     filter(project_source %in% source_levels[1:6])
+  ) + 
+  ggtitle("Expenditures on culverts ($thou), by year and reporting source", "6 (of 38) sources with most projects") +
+  facet_wrap(~ source_fac, ncol = 2)
+fig_cost_year_source
+
+# By basin and source
+fig_cost_source_basin <-
+  base_cost_bar %+%
+  (df_culv_prj_pure %>%
+     group_by(project_source, basin) %>%
+     summarize(adj_cost = sum(adj_cost, na.rm = TRUE)) %>%
+     drop_na() %>%
+     mutate(basin_fac = factor(basin, basin_levels, ordered = TRUE)) %>%
+     mutate(source_fac = factor(project_source, source_levels, ordered = TRUE)) %>%
+     filter(basin %in% basin_levels[1:8]) %>%
+     filter(project_source %in% source_levels[1:6])
+  ) +
+  aes(
+    x = reorder(project_source, adj_cost)
+  ) +
+  facet_wrap(~ basin_fac, ncol = 2) +
+  ggtitle("Expenditures on culverts ($thou), by reporting source and basin", "8 (of 47) basins with most projects and \n6 (of 38) sources with most projects")
+fig_cost_source_basin
+
+```
+
+> **Observation:** Following patterns in the number of projects, spending rose dramatically during the late '90s before falling off to a lower level in 2007. This pattern is mostly driven by REO's heavy investment along the southern Oregon coast in the early '00s. The drop-off corresponds with a drop in spending by OWRI.  
+
 [Source glossery](#sources)\
-
-> **Observation:** Following patterns in the number of projects, spending rose dramatically during the late '90s before falling off to a lower level in 2007. This pattern is mostly driven by REO's heavy investment along the southern Oregon coast in the early '00s. The drop-off corresponds with a drop in spending by OWRI.
-
 [Back to top](#pills)
 
 ## Cost per Culvert Distributions
 ### Cost per Culvert Distributions
 *Violin plots and box plots for project costs per culvert, on a log scale. Only includes pure culvert projects. Details on how the number of culverts is identified can be found in the [appendix](#count).*
-![](.\figs\culverts\fig_costdist_action.png)
+```{r cost_per_culvert, echo=F, message=F}
+# Cost per culvert distributions ====
+# By basin
+fig_costdist_action <-
+  base_costdist_violin %+%
+  (df_culv_pure %>%
+     filter(
+       cost_avail == TRUE 
+     ) %>%
+     group_by(action = recode(action, !!!invert(action_key))) %>%
+     mutate(
+       action_n = paste0(
+         action,
+         "\n(n = ",
+         comma(n()),
+         ")"
+       )
+     )
+  ) +
+  aes(
+    x = reorder(action_n, adj_cost),
+    fill = action,
+    group = action
+  ) +
+  ggtitle(
+    "Cost per culvert at action level, by action type"
+  ) +
+  coord_flip()
+fig_costdist_action
 
-> **Observation:** Culvert installations are the most expensive, followed by culvert upgrades and culvert removals, though with considerable overlap in the distributions.
+# By basin
+fig_costdist_basin <-
+  base_costdist_violin %+%
+  (df_culv_prj_pure %>%
+     filter(
+       cost_avail == TRUE 
+     ) %>%
+     filter(
+       basin %in% basin_levels[1:8]
+     ) %>%
+     group_by(basin) %>%
+     mutate(
+       basin_n = paste0(
+         basin,
+         "\n(n = ",
+         comma(n()),
+         ")"
+       )
+     )
+  ) +
+  aes(
+    x = reorder(basin_n, adj_cost),
+    fill = basin,
+    group = basin
+  ) +
+  ggtitle(
+    "Cost per culvert at project level, by basin"
+  ) +
+  coord_flip()
+fig_costdist_basin
 
-![](.\figs\culverts\fig_costdist_year.png)
+# By source
+fig_costdist_source <-
+  base_costdist_violin %+%
+  (df_culv_prj_pure %>%
+     filter(
+       cost_avail == TRUE 
+     ) %>%
+     filter(
+       project_source %in% source_levels[1:6]
+     ) %>%
+     group_by(project_source) %>%
+     mutate(
+       project_source_n = paste0(
+         project_source,
+         "\n(n = ",
+         comma(n()),
+         ")"
+       )
+     )
+  ) +
+  aes(
+    x = reorder(project_source_n, adj_cost),
+    fill = project_source,
+    group = project_source
+  ) +
+  ggtitle(
+    "Cost per culvert at project level, by source"
+  ) +
+  coord_flip()
+fig_costdist_source
 
-> **Observation:** Cost per culvert seems to be rising from 1995 through around 2004 when they flatten out. From 2008 through 2011, costs are more concentrated near the median.
+# By year
+fig_costdist_year <-
+  base_costdist_violin %+%
+  (df_culv_prj_pure %>%
+     filter(
+       cost_avail == TRUE 
+     ) %>%
+     group_by(completed_year = ordered(completed_year))
+  ) +
+  aes(
+    x = completed_year,
+    fill = completed_year,
+    group = completed_year
+  ) +
+  scale_fill_manual(
+    values = colorRampPalette(RColorBrewer::brewer.pal(9, "Greens"))(25),
+    guide = NULL
+  ) +
+  ggtitle(
+    "Cost per culvert at project level, by year"
+  )
+fig_costdist_year
 
-![](.\figs\culverts\fig_costdist_basin.png)
-![](.\figs\culverts\fig_costdist_source.png)
+```
+
+> **Observation:** Culvert installations are the most expensive, followed by culvert upgrades and culvert removals, though with considerable overlap in the distributions.  
+
+> **Observation:** Cost per culvert seems to be rising from 1995 through around 2004 when they flatten out. From 2008 through 2011, costs are more concentrated near the median.  
+
+> **Observation:** There is a pretty wide range of costs across basins, but OWRI reports notably cheaper projects while WDOT's projects are much more expensive. OWRI also reports the bulk of projects, so if their costs are systemically under-reported, then we may have a problem.  
+
 [Source glossery](#sources)\
-
-> **Observation:** There is a pretty wide range of costs across basins, but OWRI reports notably cheaper projects while WDOT's projects are much more expensive. OWRI also reports the bulk of projects, so if their costs are systemically under-reported, then we may have a problem.
-
 [Back to top](#pills)
 
 ## Maps
 ### Maps
 *Maps show work sites associated with pure culvert projects. To trim outliers, only projects with cost per culvert above $2,000 are included. Road and river data from OpenStreetMap API.*
 
-![](.\maps\culverts\fig_map_cost.png)
+```{r maps, echo=F, message=F}
+df_culv_wrk_pure <- read_csv(here("/output/culverts_wrk_working.csv"))
 
-> **Observation:** The cheapest projects are clustered along the northern Oregon coast, while the most expensive appear mostly in Washington. Projects in the middle of the distribution are well distributed across the region.
+# Prepare map data ====
+# setwd("./maps/sf")
+sf_us <- getData("GADM", country = "USA", download = TRUE, path = here("output"), level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c('California', 'Nevada', 'Utah', 'Wyoming', 'Montana', 'Idaho', 'Oregon', 'Washington'))
+sf_canada <- getData("GADM", country = "CAN", download = TRUE, path = here("output"), level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c("British Columbia", "Alberta"))
+sf_base <- 
+  rbind(sf_us, sf_canada)
 
-![](.\maps\culverts\fig_map_year.png)
+base_map_draft <-
+  ggplot() +
+  geom_sf(data = sf_base, fill = "antiquewhite1", color = "black") +
+  coord_sf(
+    xlim = c(-126, -111.5),
+    ylim = c(41.5, 49.5),
+    expand = FALSE
+  ) +
+  theme_bw() +
+  theme(
+    panel.background = element_rect(fill = "aliceblue", size = 1),
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    legend.position = c(0.99, 0.01),
+    legend.justification = c("right", "bottom"),
+    legend.box.background = element_rect(color = "black", size = 1),
+    legend.title = element_text(size = 10)
+  ) +
+  labs(
+    x = NULL,
+    y = NULL
+  )
 
-> **Observation:** The earliest projects are clustered along the northern Oregon coast, and are also the cheapest. Washington projects tend to be more recent.
+# Build further maps ====
+fig_map_cost <-
+  base_map_draft +
+  # base_map +
+  geom_point(
+    data = df_culv_wrk_pure %>% filter(cost_per_culvert > 2000),
+    aes(
+      x = longitude,
+      y = latitude,
+      fill = cost_per_culvert
+    ),
+    shape = 21,
+    color = "black",
+    stroke = 0.1,
+    size = 1.9
+  ) +
+  scale_fill_distiller(
+    "Cost per culvert\n(log scale)",
+    # palette = "YlGn",
+    # palette = "Spectral",
+    palette = "RdYlGn",
+    labels = dollar,
+    direction = -1,
+    trans = "log10",
+    na.value = "grey70"
+  ) +
+  ggtitle("Map of culvert worksites, by cost per culvert")
+fig_map_cost
 
-![](.\maps\culverts\fig_map_source.png)
+fig_map_year <-
+  base_map_draft +
+  # base_map +
+  geom_point(
+    data = df_culv_wrk_pure %>% filter(cost_per_culvert > 2000),
+    aes(
+      x = longitude,
+      y = latitude,
+      fill = completed_year
+    ),
+    shape = 21,
+    color = "black",
+    stroke = 0.1,
+    size = 1.9
+  ) +
+  scale_fill_distiller(
+    "Year",
+    palette = "Spectral",
+    direction = 1,
+    na.value = "grey70"
+  ) +
+  ggtitle("Map of culvert worksites, by year")
+fig_map_year
+
+source_levels <-
+  df_culv_wrk_pure %>%
+  tabyl(project_source) %>%
+  arrange(-n) %>%
+  pull(project_source)
+
+fig_map_source <-
+  base_map_draft +
+  # base_map +
+  geom_point(
+    data = df_culv_wrk_pure %>% filter(cost_per_culvert > 2000, project_source %in% source_levels[1:6]),
+    aes(
+      x = longitude,
+      y = latitude,
+      fill = project_source
+    ),
+    shape = 21,
+    color = "black",
+    stroke = 0.1,
+    size = 1.9
+  ) +
+  scale_fill_brewer(
+    "Source",
+    palette = "Dark2"
+  ) +
+  ggtitle("Map of culvert worksites, by reporting source")
+fig_map_source
+
+```
+
+> **Observation:** The cheapest projects are clustered along the northern Oregon coast, while the most expensive appear mostly in Washington. Projects in the middle of the distribution are well distributed across the region.  
+
+> **Observation:** The earliest projects are clustered along the northern Oregon coast, and are also the cheapest. Washington projects tend to be more recent.  
+
+> **Observation:** There is little geographic overlap between reporting sources, which may make mixing sources in a model difficult. Reporting source also closely corresponds with year and cost per culvert.  
+
 [Source glossery](#sources)\
-
-> **Observation:** There is little geographic overlap between reporting sources, which may make mixing sources in a model difficult. Reporting source also closely corresponds with year and cost per culvert.
-
 [Back to top](#pills)
 
 # Outside Culvert Data

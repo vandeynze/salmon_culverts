@@ -87,7 +87,7 @@ summary(sf_culv)
 #' improvements. We restrict the sample to projects that:  
 #' 
 #' 1) Only include culvert actions across any work sites;  
-#' 2) Were completed between 1996 and 2015;  
+#' 2) Were completed between 2001 and 2015;  
 #' 3) Consisted of work sites only in Washington or Oregon;  
 #' 4) Consisted of work sites only located within basins with over 20 work sites;  
 #' 5) Reported project costs per culvert between $2,000 and $750,000 (roughly 5th and 95th percentiles).  
@@ -99,8 +99,16 @@ sf_culv <-
   filter(
     state_fips %in% c(41, 53),
     cost_per_culvert > 2000,
-    cost_per_culvert < 750000
+    cost_per_culvert < 750000,
+    project_year > 2000
   ) %>%
+  add_count(basin) %>%
+  filter(n > 20) %>%
+  select(-n) %>%
+  add_count(project_source) %>%
+  filter(n > 20) %>%
+  select(-n) %>%
+  # Second check on basin to make sure they still have more than 20
   add_count(basin) %>%
   filter(n > 20) %>%
   select(-n)

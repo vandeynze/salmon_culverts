@@ -11,6 +11,9 @@
 #' ---
 #' 
 
+#+ echo=F
+# Introduction ----
+
 #' Because of the spatial nature of the culvert worksite data, we suspect there
 #' may be different forms of spatial associations within the data. These
 #' associations may undermine the assumptions of our base OLS models. We use
@@ -28,16 +31,28 @@
 
 #' 3. Anselin's Lagrange Multiplier Tests: these tests serve as an assessment of
 #' model misspecification due to spatial associations.  
+#' 
 
+#' We use these tools on the base model found in [this
+#' report](../spatial_cost_models.html), with one key change. After initial
+#' testing, we found including spatial fixed effects like `basin` along side
+#' band-based spatial weighting schemes (i.e. those that enforce a strict
+#' maximum distance beyond which weights are zero) can result in a singular (or
+#' at least computationally singular) model matrix. We also found that including
+#' either `total distance between worksites` or `distance to nearest urban area`
+#' result in similar singularities, likely because they closely track the same
+#' processes which spatial weighting structures are intended to account for.
+#' **Therefore, the `basin` fixed effect and both `distance to nearest urban
+#' area` and `total distance between worksites` are removed in the models
+#' presented and examined below.**  
+#' 
 
 #+ include=F
-#################################
 #
 # Investigate spatial associations
 # in the culvert average cost data
 # Robby Fonner
 #
-#################################
 
 # Prepare environment and data ----
 rm(list = ls())
@@ -86,10 +101,12 @@ df_culv <-
     basin = relevel(factor(basin), ref = "SOUTHERN OREGON COASTAL"),
     fips = factor(fips),
     state_fips = factor(state_fips),
+    here_class = as.character(here_class),
+    relevel(factor(here_speed), ref = 6),
+    tot_dist = I(n_worksites * dist_mean),
     latlong = str_sub(geometry, 3, nchar(geometry)-1),
     long = as.numeric( word(latlong, 1, sep = ", ")),
     lat = as.numeric( word(latlong, 2, sep = ", "))
-    # here_class = ordered(here_class)
   ) %>%
   left_join(
     key_nlcd, 
@@ -97,37 +114,46 @@ df_culv <-
   ) %>%
   select(-latlong) %>%
   #complete cases
-  filter(complete.cases(cost_per_culvert,n_culverts,dist_mean,n_worksites,action_fishpass_culvrem_prj,action_fishpass_culvinst_prj,slope,
+  drop_na(cost_per_culvert,n_culverts,dist_mean,n_worksites,action_fishpass_culvrem_prj,action_fishpass_culvinst_prj,slope,
                         bankfull_width,here_paved,here_class,slope_deg,nlcd_current_class,hdens_cat,emp_const, emp_agforest, basin, project_year,
-                        project_source))
+                        project_source)
 
-# ESTIMATE FULL MODEL 
+# Estimate original model ----
   
-Dep <- "log(cost_per_culvert)"
-Indep <- c("n_culverts" , "log(dist_mean+1)" , "factor(I(n_worksites==1))" , "action_fishpass_culvrem_prj" , "action_fishpass_culvinst_prj" ,
-           # Stream features at work site: slope, bankfull width
-           "slope * bankfull_width" , 
-           # Road features at work site: paved, road class
-           "here_paved" , "factor(here_class)" ,
-           # Physical features of work site: ground slope, land cover
-           "slope_deg" , "factor(nlcd_current_class)" ,
-           # Population features: housing density, jobs in construction, jobs in ag/forestry
-           "hdens_cat" , "emp_const" , "emp_agforest" ,
-           # Fixed effects
-           "basin" , "factor(project_year)" , "project_source")
+dep <- "log(cost_per_culvert)"
+indep <-
+  c(
+    "n_worksites", # "tot_dist",
+    "action_fishpass_culvrem_prj", "action_fishpass_culvinst_prj",
+    # Stream features at work site: slope, bankfull width
+    "slope * bankfull_width",
+    # Road features at work site: paved, road class
+    "factor(here_paved)", "factor(here_speed)",
+    # Physical features of work site: ground slope, land cover
+    "cat_basin_slope",
+    "cat_elev_mean",
+    "factor(nlcd_current_class)",
+    # Population features: housing density, jobs in construction, jobs in ag/forestry
+    "hdens_cat", "emp_const", "emp_agforest", # "ua_dist",
+    # Fixed effects
+    # "basin",
+    "factor(project_year)",
+    "project_source"
+  )
 f <- as.formula(
-  paste(Dep,
-        paste(Indep, collapse = "+"),
-        sep = "~"))
+  paste(dep,
+        paste(indep, collapse = "+"),
+        sep = "~")
+  )
 
 mod_full <- 
-  lm(f, df_culv )
+  lm(f, df_culv)
 
 summary(mod_full)
 #plot(mod_full)
 
 
-#+ fig.width=10, fig.height=10, echo=F, message=F, warning=F
+# Variograms ----
 #' # Variograms  
 #'   
 
@@ -137,23 +163,24 @@ summary(mod_full)
 #' and which are not.
 #'
 #' We construct variograms for both the dependent variable (`log(cost per
-#' culvert)``) and the model residuals to investigate spatial dependence in both
+#' culvert)`) and the model residuals to investigate spatial dependence in both
 #' costs and the model's errors.
 
-
+#+ include=F
 ##INVESTIGATE SPATIAL DEPENDENCE IN DEPENENT VARIABLE AND ERROR
 
 ##Semivariogram plots of spatial dependence against distance from observation (note: .1 degree ~ 11.1 KM)
 distmat <- dist(df_culv[c("long","lat")])
 #summarize distances and use information to define semivariance range (alternative buffers)
-summary(distmat)
+# summary(distmat)
 buffs <- seq(0, .5, l = 10)
 #Plot semivariance in log(avg_cost)
-semiVar_dep <- variog( coords = df_culv[c("long","lat")], data = log(df_culv$cost_per_culvert), breaks = buffs )
-plot(semiVar_dep, type = "b", main = "Variogram for log(cost_per_culvert)", xlab = "distance (degree)")
+semivar_dep <- variog( coords = df_culv[c("long","lat")], data = log(df_culv$cost_per_culvert), breaks = buffs )
 #Plot residual semivariance
-semiVar_res <- variog( coords = df_culv[c("long","lat")], data = mod_full$residuals, breaks = buffs )
-plot(semiVar_res, type = "b", main = "Variogram for residuals", xlab = "distance (degree)")
+semivar_res <- variog( coords = df_culv[c("long","lat")], data = mod_full$residuals, breaks = buffs )
+#+ fig.width=10, fig.height=10, echo=F, message=F, warning=F
+plot(semivar_dep, type = "b", main = "Variogram for log(cost_per_culvert)", xlab = "distance (degree)")
+plot(semivar_res, type = "b", main = "Variogram for residuals", xlab = "distance (degree)")
 
       # ---> Plots imply that most of the semivariance in depvar and error is captured within 
       #      20km buffer of observation
@@ -164,39 +191,47 @@ plot(semiVar_res, type = "b", main = "Variogram for residuals", xlab = "distance
 #' also remove 30 worksites with no neighbors (i.e. with no other worksites within
 #' 20km) to ensure suitable spatial weighting matrix structure.
 
+#+ include=F
+# Prepare data for weights ----
+# Remove double points
+# df_culv <- df_culv %>% add_count(lat, long) %>% filter(n == 1) %>% select(-n)
 
-#Set neighbor threshold (km)
+# Set neighbor threshold (km)
 thresh <- 20
 
-#Identify observations with no neighbors --- problematic with 0/1 neighbor matrices, only dropping to investigate spat dep
-IDmat <- nb2mat(dnearneigh(as.matrix(df_culv[c("long","lat")]), 
-                          d1=0, d2 = thresh, longlat = T), zero.policy=T)
+# Identify observations with no neighbors --- problematic with 0/1 neighbor matrices, only dropping to investigate spat dep
+id_mat <- nb2mat(dnearneigh(as.matrix(df_culv[c("long","lat")]), 
+                          d1 = 0, d2 = thresh, longlat = T), zero.policy = T)
 
-Islands <- df_culv$worksite_id[colSums(IDmat)==0]
+id_islands <- df_culv$worksite_id[colSums(id_mat) == 0]
 df_culv_sp <- df_culv %>%
- filter(!worksite_id %in% Islands)
+ filter(!worksite_id %in% id_islands)
 
-##Estimate same model with "islands" removed
+
+
+##Estimate same model with "islands" and doubles removed
 mod_full_sp <- 
   lm(f, data = df_culv_sp)
 # summary(mod_full_sp)
 
+# Generate weights ----
 ##CREATE NEIGHBOR AND DISTANCE MATRICIES --- after re-running model with "trimmed" sample
 #Neighbor matrices -- neighbors specified based on a distance buffer assumed to have equal dependence (0/1)
-neigh <- nb2listw(dnearneigh(as.matrix(df_culv_sp[c("long","lat")]),
+w_band <- nb2listw(dnearneigh(as.matrix(df_culv_sp[c("long","lat")]),
                              d1=0, d2 = thresh, longlat = T) , style="W")
 #Distance matrix in KM
-XY <- df_culv_sp[c("long","lat")]
-coordinates(XY) <- ~long+lat
-distKM <- rdist.earth(coordinates(XY), miles = F)
+coords_xy <- df_culv_sp[c("long", "lat")]
+coordinates(coords_xy) <- ~long+lat
+dist_km <- rdist.earth(coordinates(coords_xy), miles = F)
 
 #Inverse distance weight matrix -- assumes dependence decays with increasing distance
-InvDist <- ifelse(distKM!=0, 1/distKM, distKM) #Inverse distance matrix
-diag(InvDist) <- 0
-InvDist_buff <- ifelse(distKM > thresh, 0, InvDist)   #Create neighbors buffer (optional)
-InvDist <- mat2listw(as.matrix(InvDist), style="W")    #Normalized list
-InvDist_buff <- mat2listw(as.matrix(InvDist_buff), style="W")
+w_decay <- ifelse(dist_km != 0, 1/dist_km, dist_km) #Inverse distance matrix
+diag(w_decay) <- 0
+w_hybrid <- ifelse(dist_km > thresh, 0, w_decay)   #Create neighbors buffer (optional)
+w_decay <- mat2listw(as.matrix(w_decay), style="W")    #Normalized list
+w_hybrid <- mat2listw(as.matrix(w_hybrid), style="W")
 
+# Spatial dependence tests ----
 #+
 #' # Statistical tests of spatial dependence
 #' 
@@ -205,36 +240,44 @@ InvDist_buff <- mat2listw(as.matrix(InvDist_buff), style="W")
 #' three spatial weighting matrices:  
 #'   
 
-#' 1. *Neighbor specification*: weighting matrix is zeros and ones, where w_ij =
-#' w_ji = 1 when worksite_i is within 20km of worksite_j (assumes all neighbors
-#' within buffer have equal dependence);  
+#' 1. *Distance band specification*: weighting matrix is zeros and ones, where *w~ij~* =
+#' *w~ji~* = 1 when *worksite_i* is within 20km of *worksite_j* (assumes all neighbors
+#' within buffer have equal dependence).  
 
-#' 2. *Inverse distance specification:* weighting matrix is w_ij = w_ji = 1/d_ij
-#' where d_ij is the distance between worksite_i and worksite_j (assumes
-#' dependence decays with distance), and;  
+#' 2. *Inverse distance decay specification:* weighting matrix is *w~ij~* = *w~ji~* = 1/*d~ij~*
+#' where *d~ij~* is the distance between *worksite~i~* and *worksite~j~* (assumes
+#' dependence decays with distance).  
 
 #' 3. *Hybrid specification*: weights are inverse distances when worksite pair is
 #' within buffer, and zero otherwise.  
 
-#' For each of these specifications, we estimate the core model and perform a suite of tests of spatial dependence:  
+#' For each of these specifications, we estimate the core model and perform a suite of tests of spatial dependence.  
 #'   
 
-#' 1. *Moran's I tests*: these tests, performed on both the dependent variable
-#' and the residuals from the model, identify spatial dependence, where the
-#' null is no spatial dependence (i.e., distribution over space as good as random), and;  
+#' 1. *Moran's I tests*: these tests, performed on both the dependent variable (MoranDep)
+#' and the residuals from the model (MoranResid), identify spatial dependence, where the
+#' null is no spatial dependence (i.e., distribution over space as good as random).  
 
 #' 2. *Anselin's Lagrange multiplier tests*: these tests of linear restrictions
 #' identify mispecification due to spatial dependence, distinguishing whether
 #' the source is due to missing spatial lags of the dependent variable or
-#' missing spatial error structure, or both.
+#' missing spatial error structure, or both. Per Anselin's suggestion, we
+#' consider the robust tests only if both simple tests reject the null.  
+
+#'    - *LM test against error (LMerr)*: tests against the null of no spatial error.  
+#'    - *LM test against lag (LMlag)*: tests against the null of no spatial lag structure.  
+#'    - *Robust LM test against error (RLMerr)*: a version of LMerr robust to the presence of spatial lag.  
+#'    - *Robust LM test against lag (RLMlag)*: a version of LMlag robust to the presence of spatial error.  
+#'    - *LMtest against Spatial Autoregressive Moving Average (SARMA)*: tests against the null of neither spatial error nor spatial lag.  
 #' 
 
+#+ include=F
 ##TESTS OF SPATIAL DEPENDENCE
 
 # Goal is to build a table with rows as tests and columns as spatial matrix specification
 
 # Let's put together a function that gathers the test stats based on a model and a weighting matrix
-# Built for use with map_dfc
+# Built for use with map and reduce
 
 spdep_suite <-
   function(
@@ -266,7 +309,7 @@ spdep_suite <-
     # names(LM_test.stat) <- names(LM_test)
     # names(LM_test.p) <- names(LM_test)
     tibble(
-      test_name = c("MoranDep", "MoranResid", names(LM_test)),
+      test_name = c("MoranDep", "MoranResid", names(LM_test.test)),
       test_stat = c(moran.dep.stat, moran.lm.stat, LM_test.stat),
       test_p = c(moran.dep.p, moran.lm.p, LM_test.p),
     ) %>% 
@@ -277,26 +320,264 @@ spdep_suite <-
       transmute(test_name, test_out = paste0(test_stat, " (", test_p, ")"))
   }
 
-#A - Neighbor specification
-spdep_suite(mod_full_sp, neigh)
+# A - Neighbor specification (distance band)
+spdep_suite(mod_full_sp, w_band)
 
-#B - InvDist specification
-spdep_suite(mod_full_sp, InvDist)
+# B - Inverse distance specification (distance decay)
+spdep_suite(mod_full_sp, w_decay)
 
-#C - InvDist with buffer specification
-spdep_suite(mod_full_sp, InvDist_buff)
+# C - Inverse distance with buffer specification (distance decay with band cutoff)
+spdep_suite(mod_full_sp, w_hybrid)
 
+#+ echo=F
+# All together!
+# List of weighting matrix
+list_weights <- lst(w_band, w_decay, w_hybrid)
+# Map our function over it and present as fancy kable
+map(
+  list_weights,
+  ~spdep_suite(mod_full_sp, .)
+) %>%
+  reduce(left_join, by = "test_name") %>%
+  rename_with(~names(list_weights) %>% str_remove("w_") %>% str_to_sentence(), .cols = -test_name) %>%
+  rename(Test = 1) %>%
+  kable(
+    caption = "Test statistics against spatial dependence"
+  ) %>%
+  kable_styling("hover") %>%
+  column_spec(1 , bold = TRUE) %>%
+  add_header_above(
+    c(
+      " " = 1,
+      "Spatial weights" = 3
+    )
+  ) %>%
+  add_footnote("P-values in parentheses", notation = "none")
+
+#' The Moran test results indicate a strong degree of spatial clustering (or
+#' "hot spots") in both the raw dependent variable and the residuals, though the
+#' test statistic shrinks considerably in the residual, suggesting the observed
+#' explanatory variables control for a portion of this effect.  
+#' 
+
+#' For all three weighting schemes, the first-stage LM tests are inconclusive,
+#' rejecting the null in all cases. For the band specification, the robust LM
+#' tests indicate a spatial error model with no spatial lag, while the hybrid
+#' specification tests suggest the inclusion of spatial lag terms. For the decay
+#' specification, we also reject the robust test for no lag.  
+#' 
+
+#+ include=F
+# Estimate new models ----
 # ESTIMATE MODELS via GMM (Kelejian & Prucha 2010)
-#Neighbors
-SARAR_neigh <- gstslshet(f, data = df_culv_sp, listw = neigh, zero.policy =F, na.omit, inverse=T, sarar = F, initial.value = "SAR") 
-summary(SARAR_neigh)
+# Band specification (neighborhood)
+mod_band <- gstslshet(f, data = df_culv_sp, listw = w_band, zero.policy = F, na.omit, inverse = T, sarar = F, initial.value = "SAR")
+summary(mod_band)
 
-#Inverse distance
-SARAR_Inv <- gstslshet(f, data = df_culv_sp, listw = InvDist, zero.policy =F, na.omit, inverse=T, sarar = T) 
-summary(SARAR_Inv)
+# Decay (inverse distance)
+mod_decay <- gstslshet(f, data = df_culv_sp, listw = w_decay, zero.policy = F, na.omit, inverse = T, sarar = T, initial.value = "SAR") 
+summary(mod_decay)
 
-#Inverse distance w buffer
-SARAR_InvBuff <- gstslshet(f, data = df_culv_sp, listw = InvDist_buff, zero.policy =F, na.action = na.omit, inverse=T, sarar = T, initial.value = "SAR") 
-summary(SARAR_InvBuff)
+# Hybrid (inverse distance w/ neighborhood cut-off)
+mod_hybrid <- gstslshet(f, data = df_culv_sp, listw = w_hybrid, zero.policy = F, na.omit, inverse = T, sarar = T, initial.value = "SAR") 
+summary(mod_hybrid)
 
 
+
+#' # Spatial econometric models  
+#' 
+
+#' Here we present three Cliff-Ord type spatial models, one for each spatial
+#' weighting scheme. Based on the preceeding tests, we estimate these models
+#' with only spatial error (or spatial autocorrelation) terms for the band and
+#' decay specifications, and with a spatial lag (or spatial autoregressive) term
+#' for the hybrid specification. We estimate these models via a GMM estimator
+#' that accounts for heteroskedastic errors of unknown form ([Kelejian and Prucha
+#' 2010](https://doi.org/10.1016/j.jeconom.2009.10.025)).  
+#' 
+
+#+ echo=F
+tidy.sphet <- function(x) {
+  
+  result <- summary(x)$CoefTable %>%
+    tibble::as_tibble(rownames = "term") %>%
+    dplyr::rename(estimate = Estimate,
+                  std.error = `Std. Error`,
+                  statistic = `t-value`,
+                  p.value = `Pr(>|t|)`)
+  
+  result
+}
+
+mods <- lst(mod_full_sp, mod_band, mod_decay, mod_hybrid)
+mods_pars <-
+  map_df(mods, tidy, .id = "model") %>%
+  complete(model, term) %>%
+  mutate(
+    stars = case_when(
+      p.value < 0.01 ~ "***",
+      p.value < 0.05 ~ "**",
+      p.value < 0.1 ~ "*",
+      TRUE ~ ""
+    ),
+    full.est = if_else(
+      is.na(estimate),
+      "&#8210;",
+      paste0(
+        format(signif(estimate, 3), scientific = FALSE, drop0trailing = TRUE, trim = TRUE),
+        stars,
+        "<br>(", format(signif(std.error, 3), scientific = FALSE, drop0trailing = TRUE, trim = TRUE), ")"
+      )
+    ),
+    term = case_when(
+      term == "(Intercept)" ~ "Intercept",
+      term == "action_fishpass_culvinst_prj" ~ "Culvert installation (dummy)",
+      term == "action_fishpass_culvrem_prj" ~ "Culvert removal (dummy)",
+      term == "n_worksites" ~ "Number of worksites",
+      # term == "tot_dist" ~ "Distance between worksites",
+      # term == "log(dist_mean + 1)" ~ "Mean distance between worksites, log",
+      # term == "factor(I(n_worksites == 1))TRUE" ~ "Single worksite (dummy)",
+      term == "slope" ~ "Stream slope",
+      term == "bankfull_width" ~ "Bankfull width",
+      str_detect(term, "here_paved") ~ "Road paved (dummy)",
+      term == "cat_basin_slope" ~ "Terrain slope",
+      term == "cat_elev_mean" ~ "Elevation",
+      term == "hdens_cat" ~ "Housing density",
+      term == "emp_const" ~ "Construction employment",
+      term == "emp_agforest" ~ "Ag/forestry employment",
+      # term == "ua_dist" ~ "Distance to urban area",
+      term == "slope:bankfull_width" ~ "Stream slope X bankfull width",
+      term == "n_worksites:tot_dist" ~ "Number of worksites X distance",
+      term == "lambda" ~ "Lambda (lag parameter)",
+      term == "rho" ~ "Rho (error parameter)",
+      TRUE ~ term
+    ),
+    term = str_replace(term, "project_source", "Project source: "),
+    # term = str_replace(term, "basin", "Basin: "),
+    term = str_replace(term, "factor[(]project_year[)]", "Year: "),
+    term = str_replace(term, "factor[(]nlcd_current_class[)]", "Land cover: "),
+    term = str_replace(term, "factor[(]here_speed[)]", "Road speed class: ")
+  ) %>%
+  select(
+    model, term, full.est
+  ) %>%
+  pivot_wider(id_cols = model, names_from = term, values_from = full.est) %>%
+  select(
+    model,
+    Intercept,
+    # Stream features
+    "Stream slope",
+    "Bankfull width",
+    "Stream slope X bankfull width",
+    # Road features
+    starts_with("Road"),
+    # Land features
+    "Terrain slope", "Elevation",
+    starts_with("Land cover"),
+    # Pop features
+    "Housing density",
+    ends_with("employment"),
+    # "Distance to urban area",
+    # Scale/scope features
+    "Number of worksites",
+    # starts_with("Distance between "),
+    # "Number of worksites X distance",
+    starts_with("Culvert "),
+    starts_with("Project source: "),
+    starts_with("Year: "),
+    "Lambda (lag parameter)",
+    "Rho (error parameter)"
+  )
+
+mods_pars %>%
+  # left_join(mods_stats, by = "model") %>%
+  pivot_longer(-model, names_to = "Term", values_to = "Value") %>%
+  pivot_wider(id_cols = Term, names_from = model, values_from = Value) %>%
+  select(Term, OLS = mod_full_sp, Band = mod_band, Decay = mod_decay, Hybrid = mod_hybrid) %>%
+  # kable() %>%
+  kable(
+    caption = "Spatial dependence models",
+    escape = FALSE,
+    align = 
+      paste0(
+        "l", 
+        paste(
+          rep(
+            "c",
+            length(mods)
+          ), 
+          collapse = ""
+        )
+      )
+  ) %>%
+  kable_styling("hover", fixed_thead = TRUE) %>%
+  column_spec(1 , bold = TRUE) %>%
+  add_header_above(
+    c(
+      " " = 1,
+      " " = 1,
+      "w/ Spatial Weights" = 3
+    )
+  ) %>%
+  add_footnote("* p < 0.1, ** p < 0.05, *** p < 0.01", notation = "none") %>%
+  scroll_box(height = "1200px")
+
+#' The models that account for spatial dependence have three main differences
+#' when compared to the base model. First, the spatial models do not have
+#' statistically significant stream feature (stream slope, bankfull width)
+#' parameters, including on the interaction between the two. Second, the effects
+#' of road size, as measured by road speed class and paved status, is less pronounced and the
+#' associated parameters are more less tightly estimated. Third, accounting for spatial dependence results in
+#' much more tightly estimated land cover parameters. Taken together, these three
+#' differences represent a shift in the importance of stream features and road
+#' features to landscape features as cost drivers.  
+#' 
+
+#' The spatial dependence parameters on all models are positive and
+#' statistically significant, indicating positive spatial spillovers in the both
+#' the error for the band model and, in the case of the hybrid and decay
+#' specifications, nearby costs. One cause of positive spillover in the errors
+#' may be missing explanatory variables that affect costs at a geographic scale
+#' that encompasses other worksites within range of the weighting scheme (e.g.
+#' the band distance). The positive lambdas indicate that more expensive
+#' worksites in one location drive up costs nearby. A possible mechanism may be
+#' competition for scarce resources (e.g. labor, machinery, etc.).
+#' 
+
+#+ echo=F
+# Conclusion ----
+
+
+#' # Closing Thoughts  
+#' 
+
+#' The most obvious drawback of this entire spatial dependence examination, at
+#' this stage, is that none of our weighting matrices nor our models account for
+#' spatio-temporal dynamics. That is, the current spatial weighting scheme
+#' includes all projects, both in the past and in the future. Preliminary
+#' examination of the literature on dynamic spatial econometric models is
+#' underway, and will likely involve regenerating the weight matrices in a way
+#' that only include contemporaneous and/or past worksites. This adds degrees of
+#' freedom in how these matrices are constructed, as the lag over which past
+#' worksites are included, and the degree to which they influence the spatial
+#' effect, must be selected or estimated.  
+#' 
+
+#' Additional next steps will include developing methods for comparing model fit
+#' (GMM does not lend itself well to typical likelihood-based measures like AIC
+#' or R-squared). Initial ideas include comparing mean squared error or sum of
+#' absolute error using bootstraping methods. I'll also need to find or build
+#' methods for computing marginal effects for continuous variables and
+#' prediction. Prediction for spatial econometric models can be quite
+#' complicated due to spillovers, so this is something we'll need to be careful
+#' with. It might be that these models are more useful for inference and the
+#' simpler OLS-based models can be used for prediction.  
+#' 
+
+#' Overall, the spatial econometric methods have little effect on inference
+#' regarding the explanatory variables. However, their inclusion does account
+#' for an additional source of unobserved variance in the OLS models, while the
+#' specific GMM methodology provides robustness against heteroskedastic errors.
+#' The spatial parameters themselves provide additional richness to the
+#' interpretation of the model.  
+#' 

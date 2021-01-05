@@ -415,6 +415,33 @@ df_dist_ua %>%
   df_culv <- df_culv %>% bind_cols(df_dist_uac)
 }
 
+# Public Land ----
+
+# Conditional download and unzip of Protected Area Database from USGS
+if(!file.exists(here("data/PADUS2_0_DOIRegion9_Shapefile.zip"))){
+  download.file(
+    "https://www.sciencebase.gov/catalog/file/get/5cc0e8c7e4b09b8c0b72951f?f=__disk__ad%2F4f%2F98%2Fad4f98886638258ed25d8a1d6553cb5c23c688c1",
+    here("data")
+  )
+}
+if(!file.exists(here("data/PADUS2_0_DOIRegion9_Shapefile/PADUS2_0Designation_DOIRegion9.shp"))){
+  unzip(
+    here("data/PADUS2_0_DOIRegion9_Shapefile.zip"),
+    exdir = here("data/PADUS2_0_DOIRegion9_Shapefile/")
+  )
+}
+
+# Read in geodatabase as simple feature polygons
+sf_pad <- st_read(here("data/PADUS2_0_DOIRegion9_Shapefile/PADUS2_0Designation_DOIRegion9.shp")) %>% st_zm() %>% st_transform(st_crs(df_culv))
+
+# Cover check on worksites with publicly managed land
+df_culv <-
+  df_culv %>%
+  mutate(
+    publand = st_intersects(df_culv, sf_pad %>% filter(Mang_Type != "PVT" & Mang_Type != "NGO") %>% st_transform(st_crs(df_culv)) %>% st_zm()),
+    publand = I(as.character(publand) != "integer(0)")
+  )
+
 # FIPS Codes ----
 # Add fips codes for culverts
 # Load county data to ID missing counties

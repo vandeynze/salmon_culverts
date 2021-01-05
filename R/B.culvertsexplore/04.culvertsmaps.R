@@ -161,8 +161,8 @@ base_map_draft <-
 
 # Build further maps ====
 fig_map_cost <-
-  # base_map_draft +
-  base_map +
+  base_map_draft +
+  # base_map +
   geom_point(
     data = df_culv_wrk_pure %>% filter(cost_per_culvert > 2000),
     aes(

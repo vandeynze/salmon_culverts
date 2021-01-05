@@ -17,7 +17,7 @@ library(janitor)
 library(here)
 
 # Build custom functions
-# This one un-factors years (or other numerically labelled factors) while retaining their numeric values
+# This one un-factors years (or other numerically labeled factors) while retaining their numeric values
 unfactor <-
   function(x) {
     as.numeric(as.character(x))
@@ -67,7 +67,7 @@ base_countcost_bar <-
   ) +
   scale_fill_brewer(
     "Costs Reported", 
-    palette = "Greens",
+    palette = "Paired",
     labels = c("No", "Yes")
   ) +
   theme(
@@ -100,7 +100,7 @@ base_countcost_line <-
   ) +
   scale_fill_brewer(
     "Costs Reported", 
-    palette = "Greens",
+    palette = "Paired",
     labels = c("No", "Yes")
   ) +
   theme(
@@ -198,7 +198,8 @@ base_costdist_violin <-
   # coord_flip() +
   scale_fill_brewer(
     palette = "Greens",
-    guide = NULL
+    guide = NULL,
+    direction = -1
   ) +
   scale_y_log10(
     "Cost per Culvert",
