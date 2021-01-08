@@ -40,7 +40,9 @@ library(ggcorrplot)
 library(gganimate)
 library(ggtext)
 library(gifski)
-
+library(sandwich)
+library(lmtest)
+library(nhdplusTools)
 
 opts_chunk$set(echo=FALSE)
 
@@ -422,12 +424,19 @@ df_culv <-
     fips = factor(fips),
     state_fips = factor(state_fips),
     here_class = as.character(here_class),
-    relevel(factor(here_speed), ref = 6),
+    here_speed = relevel(factor(here_speed), ref = 6),
     tot_dist = I(n_worksites * dist_mean)
   ) %>%
   left_join(
     key_nlcd, 
     by = c("nlcd_current" = "value")
+  ) %>%
+  filter(
+    !(nlcd_current_class %in% c("Barren", "Water")),
+    tot_dist < 10000
+  ) %>%
+  mutate(
+    nlcd_current_class = relevel(factor(nlcd_current_class), ref = "Forest")
   )
   
   
@@ -816,20 +825,18 @@ mod_nofe_nosource <-
   mod_full %>% update(. ~ . - project_source)
 
 # Focus on certain basins
-mod_basins_wore <-
-  mod_full %>% update(data = df_culv %>% filter(basin %in% c("SOUTHERN OREGON COASTAL", "NORTHERN OREGON COASTAL", "WILLAMETTE")))
-mod_basins_wwash <-
-  mod_full %>% update(data = df_culv %>% filter(basin %in% c("WASHINGTON COASTAL", "PUGET SOUND")))
+# mod_basins_wore <-
+#   mod_full %>% update(. ~ . - project_source - basin, data = df_culv %>% filter(basin %in% c("SOUTHERN OREGON COASTAL", "NORTHERN OREGON COASTAL", "WILLAMETTE")))
+# mod_basins_wwash <-
+#   mod_full %>% update(. ~ . - project_source - basin, data = df_culv %>% filter(basin %in% c("WASHINGTON COASTAL", "PUGET SOUND")))
 mod_basins_core <-
-  mod_full %>% update(data = df_culv %>% filter(basin %in% c("WASHINGTON COASTAL", "PUGET SOUND", "SOUTHERN OREGON COASTAL", "NORTHERN OREGON COASTAL", "WILLAMETTE")))
+  mod_full %>% update(. ~ . - project_source - basin, data = df_culv %>% filter(basin %in% c("WASHINGTON COASTAL", "PUGET SOUND", "SOUTHERN OREGON COASTAL", "NORTHERN OREGON COASTAL", "WILLAMETTE")))
 
 # Focus on certain sources
-mod_sources_owri <-
-  mod_full %>% update(. ~ . - project_source, data = df_culv %>% filter(project_source == "OWRI"))
-mod_sources_warco <-
-  mod_full %>% update(. ~ . - project_source, data = df_culv %>% filter(project_source == "WA RCO"))
 mod_sources_core <-
-  mod_full %>% update(. ~ . - project_source, data = df_culv %>% filter(project_source %in% c("WA RCO", "OWRI", "HABITAT WORK SCHEDULE", "BLM", "REO")))
+  mod_full %>% update(. ~ . - project_source - basin, data = df_culv %>% filter(project_source == "OWRI" | project_source == "WA RCO"))
+# mod_sources_warco <-
+#   mod_full %>% update(. ~ . - project_source - basin, data = df_culv %>% filter(project_source == "WA RCO"))
 
 #+ methods, echo=F, message=F, warning=F
 #' # Estimation  
@@ -846,19 +853,17 @@ mod_sources_core <-
 # extract_eq(mod_full)
 
 #'
-#' In addition to the fully specified model (mod_full), we present thirteen
+#' In addition to the fully specified model (mod_full), we present nine
 #' alternative models that include different fixed effects configurations or
 #' only sub-samples of the data focused on basin or reporting source criteria.
 #' For basins, we provide results estimated on a "core" group representing the
 #' five most frequently represented basins (Washington Coastal, Puget Sound,
-#' Southern Oregon Coastal, Northern Oregon Coastal, Willamette), as well as
-#' that core separated into basins primarily in Western Washington and Oregon
-#' respectively. For reporting sources, we focus on a similar "core" group (
-#' Washington Recreation and Conservation Office, Oregon Water Resources
-#' Inventory, Habitat Work Schedule, Bureau of Land Management, Regional
-#' Ecosystem Office [an interagency group]), as well as versions estimated only
-#' on OWRI and WA RCO projects.
-#'
+#' Southern Oregon Coastal, Northern Oregon Coastal, Willamette). Finally, we
+#' also estimate the model on only projects reported by OWRI and WA
+#' RCO, to examine how the two sources who report the most projects influence
+#' the overall results.
+#' 
+
 #' The resulting coefficients for the fixed effects and categorical variables,
 #' when exponentiated, can be interpreted as the ratio of average costs for that
 #' group relative those of the base group. Results for continuous variables are
@@ -867,12 +872,14 @@ mod_sources_core <-
 #' a worksite with a standard deviation lower for the variable.  
 #'
 #' ## Coefficient estimates  
+
 #+ echo=F
 # Present model estimates ----
 mods <- mget(ls(patter = "mod_"))
-mods <- mods[c(4, 1:3, 5:14)]
+mods <- mods[c(2, 1, 3:length(mods))]
+# mods <- mods[["mod_full"]]
 mods_pars <-
-  map_df(mods, tidy, .id = "model") %>%
+  map_df(mods, ~coeftest(., vcov. = vcovHC(., "HC3")) %>% tidy, .id = "model") %>%
   complete(model, term) %>%
   mutate(
     stars = case_when(
@@ -965,6 +972,7 @@ mods_pars %>%
   kable(
     caption = "Cost models",
     escape = FALSE,
+    table.attr = "class=\"fixedcol\"",
     align = 
       paste0(
         "l", 
@@ -984,35 +992,40 @@ mods_pars %>%
       " " = 1,
       " " = 1,
       "Alternative fixed effects" = 7,
-      "Sub-sample: basins" = 3,
-      "Sub-sample: sources" = 3
+      "Sub-samples" = 2
     )
   ) %>%
   row_spec(c(ncol(mods_pars) - 1, ncol(mods_pars) + ncol(mods_stats) - 2), extra_css = "border-bottom: 1px solid") %>%
-  add_footnote("* p < 0.1, ** p < 0.05, *** p < 0.01", notation = "none") %>%
+  add_footnote("* p < 0.1, ** p < 0.05, *** p < 0.01; Heteroskedasticity-consistent standard errors in parentheses (HC3)", notation = "none") %>%
   scroll_box(height = "800px")
+
 #' ## Model fit discussion  
 #'
-#' The full model has an adjusted R-squared of `r mod_full %>% glance() %>% pull(adj.r.squared) %>% round(3)`, indicating a decent model
-#' fit. The version of the model with no fixed effects has an adjusted R-squared
-#' of `r mod_nofe %>% glance() %>% pull(adj.r.squared) %>% round(3)`, indicating that a significant amount of variability is explained by
-#' the additional explanatory variables. When fixed effect categories are
-#' removed, we can check with fixed effects explain the most variation relative
-#' to each other. It looks like reporting source accounts for the most
-#' variation, followed by basin then year.  
-#'
-#' When the model is fit only on culverts in the "core" basins, adjusted
-#' R-squared improves slightly, indicating the model performs better in these
-#' basins relative to the ones with less representation in the sample. This is
-#' particularly true for the Western Oregon basins where the model still has a
-#' pretty high R-squared. It's harder to say whether the reduced R-squared for
-#' the Western Washington basins is due to weaker model fit or simply small
-#' sample size.  
+
+#' The full model has an adjusted R-squared of `r mod_full %>% glance() %>% pull(adj.r.squared) %>% round(3)`,
+#' indicating a decent model fit. The version of the model with no fixed effects has an adjusted R-squared of
+#' `r mod_nofe %>% glance() %>% pull(adj.r.squared) %>% round(3)`, indicating that a
+#' significant amount of variability is explained by the additional explanatory
+#' variables. When fixed effect categories are removed, we can check which fixed
+#' effects explain the most variation relative to each other. It looks like
+#' reporting source accounts for the most variation, followed by basin then
+#' year, based on the relative R-squareds of models where each is removed and
+#' where each is included on its own.
 #' 
-#' When the model is fit only on the "core" reporting sources, R-squared drops
-#' significantly. This might be evidence that including the additional sources
-#' is important for improving the overall fit of the model, even though less
-#' than 100 observations are lost.  
+
+#' We can also compare AIC and BIC; the model with only fixed effects for
+#' reporting source is preferred on the basis of BIC, which includes a stronger
+#' penalty for the number of estimated parameters, while the full model is
+#' preferred on the basis of AIC. We use the full model in what proceeds as the
+#' preferred model.  
+#' 
+
+#'
+#' When the model is fit only on culverts in the "core" basins or sources,
+#' adjusted R-squared falls dramatically. This may suggest that information from
+#' the additional sources and outside the core basins improves the fit of the
+#' model.  
+#' 
 
 #+ echo=F, message=F, warning=F
 # Plot figures ----
@@ -1020,12 +1033,25 @@ mods_pars %>%
 #'
 #' ## Slope and bankfull width interaction effect  
 #' 
+
+#' To demonstrate the nuance in how bankfull width and slope jointly influence
+#' costs, we present predicted cost contours across both variables.  
+#' 
+
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 # ____ Slope and width effect space ----
-
+mods <- mods["mod_full"]
 
 predict_cost_interaction <-
-  function(model, var1 = "slope", var2 = "bankfull_width", lims1 = c(0, 0.3), lims2 = c(0, 50), by1 = 0.01, by2 = 5) {
+  function(
+    model,
+    var1 = "slope",
+    var2 = "bankfull_width",
+    lims1 = c(0, 0.3),
+    lims2 = c(0, 50),
+    by1 = 0.01,
+    by2 = 5
+  ) {
     model %>%
       ggpredict(
         c(
@@ -1042,35 +1068,50 @@ predict_cost_interaction <-
       )
   }
 
-map_df(mods["mod_full"], predict_cost_interaction, .id = "model") %>%
+map_df(mods, predict_cost_interaction, .id = "model") %>% 
   # filter(model == "mod_full") %>%
   ggplot() +
   aes(
     x = slope,
     y = bankfull_width,
     z = predicted
+    # z = log(predicted)
   ) +
   geom_contour_filled(
-    breaks = c(
-      0,10000, 20000, 30000, 40000,
-      50000, 60000, 70000, 80000, 100000,
-      Inf
-    )
+    breaks = c(0, seq(10000, 20000, 2500), Inf)
+    # breaks = log(c(0, seq(10000, 25000, 2500), Inf))
+  ) +
+  geom_contour(
+    breaks = 
+      ggpredict(
+        mod_full,
+        "slope [mean]"
+      )["predicted"],
+    color = "black",
+    linetype = "solid"
+  ) +
+  geom_contour(
+    breaks = 
+      ggpredict(
+        mod_full,
+        "slope [mean]",
+        vcov.fun = "vcovHC",
+        vcov.type = "HC3",
+      )[c("conf.low", "conf.high")],
+    color = "black",
+    linetype = "dashed"
   ) +
   scale_fill_brewer(
     name = wrapper("Predicted cost per culvert"),
     direction = -1,
     palette = "Spectral",
     labels = c(
-      "$10,001 to $20,000",
-      "$20,001 to $30,000",
-      "$30,001 to $40,000",
-      "$40,001 to $50,000",
-      "$50,001 to $60,000",
-      "$60,001 to $70,000",
-      "$70,001 to $80,000",
-      "$80,001 to $100,000",
-      "Over $100,000"
+      "$0 to $10,000",
+      "$10,001 to $12,500",
+      "$12,501 to $15,000",
+      "$15,001 to $17,500",
+      "$17,501 to $20,000",
+      "Over $20,000"
     )
   ) +
   # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
@@ -1091,7 +1132,11 @@ map_df(mods["mod_full"], predict_cost_interaction, .id = "model") %>%
   coord_fixed(0.3/50) +
   labs(
     title = wrapper("Predicted average costs by bankfull width (m) and slope (% grade)"),
-    subtitle = wrapper("Predictions based on full model with other continuous variables at means and categorical variables at their modes; points represent underlying observations"),
+    subtitle = 
+      wrapper(
+        "Predictions based on full model with other continuous variables at means and categorical variables at their modes;
+        points represent underlying observations; line indicates cost contour at mean slope and banfull width with 95% c.i."
+      ),
     x = "Slope",
     y = "Bankfull width"
   )
@@ -1150,7 +1195,7 @@ df_culv %>%
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 # ____ Worksites and distance effect space ----
 
-map_df(mods["mod_full"], predict_cost_interaction, var1 = "n_worksites", var2 = "tot_dist", lims1 = c(0, 10), lims2 = c(0, 1e5), by1 = 0.1, by2 = 1000, .id = "model") %>%
+map_df(mods, predict_cost_interaction, var1 = "n_worksites", var2 = "tot_dist", lims1 = c(0, 6), lims2 = c(0, 10000), by1 = 0.1, by2 = 100, .id = "model") %>%
   # filter(model == "mod_full") %>%
   ggplot() +
   aes(
@@ -1159,27 +1204,28 @@ map_df(mods["mod_full"], predict_cost_interaction, var1 = "n_worksites", var2 = 
     z = predicted
   ) +
   geom_contour_filled(
-    breaks = c(
-      0,10000, 20000, 30000, 40000,
-      50000, 60000, 70000, 80000, 100000,
-      Inf
-    )
+    breaks =
+      c(
+        seq(0, 20000, 2500),
+        Inf
+      )
   ) +
   scale_fill_brewer(
     name = wrapper("Predicted cost per culvert"),
     direction = -1,
     palette = "Spectral",
-    labels = c(
-      "$10,001 to $20,000",
-      "$20,001 to $30,000",
-      "$30,001 to $40,000",
-      "$40,001 to $50,000",
-      "$50,001 to $60,000",
-      "$60,001 to $70,000",
-      "$70,001 to $80,000",
-      "$80,001 to $100,000",
-      "Over $100,000"
-    )
+    labels =
+      c(
+        "$0 to $2,500",
+        "$2,501 to $5,000",
+        "$5,001 to $7,500",
+        "$7,501 to $10,000",
+        "$10,001 to $12,500",
+        "$12,501 to $15,000",
+        "$15,001 to $17,500",
+        "$17,501 to $20,000",
+        "Over $20,000"
+      )
   ) +
   # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
   geom_violin(
@@ -1188,24 +1234,47 @@ map_df(mods["mod_full"], predict_cost_interaction, var1 = "n_worksites", var2 = 
       y = tot_dist/1000,
       z = NULL
     ),
-    data = df_culv %>% filter(n_worksites <= 10, tot_dist <= 1e5),
+    data = df_culv %>% filter(n_worksites <= 6, tot_dist <= 1e5),
     color = "grey30",
     alpha = 0.3
   ) +
   geom_point(
-    aes(x = 2, y = 15), shape = 4, size = 2, stroke = 2,
-    inherit.aes = FALSE
+    aes(x = x, y = y, shape = shape), size = 2, stroke = 2,
+    inherit.aes = FALSE,
+    data = tibble(x = c(1, 2), y = c(0, 5), shape = as.character(c(1, 4)))
   ) +
-  geom_contour(breaks = 64907, size = 1.2, color = "black", linetype = "dashed") +
+  geom_contour(
+    breaks = 
+      ggpredict(
+        mod_full,
+        "n_worksites [1]",
+        condition = c("tot_dist" = 0)
+      )["predicted"],
+    size = 1, color = "black",
+    linetype = "solid"
+  ) +
+  geom_contour(
+    breaks = 
+      ggpredict(
+        mod_full,
+        "n_worksites [1]",
+        condition = c("tot_dist" = 0),
+        vcov.fun = "vcovHC",
+        vcov.type = "HC3",
+      )[c("conf.low", "conf.high")],
+    color = "black",
+    linetype = "dashed"
+  ) +
   theme(
     # legend.position = "bottom" 
   ) +
-  # coord_fixed(10/100) +
-  scale_x_continuous(n.breaks = 6) +
+  coord_fixed(6/10) +
+  scale_x_continuous(n.breaks = 6, limits = c(0,6)) +
+  scale_shape_manual(values = c(4, 8), guide = NULL) +
   # scale_y_log10() +
   labs(
     title = wrapper("Predicted average costs by number of worksites and total distance between worksites (km)"),
-    subtitle = wrapper("Predictions based on full model with other continuous variables at means and categorical variables at their modes; points represent underlying observations"),
+    subtitle = wrapper("Predictions based on full model with other continuous variables at means and categorical variables at their modes; violin plots represent underlying observations"),
     x = "Number of worksites",
     y = "Total distance between worksites (km)"
   )
@@ -1213,16 +1282,26 @@ map_df(mods["mod_full"], predict_cost_interaction, var1 = "n_worksites", var2 = 
 #' We can repeat the exercise for the number of worksites and total distance
 #' between worksites to examine the trade-off between economies of scale from
 #' grouping multiple worksites under one project and increased costs in
-#' coordination as proxied by distance. The contours of this cost surface can be
-#' interpreted as the distance limit for which adding an additional worksite to
-#' a project is associated with economies or dis-economies of scale. For
-#' example, for a potential project with two worksites located 15km apart
-#' (indicated by an **X**), if a third worksite would increase the total
-#' distance between worksites beyond the distance where the cost contour
-#' (indicated by the dashed line) crosses three worksites, then expanding the
-#' project would be associated with dis-economies of scale. That these contours
-#' tend to be quite steep indicates strong potential for economies of scale when
-#' opprotunities to group nearby worksites under a single project arise.  
+#' coordination as proxied by total distance between sites. The contours of this
+#' cost surface can be interpreted as the distance limit for which adding an
+#' additional worksite to a project is associated with economies or
+#' dis-economies of scale.
+#' 
+
+#' For example, consider a potential project with one worksite (indicated by
+#' **X**) considering expanding to include a second worksite located 5km away
+#' (indicated by an **\***). Because the second worksite would increase the total
+#' distance between worksites below the distance where the cost contour
+#' (indicated by the solid line, with dashed lines indicating a 95% c.i.)
+#' crosses two worksites, expanding the project would be associated with
+#' economies of scale.
+#' 
+
+#' That these contours tend to be quite steep initially indicates strong
+#' potential for economies of scale when opportunities to group nearby worksites
+#' under a single project arise. As the number of worksites increases, these
+#' contours flatten, indicating that the maximum distance for an efficient
+#' additional worksite drops quickly.  
 #' 
 
 #' ### Continuous variables  
@@ -1243,7 +1322,16 @@ map_df(mods["mod_full"], predict_cost_interaction, var1 = "n_worksites", var2 = 
 # Custom wrapper of margins::margins for use with map_df
 margins_custom <-
   function(mod, terms) { # Takes a model and a character vector of terms
-    margins(mod, variables = terms, change = "sd") %>% summary %>% clean_names # Returns marginal effect of a 1 s.d. change in variable
+    margins(
+      mod, 
+      variables = terms, 
+      change = "sd", 
+      vcov = vcovHC(mod, "HC3")
+    ) %>% summary %>% clean_names %>% # Returns marginal effect of a 1 s.d. change in variable
+      rowwise() %>%
+      mutate(
+        sd = sd(mod$model[factor] %>% pull)
+      )
   }
 
 map_df(
@@ -1279,7 +1367,8 @@ map_df(
     ),
     group = case_when(
       factor %in% c("Bankfull width", "Stream slope") ~ "Stream features",
-      factor %in% c("Terrain slope", "Elevation", "Distance between worksites", "Number of worksites") ~ "Others",
+      factor %in% c("Terrain slope", "Elevation") ~ "Terrain features",
+      factor %in% c("Distance between worksites", "Number of worksites") ~ "Project scale",
       factor %in% c("Construction employment", "Ag/forestry employment", "Housing density", "Distance to urban area") ~ "Population features",
     ),
     estimate = exp(ame),
@@ -1294,57 +1383,81 @@ map_df(
     ),
     mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
   ) %>%
-  select(model, factor, estimate, conf.low, conf.high, mod.color, group) %>%
+  select(model, factor, estimate, conf.low, conf.high, p.value, group, sd) %>%
   ggplot() +
   geom_pointrange(
     aes(
-      y = reorder(factor, estimate),
+      y = factor,
       x = estimate,
       xmin = conf.low,
       xmax = conf.high,
       group = model,
-      color = mod.color
+      color = p.value
     ),
+    size = 1,
+    # shape = 21,
     position = position_dodge(width = 0.8)
   ) +
-  scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
+  geom_label(
+    aes(
+      label = round(estimate, 2),
+      y = factor
+    ),
+    x = -0.1
+    # size = 18
+  ) +
+  scale_color_manual(values = c("darkolivegreen3", "darkgreen", "grey60", "grey80")) +
   geom_vline(xintercept = 1, linetype = "dashed") +
-  xlim(0, 10) +
+  xlim(-0.25, 2.5) +
   labs(
     y = NULL,
     x = "Project average costs", 
     title = "Marginal effects for continuous variables",
     subtitle = "Project average costs relative to a single standard deviation shift",
-    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+    caption = "Lines indicate 95% confidence interval; Significant coefficients highlighted in dark"
   ) +
   theme(
     legend.position = "none",
-    plot.title.position = "plot"
+    plot.title.position = "plot",
+    text = element_text(size = 18)
   ) +
   facet_wrap("group", ncol = 1, scales = "free_y")
 
-#' A standard deviation increase in number of worksites are associated with 50%
+#' A standard deviation increase in number of worksites is associated with 46%
 #' lower average costs in the preferred model when other variables, most
 #' importantly distance between worksites, are held at their means. On the other
 #' hand, a standard deviation increase in distance between worksites is
-#' associated with average costs around three times as high, and, of course, one
-#' cannot be increased without also increasing the other. This conflict is at
-#' the core of the managerial tradeoffs to consider when grouping worksites
-#' under a single project.
+#' associated with average costs 13% higher, though this marginal effect is not
+#' statistically different from zero. This conflict is at the core of the
+#' managerial tradeoffs to consider when grouping worksites under a single
+#' project, as described in the preceeding section. That the negative
+#' association between costs and the number of worksites exceeds the positive
+#' association with total distance for the mean project suggests that there are
+#' unexploited opportunities for economies of scale.
 #'
-#' The average marginal effects for all population features other than distance
-#' to the nearest urban area are insignificant in the preferred model. However,
-#' in some of the alternative models, housing density has a slight positive
-#' association with costs. The housing density effect might be evidence of
-#' increased access costs due to negotiating with multiple landowners.  
+#' The average marginal effects for all population features are insignificant in
+#' the preferred model. However, in some of the alternative models, housing
+#' density and distance to urban area has a slight positive association with
+#' costs. The housing density effect might be evidence of increased access costs
+#' due to negotiating with multiple landowners, while the distance association
+#' may be evidence of increased costs due to lack of access to materials or
+#' labor. We are in the process of gathering improved proxies for each of these
+#' potential mechanisms.  
 #' 
 
-#' Bankfull width and stream slope both have significant positive associations in the
-#' preferred models. A standard deviation increase in either is associated with about
-#' fifty percent higher average costs when the other is held at its mean. As seen
-#' in the earlier figure and raw coefficients, this effect is driven largely by
-#' the interaction term in the model.  
+#' Bankfull width and stream slope both have positive associations in the
+#' preferred models. A standard deviation increase in either is associated with
+#' about fifty percent higher average costs when the other is held at its mean.
+#' As seen in the earlier figure and raw coefficients, this effect is driven
+#' largely by the interaction term in the model.
+#'
+#' Finally, a standard deviation increase in the terrain slope of the catchment
+#' the worksite is located in is associated with 19% higher costs. That is,
+#' culverts in hillier or more mountainous areas are more expensive to improve.
+#' On the otherhand, higher eleveations are associated with lower costs, though
+#' this relationship is not statistically significant.  
 #' 
+
 #' ## Fixed effects and categorical variables  
 #'   
 
@@ -1359,7 +1472,7 @@ map_df(
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 
 # Year FE
-map_df(mods[-4], tidy, conf.int = TRUE, .id = "model") %>%
+map_df(mods, ~ coeftest(., vcovHC(., "HC3")) %>% tidy(conf.int = TRUE), conf.int = TRUE, .id = "model") %>%
   filter(str_detect(term, "year")) %>%
   mutate(
     estimate = exp(estimate),
@@ -1395,6 +1508,7 @@ map_df(mods[-4], tidy, conf.int = TRUE, .id = "model") %>%
       group = model,
       color = mod.color
     ),
+    size = 1,
     position = position_dodge(width = 0.8)
   ) +
   scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
@@ -1404,7 +1518,7 @@ map_df(mods[-4], tidy, conf.int = TRUE, .id = "model") %>%
     y = "Project average costs", 
     title = "Year fixed effects",
     subtitle = "Project average costs relative to 2001 levels",
-    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+    caption = "Lines indicate 95% confidence interval; Significant coefficients highlighted in dark"
   ) +
   theme(
     legend.position = "none",
@@ -1413,20 +1527,23 @@ map_df(mods[-4], tidy, conf.int = TRUE, .id = "model") %>%
       hjust = 1,
       vjust = 0.75
     ),
+    text = element_text(size = 18),
     plot.title.position = "plot"
   )
 
-#' For the preferred model, project average costs are nearly twice as high than
-#' 2001 levels between 2004 and 2010, with the exception of 2008, when other
-#' factors are controlled for. Other models generally follow this pattern, while the
-#' models for Western Washington basins/sources have fairly extreme standard
-#' errors caused by small sample size.  
+#' For the preferred model, project average costs are as much as twice as high
+#' than 2001 levels between 2002 and 2007, when other factors are controlled
+#' for. In years that follow, costs return to around 2001 levels. In 2015, the
+#' last year of the sample, costs are nearly two-and-a-half times 2001 average
+#' costs, though this effect is weakly estimated and based on only a limited
+#' number of observations from this year.
 #' 
+
 #' ### Reporting source effects  
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 
 # Source FE
-plotdata <- map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
+map_df(mods, ~ coeftest(., vcovHC(., "HC3")) %>% tidy(conf.int = TRUE), conf.int = TRUE, .id = "model") %>%
   filter(str_detect(term, "source")) %>%
   mutate(
     source = str_remove(term, "project_source"),
@@ -1443,7 +1560,7 @@ plotdata <- map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
     mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
   ) %>%
   group_by(source) %>%
-  select(model, source, estimate, conf.low, conf.high, mod.color)
+  select(model, source, estimate, conf.low, conf.high, mod.color) %>%
 ggplot() +
   geom_pointrange(
     aes(
@@ -1455,7 +1572,7 @@ ggplot() +
       color = mod.color
     ),
     position = position_dodge(width = 0.6),
-    data = plotdata
+    size = 1
   ) +
   # geom_text(
   #   aes(
@@ -1474,7 +1591,8 @@ ggplot() +
     x = "Project average costs", 
     title = "Reporting source fixed effects",
     subtitle = "Project average costs relative to OWRI",
-    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+    caption = "Lines indicate 95% confidence interval; 
+    Significant coefficients highlighted in color"
   ) +
   # theme_clean() +
   theme(
@@ -1483,20 +1601,22 @@ ggplot() +
     strip.text.x = element_blank(),
     plot.background = element_rect(color = NA),
     plot.title.position = "plot",
-    plot.caption.position = "plot"
+    plot.caption.position = "plot",
+    text = element_text(size = 18)
   )
 
-#' BLM and REO have tightly estimated positive associations with costs. OWRI
-#' projects have among the lowest average costs, though WA RCO costs are
-#' similar. Habitat Work Schedule and SRFBD reported projects have coefficients
-#' estimated with less precision, but generally at similar point levels as BLM and REO.  
+#' BLM and REO have tightly estimated positive associations with costs, around
+#' two-and-a-half times costs observed from OWRI. OWRI projects have the lowest
+#' average costs, followed by WA RCO costs which are associated with 66% higher
+#' costs. Projects reported by Habitat Work Schedule and SRFBD coefficients
+#' estimated with less precision, but larger point levels than BLM and REO.
 #' 
 
 #' ### Basin effects  
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 
 # Basin FE
-map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
+map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int = TRUE, .id = "model") %>%
   filter(str_detect(term, "basin"), term != "cat_basin_slope") %>%
   mutate(
     basin = str_remove(term, "basin"),
@@ -1524,6 +1644,7 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
       group = model,
       color = mod.color
     ),
+    size = 1,
     position = position_dodge(width = 0.6)
   ) +
   scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
@@ -1533,7 +1654,7 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
     x = "Project average costs", 
     title = "Basin fixed effects",
     subtitle = "Project average costs relative to Southern Oregon Coastal",
-    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+    caption = "Lines indicate 95% confidence interval; Significant coefficients highlighted in dark"
   ) +
   # theme_clean() +
   theme(
@@ -1542,12 +1663,13 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
     strip.text.x = element_blank(),
     plot.background = element_rect(color = NA),
     plot.title.position = "plot",
-    plot.caption.position = "plot"
+    plot.caption.position = "plot",
+    text = element_text(size = 18)
   )
 
 #' After controlling for other factors with the preferred model, projects in the
-#' Puget Sound and Middle Columbia basins have the highest average costs,
-#' followed by the Washington Coastal and Lower Columbia basins. In general, the
+#' Puget Sound and Lower Columbia basins have the highest average costs,
+#' followed by the Washington Coastal and Middle Columbia basins. In general, the
 #' pattern seems to be that projects in Oregon basins have lower average costs,
 #' with the Willamette and both Oregon Coastal basins coming in with the lowest costs.  
 #' 
@@ -1556,7 +1678,7 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
 # Land class
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 
-map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
+map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), .id = "model") %>%
   filter(str_detect(term, "nlcd")) %>%
   mutate(
     nlcd_current = str_sub(term, 27),
@@ -1584,39 +1706,49 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
       group = model,
       color = mod.color
     ),
+    size = 1,
     position = position_dodge(width = 0.6)
   ) +
-  scale_color_manual(values = c("darkolivegreen3", "grey60", "grey80")) +
+  geom_label(
+    aes(
+      y = reorder(nlcd_current, estimate),
+      label = round(estimate, 2)
+    ),
+    x = 0.6
+  ) +
+  scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
   geom_vline(xintercept = 1, linetype = "dashed") +
   labs(
     y = NULL, 
     x = "Project average costs", 
     title = "NLCD land cover effects",
-    subtitle = "Project average costs relative to Barren",
-    caption = "Lines indicate 95% confidence interval; \nPreferred model highlighted in dark; Significant coefficients highlighted in color"
+    subtitle = "Project average costs relative to Forest",
+    caption = str_wrap("Lines indicate 95% confidence interval; Significant coefficients highlighted in dark")
   ) +
   # theme_clean() +
-  xlim(0, 10) +
+  xlim(0.5, 2.25) +
   theme(
     legend.position = "none",
     strip.background = element_blank(),
     strip.text.x = element_blank(),
     plot.background = element_rect(color = NA),
     plot.title.position = "plot",
-    plot.caption.position = "plot"
+    plot.caption.position = "plot",
+    text = element_text(size = 18)
   )
 
-#' Land cover identified at the worksite point seems to have little association
-#' with project costs. In nearly all cases, the coefficients associated with
-#' each land cover class are independently statistically insignificant. However,
-#' in all cases an F-test of the null hypothesis that all seven coeficients are
-#' jointly equal to zero is rejected even at low tolerances.  
+#' Cultivated cropland and developed land covers have positive associations with
+#' costs, relative to worksites found in areas with forest land cover. Shrubland
+#' also has a positive association, though the relationship is not statistically
+#' significant. The remaining land covers, wetlands and herbaceous, do not
+#' appear to have different costs than the forest land cover baseline.  
+#' 
 
 #' ### Road feature effects  
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 
 # Road features
-map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
+map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), .id = "model") %>%
   filter(str_detect(term, "here")) %>%
   mutate(
     here_var = case_when(
@@ -1647,7 +1779,15 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
       group = model,
       color = mod.color
     ),
+    size = 1,
     position = position_dodge(width = 0.6)
+  ) +
+  geom_label(
+    aes(
+      y = here_var,
+      label = round(estimate, 2)
+    ),
+    x = 0.6
   ) +
   scale_color_manual(values = c("darkgreen", "darkolivegreen3", "grey60", "grey80")) +
   geom_vline(xintercept = 1, linetype = "dashed") +
@@ -1655,30 +1795,33 @@ map_df(mods, tidy, conf.int = TRUE, .id = "model") %>%
     y = NULL, 
     x = "Project average costs", 
     title = "Road feature effects",
-    subtitle = "Project average costs relative to speed class 3",
-    caption = "Lines indicate 95% confidence interval; \nPreferred model highlighted in dark; Significant coefficients highlighted in color"
+    subtitle = str_wrap("Project average costs relative to speed class 8 (smallest roads)"),
+    caption = str_wrap("Lines indicate 95% confidence interval; Significant coefficients highlighted in dark")
   ) +
   # theme_clean() +
+  xlim(0.5, 3.5) +
   theme(
     legend.position = "none",
     strip.background = element_blank(),
     strip.text.x = element_blank(),
     plot.background = element_rect(color = "white"),
     plot.title.position = "plot",
-    plot.caption.position = "plot"
+    plot.caption.position = "plot",
+    text = element_text(size = 18)
   )
 
-#' The only consistent association found among the road feature variables is its
-#' paved status. Paved roads are associated with worksites roughly 50 percent
-#' higher than unpaved worksites. There is weak evidence that roads in higher
-#' speed classes are associated with higher costs, but this association is weakly estimated.  
-#'
+#' There appears to be a positive association between road speed class and
+#' project costs, where the largest, most heavily trafficked roads are
+#' associated with higher worksite costs. The point estimates for the largest
+#' speed class have large standard errors, likely due to lower representation of
+#' these roads in the sample.  
+#' 
 
 #' ### Scope and scale effects  
 #+ echo=F, message=F, warning=F, fig.dim=c(8,4)
 
 # Project scope effects
-map_df(mods[-14], tidy, conf.int = TRUE, .id = "model") %>%
+map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int = TRUE, .id = "model") %>%
   filter(str_detect(term, "action")) %>%
   mutate(
     action_var = case_when(
@@ -1709,6 +1852,7 @@ map_df(mods[-14], tidy, conf.int = TRUE, .id = "model") %>%
       group = model,
       color = mod.color
     ),
+    size = 1,
     position = position_dodge(width = 0.6)
   ) +
   scale_color_manual(values = c("darkolivegreen3", "grey60", "grey80")) +
@@ -1718,7 +1862,7 @@ map_df(mods[-14], tidy, conf.int = TRUE, .id = "model") %>%
     x = "Project average costs", 
     title = "Project scope effects",
     subtitle = "Project average costs relative to a project with only culvert improvements",
-    caption = "Lines indicate 95% confidence interval; Preferred model highlighted in dark; Significant coefficients highlighted in color"
+    caption = "Lines indicate 95% confidence interval; Significant coefficients highlighted in dark"
   ) +
   # theme_clean() +
   theme(
@@ -1727,13 +1871,15 @@ map_df(mods[-14], tidy, conf.int = TRUE, .id = "model") %>%
     strip.text.x = element_blank(),
     plot.background = element_rect(color = NA),
     plot.title.position = "plot",
-    plot.caption.position = "plot"
+    plot.caption.position = "plot",
+    text = element_text(size = 18)
   )
 
-#' There is some evidence from the models that installations are
-#' more expensive than improvements, which are more expensive than removals,
-#' though this association largely washes out when the full suite of fixed effects is
-#' included.  
+#' There is some evidence from the models that installations are more expensive
+#' than improvements (the baseline) and removals, though this association
+#' largely washes out when the full suite of fixed effects is included. This may
+#' indicate that distinctions between these categories in the data are loosely
+#' defined.
 #' 
 
 # ____ Maps ----
@@ -1741,16 +1887,27 @@ map_df(mods[-14], tidy, conf.int = TRUE, .id = "model") %>%
 #' 
 
 #' In this section, we map both the residuals and predicted values for each
-#' in-sample worksite. Patterns will reveal areas where costs are more expensive
-#' and where missing explanatory variables may be effecting costs over a specific
-#' region.
+#' in-sample worksite. Patterns may reveal areas where costs are more expensive,
+#' where missing explanatory variables may be effecting costs over a specific
+#' region. They also demonstrate how these models could be used to project costs
+#' for the full inventories of fish passage barriers documented by state agencies.  
 #' 
 
-#+ message=F, warnings=F, fig.dim=c(8,8)
+#+ message=F, warnings=F, echo=F, fig.dim=c(8,8)
 sf_us <- getData("GADM", country = "USA", download = TRUE, path = here("output"), level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c('California', 'Nevada', 'Utah', 'Wyoming', 'Montana', 'Idaho', 'Oregon', 'Washington'))
 sf_canada <- getData("GADM", country = "CAN", download = TRUE, path = here("output"), level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c("British Columbia", "Alberta"))
 sf_base <- 
   rbind(sf_us, sf_canada)
+
+if(file.exists(here("output/wdb/WBD_National_GDB.zip"))) {
+  sf_basin <-
+    nhdplusTools::download_wbd(here("output/wdb")) %>% st_read(layer = "WBDHU6", quiet = TRUE)
+} else {
+  sf_basin <-
+    st_read(here("output/wdb/WBD_National_GDB.gdb"), layer = "WBDHU6", quiet = TRUE)
+}
+
+sf_basin <- sf_basin %>% filter(name %in% c("Puget Sound", "Willamette", "John Day", "Washington Coastal", "Southern Oregon Coastal", "Northern Oregon Coastal", "Lower Columbia", "Middle Columbia", "Upper Columbia"))
 
 # sf_roads <-
 #   opq(
@@ -1852,6 +2009,7 @@ sf_base <-
 base_map_draft <-
   ggplot() +
   geom_sf(data = sf_base, fill = "antiquewhite1", color = "black") +
+  geom_sf(data = sf_basin, fill = NA, color = "red") +
   coord_sf(
     xlim = c(-126, -111.5),
     ylim = c(41.5, 49.5),
@@ -1871,6 +2029,7 @@ base_map_draft <-
     x = NULL,
     y = NULL
   )
+#+ message=F, warnings=F, fig.dim=c(8,8)
 
 # Residuals map
 sf_culv <-
@@ -1887,7 +2046,7 @@ sf_culv <-
     geometry = NULL
   ) %>%
   st_as_sf(coords = c("long", "lat")) %>% st_set_crs("WGS84") %>%
-  bind_cols(residuals = mod_nofe_nobasin$residuals)
+  bind_cols(residuals = mod_full$residuals)
 
 base_map_draft +
   # base_map +
@@ -1916,7 +2075,7 @@ base_map_draft +
   ) +
   ggtitle(
     "Map of residuals",
-    # "Residuals measured on log scale \n  "
+    str_wrap("Residuals measured on log scale; \nRed boarders indicate basin (HUC6) boundaries for included basins")
   ) +
   coord_sf(
     xlim = c(-126, -117),
@@ -1924,11 +2083,38 @@ base_map_draft +
     expand = FALSE
   )
 
+#' By looking at the map of residuals, we can examine where the model performs
+#' better or worse. Few obvsious patterns emerge. There seems to be some
+#' clustering of positive residuals in the Portland area, suggesting that costs
+#' are underestimated for that region. Otherwise, the residuals appear to be
+#' fairly well distributed.  
+#' 
+
+#+ message=F, warnings=F, fig.dim=c(8,8)
 # Predicted values
 base_map_draft +
   # base_map +
   geom_sf(
-    data = sf_culv %>% bind_cols(yhat_2015_owri = exp(predict(mod_nofe_nobasin, sf_culv %>% mutate(project_year = 2015, n_worksites = 1, tot_dist = 0, project_source = "OWRI")))),
+    data = 
+      sf_culv %>% 
+      bind_cols(
+        yhat_2015_owri = 
+          exp(
+            predict(
+              mod_full,
+              sf_culv %>% 
+                mutate(
+                  project_year = 2015, 
+                  n_worksites = 1,
+                  tot_dist = 0,
+                  project_source = "OWRI",
+                  basin = "SOUTHERN OREGON COASTAL")
+              )
+            ),
+        
+        ),
+      # pull(yhat_2015_owri) %>% summary
+      # filter(yhat_2015_owri < 200000),
     aes(
       # x = longitude,
       # y = latitude,
@@ -1951,7 +2137,7 @@ base_map_draft +
   ) +
   ggtitle(
     "Map of predicted values",
-    # str_wrap("Year set to 2015, source set to OWRI, and number of culverts set to one for all worksites")
+    str_wrap("Year set to 2015, source set to OWRI, basin set to Southern Oregon Coastal, and number of culverts set to one for all worksites; Red boarders indicate basin (HUC6) boundaries for included basins")
   ) +
   coord_sf(
     xlim = c(-126, -117),
@@ -1959,9 +2145,151 @@ base_map_draft +
     expand = FALSE
   )
 
-#' # Benefit - cost visualizations  
-#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+#' The map of predicted values highlights areas where physical conditions (i.e.
+#' road, stream, and terrain features) have the largest impact on costs. By
+#' holding year, basin, reporting source, and project scale effects constant, we
+#' can identify where the remaining variables in the model predict higher or
+#' lower costs. Here, we see higher costs particularly in the Southern Oregon
+#' Coastal basin. At the mouth of the Columbia and around the Portland area,
+#' there appear to be clusters of lower cost projects. The John Day basin
+#' projects in Eastern Oregon also appear to have lower costs than other areas.  
 
+#+ message=F, warnings=F, fig.dim=c(8,8)
+# Prediction std.err.
+base_map_draft +
+  # base_map +
+  geom_sf(
+    data = 
+      sf_culv %>% 
+      bind_cols(
+        yhat_2015_owri = 
+          exp(
+            predict(
+              mod_full,
+              sf_culv %>% 
+                mutate(
+                  project_year = 2015, 
+                  n_worksites = 1,
+                  tot_dist = 0,
+                  project_source = "OWRI",
+                  basin = "SOUTHERN OREGON COASTAL"),
+              
+            )
+          ),
+        se_2015_owri = 
+          predict(
+            mod_full,
+            sf_culv %>% 
+              mutate(
+                project_year = 2015, 
+                n_worksites = 1,
+                tot_dist = 0,
+                project_source = "OWRI",
+                basin = "SOUTHERN OREGON COASTAL"),
+            se.fit = TRUE
+          )[["se.fit"]]        
+      ) %>%
+      filter(se_2015_owri < 0.8),
+    aes(
+      # x = longitude,
+      # y = latitude,
+      # fill = yhat_2015_owri
+      fill = exp(se_2015_owri)
+    ),
+    shape = 21,
+    color = "black",
+    stroke = 0.1,
+    size = 2.5
+  ) +
+  scale_fill_distiller(
+    str_wrap("Prediction standard error"),
+    # palette = "YlGn",
+    # palette = "Spectral",
+    # labels = dollar_format(accuracy = 1),
+    direction = 1,
+    # trans = "log10",
+    na.value = "grey70"
+  ) +
+  ggtitle(
+    "Map of prediction standard errors",
+    str_wrap("Year set to 2015, source set to OWRI, basin set to Southern Oregon Coastal, and number of culverts set to one for all worksites; Red boarders indicate basin (HUC6) boundaries for included basins")
+  ) +
+  coord_sf(
+    xlim = c(-126, -117),
+    ylim = c(41.5, 49.5),
+    expand = FALSE
+  )
+
+#' This map shows the standard errors on the cost predictions for each worksite
+#' in the sample. Darker points indicate increased uncertainty. Uncertainty
+#' appears to be the highest in the John Day and Puget Sound regions. This
+#' suggests that costs estimates are the least reliable for these areas, and
+#' could be improved with more observations from these regions.  
+#'   
+
+#' Finally, we present a number of summary statistics by basin for the predictions and metrics presented above.  
+
+#+ echo=F, message=F, warning=F
+sf_culv %>% 
+  bind_cols(
+    yhat_2015_owri = 
+      exp(
+        predict(
+          mod_full,
+          sf_culv %>% 
+            mutate(
+              project_year = 2015, 
+              n_worksites = 1,
+              tot_dist = 0,
+              project_source = "OWRI",
+              basin = "SOUTHERN OREGON COASTAL")
+        )
+      ),
+    se_2015_owri = 
+      predict(
+        mod_full,
+        sf_culv %>% 
+          mutate(
+            project_year = 2015, 
+            n_worksites = 1,
+            tot_dist = 0,
+            project_source = "OWRI",
+            basin = "SOUTHERN OREGON COASTAL"),
+        se.fit = TRUE
+      )[["se.fit"]]        
+  ) %>%
+  st_drop_geometry() %>%
+  rename(Basin = basin) %>%
+  group_by(Basin) %>%
+  summarize(
+    `Mean Predicted Value` = comma(round(mean(yhat_2015_owri))),
+    `Predicted Value Coefficient of Variation` = round(sd(yhat_2015_owri)/mean(yhat_2015_owri), 3),
+    `Mean Prediction Standard Error` = round(mean(se_2015_owri), 3)
+    ) %>%
+  arrange(`Mean Predicted Value`) %>%
+  kable(
+    caption = "Prediction charactaristics across basins",
+    escape = FALSE,
+    align = "lccc"
+  ) %>%
+  kable_styling("hover", fixed_thead = TRUE)
+
+#' The mean predicted value by basin indicates basins where culverts are more or
+#' less expensive. Southern Oregon Coastal culvert worksites are the most
+#' expensive, while John Day basin worksites are the least expensive. The
+#' predicted value coefficient of variation shows where costs vary the most
+#' *within* a basin on a consistent scale. Costs vary the most within the Upper
+#' Columbia basin, and the least in the John Day basin. Finally, the mean
+#' prediction standard error shows where model uncertainty is highest. As
+#' observed on the map, John Day and Puget Sound basins have the largest
+#' prediction standard errors, while the Western Oregon basins (Northern and
+#' Southern Oregon Coastal, and the Lower Columbaia) have the smallest.  
+#'   
+
+
+#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+#' # Benefit - cost visualizations  
+#'   
 
 # ____ Benefits and costs plots ----
 #' As a simple examination of what kind of decision rule might be in play for
@@ -1970,9 +2298,39 @@ base_map_draft +
 #' cost-targeting rule, all worksites would be to the left of a cost threshold,
 #' while for a benefit-targeting rule all would be above a benefit threshold. A
 #' benefit-cost ratio standard would be above an upward sloping line.  
+#' 
+
+#' It should be acknowledged there are severe limitations to this application.
+#' Most obviously, without including data on un-attempted projects we are left
+#' assuming the total possible project space is "dense" (i.e. in any point in
+#' cost-benefit space we don't observe a project, we assume a project there
+#' would be possible). This assumption can be addressed by incorporating data
+#' from state agency culvert inventories. Second, our benefits measure is rough
+#' at best, and alternative measures that account for upstream/downstream
+#' barriers as well as habitat conditions and species ranges may more
+#' realistically describe the decision space. Finally, in looking across
+#' projects from the full study area, we may miss heterogeneity in targeting
+#' rules across jurisdictions or regions. We partially address this final point
+#' by also examining the distributions of subsets of worksites by region and year.
 
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
-sf_culv %>% bind_cols(yhat_2015_owri = exp(predict(mod_nofe_nobasin, sf_culv %>% mutate(project_year = 2015, n_worksites = 1, tot_dist = 0, project_source = "OWRI")))) %>%
+sf_culv %>% 
+  bind_cols(
+    yhat_2015_owri = 
+      exp(
+        predict(
+          mod_full,
+          sf_culv %>% 
+            mutate(
+              project_year = 2015, 
+              n_worksites = 1, 
+              tot_dist = 0,
+              project_source = "OWRI",
+              basin = "SOUTHERN OREGON COASTAL"
+            )
+          )
+        )
+  ) %>%
   mutate(
     # basin = fct_lump_lowfreq(basin, "OTHER"),
     basin = fct_lump_min(basin, 35, other_level = "OTHER")
@@ -1983,19 +2341,114 @@ sf_culv %>% bind_cols(yhat_2015_owri = exp(predict(mod_nofe_nobasin, sf_culv %>%
     x = yhat_2015_owri,
     y = upst_dist,
     # y = tot_stream_length,
-    # color = project_year
+    color = basin
   ) + 
   geom_point() +
   scale_y_log10("Total upstream length (km)", label = label_comma(1)) +
   scale_x_log10("Cost per culvert (K $USD)", label = label_dollar(1, scale = 0.001)) +
-  scale_color_fermenter("Project year", palette = "Spectral", show.limits = TRUE, guide = guide_colorsteps(barwidth = 10, title.position = "top")) +
+  # scale_color_fermenter("Project year", palette = "Spectral", show.limits = TRUE, guide = guide_colorsteps(barwidth = 10, title.position = "top")) +
+  scale_color_brewer(type = "qual", palette = 2) +
   theme(
-    legend.position = "bottom",
-    plot.title.position = "plot"
+    legend.position = "none",
+    plot.title.position = "plot",
+    text = element_text(size = 18),
+    axis.text = element_text(size = 10),
+    strip.text = element_text(size = 10)
+  ) +
+  # facet_wrap("basin") +
+  ggtitle("Worksites in cost - benefit space", "Both on a log scale for clarity; Colors indicate basin") +
+  coord_fixed(1000/4500)
+
+sf_culv %>% 
+  bind_cols(
+    yhat_2015_owri = 
+      exp(
+        predict(
+          mod_full,
+          sf_culv %>% 
+            mutate(
+              project_year = 2015, 
+              n_worksites = 1, 
+              tot_dist = 0,
+              project_source = "OWRI",
+              basin = "SOUTHERN OREGON COASTAL"
+            )
+        )
+      )
+  ) %>%
+  mutate(
+    # basin = fct_lump_lowfreq(basin, "OTHER"),
+    basin = fct_lump_min(basin, 35, other_level = "OTHER")
+  ) %>%
+  ggplot() + 
+  aes(
+    # x = cost_per_culvert,
+    x = yhat_2015_owri,
+    y = upst_dist,
+    # y = tot_stream_length,
+    color = basin
+  ) + 
+  geom_point() +
+  scale_y_log10("Total upstream length (km)", label = label_comma(1)) +
+  scale_x_log10("Cost per culvert (K $USD)", label = label_dollar(1, scale = 0.001)) +
+  # scale_color_fermenter("Project year", palette = "Spectral", show.limits = TRUE, guide = guide_colorsteps(barwidth = 10, title.position = "top")) +
+  scale_color_brewer(type = "qual", palette = 2) +
+  theme(
+    legend.position = "none",
+    plot.title.position = "plot",
+    text = element_text(size = 18),
+    axis.text = element_text(size = 10),
+    strip.text = element_text(size = 10)
   ) +
   facet_wrap("basin") +
-  ggtitle("Worksites in cost - benefit space", "Both on a log scale for clarity")
-  # coord_fixed(0.75)
+  ggtitle("Worksites in cost - benefit space, by basin", "Both on a log scale for clarity; Colors indicate basin") +
+  coord_fixed(1000/4500)
+
+sf_culv %>% 
+  bind_cols(
+    yhat_2015_owri = 
+      exp(
+        predict(
+          mod_full,
+          sf_culv %>% 
+            mutate(
+              project_year = 2015, 
+              n_worksites = 1, 
+              tot_dist = 0,
+              project_source = "OWRI",
+              basin = "SOUTHERN OREGON COASTAL"
+            )
+        )
+      )
+  ) %>%
+  mutate(
+    # basin = fct_lump_lowfreq(basin, "OTHER"),
+    basin = fct_lump_min(basin, 35, other_level = "OTHER")
+  ) %>%
+  ggplot() + 
+  aes(
+    # x = cost_per_culvert,
+    x = yhat_2015_owri,
+    y = upst_dist,
+    # y = tot_stream_length,
+    color = basin
+  ) + 
+  geom_point() +
+  scale_y_log10("Total upstream length (km)", label = label_comma(1)) +
+  scale_x_log10("Cost per culvert (K $USD)", label = label_dollar(1, scale = 0.001)) +
+  # scale_color_fermenter("Project year", palette = "Spectral", show.limits = TRUE, guide = guide_colorsteps(barwidth = 10, title.position = "top")) +
+  scale_color_brewer(type = "qual", palette = 2) +
+  theme(
+    legend.position = "none",
+    plot.title.position = "plot",
+    text = element_text(size = 18),
+    axis.text = element_text(size = 10),
+    strip.text = element_text(size = 10)
+  ) +
+  facet_wrap("project_year", nrow = 3) +
+  ggtitle("Worksites in cost - benefit space, by year", "Both on a log scale for clarity; Colors indicate basin") +
+  coord_fixed(1000/4500)
+# coord_fixed(0.75)
 
 #' No evidence that projects are selected on cost or benefit-cost ratio basis.
 #' It does somewhat appear that the observed projects follow a benefit targeting
@@ -2010,31 +2463,37 @@ sf_culv %>% bind_cols(yhat_2015_owri = exp(predict(mod_nofe_nobasin, sf_culv %>%
 #' relative to the universe of potential projects, which should provide more
 #' clarity to the above analysis.  
 
-#+ echo=F, warning=F, message=F
+#+
 #' # Conclusions  
 #' ## Key findings  
 #'   
 
 # Key findings ----
+
 #' 1. Stream features slope and bankfull width increase average costs, especially when they are both high.  
+
 #' 2. Paved roads are more expensive to improve, while other road variables have little discernible effect.  
+
 #' 3. Some evidence of economies of scale, in that worksites associated with
 #' projects associated with more worksites tend to have lower average costs.
 #' This effect is countered by a postive association between costs and total
 #' distance between worksites.  
-#'   
+
+#' 4. John Day basin worksites are the lowest cost and lowest variance in costs
+#' between worksites. However, the model error is also highest in this basin.
+#' Costs are highest in the Southern Oregon Coastal and Washington Coastal
+#' basins. Cost variance is also particularly high in the Upper Columbia.  
 
 #+
 #' ## Next steps  
 #'   
 # Next steps ----
-#' 1. More variables: additional population proximity measures, including road-routed distance to population center and parcel density data    
-#' 2. Improved benefit estimates: total upstream distance by species and habitat use, weighted by catchment road density, intrinsic habitat potential measures, etc.  
+#' 1. More variables: additional population proximity measures, including distance to materials suppliers (gravel, pavement, metal, machinary, etc.) and parcel density data  
+#' 2. Improved benefit estimates: total upstream distance by species and habitat use, accounting for upstream/downstream blockages, habitat potential measures, etc.  
 #' 3. Forecast costs/benefits for culvert inventories from Oregon and Washington  
-#' 4. Integrate Lorenz curve and Gini coefficient analysis from Babcock et al. (1997) for more consistent comparison between cost and benefit concentration amongst worksites  
-#' 5. Dig more into potential pitfalls of assigning project-level costs to worksite-level observations  
-#' 6. Incorporate Robby's findings on spatially dependent error structures  
-#' 7. Highlight distribution of high-benefit/low-cost projects relative to traditional tribal lands, different recreational fishing areas, etc.
+#' 4. Integrate Lorenz curve and Gini coefficient analysis from Babcock et al. (1997) for more consistent comparison between cost and benefit concentration among worksites  
+#' 5. Highlight distribution of high-benefit/low-cost projects relative to traditional tribal lands, different recreational fishing areas, etc.  
+#' 6. Analyze how outcomes (cost/benefit targeting efficiency relative to ratio targeting, cost levels/variation, model uncertainty) across culvert ownership, jursdictions  
 #' 
 
 
