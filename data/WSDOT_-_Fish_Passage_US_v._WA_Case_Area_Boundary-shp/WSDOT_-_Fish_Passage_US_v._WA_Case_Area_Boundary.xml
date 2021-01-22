@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><metadata>
+    <idinfo>
+        <citation>
+            <citeinfo>
+                <origin/>
+                <title>Fish Passage Inventory - US v. WA Case Area Boundary</title>
+                <geoform>vector digital data</geoform>
+                <onlink>https://data.wsdot.wa.gov/arcgis/rest/services/Shared/FishPassageData/MapServer/0</onlink>
+                <onlink>https://www.wsdot.wa.gov/mapsdata/geodatacatalog/Maps/noscale/DOT_EAO/FishPassageInventory/FishPassageInventory.zip</onlink>
+            </citeinfo>
+        </citation>
+        <descript>
+            <abstract>This feature class contains the case area boundary for U. S. District Court Injunction No. C70-9213, Subproceeding No. 01-1, the U.S. versus Washington State (US v. WA). In 2001, 21 western Washington treaty tribes filed suit in U.S. District Court alleging that the existence of State-owned barrier culverts under roads were a violation of treaty rights. On March 29, 2013, U.S. District Court Judge Martinez agreed with the tribes and issued a permanent injunction for the state to accelerate barrier correction on salmon and steelhead streams within the area of the state covered by the Stevens Treaties. The case area is comprised of Water Resource Inventory Areas 1 to 23.</abstract>
+            <purpose>This feature class shows the extent of the case area in US v. WA.</purpose>
+        </descript>
+        <status>
+            <progress>Complete</progress>
+            <update>None planned</update>
+        </status>
+        <spdom>
+            <bounding>
+                <westbc>-124.925505</westbc>
+                <eastbc>-120.647968</eastbc>
+                <northbc>49.035184</northbc>
+                <southbc>46.285305</southbc>
+            </bounding>
+        </spdom>
+        <keywords>
+            <theme>
+                <themekt>None</themekt>
+                <themekey>fish passage barrier</themekey>
+                <themekey>fish passage</themekey>
+                <themekey>culvert</themekey>
+                <themekey>case area</themekey>
+                <themekey>boundary</themekey>
+                <themekey>US v. WA</themekey>
+            </theme>
+            <place>
+                <placekt>None</placekt>
+                <placekey>WA</placekey>
+                <placekey>Washington</placekey>
+            </place>
+        </keywords>
+        <accconst>None</accconst>
+        <useconst>Data provided here is used by the Washington State Department of Transportation's (WSDOT) transportation partners, government entities, schools, private businesses, and the general public. The WSDOT GIS Community actively promotes inter-agency data exchange and resource sharing. WSDOT shall not be liable for any activity involving this data with regard to lost profits or savings or any other consequential damages; or the fitness for use of the data for a particular purpose; or the installation of the data, its use, or the results obtained.</useconst>
+        <ptcontac>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>WSDOT Environmental Services, Stream Restoration Program</cntorg>
+                    <cntper>Kathy Prosser</cntper>
+                </cntorgp>
+                <cntpos>Fish Passage Data Steward</cntpos>
+                <cntvoice>360 705-7478</cntvoice>
+                <cntemail>prossek@wsdot.wa.gov</cntemail>
+            </cntinfo>
+        </ptcontac>
+        <datacred>Washington State Department of Transportation</datacred>
+        <secinfo>
+            <secclass>Unclassified</secclass>
+        </secinfo>
+        <native>Version 6.2 (Build 9200) ; Esri ArcGIS 10.5.1.7333</native>
+    </idinfo>
+    <dataqual>
+        <complete>Data set is complete</complete>
+        <lineage>
+            <procstep>
+                <procdesc>Selected WRIAs 1-23 from WAECY and WADNR's 1;24K WRIA dataset and dissolved.</procdesc>
+                <proccont>
+                    <cntinfo>
+                        <cntorgp>
+                            <cntorg>WSDOT Environmental Services, Stream Restoration Program</cntorg>
+                            <cntper>Kathy Prosser</cntper>
+                        </cntorgp>
+                        <cntpos>Fish Passage Data Steward</cntpos>
+                        <cntvoice>(360) 705-7478</cntvoice>
+                        <cntemail>prossek@wsdot.wa.gov</cntemail>
+                    </cntinfo>
+                </proccont>
+            </procstep>
+        </lineage>
+    </dataqual>
+    <spdoinfo>
+        <direct>Vector</direct>
+    </spdoinfo>
+    <eainfo>
+        <detailed>
+            <enttyp>
+                <enttypl>FishPassageInv.DBO.FishPassageCaseAreaBound</enttypl>
+                <enttypd>Arc Attribute Table</enttypd>
+                <enttypds>ArcInfo</enttypds>
+            </enttyp>
+            <attr>
+                <attrlabl>Shape</attrlabl>
+                <attrdef>Feature geometry.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                    					
+                    <udom>Coordinates defining the features.</udom>
+                    				
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>Shape_Length</attrlabl>
+                <attrdef>Length of feature in internal units.</attrdef>
+                <attrdefs>Esri</attrdefs>
+                <attrdomv>
+                    					
+                    <udom>Positive real numbers that are automatically generated.</udom>
+                    				
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>Shape_Area</attrlabl>
+                <attrdef>Area of feature in internal units squared.</attrdef>
+                <attrdefs>Esri</attrdefs>
+                <attrdomv>
+                    					
+                    <udom>Positive real numbers that are automatically generated.</udom>
+                    				
+                </attrdomv>
+            </attr>
+            <attr>
+                <attrlabl>OBJECTID</attrlabl>
+                <attrdef>Internal feature number.</attrdef>
+                <attrdefs>ESRI</attrdefs>
+                <attrdomv>
+                    					
+                    <udom>Sequential unique whole numbers that are automatically generated.</udom>
+                    				
+                </attrdomv>
+            </attr>
+        </detailed>
+    </eainfo>
+    <metainfo>
+        <metd>20180303</metd>
+        <metc>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>WSDOT Enviromental Services, Stream Restoration Program</cntorg>
+                    <cntper>Kathy Prosser</cntper>
+                </cntorgp>
+                <cntpos>Fish Passage Data Steward</cntpos>
+                <cntvoice>360 705-7478</cntvoice>
+                <cntemail>Kathy.Prosser@wsdot.wa.gov</cntemail>
+            </cntinfo>
+        </metc>
+        <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+        <metstdv>FGDC-STD-001-1998</metstdv>
+        <mettc>local time</mettc>
+        <metsi>
+            <metsc>Unclassified</metsc>
+        </metsi>
+    </metainfo>
+</metadata>
