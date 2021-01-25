@@ -11,7 +11,7 @@
 #' ---
 
 #' This document summarizes spatially-derived variables for PNSHP culvert work
-#' sites. These variables are collected by linking the work site points to other
+#' sites. These variables are collected by linking the worksite points to other
 #' spatial data sets via polygon covers or identifying the nearest line.
 #' Variables were selected for their value as either potential drivers of
 #' project cost, or as potential proxies for ecological benefits.
@@ -53,7 +53,8 @@ wrapper <- function(label, dev_width = dev.size("in")[1], dev_scaler = 12)  {
 
 # Load and prep data ----
 sf_culv <- 
-  read_csv(here("output/culverts_pure_spatial.csv")) %>%
+  read_csv(here("output/culverts_pure_spatial.csv")) %>% 
+  # select(latitude = latitude.x, longitude = longitude.x, everything(), -latitude.y, -longitude.y) %>%
   drop_na(longitude, latitude) %>%
   st_as_sf(
     coords = c('longitude', 'latitude'),
@@ -78,18 +79,18 @@ summary(sf_culv)
 #+
 #' # Data sources and variable definitions
 #'
-#' ## Culvert work site data  
+#' ## Culvert worksite data  
 
-#' Data on culvert work site locations and associated project information
-#' (reporting source, project cost, year, work site coordinates), are from the
+#' Data on culvert worksite locations and associated project information
+#' (reporting source, project cost, year, worksite coordinates), are from the
 #' ***Pacific Northwest Salmon Habitat Projects*** database, which documents
 #' projects relevant to salmonid habitat restoration, including culvert
 #' improvements. We restrict the sample to projects that:  
 #' 
-#' 1) Only include culvert actions across any work sites;  
+#' 1) Only include culvert actions across any worksites;  
 #' 2) Were completed between 2001 and 2015;  
-#' 3) Consisted of work sites only in Washington or Oregon;  
-#' 4) Consisted of work sites only located within basins with over 20 work sites;  
+#' 3) Consisted of worksites only in Washington or Oregon;  
+#' 4) Consisted of worksites only located within basins with over 20 worksites;  
 #' 5) Reported project costs per culvert between $2,000 and $750,000 (roughly 5th and 95th percentiles).  
 #' 
 
@@ -119,22 +120,22 @@ sf_culv <-
 #+
 #' # Evaluating accuracy of stream and road matches
 #'
-#' First thing we'll do is check how accurate the culvert work site points match
+#' First thing we'll do is check how accurate the culvert worksite points match
 #' up with the road and stream data recovered from three sources: (1) [HERE](https://gii.dhs.gov/hifld/sites/default/files/2019-08/HIFLD%20Licensed%20HERE%20One%20Pager.pdf)
 #' for network-able road features, (2) [NHDPlus HR](https://hydro.nationalmap.gov/arcgis/rest/services/NHDPlus_HR/MapServer)
 #' for stream/river classification and features, (3) [StreamNet](https://www.streamnet.org/data/interactive-maps-and-gis-data/)
 #' for salmonid habitat use data by species. We will evaluate the precision of
 #' matches using distance to the "matching" line, measured in meters.
 #'
-#' We suspect two possible sources of imprecision. First, work site points may
+#' We suspect two possible sources of imprecision. First, worksite points may
 #' be reported with imprecision, in which case the match would represent the
 #' most likely feature, but with less certainty than if distance was lower.
-#' Second, the work site may be on a road or stream that is not represented in
+#' Second, the worksite may be on a road or stream that is not represented in
 #' our source data. In this case, the matched feature would misrepresent the
-#' true feature we are trying to identify for the work site.
+#' true feature we are trying to identify for the worksite.
 #'
 #' In either case, we will need to identify and decide how to deal with "poor"
-#' matches. For now, we will ***define poor matches as work sites over 150m from
+#' matches. For now, we will ***define poor matches as worksites over 150m from
 #' the target feature*** (i.e. road or stream), represented in the figures below
 #' with a red horizontal line. This threshold is easily adjustable, and
 #' sensitivity to this threshold will also be examined.
@@ -196,7 +197,7 @@ sf_culv %>%
   labs(
     title = "Distance to nearest HERE road (m), grouped by basin",
     subtitle = "Most (> 70%) culvert points are within 150m of a road object; > 50% within 50m",
-    caption = "Points represent individual work site observations, red line indicates 150m cut-off"
+    caption = "Points represent individual worksite observations, red line indicates 150m cut-off"
   )
 # Number of "good" matches
 # sum(I(sf_culv$here_distm <= 50))/nrow(sf_culv); sum(I(sf_culv$here_distm <= 150))/nrow(sf_culv)
@@ -254,8 +255,8 @@ sf_culv %>%
   theme(legend.position = "none") +
   labs(
     title = "Distance to nearest NHD+ stream (m), grouped by basin",
-    subtitle = wrapper("Nearly all (> 95%) culvert points are within 150m of a stream object, with > 85% within 50m; Many of those > 150m are culvert projects grouped in with other road maintenance classified work like drainage improvement so match rate strictly for culvert work sites is even better"),
-    caption = "Points represent individual work site observations, red line indicates 150m cut-off"
+    subtitle = wrapper("Nearly all (> 95%) culvert points are within 150m of a stream object, with > 85% within 50m; Many of those > 150m are culvert projects grouped in with other road maintenance classified work like drainage improvement so match rate strictly for culvert worksites is even better"),
+    caption = "Points represent individual worksite observations, red line indicates 150m cut-off"
   )
 # Number of "good" matches
 # sum(I(sf_culv$nhd_dist_m <= 150), na.rm = TRUE)/nrow(sf_culv)
@@ -319,7 +320,7 @@ sf_culv %>%
   labs(
     title = "Distance to nearest StreamNet stream (m), grouped by basin",
     subtitle = wrapper("Not as good of matches for StreamNet, only ~60% culvert points are within 150 meters of a stream object; Probably less important, as we can apply ESU area overlays based on HUC code"),
-    caption = "Points represent individual work site observations, red line indicates 150m cut-off"
+    caption = "Points represent individual worksite observations, red line indicates 150m cut-off"
   )
 # Number of "good" matches
 # sum(I(sf_culv$snet_distm <= 150), na.rm = TRUE)/nrow(sf_culv)
@@ -382,8 +383,8 @@ sf_culv <-
     )
   )
 
-#' For ***NHDPlus***, because the vast majority of the work sites are close
-#' matches, we can ***drop the poor match work sites***, defined as sites more than
+#' For ***NHDPlus***, because the vast majority of the worksites are close
+#' matches, we can ***drop the poor match worksites***, defined as sites more than
 #' 150m from the nearest stream line.
 #' 
 sf_culv <-
@@ -414,7 +415,7 @@ key_here <- read_xlsx(here("data/Culverts spatial overlays v 20Aug2020.xlsx"), s
     tibble(
       "Classification" = "Functional class",
       "Value" = 6,
-      "Description" = '"Roads" associated with work sites > 150m from the nearest HERE road for here_class_badmatch.'
+      "Description" = '"Roads" associated with worksites > 150m from the nearest HERE road for here_class_badmatch.'
     )
   )
 
@@ -431,11 +432,11 @@ key_here %>%
 
 # Speed class
 
-# Basins with more than 300 work sites
+# Basins with more than 250 worksites
 sf_culv %>%
   ungroup() %>%
   add_count(basin, name = "n_basin") %>%
-  filter(n_basin > 300) %>%
+  filter(n_basin > 250) %>%
   group_by(basin, n_basin, project_year, here_speed) %>%
   count() %>%
   ggplot(
@@ -458,17 +459,17 @@ sf_culv %>%
   scale_fill_discrete("HERE Speed Class") +
   facet_wrap("basin", ncol = 1) +
   ggtitle(
-    "HERE road speed class, grouped by basin (basins with more than 300 work sites)",
+    "HERE road speed class, grouped by basin (basins with more than 250 worksites)",
     wrapper(
       "Most road in the well represented basins are class 7 and 8; Even distribution across basins; Big spike in class 3 in 1998 in N. Oregon Coastal"
     )
   ) +
   theme(legend.position = "bottom")
 
-# Basins w/ less than 300 work sites
+# Basins w/ less than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin < 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin < 250) %>%
   group_by(basin, n_basin, project_year, here_speed) %>% count() %>%
   ggplot(
     aes(
@@ -482,16 +483,16 @@ sf_culv %>%
   scale_fill_discrete("HERE Speed Class") +
   facet_wrap("basin", ncol = 2) +
   ggtitle(
-    "HERE road speed class, grouped by basin (basins with fewer than 300 work sites)",
+    "HERE road speed class, grouped by basin (basins with fewer than 250 worksites)",
     wrapper("Many fewer class 5 roads than in larger basins; Same persistance in class 8 (bad matches)")
   ) +
   theme(legend.position = "bottom")
 
 # Road class
-# Basins with more than 300 work sites
+# Basins with more than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin > 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin > 250) %>%
   group_by(basin, n_basin, project_year, here_class_badmatch) %>% count() %>%
   ggplot(
     aes(
@@ -505,15 +506,15 @@ sf_culv %>%
   scale_fill_discrete("HERE Road Class") +
   facet_wrap("basin", ncol = 1) +
   ggtitle(
-    "HERE road class, grouped by basin (basins with more than 300 work sites)",
+    "HERE road class, grouped by basin (basins with more than 250 worksites)",
     wrapper("Almost all roads are class 5 (smallest road), and a good portion are > 150m from a road match (class 6)")
   ) +
   theme(legend.position = "bottom")
 
-# Basins w/ less than 300 work sites
+# Basins w/ less than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin < 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin < 250) %>%
   group_by(basin, n_basin, project_year, here_class_badmatch) %>% count() %>%
   ggplot(
     aes(
@@ -523,20 +524,20 @@ sf_culv %>%
     )
   ) +
   geom_col() +
-  geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1997, y = 30, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n < 300)) +
+  geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1997, y = 30, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n < 250)) +
   scale_fill_discrete("HERE Road Class") +
   facet_wrap("basin", ncol = 2) +
   ggtitle(
-    "HERE road class, grouped by basin (basins with fewer than 300 work sites)",
+    "HERE road class, grouped by basin (basins with fewer than 250 worksites)",
     wrapper("Pretty similar road makeup as larger basins; Overall, class 2 and 3 (largest road classes) are very rare")
   ) +
   theme(legend.position = "bottom")
 
 # Paved class
-# Basins with more than 300 work sites
+# Basins with more than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin > 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin > 250) %>%
   group_by(basin, n_basin, project_year, here_paved) %>% count() %>%
   ggplot(
     aes(
@@ -546,19 +547,19 @@ sf_culv %>%
     )
   ) +
   geom_col() +
-  geom_label(aes(label = paste("n =", comma(n))), x = 1996, y = 300, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n > 400)) +
+  geom_label(aes(label = paste("n =", comma(n))), x = 1996, y = 250, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n > 400)) +
   scale_fill_discrete("HERE Paved") +
   facet_wrap("basin", ncol = 1) +
   ggtitle(
-    "HERE paved classification, grouped by basin (basins with more than 300 work sites)",
-    wrapper("Most roads with culvert work sites are not paved, but a good number of paved roads as well")
+    "HERE paved classification, grouped by basin (basins with more than 250 worksites)",
+    wrapper("Most roads with culvert worksites are not paved, but a good number of paved roads as well")
   ) +
   theme(legend.position = "bottom")
 
-# Basins w/ less than 300 work sites
+# Basins w/ less than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin < 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin < 250) %>%
   group_by(basin, n_basin, project_year, here_paved) %>% count() %>%
   ggplot(
     aes(
@@ -572,7 +573,7 @@ sf_culv %>%
   scale_fill_discrete("HERE Paved") +
   facet_wrap("basin", ncol = 2) +
   ggtitle(
-    "HERE paved classification, grouped by basin (basins with fewer than 300 work sites)",
+    "HERE paved classification, grouped by basin (basins with fewer than 250 worksites)",
     wrapper("More paved representation, especially in Washington; This might explain a lot of why Washington reported costs are so much higher")
   ) +
   theme(legend.position = "bottom")
@@ -588,10 +589,10 @@ sf_culv %>%
 #+ fig.width=10, fig.height=10, echo=F, message=F
 # Examine SalmonNet data ----
 # Species
-# Basins with more than 300 work sites
+# Basins with more than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin > 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin > 250) %>%
   group_by(basin, n_basin, project_year, snet_spp) %>% count() %>%
   ggplot(
     aes(
@@ -605,15 +606,15 @@ sf_culv %>%
   scale_fill_discrete("StreamNet species") +
   facet_wrap("basin", ncol = 1) +
   ggtitle(
-    "StreamNet species, grouped by basin (basins with more than 300 work sites)",
+    "StreamNet species, grouped by basin (basins with more than 250 worksites)",
     wrapper("Steelhead and Coho are the most well represented, with plenty of culverts in Chinook territory as well")
   ) +
   theme(legend.position = "bottom")
 
-# Basins w/ less than 300 work sites
+# Basins w/ less than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin < 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin < 250) %>%
   group_by(basin, n_basin, project_year, snet_spp) %>% count() %>%
   ggplot(
     aes(
@@ -623,20 +624,20 @@ sf_culv %>%
     )
   ) +
   geom_col() +
-  geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1997, y = 30, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n < 300)) +
+  geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1997, y = 30, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n < 250)) +
   scale_fill_discrete("StreamNet species") +
   facet_wrap("basin", ncol = 2) +
   ggtitle(
-    "StreamNet species, grouped by basin (basins with more than 300 work sites)",
+    "StreamNet species, grouped by basin (basins with more than 250 worksites)",
     wrapper("Steelhead and Coho are sitll the most commonly represented")
   ) +
   theme(legend.position = "bottom")
 
 # Habitat use
-# Basins with more than 300 work sites
+# Basins with more than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin > 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin > 250) %>%
   group_by(basin, n_basin, project_year, snet_use) %>% count() %>%
   ggplot(
     aes(
@@ -650,15 +651,15 @@ sf_culv %>%
   scale_fill_discrete("StreamNet habitat use") +
   facet_wrap("basin", ncol = 1) +
   ggtitle(
-    "StreamNet habitat use, grouped by basin (basins with more than 300 work sites)",
+    "StreamNet habitat use, grouped by basin (basins with more than 250 worksites)",
     wrapper("Overwhelmingly spawning and rearing streams")
   ) +
   theme(legend.position = "bottom")
 
-# Basins w/ less than 300 work sites
+# Basins w/ less than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin < 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin < 250) %>%
   group_by(basin, n_basin, project_year, snet_use) %>% count() %>%
   ggplot(
     aes(
@@ -668,11 +669,11 @@ sf_culv %>%
     )
   ) +
   geom_col() +
-  geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1997, y = 30, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n < 300)) +
+  geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1997, y = 30, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n < 250)) +
   scale_fill_discrete("StreamNet habitat use") +
   facet_wrap("basin", ncol = 2) +
   ggtitle(
-    "StreamNet habitat use, grouped by basin (basins with more than 300 work sites)",
+    "StreamNet habitat use, grouped by basin (basins with more than 250 worksites)",
     wrapper("Much more migration use streams in Western Washington")
   ) +
   theme(legend.position = "bottom")
@@ -716,17 +717,17 @@ sf_culv %>%
 #' target catchment, accounting for natural and anthropogenic diversions.  
 #'
 #' For cost modeling, we focus on the ***bankfull width*** and ***slope*** variables. In the
-#' next steps, when benefit proxies are constructed for each culvert work site,
+#' next steps, when benefit proxies are constructed for each culvert worksite,
 #' we can use the remaining variables to characterize upstream habitat with
 #' restored access.  
 
 #+ fig.width=10, fig.height=10, echo=F, message=F, warning=F
 # Examine NHDPlus attribute data ----
 # Slope
-# Basins with more than 300 work sites
+# Basins with more than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin > 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin > 250) %>%
   ggplot(
     aes(
       x = project_year,
@@ -749,16 +750,16 @@ sf_culv %>%
   scale_color_discrete(guide = NULL) +
   facet_wrap("basin", ncol = 1) +
   labs(
-    title = "NHDPlus stream slope (pct), grouped by basin (basins with more than 300 work sites)",
+    title = "NHDPlus stream slope (pct), grouped by basin (basins with more than 250 worksites)",
     subtitle = wrapper("Similar distribtuions of slope across basins and years"),
-    caption = "Bold X indicates basin-year mean, points represent individual work site observations"
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
   )
   
 
-# Basins w/ less than 300 work sites
+# Basins w/ less than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin < 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin < 250) %>%
   ggplot(
     aes(
       x = project_year,
@@ -769,7 +770,7 @@ sf_culv %>%
   ) +
   geom_jitter(width = 0.25) +
   geom_violin(aes(group = project_year), alpha = 0.7, scale = "width", width = 0.5) +
-  geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1997, y = 0.25, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n < 300)) +
+  geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1997, y = 0.25, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n < 250)) +
   stat_summary(
     fun = mean,
     shape = "cross",
@@ -781,16 +782,16 @@ sf_culv %>%
   scale_color_discrete(guide = NULL) +
   facet_wrap("basin", ncol = 2) +
   labs(
-    title = "NHDPlus stream slope (pct), grouped by basin (basins with less than 300 work sites)",
+    title = "NHDPlus stream slope (pct), grouped by basin (basins with less than 250 worksites)",
     subtitle = wrapper("Similar distribution as with more well represented basins; Maybe a little more extreme in Puget Sound, but less extreme in Washington Coastal"),
-    caption = "Bold X indicates basin-year mean, points represent individual work site observations"
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
   )
 
 # Bankfull width
-# Basins with more than 300 work sites
+# Basins with more than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin > 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin > 250) %>%
   ggplot(
     aes(
       x = project_year,
@@ -815,15 +816,15 @@ sf_culv %>%
   scale_y_log10(label = label_comma(1)) +
   facet_wrap("basin", ncol = 1) +
   labs(
-    title = "NHDPlus stream bankfull width (m, log-scale), grouped by basin (basins with more than 300 work sites)",
+    title = "NHDPlus stream bankfull width (m, log-scale), grouped by basin (basins with more than 250 worksites)",
     subtitle = wrapper("Similar distribtuions of slope across basins and years; Some extreme outliers (>50m) that likely constitute poor matches or poorly categorized project"),
-    caption = "Bold X indicates basin-year mean, points represent individual work site observations, red line indicates 50m cut-off"
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations, red line indicates 50m cut-off"
   )
 
-# Basins w/ less than 300 work sites
+# Basins w/ less than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin < 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin < 250) %>%
   ggplot(
     aes(
       x = project_year,
@@ -835,7 +836,7 @@ sf_culv %>%
   geom_jitter(width = 0.25) +
   geom_violin(aes(group = project_year), alpha = 0.7, scale = "width", width = 0.5) +
   geom_hline(yintercept = 50, color = "red") +
-  geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1997, y = 2.1, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n < 300)) +
+  geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1997, y = 2.1, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n < 250)) +
   stat_summary(
     fun = mean,
     shape = "cross",
@@ -848,14 +849,14 @@ sf_culv %>%
   scale_y_log10(label = label_comma(1)) +
   facet_wrap("basin", ncol = 2) +
   labs(
-    title = "NHDPlus stream bankfull width (m, log-scale), grouped by basin (basins with less than 300 work sites)",
+    title = "NHDPlus stream bankfull width (m, log-scale), grouped by basin (basins with less than 250 worksites)",
     subtitle = wrapper("Some really extreme outliers (as much as 300m) that likely constitute poor matches or poorly categorized project; Puget Sound and Wash. Coastal are at least a bit wider on average"),
-    caption = "Bold X indicates basin-year mean, points represent individual work site observations, red line indicates 50m cut-off"
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations, red line indicates 50m cut-off"
   )
 
 #+
 #' So it looks like the slope variable is pretty well behaved. We will ***drop
-#' work sites with bankfull width over 50m*** to remove extreme outliers.  
+#' worksites with bankfull width over 50m*** to remove extreme outliers.  
 #' 
 
 sf_culv <-
@@ -871,10 +872,10 @@ sf_culv <-
 #+ fig.width=10, fig.height=10, echo=F, message=F, warning=F
 # Examine population and housing density ----
 # Pdens
-# Basins with more than 300 work sites
+# Basins with more than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin > 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin > 250) %>%
   # filter(popdens_cat < 100) %>%
   ggplot(
     aes(
@@ -899,15 +900,15 @@ sf_culv %>%
   scale_y_log10(label = label_comma(1)) +
   facet_wrap("basin", ncol = 1) +
   labs(
-    title = "NHDPlus population density (persons per km sq., log-scale), grouped by basin (basins with more than 300 work sites)",
+    title = "NHDPlus population density (persons per km sq., log-scale), grouped by basin (basins with more than 250 worksites)",
     subtitle = wrapper("Similar distribtuions of slope across basins and years; Lots of streams with catchments w/ zero persons"),
-    caption = "Bold X indicates basin-year mean, points represent individual work site observations"
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
   )
 
-# Basins w/ less than 300 work sites
+# Basins w/ less than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin < 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin < 250) %>%
   # filter(popdens_cat < 100) %>%
   ggplot(
     aes(
@@ -932,16 +933,16 @@ sf_culv %>%
   scale_y_log10(label = label_comma(1)) +
   facet_wrap("basin", ncol = 2) +
   labs(
-    title = "NHDPlus population density (persons per km sq., log-scale), grouped by basin (basins with less than 300 work sites)",
+    title = "NHDPlus population density (persons per km sq., log-scale), grouped by basin (basins with less than 250 worksites)",
     subtitle = wrapper("Higher population density in Puget Sound"),
-    caption = "Bold X indicates basin-year mean, points represent individual work site observations"
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
   )
 
 # Hdens
-# Basins with more than 300 work sites
+# Basins with more than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin > 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin > 250) %>%
   # filter(popdens_cat < 100) %>%
   ggplot(
     aes(
@@ -966,15 +967,15 @@ sf_culv %>%
   scale_y_log10(label = label_comma(1)) +
   facet_wrap("basin", ncol = 1) +
   labs(
-    title = "NHDPlus housing density (units per km sq., log-scale), grouped by basin (basins with more than 300 work sites)",
+    title = "NHDPlus housing density (units per km sq., log-scale), grouped by basin (basins with more than 250 worksites)",
     subtitle = wrapper("Similar distribtuions of slope across basins and years; Lots of streams with catchments w/ zero units"),
-    caption = "Bold X indicates basin-year mean, points represent individual work site observations"
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
   )
 
-# Basins w/ less than 300 work sites
+# Basins w/ less than 250 worksites
 sf_culv %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin < 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin < 250) %>%
   # filter(popdens_cat < 100) %>%
   ggplot(
     aes(
@@ -999,9 +1000,9 @@ sf_culv %>%
   scale_y_log10(label = label_comma(1)) +
   facet_wrap("basin", ncol = 2) +
   labs(
-    title = "NHDPlus housing density (units per km sq., log-scale), grouped by basin (basins with less than 300 work sites)",
+    title = "NHDPlus housing density (units per km sq., log-scale), grouped by basin (basins with less than 250 worksites)",
     subtitle = wrapper("Higher housing density in Puget Sound"),
-    caption = "Bold X indicates basin-year mean, points represent individual work site observations"
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
   )
 #'  
 #'  Population and housing density are highly correlated (Pearson's coef. = 
@@ -1016,25 +1017,27 @@ sf_culv %>%
 #'
 #' We should also consider alternative measures here that might better capture
 #' the hypothetical mechanisms at play. For example, variables such as the
-#' number of distinct parcels in the catchment, whether the work site point is
+#' number of distinct parcels in the catchment, whether the worksite point is
 #' on public land, or the proportion of the catchment that is in public land
 #' might better capture increased costs due to access issues.  
 #' 
 
 
 #+
-#' ## Slope at work site  
+#' ## Slope at worksite  
 #'   
-#' The slope at the work site may increase project cost by restricting access to
+#' The slope at the worksite may increase project cost by restricting access to
 #' the culvert. We measure slope using the slope in degrees of the
 #' [GTOPO30](https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-global-30-arc-second-elevation-gtopo30?qt-science_center_objects=0#qt-science_center_objects)
-#' grid cell the work site falls in.
+#' grid cell the worksite falls in.  
 #' 
-#' Note that slope at work sites and the stream slope are distinct, both in
+#' We can also measure slope using NHD+ attributes, which reports the slope of the catchment, distinct from the channel slope, for each stream segment.  
+#' 
+#' Note that slope at worksites and the stream slope are distinct, both in
 #' their measurement and the mechanism through which they influence costs.
 #' Stream slope is our best available proxy for the slope of the stream at the
 #' culvert, which can require more complex, expensive culvert design to ensure
-#' fish passage. Slope at work site is the *land* slope in the immediate
+#' fish passage. Slope at worksite is the *land* slope in the immediate
 #' vicinity of the culvert, which can restrict site access and available staging
 #' area, increasing project costs. While closely related, these are distinct
 #' (Pearson's coef. = `r cor(sf_culv$slope, sf_culv$slope_deg, use = "complete.obs") %>% format(digits = 3)`).
@@ -1075,19 +1078,56 @@ sf_culv %>%
   scale_size_continuous(range = c(0.1,1)) +
   facet_wrap("basin", ncol = 3) +
   labs(
-    title = "Slope at work site, grouped by basin",
+    title = "Slope at worksite (GTOPO30), grouped by basin",
     subtitle = wrapper("Plenty of variation over time and space, even within basins"),
-    caption = "Bold X indicates basin-year mean, points represent individual work site observations"
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
+  )
+
+sf_culv %>%
+  group_by(basin, project_year) %>%
+  add_count() %>%
+  ungroup() %>%
+  add_count(basin, name = "n_basin") %>%
+  filter(
+    # pure_culv == TRUE,
+    # n_basin > 90
+  ) %>%
+  drop_na(cat_basin_slope) %>%
+  ggplot(
+    aes(
+      x = project_year,
+      y = cat_basin_slope,
+      color = basin,
+      fill = basin
+    )
+  ) +
+  geom_jitter(width = 0.25) +
+  geom_violin(aes(group = project_year), alpha = 0.7, width = 0.5, na.rm = TRUE, scale = "width") +
+  geom_label(aes(label = paste("n =", n)), x = 1997, y = 25, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin)) +
+  stat_summary(
+    fun = mean,
+    shape = "cross",
+    stroke = 1.5,
+    geom = "point",
+    color = "black"
+  ) +
+  theme(legend.position = "none") +
+  scale_size_continuous(range = c(0.1,1)) +
+  facet_wrap("basin", ncol = 3) +
+  labs(
+    title = "Slope at worksite (NHD+), grouped by basin",
+    subtitle = wrapper("Plenty of variation over time and space, even within basins"),
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
   )
 
 #+
-#' ## Land cover at work sites  
+#' ## Land cover at worksites  
 #'   
 #' Land cover can proxy for land use, which can effect how difficult it is to
-#' access and perform construction activities at the work site, which may
+#' access and perform construction activities at the worksite, which may
 #' increase costs. It may also be correlated with road features (surface
 #' material, typical traffic, etc.) or stream features, and could be useful for
-#' providing more information for work sites where matches to roads and streams
+#' providing more information for worksites where matches to roads and streams
 #' are poor.  
 #'  
 #' The table below presents the NLCD land cover classifications. We use the "class" level of detail in the figures that follow.
@@ -1111,7 +1151,7 @@ sf_culv %>%
   knitr::kable() %>%
   kableExtra::kable_styling()
 
-# Basins with more than 300 work sites
+# Basins with more than 250 worksites
 sf_culv %>%
   mutate(nlcd_current = as.numeric(as.character(nlcd_current))) %>%
   left_join(
@@ -1124,7 +1164,7 @@ sf_culv %>%
     nlcd_description = Description
   ) %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin > 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin > 250) %>%
   group_by(basin, n_basin, project_year, nlcd_class) %>% count() %>%
   ggplot(
     aes(
@@ -1138,12 +1178,12 @@ sf_culv %>%
   scale_fill_discrete("NLCD Class") +
   facet_wrap("basin", nrow = 3) +
   ggtitle(
-    "NLCD land cover class, grouped by basin (basins with more than 300 work sites)",
+    "NLCD land cover class, grouped by basin (basins with more than 250 worksites)",
     wrapper("Forest dominates, with Developed also well represented; Planted-Cultivated, Shrubland, and Wetlands also have some representation")
   ) +
   theme(legend.position = "bottom")
 
-# Basins w/ less than 300 work sites
+# Basins w/ less than 250 worksites
 sf_culv %>%
   mutate(nlcd_current = as.numeric(as.character(nlcd_current))) %>%
   left_join(
@@ -1156,7 +1196,7 @@ sf_culv %>%
     nlcd_description = Description
   ) %>%
   ungroup() %>%
-  add_count(basin, name = "n_basin") %>% filter(n_basin < 300) %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin < 250) %>%
   group_by(basin, project_year, nlcd_class) %>% count() %>%
   ggplot(
     aes(
@@ -1166,11 +1206,11 @@ sf_culv %>%
     )
   ) +
   geom_col() +
-  geom_label(aes(label = paste("n =", n)), x = 1997, y = 30, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n < 300)) +
+  geom_label(aes(label = paste("n =", n)), x = 1997, y = 30, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n < 250)) +
   scale_fill_discrete("NLCD Class") +
   facet_wrap("basin", ncol = 2) +
   ggtitle(
-    "NLCD land cover class, grouped by basin (basins with fewer than 300 work sites)",
+    "NLCD land cover class, grouped by basin (basins with fewer than 250 worksites)",
     wrapper("Forest still dominates, though Developed is well represented in the Puget Sound")
   ) +
   theme(legend.position = "bottom")
@@ -1180,7 +1220,7 @@ sf_culv %>%
 #'   
 #' To capture labor market patterns that might affect culvert costs, we
 #' collect the number of jobs for construction and ag/forestry
-#' NAICS codes for the county the work site is located in via [County Business
+#' NAICS codes for the county the worksite is located in via [County Business
 #' Patterns](https://www.census.gov/programs-surveys/cbp.html). Access to
 #' experienced labor can keep costs down. These variables are intended to
 #' capture that effect.  
@@ -1226,7 +1266,7 @@ sf_culv %>%
   labs(
     title = "County-level employment at ag or forestry firms, grouped by basin",
     subtitle = wrapper("Plenty of variation over time and space, even within basins"),
-    caption = "Points represent county-year observations represented in sample, size is relative to number of work sites in county-year"
+    caption = "Points represent county-year observations represented in sample, size is relative to number of worksites in county-year"
   )
 
 # Employment in construction firms
@@ -1270,8 +1310,326 @@ sf_culv %>%
   labs(
     title = "County-level employment at construction firms, grouped by basin",
     subtitle = wrapper("Plenty of variation over time and space, even within basins, but levels much higher in Puget Sound (obviously); Levels track more closely to larger economic conditions than ag/forestry jobs"),
-    caption = "Points represent county-year observations represented in sample, size is relative to number of work sites in county-year"
+    caption = "Points represent county-year observations represented in sample, size is relative to number of worksites in county-year"
   )
+
+#+
+#' ## HIFLD: Material supply operation density  
+#' 
+
+#' We proxy for availability of raw materials and machinery by generating a
+#' kernel density field for operations identified in the following NAICS
+#' categories:  
+#' - Merchant Wholesalers Durable Goods: Brick, Stone and Related (brick_coun/brick_totp)  
+#' - Merchant Wholesalers Durable Goods: Construction and Mining  (const_coun/counst_top)  
+#' - Merchant Wholesalers Durable Goods: Metals Service Centers (metal_coun/metal_top)  
+#' - Merchant Wholesalers Durable Goods: All above sub-categores (merch_coun/merch_top)
+#' - Sand & Gravel Operations: Sales Yard (sales_coun)  
+#' - Sand & Gravel Operations: All sub-categories, incl. Sales Yard (sand_count)  
+
+#' For the "Merchant Wholesalers Durable Goods" categories we include densities
+#' based on both simple site count (*_coun) and weighted by persons/site to scale for
+#' operation size (*_totp). For Sand & Graveel Operations, only simple site count
+#' densities are estimated as persons/site data is unavailable.
+#' 
+
+#+ fig.width=10, fig.height=16, echo=F, message=F, warning=F
+# Examine supplier densities ----
+sf_culv %>%
+  ungroup() %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin > 250) %>%
+  pivot_longer(
+    c(ends_with("_coun"), ends_with("_totp"), ends_with("_count")),
+    names_to = "supplier_class",
+    values_to = "supplier_density"
+  ) %>%
+  ggplot(
+    aes(
+      x = project_year,
+      y = supplier_density,
+      # shape = supplier_class,
+      group = supplier_class,
+      fill = supplier_class,
+      color = supplier_class
+    )
+  ) +
+  geom_jitter(width = 0.25) +
+  geom_violin(aes(group = project_year), alpha = 0.7, scale = "width", width = 0.5) +
+  # geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1996, y = 0.25, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n > 400)) +
+  stat_summary(
+    fun = mean,
+    shape = "cross",
+    stroke = 1.5,
+    geom = "point",
+    color = "black"
+  ) +
+  # scale_fill_discrete(guide = NULL) +
+  # scale_color_discrete(guide = NULL) +
+  facet_grid(supplier_class ~ basin, scales = "free_y") +
+  labs(
+    title = "Supplier densities, grouped by basin (basins with more than 250 worksites)",
+    subtitle = wrapper("Differences across years and basins but different variables track each other closely"),
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
+  )
+
+
+# Basins w/ less than 250 worksites
+sf_culv %>%
+  ungroup() %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin < 250) %>%
+  pivot_longer(
+    c(ends_with("_coun"), ends_with("_totp"), ends_with("_count")),
+    names_to = "supplier_class",
+    values_to = "supplier_density"
+  ) %>%
+  ggplot(
+    aes(
+      x = project_year,
+      y = supplier_density,
+      # shape = supplier_class,
+      group = supplier_class,
+      fill = supplier_class,
+      color = supplier_class
+    )
+  ) +
+  geom_jitter(width = 0.25) +
+  geom_violin(aes(group = project_year), alpha = 0.7, scale = "width", width = 0.5) +
+  # geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1996, y = 0.25, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n > 400)) +
+  stat_summary(
+    fun = mean,
+    shape = "cross",
+    stroke = 1.5,
+    geom = "point",
+    color = "black"
+  ) +
+  # scale_fill_discrete(guide = NULL) +
+  # scale_color_discrete(guide = NULL) +
+  facet_grid(supplier_class ~ basin, scales = "free_y") +
+  labs(
+    title = "Supplier densities, grouped by basin (basins with fewer than 250 worksites)",
+    subtitle = wrapper("Differences across years and basins but different variables track each other closely"),
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
+  )
+
+# Correlations across variables
+df_corr <-
+  sf_culv %>%
+  # st_drop_geometry() %>%
+  select(
+    brick_coun:sand_count
+  )
+
+mat_corr <-
+  df_corr %>%
+  cor() %>%
+  as.matrix()
+
+mat_corr[upper.tri(mat_corr)] <- NA
+
+ggcorrplot(
+  mat_corr,
+  lab = TRUE, lab_size = 3,
+  colors = c("#6D9EC1", "white", "#E46726")
+) + 
+  theme(
+    plot.title.position = "plot",
+    panel.grid = element_blank(),
+    panel.grid.major.y = element_line(color = "#ADADAD", linetype = "dashed"),
+    axis.text.x = element_text(angle = 60, vjust = 1),
+    # plot.margin = unit(c(0.5, 0, 1.5, 0), "cm")
+  ) +
+  scale_fill_gradient2(
+    name = "Corr. coef. (r)",
+    limits = c(-1, 1),
+    low = "#F8766D",
+    mid = "#FFFFFF",
+    high = "#619CFF",
+    na.value = "#EAEAEA"
+  ) +
+  ggtitle(
+    "Correlations among potential supplier density covariates",
+    "Strong correlations across most groups, just including merch and sales or sand might be all we can do"
+  ) +
+  coord_fixed(
+    # ylim = c(0, 20),
+    # xlim = c(0, 20),
+    expand = FALSE,
+    clip = "off"
+  )
+
+#+ echo=FALSE
+#' ## BLM: Surface jurisdiction of land  
+#' 
+
+#' We are also interested in public land and private land nearby worksites as a
+#' proxy for land access. We identify the proportion of land ownership group
+
+key_blm <- read_xlsx(here("data/Culverts spatial overlays v 20Jan2021.xlsx"), sheet = 5) %>%
+  as_tibble() %>%
+  filter(Present == 1) %>%
+  mutate(Present = NULL)
+
+key_blm %>%
+  arrange(Code) %>%
+  kable(caption = "Value key for BLM land ownership variables") %>%
+  kable_styling() %>%
+  collapse_rows(
+    1,
+    valign = "top",
+    row_group_label_position = "stacked",
+    headers_to_remove = 1
+  )
+
+#+ fig.width=10, fig.height=10, echo=F, message=F
+# Examine land ownership distributions ----
+sf_culv %>%
+  ungroup() %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin > 150) %>%
+  pivot_longer(
+    c(ends_with("_5km_buff")),
+    names_to = "ownership_code",
+    # names_pattern = ".*_5km_buff$",
+    values_to = "ownership_prop"
+  ) %>%
+  mutate(ownership_code = ownership_code %>% str_remove("_5km_buff") %>% str_to_upper()) %>%
+  left_join(key_blm, by = c("ownership_code" = "Code")) %>%
+  ggplot(
+    aes(
+      x = project_year,
+      y = ownership_prop,
+      # shape = supplier_class,
+      group = Description,
+      fill = Description,
+      color = Description
+    )
+  ) +
+  geom_jitter(width = 0.25) +
+  geom_violin(aes(group = project_year), alpha = 0.7, scale = "width", width = 0.5) +
+  # geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1996, y = 0.25, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n > 400)) +
+  stat_summary(
+    fun = mean,
+    shape = "cross",
+    stroke = 1.5,
+    geom = "point",
+    color = "black"
+  ) +
+  # scale_fill_discrete(guide = NULL) +
+  # scale_color_discrete(guide = NULL) +
+  facet_grid(ownership_code ~ basin) +
+  labs(
+    title = "Ownership group proportion at 5km buffer, grouped by basin (basins with more than 150 worksites)",
+    subtitle = wrapper("Due to many categories having little variation and low representation, we will group some"),
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
+  )
+
+
+# Basins w/ less than 150 worksites
+sf_culv %>%
+  ungroup() %>%
+  add_count(basin, name = "n_basin") %>% filter(n_basin < 150) %>%
+  pivot_longer(
+    c(ends_with("_5km_buff")),
+    names_to = "ownership_code",
+    # names_pattern = ".*_5km_buff$",
+    values_to = "ownership_prop"
+  ) %>%
+  mutate(ownership_code = ownership_code %>% str_remove("_5km_buff") %>% str_to_upper()) %>%
+  left_join(key_blm, by = c("ownership_code" = "Code")) %>%
+  ggplot(
+    aes(
+      x = project_year,
+      y = ownership_prop,
+      # shape = supplier_class,
+      group = Description,
+      fill = Description,
+      color = Description
+    )
+  ) +
+  geom_jitter(width = 0.25) +
+  geom_violin(aes(group = project_year), alpha = 0.7, scale = "width", width = 0.5) +
+  # geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1996, y = 0.25, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n > 400)) +
+  stat_summary(
+    fun = mean,
+    shape = "cross",
+    stroke = 1.5,
+    geom = "point",
+    color = "black"
+  ) +
+  # scale_fill_discrete(guide = NULL) +
+  # scale_color_discrete(guide = NULL) +
+  facet_grid(ownership_code ~ basin) +
+  labs(
+    title = "Ownership group proportion at 5km buffer, grouped by basin (basins with more than 150 worksites)",
+    subtitle = wrapper("Due to many categories having little variation and low representation, we will group some"),
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
+  )
+
+sf_culv <-
+  sf_culv %>%
+  rowwise() %>%
+  mutate(
+    pvall_5km_buff = sum(c_across(starts_with("pv") & ends_with("5km_buff"))),
+    stall_5km_buff = sum(c_across(starts_with("st") & ends_with("5km_buff"))),
+    fedother_5km_buff = sum(c_across(starts_with(c("bpa", "coe", "fws", "bia", "gsa", "nps")) & ends_with("5km_buff"))),
+    pvall_2km_buff = sum(c_across(starts_with("pv") & ends_with("2km_buff"))),
+    stall_2km_buff = sum(c_across(starts_with("st") & ends_with("2km_buff"))),
+    fedother_2km_buff = sum(c_across(starts_with(c("bpa", "coe", "fws", "bia", "gsa", "nps")) & ends_with("2km_buff"))),
+    pvall_1km_buff = sum(c_across(starts_with("pv") & ends_with("1km_buff"))),
+    stall_1km_buff = sum(c_across(starts_with("st") & ends_with("1km_buff"))),
+    fedother_1km_buff = sum(c_across(starts_with(c("bpa", "coe", "fws", "gsa", "bia", "nps")) & ends_with("1km_buff")))
+  )
+
+key_blm <-
+  key_blm %>%
+  bind_rows(
+    tibble(
+      "Code" = c("PVALL", "STALL", "FEDOTHER"),
+      "Description" = c("All Private Land", "All State Agencies", "All Other Federal Agencies")
+    )
+  )
+
+sf_culv %>%
+  ungroup() %>%
+  add_count(basin, name = "n_basin") %>% 
+  # filter(n_basin > 150) %>%
+  pivot_longer(
+    paste0(c("pvall", "stall", "fedother", "lg", "blm", "usfs"), "_5km_buff"),
+    names_to = "ownership_code",
+    # names_pattern = ".*_5km_buff$",
+    values_to = "ownership_prop"
+  ) %>%
+  mutate(ownership_code = ownership_code %>% str_remove("_5km_buff") %>% str_to_upper()) %>%
+  left_join(key_blm, by = c("ownership_code" = "Code")) %>%
+  ggplot(
+    aes(
+      x = project_year,
+      y = ownership_prop,
+      # shape = supplier_class,
+      group = Description,
+      fill = Description,
+      color = Description
+    )
+  ) +
+  geom_jitter(width = 0.25) +
+  geom_violin(aes(group = project_year), alpha = 0.7, scale = "width", width = 0.5) +
+  # geom_label(aes(label = paste("n =", comma(n, accuracy = 1))), x = 1996, y = 0.25, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin) %>% filter(n > 400)) +
+  stat_summary(
+    fun = mean,
+    shape = "cross",
+    stroke = 1.5,
+    geom = "point",
+    color = "black"
+  ) +
+  # scale_fill_discrete(guide = NULL) +
+  # scale_color_discrete(guide = NULL) +
+  facet_grid(ownership_code ~ basin) +
+  labs(
+    title = "Ownership group proportion at 5km buffer, grouped by basin",
+    subtitle = wrapper("Good spread for most of these groups across basins and years; Can dig deeper with 2km and 1km but 5km will do for now"),
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
+  )
+
+
 
 #+
 #' ## PNSHP: Culvert project costs  
@@ -1280,7 +1638,7 @@ sf_culv %>%
 #' calculate cost per culvert at the project level by first tallying the number
 #' of culverts installed, upgraded, or removed at the project level. We then
 #' divide project-level costs by the number of culverts. This cost per culvert
-#' measure is assigned to each work site associated with that project.
+#' measure is assigned to each worksite associated with that project.
 
 #+ fig.width=10, fig.height=10, echo=F, message=F
 # Examine cost distributions ----
@@ -1319,7 +1677,7 @@ sf_culv %>%
   labs(
     title = "Cost per culvert ($USD2019, log-scale), grouped by basin",
     subtitle = wrapper("Plenty of variation over time and space, even within basins; Washington averages consistently above Oregon averages"),
-    caption = "Bold X indicates basin-year mean, points represent individual work site observations"
+    caption = "Bold X indicates basin-year mean, points represent individual worksite observations"
   )
 
 
@@ -1333,14 +1691,6 @@ sf_culv %>%
 #' be on spawning and rearing streams, unpaved roads, and on narrower streams. This likely goes a
 #' long way in explaining the large differences in costs across the two states.  
 #'  
-
-#+
-#' # End Matter  
-# Created on...
-Sys.time()
-
-# Using...
-sessionInfo()
 
 # Render output
 # rmarkdown::render(here::here("R/C.culvertsspatial/06.spatialexplore.R"), output_file = here::here("output/culvertsspatial_report_2020sep24.html"))

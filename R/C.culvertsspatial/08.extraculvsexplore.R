@@ -93,3 +93,11 @@ sf_allculv_odfw %>% filter(fpb_ftr_ty == "Culvert") %>% tabyl(fpb_own)
 sf_allculv_odfw %>% filter(fpb_ftr_ty == "Culvert") %>% tabyl(fpb_own_ty)
 # Fish passage status (45% unknown)
 sf_allculv_odfw %>% filter(fpb_ftr_ty == "Culvert") %>% tabyl(fpb_f_pas_sta)
+<<<<<<< Updated upstream
+=======
+sf_allculv_odfw %>% tabyl(fpb_own_ty)
+# Fish passage status (52% unknown)
+sf_allculv_odfw %>% tabyl(fpb_f_pas_sta)
+
+
+>>>>>>> Stashed changes
