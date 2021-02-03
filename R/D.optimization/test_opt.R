@@ -4,6 +4,7 @@
 # Author: Sunny Jardine
 # Date: February, 2021
 # Ref: https://roi.r-forge.r-project.org/index.html
+# Table 4 in https://core.ac.uk/download/pdf/132292851.pdf
 #######################################
 
 library(dplyr)
@@ -11,14 +12,8 @@ library(DescTools)
 library(vegan)
 library(ROI)
 library(ROI.plugin.glpk)
-library(ROI.plugin.lpsolve)
 library(ROI.plugin.neos)
-library(ROI.plugin.nloptr)
-library(ROI.plugin.quadprog)
-library(ROI.plugin.ipop)
-library(ROI.plugin.ecos)
-library(ROI.plugin.scs)
-library(ROI.plugin.alabama)
+
 
 ## parameters
 # directly downstream (matrix)
@@ -46,25 +41,31 @@ wh <- 1 #habitat weight
 we <- 0 #equity weight
 wr <- 0 #risk (avoidance) weight
 
+# known solutions
+sxh <- c(1, 0, 1, 1, 0, 1, 0, 0, 0, 0) #soln max habitat
+sxe <- c(1, 0, 0, 0, 0, 0, 0, 0, 1, 1) #soln max equity
+sxr <- c(1, 0, 0, 0, 0, 1, 1, 0, 1, 0) #soln max risk avoidance
+
 ## optimization 
+# objective functions
+# 1) Linear objective
+obj <- L_objective(h) 
 
-tstx1 <- c(1, 0, 1, 1, 0, 1, 0, 0, 0, 0)
-tstx2 <- c(1, 0, 0, 0, 0, 1, 1, 0, 1, 0)
-tstx3 <- c(1, 0, 0, 0, 0, 0, 0, 0, 1, 1) 
-
-# objective function
+# 2) Non-linear objective
 habitat <- function(x) {sum(h * x)}
+
 equity <- function(x) {
   1 - Gini(sapply(1 : nt, 
               FUN = function (nat) sum(h * x * (tn == nat))))}
+
 risk <- function(x) {
   diversity(sapply(1 : ns, 
                    FUN = function (sto) sum(h * x * (s == sto))), 
                    index = "shannon")}
 
-mObj <- F_objective(F = function(x) wh * habitat(x) +
+nl_obj <- F_objective(F = function(x) wh * habitat(x) +
                                    we * equity(x) +
-                                   wr * risk(x), n = nb) #multi-objective
+                                    wr * risk(x), n = nb) #multi-objective
 
 
 # constraints
@@ -72,20 +73,35 @@ bc <- L_constraint(L = rc, dir = "<=", rhs = B) #budget
 hc <- L_constraint(L = diag(nb) - t(D), 
                    dir = rep("<=", 10), rhs = 1 - di) #hydrology
   
-# problem
-prob <- OP(objective = h, 
+
+# problem & solution linear obj
+# gpkl solver
+prob <- OP(objective = obj, 
            constraints = c(bc, hc),
            bounds = V_bound(li = 1 : nb, lb = rep.int(0, nb), 
                             ui = 1 : nb, ub = rep.int(1, nb)), 
            types = rep.int("B", nb), 
            maximum = TRUE)
 
-# solution
-ROI_applicable_solvers(prob)
-soln <- ROI_solve(prob, "glpk", 
+soln_glpk <- ROI_solve(prob, "glpk", 
                   control = list("verbose" = TRUE, 
                                  "presolve" = TRUE))
-ROI::solution(soln)
+#ROI::solution(soln_glpk)
+
+# neos solver 
+#soln_neos <- ROI_solve(prob, "neos", email = "jardine@uw.edu")
+#ROI::solution(soln_neos)
+
+# solution non-linear obj
+nl_prob <- OP(objective = nl_obj, 
+           constraints = c(bc, hc),
+           bounds = V_bound(li = 1 : nb, lb = rep.int(0, nb), 
+                            ui = 1 : nb, ub = rep.int(1, nb)), 
+           types = rep.int("B", nb), 
+           maximum = TRUE)
+
+nl_soln_neos <- ROI_solve(nl_prob, "neos", email = "jardine@uw.edu")
+ROI::solution(nl_soln_neos)
 
 #notes: (1) the test problem needs to be modified because you get the same optimal solution
 # with and without the hydrology constraint; (2) from what I can tell the ROI package

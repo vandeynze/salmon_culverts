@@ -3,44 +3,44 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: wsg_preproposal.aux
 The style file: unsrt.bst
 Database file #1: wsg.bib
-You've used 5 entries,
+You've used 6 entries,
             1791 wiz_defined-function locations,
-            478 strings with 4545 characters,
-and the built_in function-call counts, 949 in all, are:
-= -- 78
-> -- 46
+            486 strings with 4921 characters,
+and the built_in function-call counts, 1287 in all, are:
+= -- 100
+> -- 81
 < -- 0
-+ -- 18
-- -- 13
-* -- 65
-:= -- 174
-add.period$ -- 15
-call.type$ -- 5
-change.case$ -- 6
++ -- 30
+- -- 24
+* -- 100
+:= -- 236
+add.period$ -- 18
+call.type$ -- 6
+change.case$ -- 7
 chr.to.int$ -- 0
-cite$ -- 5
-duplicate$ -- 41
-empty$ -- 90
-format.name$ -- 13
-if$ -- 198
+cite$ -- 6
+duplicate$ -- 50
+empty$ -- 112
+format.name$ -- 24
+if$ -- 264
 int.to.chr$ -- 0
-int.to.str$ -- 5
-missing$ -- 4
-newline$ -- 28
-num.names$ -- 5
-pop$ -- 8
+int.to.str$ -- 6
+missing$ -- 5
+newline$ -- 33
+num.names$ -- 6
+pop$ -- 9
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 13
+skip$ -- 16
 stack$ -- 0
-substring$ -- 43
-swap$ -- 4
+substring$ -- 62
+swap$ -- 5
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 9
-width$ -- 6
-write$ -- 56
+while$ -- 12
+width$ -- 7
+write$ -- 67
