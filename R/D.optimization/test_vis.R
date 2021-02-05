@@ -6,43 +6,51 @@
 #######################################
 
 library(sf)
+library(tidyverse)
 
 #stream lines
-str_list <- list(rbind(c(3, 0), c(3, 1), c(0, 4)), 
+str <- list(rbind(c(3, 0), c(3, 1), c(0, 4)), 
                 rbind(c(3, 1), c(5, 3), c(7, 3)),
                 rbind(c(5, 3), c(5, 8)),
                 rbind(c(10, 0), c(10, 1), c(8, 3)),
                 rbind(c(10, 1), c(14, 5)),
-                rbind(c(15, 0), c(15, 5)))
+                rbind(c(15, 0), c(15, 5))) %>% 
+  st_multilinestring()
 
-str <- st_multilinestring(str_list)
+#str <- st_multilinestring(str_list)
 
 
 #barriers
-bar_vec = rbind(c(3, 0), c(1, 3), c(4, 2), c(6, 3), c(5, 4),
+bar <- rbind(c(3, 0), c(1, 3), c(4, 2), c(6, 3), c(5, 4),
                     c(10, 0), c(9, 2), c(11, 2),
-                    c(15, 0), c(15, 1))
+                    c(15, 0), c(15, 1)) %>% 
+  st_multipoint()
 
-bar <- st_multipoint(bar_vec)
+#bar <- st_multipoint(bar_vec)
 
 #expensive barrier
 eb <- st_point(c(15, 1))
 
 #counters
-cnt_vec = rbind(c(3, 1), c(2, 2), c(0, 4), c(5, 3), c(5, 5), c(7, 3), c(5, 6), c(5, 7), c(5, 8),
+cnt = rbind(c(3, 1), c(2, 2), c(0, 4), c(5, 3), c(5, 5), c(7, 3), c(5, 6), c(5, 7), c(5, 8),
                 c(10, 1), c(8, 3), c(12, 3), c(13, 4), c(14, 5),
-                c(15, 2), c(15, 3), c(15, 4), c(15, 5))
+                c(15, 2), c(15, 3), c(15, 4), c(15, 5)) %>% 
+  st_multipoint()
 
-cnt <- st_multipoint(cnt_vec)
+#cnt <- st_multipoint(cnt_vec)
 
 #plot
+vis <- function(soln) {
 plot(str)
 plot(bar, col = "red", pch = 19, add = T)
+if(sum(soln) > 0) {
+plot(st_multipoint(bar[as.logical(soln), ]), col = "green", pch = 19, add = T)
+}
 plot(cnt, col = "black", pch = 19, add = T)
-plot(eb,  col = "green", add = T)
+plot(eb,  col = "blue", add = T)
 text(x = c(3, 1, 4, 6, 5, 10, 9, 11, 15, 15) - 0.5, 
      y = c(0, 3, 2, 3, 4, 0, 2, 2, 0, 1), 
-     labels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")) 
-text(x = c(2, 9, 14), 
-     y = c(-1, -1, -1), 
-     labels = c("S1, TN1", "S2, TN1", "S3, TN2")) 
+     labels = c("1", "2", "3", "5", "4", "6", "7", "8", "9", "10")) 
+text(x = c(3, 10, 15), y = c(6, 6, 6), 
+     labels = c("S1, TN1", "S2, TN1", "S3, TN2"))
+}
