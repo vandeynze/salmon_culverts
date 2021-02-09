@@ -51,8 +51,7 @@ sxr <- c(1, 0, 1, 0, 0, 1, 0, 0, 1, 0) #soln w rc
 vis(rep(0, nb))
 
 ## optimization 
-# objective functions
-# 1) Linear objective
+# objective function
 obj <- L_objective(h) 
 
 # constraints
@@ -64,7 +63,7 @@ ec <- L_constraint(L = th_min * rbind(h, h) - TH,
 rc <- L_constraint(L = sh_min * rbind(h, h, h) - SH,
                    dir = rep("<=", 3), rhs = matrix(0, nrow = 3, ncol = 1)) #risk 
 
-# problem & solution linear obj
+# problem & solution 
 # bc and hc
 prob1 <- OP(objective = obj, 
            constraints = c(bc, hc),
