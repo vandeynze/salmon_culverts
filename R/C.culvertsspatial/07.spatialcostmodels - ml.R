@@ -11,46 +11,20 @@
 #' ---
 #' 
 #+ include=F
+
+# Based loosely on Ch. 9-12 of Boehmke & Greenwell (https://bradleyboehmke.github.io/HOML/)
+
 # Prepare environment and data ----
 rm(list = ls())
 
-library(ggmap)
-library(rnaturalearth)
-library(rnaturalearthdata)
-library(sf)
-library(osmdata)
-library(raster)
+
 library(searchable)
-library(ggthemes)
-library(equatiomatic)
-library(MASS)
 library(tidyverse)
 library(janitor)
 library(here)
-library(scales)
-library(knitr)
-library(kableExtra)
-library(broom)
-library(margins)
-library(ggeffects)
-library(forcats)
 library(readxl)
-library(mctest)
-library(ggcorrplot)
-library(gganimate)
-library(ggtext)
-library(gifski)
 library(sandwich)
 library(lmtest)
-library(nhdplusTools)
-
-opts_chunk$set(echo=FALSE)
-
-# Wraps long subtitles in ggplot
-wrapper <- function(label, dev_width = dev.size("in")[1], dev_scaler = 12)  {   
-  paste(strwrap(label, dev_width * dev_scaler), collapse = "\n") 
-}
-
 
 
 # Load NLCD key
@@ -147,7 +121,7 @@ coeftest(
          # vcov. = vcovHC(mod_full)
 )
 
-# ____ Try random forest models ----
+# ____ Try ML models ----
 library(MASS)
 set.seed(1)
 library(tree)
@@ -374,10 +348,10 @@ sqrt(boost_culv$cv.error[best])
 
 # From here, we can adjust a bunch of the hyperparameters (the gradient descent
 # rate, the number of possible leaves on each tree, the minimum observations in
-# each leaf) and might find even better model performance. There are also a
-# class of "stochastic" gradient boosting methods that can achieve better out of
-# bag performance and avoid local mins by instituting the bootstrap techniques
-# in bagged random forest.
+# each leaf, size of the training set) and might find even better model
+# performance. There are also a class of "stochastic" gradient boosting methods
+# that can achieve better out of bag performance and avoid local mins by
+# instituting the bootstrap techniques in bagged random forest.
 #
 # It might also be possible to tune the model for better performance in specific
 # regions by adjusting the train/test balance or a custom loss function, but I
