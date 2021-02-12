@@ -130,7 +130,7 @@ set.seed(1)
 # Select just dependent variable and possible features, plus fix character/categorical variables as factors
 df_tree <-
   df_culv %>%
-  select(
+  dplyr::select(
     -c(project_id:subbasin),
     -adj_cost, -pure_culv, -county, -state_fips, -ua_nn_name, -uc_nn_name, -fips, -ends_with("_nodata"), -c(id:tot_s1830), -c(nlcd_2001:nlcd_2016), -c(snet_distm:snet_name), -hu_mod,
     -geometry, -huc12, -huc12_name, -comid, -to_huc12, -c(nhd_dist_m:nhd_ftype),
@@ -163,17 +163,17 @@ text(tree_culv, pretty=0)
 # We're looking for the number of nodes that minimizes the deviance
 cv_tree = cv.tree(tree_culv); cv_tree
 plot(cv_tree$size, cv_tree$dev, type='b')
-# Tree size just 2 or 3 has the lowest deviance, but cross validation here is fairly variable
+# Tree size just 4 has the lowest deviance, but cross validation here is fairly variable
 set.seed(2)
 cv_tree = cv.tree(tree_culv); cv_tree
 plot(cv_tree$size, cv_tree$dev, type='b')
-# See 5 is lowest on this one
+# See 17 is lowest on this one
 cv_tree = cv.tree(tree_culv); cv_tree
 plot(cv_tree$size, cv_tree$dev, type='b')
 # And 5 is lowest on this one too
 cv_tree = cv.tree(tree_culv); cv_tree
 plot(cv_tree$size, cv_tree$dev, type='b')
-# And 18/19 and 23/24 are much lower on this one
+# And 10 is lowest here
 
 # So I'm not sure how useful this approach is
 
@@ -189,10 +189,10 @@ text(prune_culv_5, pretty=0)
 # expansive (const_totp = employee-weighted construction machinery supplier density)
 
 set.seed(1)
-prune_culv_18 = prune.tree(tree_culv, best = 18)
-summary(prune_culv_18)
-plot(prune_culv_18)
-text(prune_culv_18, pretty=0)
+prune_culv_10 = prune.tree(tree_culv, best = 10)
+summary(prune_culv_10)
+plot(prune_culv_10)
+text(prune_culv_10, pretty=0)
 # This one is a lot like the original tree, which had 25 leaves so that's what we'd expect
 
 # Predictions
@@ -203,9 +203,9 @@ sqrt(sum((yhat_culv_5 - log(y_test)) ^ 2)/length(yhat_culv_5)) %>% c("Root Mean 
 plot(x = yhat_culv_5, y = log(y_test) %>% pull(cost_per_culvert))
 abline(0,1)
 # Not pretty, but it's something! Let's try again with the other trees
-yhat_culv_18 = predict(prune_culv_18, newdata = df_tree[-train,])
-sqrt(sum((yhat_culv_18 - log(y_test)) ^ 2)/length(yhat_culv_18)) %>% c("Root Mean Square Error" = .)
-plot(x = yhat_culv_18, y = log(y_test) %>% pull(cost_per_culvert))
+yhat_culv_10 = predict(prune_culv_10, newdata = df_tree[-train,])
+sqrt(sum((yhat_culv_10 - log(y_test)) ^ 2)/length(yhat_culv_10)) %>% c("Root Mean Square Error" = .)
+plot(x = yhat_culv_10, y = log(y_test) %>% pull(cost_per_culvert))
 abline(0,1)
 # Okay in terms of RMSE it's even worse, and the plot isn't pretty either
 yhat_culv = predict(tree_culv, newdata = df_tree[-train,])
@@ -240,7 +240,7 @@ library(randomForest)
 # all the generated trees in the "forest"
 
 set.seed(1)
-bag_culv = randomForest(log(cost_per_culvert) ~ ., data = df_tree %>% select(-project_source, -basin), subset = train, mtry = 25, ntree = 1000, importance = TRUE)
+bag_culv = randomForest(log(cost_per_culvert) ~ ., data = df_tree, subset = train, mtry = 25, ntree = 1000, importance = TRUE)
 bag_culv
 # Looks like a good chance this is better than both the OLS and individual trees
 
@@ -255,6 +255,7 @@ abline(0,1)
 importance(bag_culv)
 varImpPlot(bag_culv)
 # Most important vars, in terms of decreasing MSE and increasing node purity (consistency w/i nodes)...
+# Basin and source effects
 # Private industry landownership nearby (i.e. forestry, various measures [pvi_Xkm_buff])
 # Project year
 # Forest (in upstream catchments [acc/tot])
