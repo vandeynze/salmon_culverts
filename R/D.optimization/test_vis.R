@@ -17,16 +17,11 @@ str <- list(rbind(c(3, 0), c(3, 1), c(0, 4)),
                 rbind(c(15, 0), c(15, 5))) %>% 
   st_multilinestring()
 
-#str <- st_multilinestring(str_list)
-
-
 #barriers
-bar <- rbind(c(3, 0), c(1, 3), c(4, 2), c(6, 3), c(5, 4),
+bar <- rbind(c(3, 0), c(1, 3), c(4, 2), c(5, 4), c(6, 3),
                     c(10, 0), c(9, 2), c(11, 2),
                     c(15, 0), c(15, 1)) %>% 
   st_multipoint()
-
-#bar <- st_multipoint(bar_vec)
 
 #expensive barrier
 eb <- st_point(c(15, 1))
@@ -36,8 +31,6 @@ cnt = rbind(c(3, 1), c(2, 2), c(0, 4), c(5, 3), c(5, 5), c(7, 3), c(5, 6), c(5, 
                 c(10, 1), c(8, 3), c(12, 3), c(13, 4), c(14, 5),
                 c(15, 2), c(15, 3), c(15, 4), c(15, 5)) %>% 
   st_multipoint()
-
-#cnt <- st_multipoint(cnt_vec)
 
 #plot
 vis <- function(soln) {

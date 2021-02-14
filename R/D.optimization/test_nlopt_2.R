@@ -3,12 +3,12 @@
 # with mixed non-linear integer programming 
 # Author: Sunny Jardine
 # Date: February, 2021
-# Ref: https://cran.r-project.org/web/packages/DEoptimR/DEoptimR.pdf
-# https://ieeexplore.ieee.org/document/4016057
+# Ref: http://sekhon.berkeley.edu/rgenoud/genoud.html
+# http://sekhon.berkeley.edu/rgenoud/
 #######################################
 
 library(dplyr)
-library(DEoptimR)
+library(rgenoud)
 library(DescTools)
 library(vegan)
 library(here)
@@ -24,11 +24,13 @@ S <- matrix(1, nrow = nrow(D), ncol = ncol(D))
 D[p] <- S[p]
 di <- colSums(D)
   
-# barrier attributes (vectors)
-h <- c(4, 1, 3, 4, 1, 3, 1, 3, 1, 4) #habitat
-tn <- c(rep(1, 8), rep(2, 2)) #tribal nation 
-s <- c(rep(1, 5), rep(2, 3), rep(3, 2)) #stock
-brc <- c(rep(10, 9), 20) #barrier replacement cost
+# barrier attributes 
+h <- c(4, 1, 3, 4, 1, 3, 1, 3, 1, 4) #habitat vec
+tn <- rbind(c(rep(1, 8), rep(0, 2)), c(rep(0, 8), rep(1, 2))) #tribal nation mat
+s <-  rbind(c(rep(1, 5), rep(0, 5)),
+            c(rep(0, 5), rep(1, 3), rep(0, 2)),
+            c(rep(0, 8), rep(1, 2))) #stock mat
+brc <- c(rep(10, 9), 20) #barrier replacement cost vec
 
 # counts
 nb <- 10 #number of barriers
@@ -55,26 +57,19 @@ vis(rep(0, nb))
 habitat <- function(x) {sum(h * x)}
 
 equity <- function(x) {
-  1 - Gini(sapply(1 : nt, 
-                  FUN = function (nat) sum(h * x * (tn == nat))))}
+  1 - Gini(c(sum(h * x * tn[1, ]), sum(h * x * tn[2, ])))}
 
 div <- function(x) {
-  diversity(sapply(1 : ns, 
-                   FUN = function (sto) sum(h * x * (s == sto))), 
+  diversity(c(sum(h * x * s[1, ]), sum(h * x * s[2, ]), sum(h * x * s[3, ])), 
             index = "shannon")}
 
-nl_obj <- function(x) {-1 * (
-  wh * habitat(floor(x)) + we * equity(floor(x)) +
-    wd * div(floor(x)))} #multi-objective (minimization)
-
-# constraints
-con <- function(x) {c(sum(brc * floor(x)) - B, 
-      (diag(nb) - t(D)) %*% floor(x) - 1 + di)} #c(budget, hydrograph) 
+nl_obj <- function(x) {ifelse(sum(brc * x) - B > 0, -99999999, #budget constraint
+                       ifelse((diag(nb) - t(D)) %*% x - 1 + di > 0, -99999999, #hydrography constraint 
+                       wh * habitat(x) + we * equity(x) 
+                       + wd * div(x)))} #multi-objective max with budget constraint
 
 # solution 
-soln1 <- JDEoptim(rep(0, nb), rep(2, nb),
-                fn = nl_obj, constr = con,
-                tol = 1e-7, trace = TRUE, triter = 50)
+soln1 <- genoud(nl_obj, nvars = nb, max = TRUE, Domains = cbind(rep(0, nb), rep(1, nb)),
+                data.type.int = TRUE, pop.size=1000)
 
-
-floor(soln1$par)
+vis(soln1$par)
