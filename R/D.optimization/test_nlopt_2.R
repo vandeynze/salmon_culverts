@@ -39,9 +39,9 @@ ns <- 3 #number of fish stocks
 
 # manager inputs
 B <- 40 #budget
-wh <- 1 #habitat weight
+wh <- 0 #habitat weight
 we <- 0 #equity weight
-wd <- 0 #diversification weight
+wd <- 1 #diversification weight
 
 # known solutions
 sxh <- c(1, 0, 1, 1, 0, 1, 0, 0, 0, 0) #soln max habitat
@@ -64,12 +64,12 @@ div <- function(x) {
             index = "shannon")}
 
 nl_obj <- function(x) {ifelse(sum(brc * x) - B > 0, -99999999, #budget constraint
-                       ifelse((diag(nb) - t(D)) %*% x - 1 + di > 0, -99999999, #hydrography constraint 
+                       ifelse(sum((diag(nb) - t(D)) %*% x - 1 + di > 0) > 0 , -99999999, #hydrography constraint 
                        wh * habitat(x) + we * equity(x) 
                        + wd * div(x)))} #multi-objective max with budget constraint
 
 # solution 
 soln1 <- genoud(nl_obj, nvars = nb, max = TRUE, Domains = cbind(rep(0, nb), rep(1, nb)),
-                data.type.int = TRUE, pop.size=1000)
+                data.type.int = TRUE, pop.size = 3000)
 
 vis(soln1$par)

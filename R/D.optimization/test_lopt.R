@@ -60,8 +60,8 @@ hc <- L_constraint(L = diag(nb) - t(D),
                    dir = rep("<=", 10), rhs = 1 - di) #hydrology
 ec <- L_constraint(L = th_min * rbind(h, h) - TH, 
                    dir = rep("<=", 2), rhs = matrix(0, nrow = 2, ncol = 1)) #equity
-rc <- L_constraint(L = sh_min * rbind(h, h, h) - SH,
-                   dir = rep("<=", 3), rhs = matrix(0, nrow = 3, ncol = 1)) #risk 
+dc <- L_constraint(L = sh_min * rbind(h, h, h) - SH,
+                   dir = rep("<=", 3), rhs = matrix(0, nrow = 3, ncol = 1)) #diversification
 
 # problem & solution 
 # bc and hc
@@ -90,9 +90,9 @@ soln2 <- ROI_solve(prob2, "glpk",
                                   "presolve" = TRUE))
 vis(ROI::solution(soln2))
 
-# bc, hc, and rc
+# bc, hc, and dc
 prob3 <- OP(objective = obj, 
-            constraints = c(bc, hc, rc),
+            constraints = c(bc, hc, dc),
             bounds = V_bound(li = 1 : nb, lb = rep.int(0, nb), 
                              ui = 1 : nb, ub = rep.int(1, nb)), 
             types = rep.int("B", nb), 
@@ -102,49 +102,3 @@ soln3 <- ROI_solve(prob3, "glpk",
                    control = list("verbose" = TRUE, 
                                   "presolve" = TRUE))
 vis(ROI::solution(soln3))
-
-# # 2) Non-linear objective
-
-#library(DescTools)
-#library(vegan)
-#library(ROI.plugin.neos)
-
-## manager inputs
-# wh <- 1 #habitat weight
-# we <- 0 #equity weight
-# wr <- 0 #risk (avoidance) weight
-
-# habitat <- function(x) {sum(h * x)}
-# 
-# equity <- function(x) {
-#   1 - Gini(sapply(1 : nt, 
-#               FUN = function (nat) sum(h * x * (tn == nat))))}
-# 
-# risk <- function(x) {
-#   diversity(sapply(1 : ns, 
-#                    FUN = function (sto) sum(h * x * (s == sto))), 
-#                    index = "shannon")}
-# 
-# nl_obj <- F_objective(F = function(x) wh * habitat(x) +
-#                                    we * equity(x) +
-#                                     wr * risk(x), n = nb) #multi-objective
-
-# neos solver 
-#soln_neos <- ROI_solve(prob, "neos", email = "jardine@uw.edu")
-#ROI::solution(soln_neos)
-
-# # solution non-linear obj
-# nl_prob <- OP(objective = nl_obj, 
-#            constraints = c(bc, hc),
-#            bounds = V_bound(li = 1 : nb, lb = rep.int(0, nb), 
-#                             ui = 1 : nb, ub = rep.int(1, nb)), 
-#            types = rep.int("B", nb), 
-#            maximum = TRUE)
-# 
-# nl_soln_neos <- ROI_solve(nl_prob, "neos", email = "jardine@uw.edu")
-# ROI::solution(nl_soln_neos)
-
-#notes: (1) the test problem needs to be modified because you get the same optimal solution
-# with and without the hydrology constraint; (2) from what I can tell the ROI package
-# does not support non-linear mixed integer programming problems and the gini and shannon
-# indices create non-linearity
