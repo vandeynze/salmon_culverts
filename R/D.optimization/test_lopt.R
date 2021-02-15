@@ -24,7 +24,7 @@ D[p] <- S[p]
 di <- colSums(D)
   
 # barrier attributes (vectors)
-h <- c(4, 1, 3, 4, 1, 3, 1, 3, 1, 4) #habitat
+h <- c(4, 1, 3, 4, 1, 3, 1, 4, 1, 4) #habitat
 tn <- c(rep(1, 8), rep(2, 2)) #tribal nation 
 TH <- rbind(h * as.numeric(tn == 1), h * as.numeric(tn == 2)) #tribal habitat
 s <- c(rep(1, 5), rep(2, 3), rep(3, 2)) #stock
@@ -41,11 +41,6 @@ ns <- 3 #number of fish stocks
 B <- 40 #budget
 th_min <- 0.3
 sh_min <- 0.05
-
-# known solutions
-sxh <- c(1, 0, 1, 1, 0, 1, 0, 0, 0, 0) #soln max habitat
-sxe <- c(1, 0, 0, 0, 0, 0, 0, 0, 1, 1) #soln w ec
-sxr <- c(1, 0, 1, 0, 0, 1, 0, 0, 1, 0) #soln w rc
 
 ## Visualize
 vis(rep(0, nb))

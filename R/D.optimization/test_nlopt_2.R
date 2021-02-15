@@ -25,7 +25,7 @@ D[p] <- S[p]
 di <- colSums(D)
   
 # barrier attributes 
-h <- c(4, 1, 3, 4, 1, 3, 1, 3, 1, 4) #habitat vec
+h <- c(4, 1, 3, 4, 1, 3, 1, 4, 1, 4) #habitat vec
 tn <- rbind(c(rep(1, 8), rep(0, 2)), c(rep(0, 8), rep(1, 2))) #tribal nation mat
 s <-  rbind(c(rep(1, 5), rep(0, 5)),
             c(rep(0, 5), rep(1, 3), rep(0, 2)),
@@ -40,13 +40,8 @@ ns <- 3 #number of fish stocks
 # manager inputs
 B <- 40 #budget
 wh <- 0 #habitat weight
-we <- 0 #equity weight
-wd <- 1 #diversification weight
-
-# known solutions
-sxh <- c(1, 0, 1, 1, 0, 1, 0, 0, 0, 0) #soln max habitat
-sxe <- c(1, 0, 0, 0, 0, 0, 0, 0, 1, 1) #soln max equity
-sxd <- c(1, 0, 0, 0, 0, 1, 1, 0, 1, 0) #soln max diversification
+we <- 1 #equity weight
+wd <- 0 #diversification weight
 
 ## Visualize
 vis(rep(0, nb))
