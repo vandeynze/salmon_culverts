@@ -4,178 +4,107 @@
 \usepackage{color}
 \usepackage{amssymb}
 \usepackage{natbib}
-\bibliographystyle{apa}
+\bibliographystyle{unsrt}
+\usepackage{hyperref}
 \usepackage{setspace}
 \usepackage[section]{placeins}
 \usepackage{graphicx}
 \usepackage{mathrsfs}
 \usepackage[margin=1in]{geometry}
-\usepackage{fancyhdr}
-\pagestyle{fancy}
+%\usepackage{fancyhdr}
+\pagestyle{empty}
+\usepackage{titlesec}
+\titleformat{\section}[runin]{\normalfont\bfseries}{\thesection.}{3pt}{}
+%\lhead{}
+%\chead{}
+%\rhead{}
+%\cfoot{}
 
-\lhead{}
-\chead{}
-\rhead{}
-\cfoot{\thepage}
 
 
 \begin{document}
 \begin{center} \textbf{PROJECT NARRATIVE} \end{center}
 
-%Notes
-%
-%\begin{itemize}
-%\item In 2001 the U.S. government sued Washington state on behalf of 21 Northwest tribes for violating treaty fishing rights based on the fact that culverts block fish passage. 
-%\item In 2013 a federal court injunction required that the state remove state-owned culverts blocking salmon and steelhead by 2030. (what is a federal court injunction). 
-%\item The ruling was contested.
-%\item After nearly two decades of legal battles, the U.S. Supreme Court ruled in favor of the tribes, deciding that the state must replace 1,000 culverts. (2019 Inslee media article). Note the slides say that WSDOT has 1001, WDNR 148, WDFW 51, and State Parks 28
-%\item There are 2,000 culverts statewide (2019 Inslee media article). Are these state-owned culverts or state/county/city?
-%\item State legislators allocated \$100 million in funding to culvert restoration in 2019-2021, which has been deemed severely inadequate (2019 Inslee media article). When is the next budget going to be decided on?
-%\item Did Inslee increase this to \$275 million for 19-21? (slide 23 in WSDOT slides)
-%\item Key challenges to salmon restoration include the cost of replacing culverts and coordination between state and local governments.
-%\item There is a Fish Barrier Removal Board. Should we contact them?
-%\item Culvert case area is a subsection of Washington state. Should we focus on that area?
-%\item WSDOT slide 20 shows the 19-21 plan for over 100 projects.
-%\item Slide 42/45 says that counties want to develop preliminary cost estimates with priority given to barriers that share the same stream system as state-owned fish passages.
-%\item Average project cost in these media articles is ~ \$1 million. How does that compare to our data.
-%\item Current WSDOT decisions regarding barrier corrections consider factors such as: amount of habitat blocked and habitat quality, tribal input, project cost, traffic detour management during construction, maintenance issues, partnership opportunities, the presence and number of ESA listed species, and permitting constraints. (WSDOT report https://wsdot.wa.gov/sites/default/files/2019/09/20/Env-StrRest-FishPassageAnnualReport.pdf)
-%\item 14 barrier correction projects were schedule for completion in 2020 with an estimated 55.22 miles of habitat gain. (WSDOT report). 
-%\item The rate of barrier corrections will need to ramp up dramatically to meet the goal of removing all state-owned culverts blocking salmon and steelhead by 2030.
-%\item We propose developing a systematic project prioritization tool that synthesizes multiple datasets, providing transparency and efficiency in project prioritization. 
-%\item WSDOT estimates that there are 1,526 culverts blocking a significant amount of upstream habitat (WSDOT report). An estimated total of 73 + 14 injunction barrier culverts will have been corrected by the end of 2020, opening up 329 + 54.3 miles of habitat.
-%\end{itemize}
 
+\section{Background} 
+ In 2001, Washington State was sued on behalf of 21 Northwest tribes for violating treaty fishing rights. The plaintiff argued that state-owned culverts are barriers to salmon and steelhead accessing historical upstream spawning habitat, violating the Stevens Treaties \citep{hickey2018highway}. The lawsuit resulted in a 2013 federal court injunction requiring the state remove barrier culverts under its jurisdiction by 2030. After nearly two decades of legal battles, in 2018, the U.S. Supreme Court ruled in favor of the tribes, upholding the 2013 federal injunction. 
 
-\section{Background} % 3/4 page
-% 1) Fish passage as salmon limiting factor
-%   a) Salmon endangered species status (number of species in region listed?)
-%   b) Special value to tribal nations in region
-%   c) Fish passage, esp. culverts, major limiting factor to recovery (among other factors)
+As of 2020, the Washington State Department of Transportation (WSDOT), responsible for the vast majority of state-owned culverts within the case area, has corrected 87 injunction barrier culverts opening up an estimated 383.3 miles of habitat at a cost of over \$159 million. Since the ruling, WSDOT has replaced an average of 12.4 culverts per year, including 13 in 2020. To satisfy the federal injunction, the rate of culvert replacements must ramp up dramatically. Despite increasing investment in culvert improvement within the case area since the injunction, WSDOT still owns an estimated 998 culvert barriers in the case area as of the end of 2020, and will need to increase the rate of culvert improvement almost ten-fold to meet the 2030 deadline.  
 
-% 2) Culvert case presents special opprotunity
-%   a) US v. WA background
-In 2001, Washington State was sued on behalf of 21 Northwest tribes for violating treaty fishing rights based. The United States argued that state-owned culverts block salmon and steelhead from accessing historical upstream spawning habitat, diminishing the value of the tribes' right to half of Washington's harvestable returning salmon (as upheld by the 1974 Boldt Decision). The lawsuit resulted in a 2013 federal court injunction requiring the state to remove the culverts under its jurisdiction blocking salmon and steelhead from their historical habitat by 2030. After nearly two decades of legal battles, in 2018, the U.S. Supreme Court ruled in favor of the tribes, upholding the 2013 federal injunction. 
+Importantly, the 2013 injunction strictly applies to state-owned culverts whereas there exist an estimated 3,000 and 1,300 additional barrier culverts owned by counties and cities respectively, along with barrier culverts on private lands, often on the same streams as state-owned culverts \citep{brown2019coming}. Cities and counties are relatively resource constrained and depend on state and federal grant funds for barrier culvert removal and planning.
 
-%   b) WSDOT (and state) progress
-%     i) WSDOT's response so far and outstanding need
-As of 2020, the Washington State Department of Transportation (WSDOT), the owner of the vast majority of state-owned culverts within the case area, has corrected 87 injunction barrier culverts opening up an estimated 383.3 miles of habitat at a cost of over \$159 million. Since the ruling, WSDOT has replaced an average of 12.4 culverts per year, including 13 in 2020. To satisfy the federal injunction, the rate of culvert replacements must ramp up dramatically. Despite increasing investment in culvert improvement within the case area since the injunction, WSDOT still owns an estimated 998 culvert barriers in the case area as of the end of 2020, and would need to increase the rate of culvert improvement almost ten-fold to meet the 2030 deadline.  
-% Cost, number of improvements, estimated lineal gain based on WSDOT Annual Fish Passage Performance Report
-% Other stats: Avg. cost of \$2.1 million; Max. cost of \$9.3 million; Avg. lineal gain of 4.4 miles per barrier
-% Most projects on roads much larger than PNSHP median (think I-5 vs. county road)
+Currently WSDOT prioritizes barrier culverts for removal based on factors such as: amount of habitat blocked and habitat quality, tribal input, project cost, traffic detour management during construction, maintenance issues, partnership opportunities, the presence and number of ESA listed species, and permitting constraints. Counties, cities, and other actors have developed their own prioritization frameworks with limited resources and data to inform prioritization. 
 
-%     ii) Funding shortfall leaves open question as to where/when to correct barriers
-
-%   c) Other culvert actors (their priorites, challenges, and relevant policy)
-Strategic planning is further complicated due to the fact that the 2013 injunction strictly applies to state-owned culverts whereas there exist \textcolor{red}{X} additional culverts barriers in the case area owned by local governments, federal agencies, and private parties, often on the same streams as state-owned culverts.
-%     i) counties/cities: small budgets, large reliance on grant funding (state/federal level), proximity to WSDOT culverts
-%     ii) private landowners: own large total percent of barriers, subject to different improvement plans based on size
-%     iii) federal agencies: own small portion of barriers, mostly isolated on isolated federally managed lands
-%     iv) tribal gov'ts and communities: federation of several groups, prioritize different stocks, hold right to stock overall that can be used to influence state/local gov't
-
-%   d) Outstanding questions related to WSDOT barriers
-%     i) In limited funding scenarios, which WSDOT barriers should be prioritized?
-%     ii) Which non-WSDOT barriers should be prioritized to build on progress initiated by injunction? Does accounting for potential cooperation change WSDOT priority?
-%     iii) How are the benefits of barrier correction, defined as expected salmon returns, distributed under different planning scenarios?
-%     iv) Should barriers be prioritized in order to maximize expected returns, or to minimize risk of extinction?
-
-
-% Need for planning tools (consistent across jurisdictions, account for multiple objectives)
-Current WSDOT decisions regarding barrier corrections consider factors such as: amount of habitat blocked and habitat quality, tribal input, project cost, traffic detour management during construction, maintenance issues, partnership opportunities, the presence and number of ESA listed species, and permitting constraints. % Needs fleshing out
-% - Add note on planning tools used by other actors
-
-% Brief description of proposed tool (and how fills need) (precedent from CA FISHPass tool)
-The process of prioritizing culvert restoration can be improved through developing a systematic and transparent framework that accounts for multiple state social, ecological, and economic objectives. Our proposed research will develop a data-driven online tool for project prioritization, within the injunction area, that utilizes multiple geospatial datasets and statistical economic and ecological models to identify restoration plans that maximize ecological, social, and economic objectives at a given funding level. Additionally, our tool will allow managers to compare multiple restoration plans in terms of their benefits and costs.
-
-\section{Program Priorities} % 1/4 page
-
-%How to discuss program priorities without first discussing the project?
-
-Our project contributes directly to two of Washington Sea Grant's critical program areas: Healthy Coastal Ecosystems and Sustainable Fisheries and Aquaculture. 
-
-Goal \# 2 under the Healthy Coastal Ecosystems program area is that ``ocean and coastal habitats, ecosystems and living marine resources are protected, enhanced and restored. Our project will directly contribute to the goal of restoring habitat for salmon. Improving the process of prioritizing culverts for replacement ensures that resource managers are able to maximize the returns on their investments in salmon restoration.
-
-Goal \# 4 under the Sustainable Fisheries and Aquaculture program area is that ``fisheries are safe, responsibly managed and economically and culturally vibrant. Our project contributes to the goal of responsible fisheries management and the economic and cultural vibrancy related to tribal salmon fisheries. We will explore restoration plans that prioritize the equitable distribution of habitat improvements across numerous tribes affected by barrier culverts in the injunction area. 
-
-\section{Project Summary} % 1 1/2 page
-% Add outreach plan directly into project summary (?) [2 birds, 1 stone, reducing space in outreach section and highlight intent to tightly link research with the outreach]
+\section{Project Summary}\label{sec:summary} % 1 1/2 page
 % Emphasize 4 components of optimization: costs, habitat, equity, risk associated with each plan ==> requires submodels to compute for each barrier under each setting
 
-Our restoration planning tool will consider multiple factors identified and defined in concert with our advisory committee. Here we describe potential factors to be included and the data and models to support their inclusion.   
+Our proposed research will develop a data-driven framework for project prioritization, within the injunction area of Washington state, that synthesizes multiple geospatial datasets with statistical economic and ecological models to identify restoration plans that maximize ecological, social, and economic objectives at a given funding level. Our framework will be used to assess the tradeoffs between key objectives (e.g.\ increasing salmon habitat, an equitable distribution of habitat gains, and mitigating investment risk) as well as gains from coordinating barrier culvert replacement across key actors (the state, counties, and cities) and alternative funding streams. We will make the framework accessible to users through an online decision support tool (DST) similar to FISH\emph{Pass} developed for California \citep{optipass2015migratory} and Fishwerks developed for the Great Lakes \citep{moody2017pet}. To our knowledge, our fish passage prioritization framework is the first to include objectives of equity and risk mitigation. In what follows we describe our framework and DST in more detail.
+
+The utility of our framework and DST critically depends on how well real-world priorities and constraints are reflected. Thus, in the initial phase of the project we will organize a series of workshops where we elicit important real-world objectives and constraints from key user groups (see Section~\ref{sec:engage}). For purposes of illustration, here we describe potential factors to be included and the data and models to support their inclusion.   
 
 % Step 1: Cost estimates (add sentence on how cost estimates are used in existing planning tools?)
-First, we will estimate the cost of culvert restoration for all existing fish passage-blocking culverts within the US vs. Washington injunction area. Culverts in need of restoration will be identified using a geospatial fish passage dataset maintained by the Washington Department of Fish and Wildlife (WDFW). Cost estimates will utilize predictive models of culvert restoration cost estimated using PNSHP data from 2001-2015 with several predictor variables, including stream slope (\%), bankfull width, road class, elevation, etc. currently under development by our research team. The cost models will be optimized for out-of-sample predictive power in the injunction area.
+Barrier removal is costly and managers are budget constrained. To incorporate this constraint, we will estimate the cost of culvert restoration for all existing fish passage-blocking culverts within the US vs. Washington injunction area. Culverts in need of restoration will be identified using the Washington State Fish Passage (WSFP) database maintained by the Washington Department of Fish and Wildlife (WDFW). Cost estimates will utilize predictive models developed from over 1,200 culvert projects in the Pacific Northwest Salmonid Habitat Projects (PNSHP) dataset, from 2001-2015, along with several predictor variables, including stream slope (\%), bankfull width, road class, elevation, etc. Parametric cost models are currently being finalized by our research team. For the proposed project, we will leverage the datasets and code we have already developed to explore the predictive performance of several parametric and non-parametric cost models, selecting the model that provides superior out-of-sample predictive power in the injunction area.
 
 % Step 2: Benefit estimates 
-Second, for each culvert restoration plan, defined as a combination of multiple culverts restored, we will quantify the expected increase in habitat for the five species of Pacific salmon. Habitat increases will serve as a proxy for the economic benefits of a restoration strategy. Spatial dependence will drive restoration benefits, because the culvert restoration downstream determines the benefits from culvert restoration upstream. The benefit proxies will be calculated using the USGS National Hydrography Dataset, NDHPlus High Resolution, and the WDFW fish passage dataset, which contains information about fish species affected by culvert blockages.
+A primary objective in barrier culvert removal is increased salmon habitat. For each culvert restoration plan, defined as a combination of multiple culverts restored, we will quantify the expected increase in habitat for the five species of Pacific salmon. Habitat increases will serve as a proxy for the economic benefits of a restoration strategy. Spatial dependence will drive restoration benefits, because the culvert restoration downstream determines the benefits from culvert restoration upstream. Estimated habitat gains will be calculated using the USGS National Hydrography Dataset, NDHPlus High Resolution, and the WDFW fish passage dataset, which contains information about fish species affected by culvert blockages.  Our team has developed code to estimate similar benefit proxies for culvert restoration projects in the PNSHP database, which will be leveraged to estimate upstream habitat gained by removing barriers cataloged in the WSFP database. 
 
-Equity is another important dimension to the problem. We will explore equity strategies that prioritize restoration plans that generate equity in the benefits (increased habitat) across the 21 tribal nations involved in the 2001 lawsuit using maps of reservations and ceded land for all federally recognized tribes in Washington. 
+%
+Equity is another important dimension to consider. A prioritization framework that simply maximizes expected salmon habitat given a budget constraint could potentially lead to a culvert restoration plan that only benefits a single tribe. We will explore equity strategies that prioritize restoration plans that provide an equitable distribution of habitat gains across the 21 tribal nations involved in the 2001 lawsuit. We will explore various equity metrics, e.g. a Gini coefficient, using geospatial data on all salmon runs in the injunction area together with geospatial data on Tribal Lands maintained by the Washington State Department of Natural Resources to determine which tribe(s) benefit from the removal of each barrier culvert in the WSFP database. 
 
-Our analysis will include risk, defined as the variability in expected salmon returns. TO BE DEVELOPED.
+%
+Risk mitigation is yet another important factor to consider when selecting portfolios of barrier culverts to remove. Returns to investments in barrier culvert removal are risky driven by the possibility of low salmon returns to habitat, population extinction driven by both environmental shocks, and future human impacts including impacts to water quality through urbanization \citep{ettinger2021prioritizing}. Drawing from the literature on restoration portfolio diversification, we will estimate the degree to which the risk in returns to barrier culvert removal plans can be mitigated through diversification. We will explore risk metrics ranging in complexity from a simple measure of the spread of investments across all salmon runs with habitat in the injunction area to increasingly complex risk metrics that utilize information on the negative covariance in expected returns to multiple salmon populations to exploit opportunities for portfolio diversification \citep{sanchirico2008empirical, jardine2015fishermen, johnston2002combining}.  
 
-Table \ref{tab:factors} summarizes potential factors to be included in our restoration planning tool. With these factor inputs, the tool will utilize multiobjective optimization algorithms (such as evolutionary or pattern search algorithms) to identify the optimal restoration package that satisfy the manager's budget and preferences over the various factors included in the prioritization. The tool will also account for the ownership of other culverts along the stream network, allowing managers to consider plans that correct (or are contingent on correction of) culverts owned by other parties.
+%Table \ref{tab:factors} summarizes potential factors to be included in our restoration planning framework. With these factor inputs, the framework will employ mixed integer linear programming to identify the optimal restoration package that satisfy the manager's budget and preferences over the various factors included in the prioritization. The framework will also account for the ownership of other culverts along the stream network, allowing managers to consider plans that correct (or are contingent on correction of) culverts owned by other parties.
 
 % Example of how might be used
-As an illustrative example, suppose WSDOT wanted to define a restoration plan (a package of culverts to be restored) that balanced habitat increases for Chinook salmon in the injunction area with risk and equity concerns. Further suppose WSDOT had a budget of \$B to invest in the restoration plan and did not want to restore any county-owned culverts. Our tool would solve the following problem (blue text represents manager inputs):
+As an illustrative example, suppose Lewis County wants to define a restoration plan (a package of culverts to be restored) that balances habitat increases for Chinook salmon in the injunction area with equity and risk mitigation. Further suppose Lewis County had a budget of B dollars to invest in the restoration plan and does not want to restore any culverts outside of its jurisdiction. Our framework would solve the following problem (blue text represents manager inputs):
 
 \begin{equation*}
-\substack{\text{max}}_{\boldsymbol{c}}\hspace{0.25in} \textcolor{blue}{w_1} \text{miles of Chinook habitat} + \textcolor{blue}{w_2} \text{equity metric} + \textcolor{blue}{w_3} \text{risk metric},
+\substack{\text{\large max}}_{\boldsymbol{c}}\hspace{0.25in} \textcolor{blue}{w_1}\:\: \text{miles of Chinook habitat} + \textcolor{blue}{w_2}\:\: \text{equity metric} + \textcolor{blue}{w_3}\:\: \text{risk mitigation metric},
 \end{equation*}
-
-\noindent subject to:
 
 \begin{equation*}
-\text{total restoration cost} \le \textcolor{blue}{B},
+\text{subject to:  total cost} \le \textcolor{blue}{B} \text{ and } \boldsymbol{c} \in \{\textcolor{blue}{\boldsymbol{c}_s}  \},
 \end{equation*}
 
-\noindent and
+%\noindent and
+%
+%\begin{equation*}
+%\boldsymbol{c} \in \{\textcolor{blue}{\boldsymbol{c}_s}  \},
+%\end{equation*}
 
-\begin{equation*}
-\boldsymbol{c} \in \{\boldsymbol{c}_s  \},
-\end{equation*}
+where $\boldsymbol{c}$ are culverts included in the restoration plan, $\boldsymbol{c}_s$ are the subset of barrier culverts owned by Lewis county, B is total amount of funding that can be spent, and $w_1-w_3$ are the weights that managers place on each objective. The problem will be additionally constrained so that benefits from upstream culvert removal cannot be captured without first removing downstream blockages.
 
-where $\boldsymbol{c}$ is the culverts included in the restoration plan, $\boldsymbol{c}_s$ are all state-owned culverts, B is the manager's budget constraint, and $w_1-w_3$ are the weights that managers place on each objective. Metrics for equity and risk will be defined by our research team. Natural candidates for equity and risk mitigation respectively include a Gini coefficient that measures how increases in salmon habitat are allocated across the 21 tribal nations and a Shannon index to measure the diversification in increases in habitat across \textcolor{red}{X} salmon and steelhead populations spawning in the injunction area. Potential gains from cooperation can be realized by relaxing the ownership constraint to include culverts owned by cooperating parties.
+The problem will be solved using R, a free software environment that supports integer programming. The user interface to the prioritization framework, or DST, will be an online app created with the Shiny package for R and hosted on the Shiny Server. Similar tools have been built using various proprietary software programs including Microsoft Windows \citep{optipass2015migratory}, the OpenSolver add-in for Microsoft Excel \citep{mcmanamay2019commonalities}, and GAMS \citep{moody2017pet}. Through using an open-source optimization framework coupled with an open-source user interface we maximize accessibility and customizability.  
 
-The user interface to the optimization tool will be an online app (e.g. an app created with the Shiny package for R).
+%\begin{table}[htbp]
+%  \centering
+%  \caption{Factors included in the optimal restoration plans}
+%    \begin{tabular}{llp{18.835em}}\hline
+%    \textbf{Factor} & \textbf{Definition} & \multicolumn{1}{l}{\textbf{Data and model inputs}} \\\hline
+%    Costs & Estimated cost of culvert replacement & Statistical models built on 1,300 culvert replacement worksites from the PNSHP dataset between 2001-2015 \\
+%& &\\
+%    Habitat & \multicolumn{1}{p{17.335em}}{Estimated miles of increased salmon habitat for each of 5 species of Pacific salmon and steelhead} & USGS National Hydrography Dataset, NDHPlus High Resolution and the WDFW fish passage dataset \\
+%& &\\
+%    Equity & \multicolumn{1}{p{17.335em}}{The distribution of habitat across traditional fishing areas for 21 tribes} & Governor's Office of Indian Affairs map of reservations and ceded land \\
+%& &\\
+%    Risk  & The variability in expected salmon returns & ? \\\hline
+%    \end{tabular}%
+%  \label{tab:factors}%
+%\end{table}%
 
+\section{Engagement Plan}\label{sec:engage} % 1 page
 
-\begin{table}[htbp]
-  \centering
-  \caption{Factors included in the optimal restoration plans}
-    \begin{tabular}{llp{18.835em}}\hline
-    \textbf{Factor} & \textbf{Definition} & \multicolumn{1}{l}{\textbf{Data and model inputs}} \\\hline
-    Costs & Estimated cost of culvert replacement & Statistical models built on 1,300 culvert replacement worksites from the PNSHP dataset between 2001-2015 \\
-& &\\
-    Habitat & \multicolumn{1}{p{17.335em}}{Estimated miles of increased salmon habitat for each of 5 species of Pacific salmon and steelhead (can we do this by salmon population instead of species)} & USGS National Hydrography Dataset, NDHPlus High Resolution and the WDFW fish passage dataset \\
-& &\\
-    Equity & \multicolumn{1}{p{17.335em}}{The distribution of habitat across traditional fishing areas for 21 tribes} & Governor's Office of Indian Affairs map of reservations and ceded land \\
-& &\\
-    Risk  & The variability in expected salmon returns & ? \\\hline
-    \end{tabular}%
-  \label{tab:factors}%
-\end{table}%
+In the beginning of YR1, in the initial phase of the project, we will organize a series of workshops intended to uncover the objectives and challenges in culvert barrier replacement for key user groups including WSDOT, city and county governments, restoration agencies such as the Fish Barrier Removal Board, WDFW, and representatives from relevant tribal nations. The workshops will begin with a presentation of our proposed framework and online tool (described in Section~\ref{sec:summary}) as a straw-man proposal in order to generate discussion and elicit ideas on how to capture fundamental real-world priorities and constraints in barrier culvert removal. We will gather feedback during the workshops and through post-workshop surveys. Ideas coming from the initial series of workshops will be incorporated into our project to the extent possible given data and computational limitations, which will be made clear to workshop participants.
 
+In a second phase, at the beginning of YR2 we will organize a second series of workshops to present preliminary results (e.g.\ tradeoffs between various objectives) and demonstrate the functionality of a preliminary working version of the online tool. This second series of workshops will demonstrate how feedback from the initial workshops was incorporated in our framework and tool and provide a more in-depth discussion of our data inputs to the tool, e.g. a demonstration of the quality of our cost estimates and a visual demonstration of our preliminary spatial definition of our equity metric. The second series of workshops will provide stakeholders with a final opportunity to guide key features of the framework and solicit feedback on the usability of the online DST.
 
+As the project is nearing completion we will develop a video tutorial that will present content from a user guide to the tool in a way that is accessible and engaging.
 
+Finally, at the end of YR2 we will host an interactive workshop to launch our finalized online tool letting stakeholders directly engage with the tool. The workshop will begin with a screening of the video tutorial. Then, we will engage participants with exercises that highlight the tradeoffs between various objectives, gains from coordination, and how alternative budget/funding scenarios (defined by budget levels and their distribution across time) impact the culvert restoration packages with the highest ROI. Each workshop participant will be provided with a laptop computer to participate in the exercises. 
 
+At each phase of our engagement plan we will rely on advice from our Scientific Advisory Board. Members of our Scientific Advisory Board will include individuals working directly in the area of barrier culvert restoration, individuals with a history of engaging with our key stakeholder groups, and individuals generating science relevant to our problem area. We are actively working to construct a Scientific Advisory Board that has representation from the tribes, WSDOT, cities and counties, the Fish Barrier Removal Board, and an outreach specialist.
 
-\section{Expected Outcomes} % 1/2 page
-% 1) Publicly available, well-documented, open-source fish passage decision tool
-%   a) Used by state, local, tribal gov't, but available to NGOs, private landowners, etc.
-%     i) Internally to identify priorities
-%     ii) Common product allows improved external communication as well
-%   b) Open-source will enable further benefits
-%     i) Port to other regions for fish passage use (OR, CA, BC, etc.)
-%     ii) Expand to other species/conservation intervention settings
-%   c) Eases continued maintenance of tool
-%   d) As result of use of tool, improved coordination between stakeholders, more efficient conservation outcomes
-% 3) Scientific publications applying metric development and underlying optimization model to answer important research questions
-%   a) How to measure risk associated with portfolio-style restoration plan? Which species would benefit from risk-mitigating vs. habitat-maximizing restoration plans?
-%   b) Where in Puget Sound/Washington Coastal region (subbasins/watersheds) are culvert plans associated with tradeoffs between potentially competing priorities (e.g., risk vs. total habitat, equity vs. total habitat), and where can "win-wins" occur (i.e., plans that meet multiple objectives without reducing others)?
-%   c) What are the potential efficiency gains associated with coordination across culvert owner groups (state agencies, local gov't, private landowners)? What are the tradeoffs (i.e. across habitat, risk, equity metrics) associated with such coordination? Who are winners and losers associated with low vs. high coordination settings?
-%   d) Do targeting tools that implement optimization methods return meaningfully different solutions than simpler, commonly-implemented priority-scoring schemes?
-%   d) Something else related to building outreach tool and optimization framework with stakeholder input? Maybe collection of application case studies post tool launch? Could be linked with fellow's role?
-
-\section{Engagement Plan} % 1 page
 % Targeting tool priority users: 3 groups
 % 1) Culvert-owning decisionmakers (WSDOT, city+county gov'ts)
 % 2) Restoration granting agencies (WA RCO, Salmon recovery funding board, NGOs, NOAA and federal agencies)
@@ -196,4 +125,53 @@ The user interface to the optimization tool will be an online app (e.g. an app c
 % 2) Continued support for tool with usage tracking, feature refinement
 % 3) Tracking of use-cases for case studies
 
+\section{Expected Outcomes} % 1/2 page
+
+We anticipate two major research outcomes. First, our research will form the basis of a student thesis, leading to a scientific publication, applying our underlying optimization model to answer important research questions including:
+
+\begin{enumerate}
+\item How can equity be accounted for in in fish passage problems? (Note, to our knowledge equity has not been accounted for in the fish passage literature.)
+\item How can project risk be accounted for in fish passage problems? (Note, to our knowledge risk has not been accounted for in the fish passage literature.)
+\item What are the gains in habitat, equity, and risk avoidance associated with coordination across actors (state agencies, local government, private landowners) and which of these multiple objectives is most affected by a lack of coordination across actors?
+\item Who are winners and losers associated with low vs. high coordination settings?
+\item Where in Washington injunction area (sub-basins/watersheds) are culvert plans associated with tradeoffs between potentially competing priorities (e.g., risk versus total habitat, equity versus total habitat), and where can "win-wins" occur (i.e., plans that meet multiple objectives without reducing others)?
+\end{enumerate}
+
+
+Second our project will produce publicly-available, well-documented, open-source prioritization DST for barrier culvert removal in the Washington injunction area. The DST can serve a coordinating function by providing a framework to evaluate restoration plans across various actors. The DST can also support planning for cities and counties with limited access to data and quality cost estimates. Finally, the source code behind our open-source DST will be made widely available to users outside of the state of Washington to facilitate the adoption and customization of a larger set of potential users. 
+
+
+% 1) Publicly available, well-documented, open-source fish passage decision tool
+%   a) Used by state, local, tribal gov't, but available to NGOs, private landowners, etc.
+%     i) Internally to identify priorities
+%     ii) Common product allows improved external communication as well
+%   b) Open-source will enable further benefits
+%     i) Port to other regions for fish passage use (OR, CA, BC, etc.)
+%     ii) Expand to other species/conservation intervention settings
+%   c) Eases continued maintenance of tool
+%   d) As result of use of tool, improved coordination between stakeholders, more efficient conservation outcomes
+% 3) Scientific publications applying metric development and underlying optimization model to answer important research questions
+%   a) How to measure risk associated with portfolio-style restoration plan? Which species would benefit from risk-mitigating vs. habitat-maximizing restoration plans?
+%   b) Where in Puget Sound/Washington Coastal region (subbasins/watersheds) are culvert plans associated with tradeoffs between potentially competing priorities (e.g., risk vs. total habitat, equity vs. total habitat), and where can "win-wins" occur (i.e., plans that meet multiple objectives without reducing others)?
+%   c) What are the potential efficiency gains associated with coordination across culvert owner groups (state agencies, local gov't, private landowners)? What are the tradeoffs (i.e. across habitat, risk, equity metrics) associated with such coordination? Who are winners and losers associated with low vs. high coordination settings?
+%   d) Do targeting tools that implement optimization methods return meaningfully different solutions than simpler, commonly-implemented priority-scoring schemes?
+%   d) Something else related to building outreach tool and optimization framework with stakeholder input? Maybe collection of application case studies post tool launch? Could be linked with fellow's role?
+
+
+\section{Program Priorities} % 1/4 page
+
+Our project contributes directly to two of Washington Sea Grant's critical program areas: Healthy Coastal Ecosystems and Sustainable Fisheries and Aquaculture. 
+
+Goal \# 2 under the Healthy Coastal Ecosystems program area is that ``ocean and coastal habitats, ecosystems and living marine resources are protected, enhanced and restored. Our project will directly contribute to the goal of restoring habitat for salmon. Improving the process of prioritizing culverts for replacement ensures that resource managers are able to maximize the returns on their investments in salmon restoration.
+
+Goal \# 4 under the Sustainable Fisheries and Aquaculture program area is that ``fisheries are safe, responsibly managed and economically and culturally vibrant. Our project contributes to the goal of responsible fisheries management and the economic and cultural vibrancy related to tribal salmon fisheries. We will explore restoration plans that prioritize the equitable distribution of habitat improvements across numerous tribes affected by barrier culverts in the injunction area. 
+
+
+
+
+
+\clearpage
+\large References\\
+\normalsize
+\bibliography{wsg}
 \end{document}
