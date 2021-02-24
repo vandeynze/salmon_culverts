@@ -1,6 +1,6 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  18 FEB 2021 11:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  18 FEB 2021 14:25
 entering extended mode
- restricted \write18 enabled.
+ \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
 **wsg_preproposal.tex
@@ -294,11 +294,10 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip50
 )
-(/Users/sunnyjardine/Library/texmf/tex/latex/setspace.sty
-Package: setspace 2000/12/01 6.7 Contributed and Supported LaTeX2e package
-
-Package: `setspace' 6.7 <2000/12/01>
-) (/usr/local/texlive/2016/texmf-dist/tex/latex/placeins/placeins.sty
+(/usr/local/texlive/2016/texmf-dist/tex/latex/setspace/setspace.sty
+Package: setspace 2011/12/19 v6.7a set line spacing
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/placeins/placeins.sty
 Package: placeins 2005/04/18  v 2.2
 )
 (/usr/local/texlive/2016/texmf-dist/tex/latex/jknapltx/mathrsfs.sty
@@ -480,8 +479,8 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 176.
  ) 
 Here is how much of TeX's memory you used:
  7413 strings out of 493014
- 105672 string characters out of 6133351
- 202040 words of memory out of 5000000
+ 105702 string characters out of 6133351
+ 201942 words of memory out of 5000000
  10809 multiletter control sequences out of 15000+600000
  19732 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191

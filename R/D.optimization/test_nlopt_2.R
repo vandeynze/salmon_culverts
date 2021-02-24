@@ -16,8 +16,13 @@ library(here)
 source(here("R", "D.optimization", "test_vis.R")) #vis function
 
 ## parameters
+# counts
+nb <- 10 #number of barriers
+nt <- 2 #number of tribal nations
+ns <- 3 #number of fish stocks
+
 # directly downstream (matrix)
-D <- matrix(0, nrow = 10, ncol = 10)
+D <- matrix(0, nrow = nb, ncol = nb)
 p <- matrix(c(1, 1, 3, 3, 6, 6, 9, 2, 3, 4, 5, 7, 8, 10), 
             nrow = 7, ncol = 2)
 S <- matrix(1, nrow = nrow(D), ncol = ncol(D))
@@ -32,15 +37,10 @@ s <-  rbind(c(rep(1, 5), rep(0, 5)),
             c(rep(0, 8), rep(1, 2))) #stock mat
 brc <- c(rep(10, 9), 20) #barrier replacement cost vec
 
-# counts
-nb <- 10 #number of barriers
-nt <- 2 #number of tribal nations
-ns <- 3 #number of fish stocks
-
 # manager inputs
 B <- 40 #budget
-wh <- 0 #habitat weight
-we <- 1 #equity weight
+wh <- 1 #habitat weight
+we <- 0 #equity weight
 wd <- 0 #diversification weight
 
 ## Visualize
