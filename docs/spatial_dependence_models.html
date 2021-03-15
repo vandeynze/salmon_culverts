@@ -11,7 +11,7 @@
 
 <meta name="author" content="R. Fonner, B. Van Deynze" />
 
-<meta name="date" content="2020-11-20" />
+<meta name="date" content="2021-03-15" />
 
 <title>Spatial Associations in Culvert Cost Data</title>
 
@@ -27,10 +27,7 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
-<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -41,15 +38,6 @@ div.section {
   padding-top: 12px;
 }
 </style>
-
-<style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -395,7 +383,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Spatial Associations in Culvert Cost Data</h1>
 <h4 class="author">R. Fonner, B. Van Deynze</h4>
-<h4 class="date">November 20, 2020</h4>
+<h4 class="date">March 15, 2021</h4>
 
 </div>
 
@@ -446,9 +434,9 @@ Test statistics against spatial dependence
 </caption>
 <thead>
 <tr>
-<th style="empty-cells: hide;border-bottom:hidden;" colspan="1">
+<th style="border-bottom:hidden" colspan="1">
 </th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3">
 <div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
 Spatial weights
 </div>
@@ -590,11 +578,11 @@ Spatial dependence models
 </caption>
 <thead>
 <tr>
-<th style="empty-cells: hide;border-bottom:hidden;position: sticky; top:0; background-color: #FFFFFF;" colspan="1">
+<th style="border-bottom:hiddenposition: sticky; top:0; background-color: #FFFFFF;" colspan="1">
 </th>
-<th style="empty-cells: hide;border-bottom:hidden;position: sticky; top:0; background-color: #FFFFFF;" colspan="1">
+<th style="border-bottom:hiddenposition: sticky; top:0; background-color: #FFFFFF;" colspan="1">
 </th>
-<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; position: sticky; top:0; background-color: #FFFFFF;" colspan="3">
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; position: sticky; top:0; background-color: #FFFFFF;" colspan="3">
 <div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
 w/ Spatial Weights
 </div>
@@ -1412,7 +1400,7 @@ Rho (error parameter)
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.0.2 (2020-06-22)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 18363)
+Running under: Windows 10 x64 (build 19041)
 
 Matrix products: default
 
@@ -1428,44 +1416,44 @@ attached base packages:
 [8] base     
 
 other attached packages:
- [1] sphet_1.7        fields_11.6      spam_2.5-1       dotCall64_1.0-0 
- [5] spdep_1.1-5      sf_0.9-6         spData_0.3.8     sp_1.4-4        
- [9] geoR_1.8-1       readxl_1.3.1     ggeffects_0.16.0 margins_0.3.23  
-[13] broom_0.7.2      kableExtra_1.3.1 knitr_1.30       scales_1.1.1    
+ [1] sphet_1.7-6      fields_11.4      spam_2.5-1       dotCall64_1.0-0 
+ [5] spdep_1.1-5      sf_0.9-5         spData_0.3.8     sp_1.4-4        
+ [9] geoR_1.8-1       readxl_1.3.1     ggeffects_1.0.1  margins_0.3.23  
+[13] broom_0.7.0      kableExtra_1.1.0 knitr_1.29       scales_1.1.1    
 [17] here_0.1         janitor_2.0.1    forcats_0.5.0    stringr_1.4.0   
-[21] dplyr_1.0.2      purrr_0.3.4      readr_1.4.0      tidyr_1.1.2     
+[21] dplyr_1.0.1      purrr_0.3.4      readr_1.3.1      tidyr_1.1.1     
 [25] tibble_3.0.4     ggplot2_3.3.2    tidyverse_1.3.0  workflowr_1.6.2 
 
 loaded via a namespace (and not attached):
- [1] colorspace_1.4-1        deldir_0.1-29           ellipsis_0.3.1         
- [4] class_7.3-17            sjlabelled_1.1.7        rprojroot_1.3-2        
- [7] snakecase_0.11.0        fs_1.5.0                rstudioapi_0.11        
+ [1] colorspace_1.4-1        deldir_0.1-28           ellipsis_0.3.1         
+ [4] class_7.3-17            sjlabelled_1.1.6        rprojroot_1.3-2        
+ [7] snakecase_0.11.0        fs_1.4.2                rstudioapi_0.11        
 [10] fansi_0.4.1             lubridate_1.7.9         xml2_1.3.2             
 [13] codetools_0.2-16        splines_4.0.2           jsonlite_1.7.1         
 [16] dbplyr_1.4.4            compiler_4.0.2          httr_1.4.2             
-[19] backports_1.1.10        assertthat_0.2.1        Matrix_1.2-18          
+[19] backports_1.1.8         assertthat_0.2.1        Matrix_1.2-18          
 [22] cli_2.1.0               later_1.1.0.1           htmltools_0.5.0        
 [25] tools_4.0.2             coda_0.19-4             gtable_0.3.0           
 [28] glue_1.4.2              maps_3.3.0              gmodels_2.18.1         
 [31] Rcpp_1.0.5              cellranger_1.1.0        raster_3.3-13          
 [34] vctrs_0.3.4             gdata_2.18.0            nlme_3.1-148           
-[37] insight_0.10.0          xfun_0.18               ps_1.4.0               
+[37] insight_0.12.0          xfun_0.16               ps_1.3.3               
 [40] rvest_0.3.6             lifecycle_0.2.0         gtools_3.8.2           
 [43] LearnBayes_2.15.1       MASS_7.3-51.6           hms_0.5.3              
-[46] promises_1.1.1          expm_0.999-5            yaml_2.2.1             
-[49] stringi_1.5.3           highr_0.8               e1071_1.7-4            
-[52] RandomFieldsUtils_0.5.3 boot_1.3-25             rlang_0.4.8            
-[55] pkgconfig_2.0.3         evaluate_0.14           lattice_0.20-41        
-[58] prediction_0.3.14       tidyselect_1.1.0        magrittr_1.5           
-[61] R6_2.4.1                generics_0.0.2          DBI_1.1.0              
-[64] pillar_1.4.6            haven_2.3.1             withr_2.3.0            
-[67] units_0.6-7             modelr_0.1.8            crayon_1.3.4           
-[70] utf8_1.1.4              KernSmooth_2.23-17      rmarkdown_2.5          
-[73] RandomFields_3.3.8      data.table_1.13.2       blob_1.2.1             
-[76] git2r_0.27.1            splancs_2.01-40         reprex_0.3.0           
-[79] digest_0.6.26           classInt_0.4-3          webshot_0.5.2          
-[82] httpuv_1.5.4            munsell_0.5.0           viridisLite_0.3.0      
-[85] tcltk_4.0.2            </code></pre>
+[46] promises_1.1.1          expm_0.999-5            spatialreg_1.1-7       
+[49] yaml_2.2.1              stringi_1.4.6           highr_0.8              
+[52] e1071_1.7-3             RandomFieldsUtils_0.5.3 boot_1.3-25            
+[55] rlang_0.4.8             pkgconfig_2.0.3         evaluate_0.14          
+[58] lattice_0.20-41         prediction_0.3.14       tidyselect_1.1.0       
+[61] magrittr_1.5            R6_2.4.1                generics_0.0.2         
+[64] DBI_1.1.0               pillar_1.4.6            haven_2.3.1            
+[67] withr_2.2.0             units_0.6-7             modelr_0.1.8           
+[70] crayon_1.3.4            utf8_1.1.4              KernSmooth_2.23-17     
+[73] rmarkdown_2.3           RandomFields_3.3.8      data.table_1.13.0      
+[76] blob_1.2.1              git2r_0.27.1            splancs_2.01-40        
+[79] reprex_0.3.0            digest_0.6.25           classInt_0.4-3         
+[82] webshot_0.5.2           httpuv_1.5.4            munsell_0.5.0          
+[85] viridisLite_0.3.0       tcltk_4.0.2            </code></pre>
 </div>
 </div>
 
@@ -1492,7 +1480,7 @@ footer is added to webpages before the MathJax javascript. -->
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();

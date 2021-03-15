@@ -1,0 +1,3192 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="B. Van Deynze" />
+
+<meta name="date" content="2021-03-15" />
+
+<title>Culvert Cost Machine Learning Methods</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">salmon_culverts</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/vandeynze/salmon_culverts">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Culvert Cost Machine Learning Methods</h1>
+<h4 class="author">B. Van Deynze</h4>
+<h4 class="date">March 15, 2021</h4>
+
+</div>
+
+
+<p>The goal of these exercises is to explore machine learning methods to improve out-of-sample prediction of culvert improvement costs over predictions from OLS estimates of log-linear average cost models. We loosely follow the methods presented in <em>Hands-On Machine Learning in R</em> by Bradley Boehmke and Brandon Greenwell (available <a href="https://bradleyboehmke.github.io/HOML/">here</a>).</p>
+<p>In this process, we split the culvert project cost data randomly into a training and testing set. We then “train” models on the training set, including OLS estimates for comparison. We then “test” these models by computing and comparing Root Mean Square Error (RMSE) of the out-of-sample predictions of the test set.</p>
+<p>We consider three related machine learning methods. First, we generate a single regression tree, a method that partitions the data into groups with similar response values (i.e. log average costs) based on discrete splits in the explanatory variables (i.e. land cover is developed or bankfull width is greater than three meters). This partitioning process continues until a stopping point is reached, based either on some penalization per additional “branch” or a set number of splits. Predictions are made by assigning the median value within each group to all members of that group. We compare RMSE across a number of limits to the number of branches, a process known as “pruning.”</p>
+<p>We then consider a “bagging” technique known as a random forest (RF), a model-averaging procedure based on bootstrapping (“bagging” is short for “bootstrap aggregating”). This method works by repeatedly randomly selecting a subsample of the training set along with a random selectinon of the potential explanatory varaibles and fitting regression trees for each subsample-variables pair. The final prediction is the mean prediction for each component tree, hence “random forest.”</p>
+<p>Finally, we consider the boosted regression tree (BRT) method. This method works through sequential training. A single regression tree is fit to the data, and then a second regression tree is fit to the residuals of the first tree. The predictions from these two models are added together to form an ensemble model, and the residuals from that model are then subsequently fit for an additional tree, and so on and so forth until a stopping point is reached.</p>
+<p>We compare testing RMSE and plots of predicted and actual values for each method (including OLS) to determine the preferred method to use in cost predictions out-of-sample (e.g., on the WDFW culvert inventories).</p>
+<p>Then, we examine the variables most important to prediction in both of the preferred ML fits. These “importance” metrics are measured as the sum of squared decreases in RMSE at each “node” a variable is associated with across the component models of each fit. This exercise reveals patterns of important predictors quite similar to the set of explanatory variables selected for the OLS fit.</p>
+<p>Note that for all methods other than OLS, we provide as an input a nearly complete list of explanatory variables based on the full suite of potentially relevant variables considered throughout the study. This list is presented below.</p>
+<pre><code>Parsed with column specification:
+cols(
+  label = col_character(),
+  description = col_character(),
+  ols = col_character()
+)</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Explanatory variables included in machine learning fits, N = 1,224
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Label
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Description
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+Included in OLS?
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+basin
+</td>
+<td style="text-align:left;">
+Basin (HUC6) containing worksite
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+project_source
+</td>
+<td style="text-align:left;">
+Organization reporting project to PNSHP
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ua_dist
+</td>
+<td style="text-align:left;">
+Distance to Census desginated “urban area”
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+uc_dist
+</td>
+<td style="text-align:left;">
+Distance to Census designated “urban cluster”
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_agforest
+</td>
+<td style="text-align:left;">
+Number of employees in agriculture and forestry sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_const
+</td>
+<td style="text-align:left;">
+Number of employees in construction sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_manuf
+</td>
+<td style="text-align:left;">
+Number of employees in manufacturing sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_wholesale
+</td>
+<td style="text-align:left;">
+Number of employees in wholesale sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_retail
+</td>
+<td style="text-align:left;">
+Number of employees in retail sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_transport
+</td>
+<td style="text-align:left;">
+Number of employees in transport sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_info
+</td>
+<td style="text-align:left;">
+Number of employees in information sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_finance
+</td>
+<td style="text-align:left;">
+Number of employees in finance sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_realestate
+</td>
+<td style="text-align:left;">
+Number of employees in real estate sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_profsci
+</td>
+<td style="text-align:left;">
+Number of employees in professional and science sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_admin
+</td>
+<td style="text-align:left;">
+Number of employees in administrative sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_health
+</td>
+<td style="text-align:left;">
+Number of employees in health sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_arts
+</td>
+<td style="text-align:left;">
+Number of employees in arts sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_food
+</td>
+<td style="text-align:left;">
+Number of employees in food service sector in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+emp_other
+</td>
+<td style="text-align:left;">
+Number of employees in other sectors in county (Census County Business Patterns data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+popdens_cat
+</td>
+<td style="text-align:left;">
+Population density in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+popdens_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+popdens_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hdens_cat
+</td>
+<td style="text-align:left;">
+Housing density in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hdens_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hdens_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_barren_cat
+</td>
+<td style="text-align:left;">
+NLCD barren land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_barren_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_barren_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_crop_cat
+</td>
+<td style="text-align:left;">
+NLCD cropland land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_crop_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_crop_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_devhigh_cat
+</td>
+<td style="text-align:left;">
+NLCD developed, high-intensity land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_devhigh_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_devhigh_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_devlow_cat
+</td>
+<td style="text-align:left;">
+NLCD developed, low-intensity land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_devlow_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_devlow_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_devmed_cat
+</td>
+<td style="text-align:left;">
+NLCD developed, medium-intensity land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_devmed_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_devmed_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_devopen_cat
+</td>
+<td style="text-align:left;">
+NLCD developed, open space land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_devopen_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_devopen_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_forcon_cat
+</td>
+<td style="text-align:left;">
+NLCD forest, coniferous land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_forcon_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_forcon_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_fordec_cat
+</td>
+<td style="text-align:left;">
+NLCD forest, deciduous land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_fordec_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_fordec_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_formix_cat
+</td>
+<td style="text-align:left;">
+NLCD forest, mixed land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_formix_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_formix_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_grass_cat
+</td>
+<td style="text-align:left;">
+NLCD grassland land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_grass_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_grass_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_icesnow_cat
+</td>
+<td style="text-align:left;">
+NLCD ice/snow land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_icesnow_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_icesnow_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_nodat_cat
+</td>
+<td style="text-align:left;">
+NLCD no data land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_nodat_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_nodat_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_openwater_cat
+</td>
+<td style="text-align:left;">
+NLCD open water land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_openwater_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_openwater_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_pasture_cat
+</td>
+<td style="text-align:left;">
+NLCD pasture land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_pasture_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_pasture_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_shrub_cat
+</td>
+<td style="text-align:left;">
+NLCD shrubland land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_shrub_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_shrub_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_wetherb_cat
+</td>
+<td style="text-align:left;">
+NLCD wetland, herbacous land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_wetherb_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_wetherb_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_wetwood_cat
+</td>
+<td style="text-align:left;">
+NLCD woody wetland land cover in catchement (NHDPlus V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_wetwood_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_wetwood_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+slope
+</td>
+<td style="text-align:left;">
+Channel slope (NHDPlus V2.1)
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+upst_dist
+</td>
+<td style="text-align:left;">
+Upstream routed distance (NHDPlus V2.1)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ppt_cat
+</td>
+<td style="text-align:left;">
+Annual precipitation in catchement (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ppt_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ppt_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bfi_cat
+</td>
+<td style="text-align:left;">
+Base-flow index in catchement (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bfi_acc
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bfi_tot
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bankfull_width
+</td>
+<td style="text-align:left;">
+Bankfull width (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bankfull_depth
+</td>
+<td style="text-align:left;">
+Bankfull depth(NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bankfull_xsec_area
+</td>
+<td style="text-align:left;">
+Bankfull cross-section area (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_streamriver
+</td>
+<td style="text-align:left;">
+Proportion of catchement waterways classified as stream/river (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_streamriver
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_streamriver
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_artificial
+</td>
+<td style="text-align:left;">
+Proportion of catchement waterways classified as artificial (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_artificial
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_artificial
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_canalditch
+</td>
+<td style="text-align:left;">
+Proportion of catchement waterways classified as canal or ditch (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_canalditch
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_canalditch
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_connector
+</td>
+<td style="text-align:left;">
+Proportion of catchement waterways classified as connector (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_connector
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_connector
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_pipeline
+</td>
+<td style="text-align:left;">
+Proportion of catchement waterways classified as pipeline(NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_pipeline
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_pipeline
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_basin_area
+</td>
+<td style="text-align:left;">
+Catchement area (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_basin_area
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_basin_area
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_basin_slope
+</td>
+<td style="text-align:left;">
+Catchement slope (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_basin_slope
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_basin_slope
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_elev_mean
+</td>
+<td style="text-align:left;">
+Catchement mean elevation (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_elev_mean
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_elev_mean
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_elev_min
+</td>
+<td style="text-align:left;">
+Catchement minimum elevation (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_elev_min
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_elev_min
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_elev_max
+</td>
+<td style="text-align:left;">
+Catchement maximum elevation (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_elev_max
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_elev_max
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_stream_slope
+</td>
+<td style="text-align:left;">
+Catchement stream slope, mean (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_stream_slope
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_stream_slope
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_stream_length
+</td>
+<td style="text-align:left;">
+Catchement main channel length (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_stream_length
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_stream_length
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_rdx
+</td>
+<td style="text-align:left;">
+Catchemetn road desnsity (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_rdx
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_rdx
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sinuosity
+</td>
+<td style="text-align:left;">
+Catchement sinuosity, or amount of channel meandering (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+cat_strm_dens
+</td>
+<td style="text-align:left;">
+Catchement stream density (NHDPLUS V2.1 Selected Attributes data)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+acc_strm_dens
+</td>
+<td style="text-align:left;">
+… flow accumulated upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_strm_dens
+</td>
+<td style="text-align:left;">
+… all upstream catchements
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+slope_deg
+</td>
+<td style="text-align:left;">
+Slope (°) of GTOPO30 grid cell that culvert restoration site falls within
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+here_distm
+</td>
+<td style="text-align:left;">
+Distance (m) to nearest HERE (formerly NAVTEQ) road within 5000m
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+here_speed
+</td>
+<td style="text-align:left;">
+Speed category of nearest HERE (formerly NAVTEQ) road, worksites over 150m from match assigned to lowest class
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+here_class
+</td>
+<td style="text-align:left;">
+Functional class of nearest HERE (formerly NAVTEQ) road, worksites over 150m from match assigned to lowest class
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+here_paved
+</td>
+<td style="text-align:left;">
+Is nearest HERE (formerly NAVTEQ) road paved, worksites over 150m from match assigned to lowest class
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+here_publi
+</td>
+<td style="text-align:left;">
+Is there public access to the nearest HERE (formerly NAVTEQ), worksites over 150m from match assigned to lowest class
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hu_type
+</td>
+<td style="text-align:left;">
+Type category of 6th field hydrologic unit (“HUC6”)
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+brick_coun
+</td>
+<td style="text-align:left;">
+Kernel density of “Brick, Stone and Related” category based on sites counts
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+brick_totp
+</td>
+<td style="text-align:left;">
+Kernel density of “Brick, Stone and Related” category based on total persons/site
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+const_coun
+</td>
+<td style="text-align:left;">
+Kernel density of “Construction and Mining” category based on sites counts
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+const_totp
+</td>
+<td style="text-align:left;">
+Kernel density of “Construction and Mining” category based on total persons/site
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+merch_coun
+</td>
+<td style="text-align:left;">
+Kernel density of all 3 categories (brick…, construction…, metals…) based on sites counts
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+merch_totp
+</td>
+<td style="text-align:left;">
+Kernel density of all 3 categories (brick…, construction…, metals…) based on total persons/site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+metal_coun
+</td>
+<td style="text-align:left;">
+Kernel density of “Metals Service Centers” category based on sites counts
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+metal_totp
+</td>
+<td style="text-align:left;">
+Kernel density of “Metals Service Centers” category based on total persons/site
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sales_coun
+</td>
+<td style="text-align:left;">
+Kernel density of “Sales Yard” category based on sites counts
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sand_count
+</td>
+<td style="text-align:left;">
+Kernel density of all categories based on sites counts
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bia_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Bureau of Indian Affairs within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+blm_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Bureau of Land Management within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bpa_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Bonneville Power Administration within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+coe_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Corps of Engineers within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fws_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the U.S. Fish and Wildlife Service within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+gsa_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the General Services Administration within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lg_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Local Government within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nps_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the National Park Service within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pv_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by a Private Individual or Company within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pvi_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of Lands Managed by Private Industry within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pvn_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by Private Non-Industrial Owner within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pvu_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by Private Urban Lands within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+st_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by a State Agency within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stf_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the State Dept. of Forestry within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stl_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Division of State Lands within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stp_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the State Dept. of Parks and Recreation within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stw_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the State Dept. of Fish and Wildlife within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+und_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land where ownership is Undetermined within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+usfs_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the U.S. Forest Service within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+water_5km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land that is Water within a 2500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bia_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Bureau of Indian Affairs within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+blm_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Bureau of Land Management within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bpa_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Bonneville Power Administration within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+coe_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Corps of Engineers within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fws_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the U.S. Fish and Wildlife Service within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+gsa_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the General Services Administration within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lg_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Local Government within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nps_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the National Park Service within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pv_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by a Private Individual or Company within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pvi_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of Lands Managed by Private Industry within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pvn_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by Private Non-Industrial Owner within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pvu_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by Private Urban Lands within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+st_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by a State Agency within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stf_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the State Dept. of Forestry within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stl_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Division of State Lands within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stp_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the State Dept. of Parks and Recreation within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stw_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the State Dept. of Fish and Wildlife within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+und_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land where ownership is Undetermined within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+usfs_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the U.S. Forest Service within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+water_2km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land that is Water within a 1000m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bia_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Bureau of Indian Affairs within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+blm_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Bureau of Land Management within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+bpa_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Bonneville Power Administration within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+coe_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Corps of Engineers within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fws_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the U.S. Fish and Wildlife Service within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+gsa_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the General Services Administration within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+lg_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Local Government within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nps_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the National Park Service within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pv_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by a Private Individual or Company within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pvi_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of Lands Managed by Private Industry within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pvn_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by Private Non-Industrial Owner within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pvu_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by Private Urban Lands within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+st_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by a State Agency within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stf_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the State Dept. of Forestry within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stl_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the Division of State Lands within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stp_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the State Dept. of Parks and Recreation within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stw_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the State Dept. of Fish and Wildlife within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+und_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land where ownership is Undetermined within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+usfs_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land owned by the U.S. Forest Service within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+water_1km_buff
+</td>
+<td style="text-align:left;">
+Proportion of land that is Water within a 500m radius of the site
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+project_year
+</td>
+<td style="text-align:left;">
+Year work on project began
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+n_worksites
+</td>
+<td style="text-align:left;">
+Number of worksites assoicated with project
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+n_culverts
+</td>
+<td style="text-align:left;">
+Numbr of culverts assocated with worksite
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+action_fishpass_culvimp_prj
+</td>
+<td style="text-align:left;">
+Indicator if project involves any culvert improvement actions
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+action_fishpass_culvinst_prj
+</td>
+<td style="text-align:left;">
+Indicator if project involves any culvert installation actions
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+action_fishpass_culvrem_prj
+</td>
+<td style="text-align:left;">
+Indicator if project involves any culvert removal actions
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+action_fishpass_culvimp_count_prj
+</td>
+<td style="text-align:left;">
+Count of culvert improvement actions across project
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+action_fishpass_culvinst_count_prj
+</td>
+<td style="text-align:left;">
+Count of culvert installation actions across project
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+action_fishpass_culvrem_count_prj
+</td>
+<td style="text-align:left;">
+Count of culvert removal actions across project
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+action_fishpass_culvimp_wrk
+</td>
+<td style="text-align:left;">
+Indicator if worksite involves any culvert improvement actions
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+action_fishpass_culvinst_wrk
+</td>
+<td style="text-align:left;">
+Indicator if worksite involves any culvert installation actions
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+action_fishpass_culvrem_wrk
+</td>
+<td style="text-align:left;">
+Indicator if worksite involves any culvert removal actions
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+action_fishpass_culvimp_count_wrk
+</td>
+<td style="text-align:left;">
+Count of culvert improvement actions at worksite
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+action_fishpass_culvinst_count_wrk
+</td>
+<td style="text-align:left;">
+Count of culvert installation actions at worksite
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+action_fishpass_culvrem_count_wrk
+</td>
+<td style="text-align:left;">
+Count of culvert removal actions at worksite
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dist_max
+</td>
+<td style="text-align:left;">
+Maximum distance between worksites
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+dist_mean
+</td>
+<td style="text-align:left;">
+Mean distance between worksites
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+here_class_0
+</td>
+<td style="text-align:left;">
+HERE road class with no accuracy check
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+here_class_badmatch
+</td>
+<td style="text-align:left;">
+HERE road class with bad matches assigned own class
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+here_speed_0
+</td>
+<td style="text-align:left;">
+HERE speed class with no accuracy check
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+here_speed_badmatch
+</td>
+<td style="text-align:left;">
+HERE speed class with bad matches assigned own class
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+here_paved_0
+</td>
+<td style="text-align:left;">
+HERE paved indicator with no accuracy check
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pvall_5km_buff
+</td>
+<td style="text-align:left;">
+Sum of all private land classes, 2500m radius buffer
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stall_5km_buff
+</td>
+<td style="text-align:left;">
+Sum of all state-managed land classes, 2500m radius buffer
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fedother_5km_buff
+</td>
+<td style="text-align:left;">
+Sum of smaller federally-managed land classes, 2500m radius buffer
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pvall_2km_buff
+</td>
+<td style="text-align:left;">
+Sum of all private land classes, 1000m radius buffer
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stall_2km_buff
+</td>
+<td style="text-align:left;">
+Sum of all state-managed land classes, 1000m radius buffer
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fedother_2km_buff
+</td>
+<td style="text-align:left;">
+Sum of smaller federally-managed land classes, 1000m radius buffer
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pvall_1km_buff
+</td>
+<td style="text-align:left;">
+Sum of all private land classes, 500m radius buffer
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+stall_1km_buff
+</td>
+<td style="text-align:left;">
+Sum of all state-managed land classes, 500m radius buffer
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+fedother_1km_buff
+</td>
+<td style="text-align:left;">
+Sum of smaller federally-managed land classes, 500m radius buffer
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+tot_dist
+</td>
+<td style="text-align:left;">
+Total distance between worksites
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_current_class
+</td>
+<td style="text-align:left;">
+NLCD land cover at worksite point for project year, aggregated categories
+</td>
+<td style="text-align:center;">
+X
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+nlcd_current_fullclass
+</td>
+<td style="text-align:left;">
+NLCD land cover at worksite point for project year
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+</tbody>
+</table>
+<div id="machine-learning-methods" class="section level1">
+<h1>Machine learning methods</h1>
+<div id="regression-tree" class="section level2">
+<h2>Regression tree</h2>
+<p>We start with a number of simple regression trees. To begin, we randomly assign half the sample to a “training” set which we will use to fit the models.</p>
+<pre class="r"><code># Select training group (half the total observations, used to build the model, remaining obs are used as out-of-sample test group)
+set.seed(1)
+train = sample(1:nrow(df_tree), nrow(df_tree)/2)</code></pre>
+<p>Then, we use the <code>rpart</code> package to fit and plot a regression tree using the training data.</p>
+<pre class="r"><code># Build a single regression tree
+library(rpart)
+library(rpart.plot)
+set.seed(1)
+tree_culv &lt;- rpart(log(cost_per_culvert) ~ ., df_tree, subset = train)
+rpart.plot(tree_culv, digits = 3)</code></pre>
+<p><img src="figure/spatialcostmodels-ml.Rmd/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p>In each “leaf” the number is the median log(cost) of all worksites in the set that passes all the qualifiers above Each “branch” assigns worksites to the left if it passes the qualifier, right otherwise (YES –&gt; left; No –&gt; right), and the percent of the sample assigned to each node. Fixed effects like project source and basin appear important, though which other variables are selected for splits is highly dependent on the specific sample randomly chosen for the training set. That said, some variables such as distance to urban areas, distance between worksites, land cover, land ownership, and employment measures are all represented in ways similar to the OLS results.</p>
+<p>Note that the <code>rpart</code> package automatically “prunes” the tree to the “optimal” number of leaves using a 10-fold cross validation, using different complexity cost parameters and comparing the relative error on the testing set and selecting the number of nodes that minimizes that error (or a meaningful improvements are not found my increasing the number of leaves). We can look at the relative error as a function of the complexity cost parameter (cp, which in effect limits the number of leaves).</p>
+<pre class="r"><code>plotcp(tree_culv)</code></pre>
+<p><img src="figure/spatialcostmodels-ml.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>It looks like using the default 21 leaf tree in fact might be over-fitting the model, so we will also look at a smaller four-leaf tree, which looks like it should provide better predictions.</p>
+<pre class="r"><code>tree_culv_4 &lt;- rpart(log(cost_per_culvert) ~ ., df_tree, subset = train, control = list(cp = 0.025))
+rpart.plot(tree_culv_4, digits = 3)</code></pre>
+<p><img src="figure/spatialcostmodels-ml.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>In this smaller tree, reporting source, land cover, and the total distance between worksites are the variables used to split the sample. Note that tot_dist has a counter intuitive effect: worksites further apart from other worksites under the same project are cheaper. Note that this is likely because tot_dist is proxying for the number of worksites here. Projects with only one worksite that do not benefit from scale economies will have tot_dist values of zero, and so this effect is captured by the distance.</p>
+<p>One thing to think about is that project year, project source, and the number of worksites are all variables impossible to really observe for true out-of-sample culverts. These variables drive a lot of the cost variation, but the OLS model with fixed effects allows us to make predictions out-of-sample by “averaging” over these effects. We can do this for the trees too, but not sure it will be as useful if these features/variables drive most of the prediction (as is the case with the four leaf tree).</p>
+</div>
+<div id="random-forest-rf" class="section level2">
+<h2>Random forest (RF)</h2>
+<p>This method uses “bagging”, or bootstrap aggregating, to boostrap sample the training set a fixed number (N) of times (1,000 here) and generate a tree using a fixed number (M) of randomly selected candidate variables. The resulting model averages predictions over all the generated trees in the “forest”.</p>
+<pre class="r"><code>library(randomForest)
+set.seed(1)
+bag_culv &lt;- randomForest(log(cost_per_culvert) ~ ., data = df_tree, subset = train, mtry = 25, ntree = 1000, importance = TRUE)
+# Looks like a good chance this is better than both the OLS and individual trees</code></pre>
+<p>Because these fits aggregate hundreds of trees like those seen in the preceding section, they are vastly less interpretable. We will look at the relative importance of the explanatory variables across the models later in this report.</p>
+</div>
+<div id="boosted-regression-tree-brt" class="section level2">
+<h2>Boosted regression tree (BRT)</h2>
+<p>This method is similar to the bagging method above in that it generates a “random forest”. Unlike the random forest above, each underlying “tree” in the “forest” is build sequentially on the residuals of the previous tree, so that each successive tree added results in improved prediction accuracy of the ensemble model (the forest). It proceeds using gradient descent method until it thinks it has found the global minimum for some loss function (here RMSE/SSE/MSE equivalently).</p>
+<pre class="r"><code>library(gbm)
+set.seed(1)
+
+# Takes ~1min to fun on my machine
+boost_culv &lt;- gbm(log(cost_per_culvert) ~ ., data = df_tree[train,], distribution = &quot;gaussian&quot;, n.trees = 5000, interaction.depth = 4, cv.folds = 5)</code></pre>
+<p>Again, these trees are difficult to interpret because they aggregate several component models. Therefore, we will wait to look at relative performance and variable importance until the next section.</p>
+</div>
+</div>
+<div id="variable-importance-plots" class="section level1">
+<h1>Variable importance plots</h1>
+<p>We present plots of relative variable importance for both RF and BRT methods. Variable importance is defined as the sum of squared improvements (in mean squared error) for every node where a variable is selected. For ensemble models like RF and BRT, these improvements are averaged across all component trees.</p>
+<pre class="r"><code>grid.arrange(
+vip(bag_culv, num_features = 25, geom = &quot;point&quot;, aesthetics = list(size = 4, color = scales::brewer_pal(&quot;qual&quot;, 1)(6)[5])) +
+  labs(
+    x = NULL, y = &quot;Importance&quot;, title = &quot;RF&quot;
+  ) +
+  theme_bw() +
+  theme(
+    plot.background = element_rect(color = NULL), legend.position = &quot;none&quot;
+  ),
+vip(boost_culv, num_features = 25, geom = &quot;point&quot;, aesthetics = list(size = 4, color = scales::brewer_pal(&quot;qual&quot;, 1)(6)[2])) +
+  labs(
+    x = NULL, y = &quot;Importance&quot;, title = &quot;BRT&quot;
+  ) +
+  theme_bw() +
+  theme(
+    plot.background = element_rect(color = NULL), legend.position = &quot;none&quot;
+  ),
+nrow = 1
+)</code></pre>
+<p><img src="figure/spatialcostmodels-ml.Rmd/unnamed-chunk-19-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Many of the variables included in the OLS model appear within the top 25 most important variables in one or both of the ML models. In particular, project source and basin explain a huge amount of the variation in the data, consistent with the fixed effects estimates using OLS. NLCD land cover also plays a large role in both fits. Road features (speed class, distance to road line) play important roles in both fits as well, consistent with the OLS estimates.</p>
+<p>Private land managed by industry, measured at all distances, is very important in the RF fit. Project scale effects like number of worksites, and maximum, mean, and total distance between worksites also play important roles in the RF fit, as do measures of employment by sector and supplier density. In the BRT, hydrological features play a more important role, with bankfull_width and slope both standing out. On the whole, the variables we select for the OLS fit seem to be similar to the features that play the most important role in prediction.</p>
+</div>
+<div id="relative-predictive-power" class="section level1">
+<h1>Relative predictive power</h1>
+<pre class="r"><code># ____ Compare RMSE ----</code></pre>
+<div id="root-mean-square-error-rmse-by-method" class="section level2">
+<h2>Root mean square error (RMSE) by method</h2>
+<pre class="r"><code>tibble(
+  &quot;OLS&quot; = rmse_ols,
+  &quot;4-leaf tree&quot; = rmse_tree4,
+  # &quot;rmse_tree10&quot; = rmse_tree10,
+  &quot;Full tree&quot; = rmse_treefull,
+  &quot;RF&quot; = rmse_bag,
+  &quot;BRT&quot; = rmse_boost
+) %&gt;%
+  pivot_longer(everything(), names_to = &quot;method&quot;, values_to = &quot;rmse&quot;) %&gt;%
+  ggplot(
+    aes(
+      x = reorder(method, rmse),
+      y = rmse,
+      fill = method
+    )
+  ) +
+  geom_hline(aes(yintercept = rmse_ols), data = . %&gt;% filter(method == &quot;rmse_ols&quot;), linetype = &quot;dashed&quot;) +
+  geom_col(aes(fill = method), color = &quot;black&quot;) +
+  geom_hline(yintercept = 0) +
+  geom_text(aes(label = round(rmse, 3), y = rmse + 0.025)) +
+  scale_fill_brewer(type = &quot;qual&quot;) +
+  # scale_color_brewer(type = &quot;qual&quot;) +
+  labs(
+    x = NULL, y = &quot;RMSE&quot;, title = &quot;RMSE by method (testing set)&quot;,
+    subtitle = &quot;RF shows lowest RMSE, followed closely by BRT, representing ~10% and 7% increase in prediction accuracy over OLS respectively&quot;
+  ) +
+  theme_bw() +
+  theme(
+    plot.background = element_rect(color = NULL), legend.position = &quot;none&quot;
+  )</code></pre>
+<p><img src="figure/spatialcostmodels-ml.Rmd/unnamed-chunk-23-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>We compare RMSE calculated using the testing set (the subsample withheld during fitting) to compare out-of-sample predictive power. Compared to the OLS baseline, the basic regression trees actually perform somewhat worse, while both of the model aggregation methods (RF and BRT) perform signficantly better.</p>
+<pre class="r"><code># ____ Compare fitted vs. observed plots ----</code></pre>
+</div>
+<div id="fitted-vs.-actual-plots" class="section level2">
+<h2>Fitted vs. actual plots</h2>
+<pre class="r"><code>df_yhats &lt;-
+  tibble(
+    &quot;y&quot; = log(df_tree$cost_per_culvert[-train]),
+    &quot;OLS&quot; = yhat_culv_ols,
+    &quot;4-leaf tree&quot; = yhat_culv_4,
+    # &quot;yhat_tree10&quot; = yhat_culv_10,
+    &quot;Full tree&quot; = yhat_culv,
+    &quot;RF&quot; = yhat_culv_bag,
+    &quot;BRT&quot; = yhat_boost
+  ) %&gt;%
+  pivot_longer(
+    -y
+  )
+df_yhats %&gt;%
+  ggplot(
+    aes(
+      x = y,
+      y = value,
+      fill = name
+    )
+  ) + 
+  geom_abline(slope = 1) +
+  geom_point(shape = 21, stroke = 0.4) +
+  facet_wrap(~ name) +
+  scale_fill_brewer(type = &quot;qual&quot;) +
+  # scale_color_brewer(type = &quot;qual&quot;) +
+  labs(
+    x = &quot;Actual cost (log-scale)&quot;, y = &quot;Predicted cost (log-scale)&quot;, title = &quot;Predicted vs. actual costs (testing set)&quot;,
+    subtitle = &quot;RF demonstrates an unfortunate skew&quot;
+  ) +
+  theme_bw() +
+  theme(
+    plot.background = element_rect(color = NULL), legend.position = &quot;none&quot;
+  ) +
+  scale_x_continuous(labels = function(x) scales::dollar(exp(x)), breaks = c(log(3000), log(22000), log(150000))) + 
+  scale_y_continuous(labels = function(x) scales::dollar(exp(x)), breaks = c(log(3000), log(22000), log(150000)))</code></pre>
+<p><img src="figure/spatialcostmodels-ml.Rmd/unnamed-chunk-25-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Looking at the predictions against the actual costs per culvert values, we see the limits of the simple regression trees, which places each worksite into one of only a handful of bins. The aggregating methods RF and BRT perform much more similarly to OLS, providing predictions distinct for each worksite. Notice that while RF has a lower RMSE, it tends to over-estimate costs for cheaper projects and under-estimate costs for more expensive ones, which may distort the underlying variability in costs across the landscape.</p>
+</div>
+<div id="redisual-distribtuions" class="section level2">
+<h2>Redisual distribtuions</h2>
+<pre class="r"><code>df_yhats %&gt;% mutate(resid = y - value) %&gt;%
+ggplot(
+  aes(
+    x = resid,
+    # color = name,
+    fill = name
+  )
+) + 
+  geom_density(alpha = 0.8, color = &quot;black&quot;) +
+  geom_vline(xintercept = 0, linetype = &quot;dashed&quot;) +
+  facet_wrap(~ name) +
+  scale_fill_brewer(type = &quot;qual&quot;) +
+  # scale_color_brewer(type = &quot;qual&quot;) +
+  labs(
+    x = &quot;Residual (log-cost)&quot;, y = &quot;Density&quot;, title = &quot;Residual distribution (testing set)&quot;, 
+    subtitle = &quot;BRT has tighter clustering of residuals near zero but wider tails&quot;
+  ) +
+  theme_bw() +
+  theme(
+    plot.background = element_rect(color = NULL), legend.position = &quot;none&quot;
+  ) </code></pre>
+<p><img src="figure/spatialcostmodels-ml.Rmd/unnamed-chunk-27-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>  # scale_x_continuous(labels = function(x) comma(exp(x), 0.1), breaks = c(-3, -1.5, 0, 1.5, 3))</code></pre>
+<p>Here we plot the density of residuals from all five methods. Notice that BRT has a tighter peak near zero compared to even the RF plot. This suggests that though RF provides a lower out-of-sample RMSE, BRT predictions may more consistently hit the mark. However, for BRT to display this sharp peak of near zero-residuals and still have a larger RMSE, it must mean that when it misses, it misses worse, indicated here by longer tails.</p>
+</div>
+</div>
+<div id="conclusions" class="section level1">
+<h1>Conclusions</h1>
+<p>The boosted regression tree has several desirable properties as an estimator of conditional cost distributions:</p>
+<ol style="list-style-type: decimal">
+<li>It provides metrics to compare variable importance and plots of conditional mean costs, allowing comparison to inference from OLS (and spatial regression)<br />
+</li>
+<li>While its RMSE is a bit higher (~3%) than random forest (bagging), its predictions are much tighter (RMSE growth is driven by longer tails)</li>
+</ol>
+<p>Further investigation is warranted to see if we can train specifically for improved performance in specific areas, such as Puget Sound, for the purposes of targeted planning tools.</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+Running under: Windows 10 x64 (build 19041)
+
+Matrix products: default
+
+locale:
+[1] LC_COLLATE=English_United States.1252 
+[2] LC_CTYPE=English_United States.1252   
+[3] LC_MONETARY=English_United States.1252
+[4] LC_NUMERIC=C                          
+[5] LC_TIME=English_United States.1252    
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] gbm_2.1.8           randomForest_4.6-14 rpart.plot_3.0.9   
+ [4] rpart_4.1-15        MASS_7.3-51.6       kableExtra_1.1.0   
+ [7] knitr_1.29          pdp_0.7.0           vip_0.3.2          
+[10] lmtest_0.9-37       zoo_1.8-8           sandwich_2.5-1     
+[13] readxl_1.3.1        here_0.1            janitor_2.0.1      
+[16] forcats_0.5.0       stringr_1.4.0       dplyr_1.0.1        
+[19] purrr_0.3.4         readr_1.3.1         tidyr_1.1.1        
+[22] tibble_3.0.4        ggplot2_3.3.2       tidyverse_1.3.0    
+[25] searchable_0.3.3.1  workflowr_1.6.2    
+
+loaded via a namespace (and not attached):
+ [1] fs_1.4.2           lubridate_1.7.9    RColorBrewer_1.1-2 webshot_0.5.2     
+ [5] httr_1.4.2         rprojroot_1.3-2    tools_4.0.2        backports_1.1.8   
+ [9] utf8_1.1.4         R6_2.4.1           DBI_1.1.0          colorspace_1.4-1  
+[13] withr_2.2.0        tidyselect_1.1.0   gridExtra_2.3      compiler_4.0.2    
+[17] git2r_0.27.1       cli_2.1.0          rvest_0.3.6        xml2_1.3.2        
+[21] labeling_0.3       scales_1.1.1       digest_0.6.25      rmarkdown_2.3     
+[25] pkgconfig_2.0.3    htmltools_0.5.0    dbplyr_1.4.4       highr_0.8         
+[29] rlang_0.4.8        rstudioapi_0.11    farver_2.0.3       generics_0.0.2    
+[33] jsonlite_1.7.1     magrittr_1.5       Matrix_1.2-18      Rcpp_1.0.5        
+[37] munsell_0.5.0      fansi_0.4.1        lifecycle_0.2.0    stringi_1.4.6     
+[41] yaml_2.2.1         snakecase_0.11.0   grid_4.0.2         blob_1.2.1        
+[45] parallel_4.0.2     promises_1.1.1     crayon_1.3.4       lattice_0.20-41   
+[49] haven_2.3.1        splines_4.0.2      hms_0.5.3          ps_1.3.3          
+[53] pillar_1.4.6       reprex_0.3.0       glue_1.4.2         evaluate_0.14     
+[57] modelr_0.1.8       vctrs_0.3.4        httpuv_1.5.4       cellranger_1.1.0  
+[61] gtable_0.3.0       assertthat_0.2.1   xfun_0.16          broom_0.7.0       
+[65] later_1.1.0.1      survival_3.1-12    viridisLite_0.3.0  ellipsis_0.3.1    </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
