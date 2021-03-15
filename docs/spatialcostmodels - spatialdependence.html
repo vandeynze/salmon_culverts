@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="R. Fonner, B. Van Deynze" />
+
+<meta name="date" content="2021-03-15" />
+
+<title>Spatial Lag Models with Culvert Cost Data</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Spatial Lag Models with Culvert Cost Data</h1>
+<h4 class="author">R. Fonner, B. Van Deynze</h4>
+<h4 class="date">March 15, 2021</h4>
+
+</div>
+
+
+<p>Because of the spatial nature of the culvert worksite data, we suspect there may be different forms of spatial associations within the data. These associations may undermine the assumptions of our base OLS models. We use three tools to measure spatial heterogeneity and dependence in the cost data.</p>
+<ol style="list-style-type: decimal">
+<li>Variograms: these plots display how the “semivariance” (half the variance of the differences between all points within a given distance, a measure of variance within a buffer) changes as a function of distance between observations.<br />
+</li>
+<li>Moran’s I: this is a test of spatial autocorrelation, where a rejection of the null hypothesis indicates a violation of the OLS assumption of independent observations.</li>
+<li>Anselin’s Lagrange Multiplier Tests: these tests serve as an assessment of model misspecification due to spatial associations.</li>
+</ol>
+<p>We use these tools on the base model found in <a href="../spatial_cost_models.html">this report</a>, with one key change. After initial testing, we found including spatial fixed effects like <code>basin</code> along side band-based spatial weighting schemes (i.e. those that enforce a strict maximum distance beyond which weights are zero) can result in a singular (or at least computationally singular) covaraite matrix. We also found that including <code>distance to nearest urban area</code> or other density-based variables based on distance to fixed points (i.e., the supplier density variables) result in similar singularities, likely because they closely track the same processes which spatial weighting structures are intended to account for. <strong>Therefore, the <code>basin</code> fixed effect, <code>distance to nearest urban area</code>, and all four of the supplier densitiy variables are removed in the models presented and examined below.</strong></p>
+<div id="variograms" class="section level1">
+<h1><span class="header-section-number">1</span> Variograms</h1>
+<p>A variogram is used to identify the distance at which the variance within a buffer is roughly equivalent to the variance over the entire space. This distance will then be used to define which points are considered “neighbors” and which are not.</p>
+<p>We construct variograms for both the dependent variable (<code>log(cost per culvert)</code>) and the model residuals to investigate spatial dependence in both costs and the model’s errors.</p>
+<p><img src="spatialcostmodels---spatialdependence_files/figure-html/unnamed-chunk-4-1.png" width="960" /><img src="spatialcostmodels---spatialdependence_files/figure-html/unnamed-chunk-4-2.png" width="960" /></p>
+<p>These plots imply that most of the semivariance in both the dependent variable and the error term is captured within a 0.2 degree (or ~20km). We will use this as our threshold for defining which points are neighbors. We also remove 29 worksites with no neighbors (i.e. with no other worksites within 20km) to ensure suitable spatial weighting matrix structure.</p>
+</div>
+<div id="statistical-tests-of-spatial-dependence" class="section level1">
+<h1><span class="header-section-number">2</span> Statistical tests of spatial dependence</h1>
+<p>We use the 20km range established using the above variograms to construct four spatial weighting matrices:</p>
+<ol style="list-style-type: decimal">
+<li><em>Distance band specification (Band)</em>: weighting matrix is zeros and ones, where <em>w<sub>ij</sub></em> = <em>w<sub>ji</sub></em> = 1 when <em>worksite_i</em> is within 20km of <em>worksite_j</em> (assumes all neighbors within buffer have equal dependence).<br />
+</li>
+<li><em>Inverse distance decay specification (Decay)</em>: weighting matrix is <em>w<sub>ij</sub></em> = <em>w<sub>ji</sub></em> = 1/<em>d<sub>ij</sub></em> where <em>d<sub>ij</sub></em> is the distance between <em>worksite<sub>i</sub></em> and <em>worksite<sub>j</sub></em> (assumes dependence decays with distance).<br />
+</li>
+<li><em>Hybrid specification (Hybrid)</em>: weights are inverse distances when worksite pair is within buffer, and zero otherwise.<br />
+</li>
+<li><em>Inverse distance decay with time specification (Decay_t)</em>: weights are as the inverse distance decay specification but distances are only computed between worksties that share the same project year. This essentially imposes a restriction of no between-year spatial effects.</li>
+</ol>
+<p>For each of these sptail weights specifications, we perform a suite of tests of spatial dependence.</p>
+<ol style="list-style-type: decimal">
+<li><em>Moran’s I tests</em>: these tests, performed on both the dependent variable (MoranDep) and the residuals from the model (MoranResid), identify spatial dependence, where the null is no spatial dependence (i.e., distribution over space as good as random).<br />
+</li>
+<li><em>Anselin’s Lagrange multiplier tests</em>: these tests of linear restrictions identify mispecification due to spatial dependence, distinguishing whether the source is due to missing spatial lags of the dependent variable or missing spatial error structure, or both. Per Anselin’s suggestion, we consider the robust tests only if both simple tests reject the null.
+<ul>
+<li><em>LM test against error (LMerr)</em>: tests against the null of no spatial error.<br />
+</li>
+<li><em>LM test against lag (LMlag)</em>: tests against the null of no spatial lag structure.<br />
+</li>
+<li><em>Robust LM test against error (RLMerr)</em>: a version of LMerr robust to the presence of spatial lag.<br />
+</li>
+<li><em>Robust LM test against lag (RLMlag)</em>: a version of LMlag robust to the presence of spatial error.<br />
+</li>
+<li><em>LMtest against Spatial Autoregressive Moving Average (SARMA)</em>: tests against the null of neither spatial error nor spatial lag.</li>
+</ul></li>
+</ol>
+<table class="table table-hover" style="margin-left: auto; margin-right: auto;">
+<caption>
+Test statistics against spatial dependence
+</caption>
+<thead>
+<tr>
+<th style="border-bottom:hidden" colspan="1">
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="4">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Spatial weights
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;">
+Test
+</th>
+<th style="text-align:left;">
+Band
+</th>
+<th style="text-align:left;">
+Decay
+</th>
+<th style="text-align:left;">
+Hybrid
+</th>
+<th style="text-align:left;">
+Decay_t
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+MoranDep
+</td>
+<td style="text-align:left;">
+21.42 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+17.254 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+20.817 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+22.465 (&lt;0.001)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+MoranResid
+</td>
+<td style="text-align:left;">
+5.43 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+11.338 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+12.630 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+14.790 (&lt;0.001)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+LMerr
+</td>
+<td style="text-align:left;">
+12.75 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+116.293 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+131.817 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+186.455 (&lt;0.001)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+LMlag
+</td>
+<td style="text-align:left;">
+26.04 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+136.115 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+153.010 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+214.453 (&lt;0.001)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+RLMerr
+</td>
+<td style="text-align:left;">
+2.27 (0.131)
+</td>
+<td style="text-align:left;">
+0.303 (0.582)
+</td>
+<td style="text-align:left;">
+0.106 (0.744)
+</td>
+<td style="text-align:left;">
+0.457 (0.499)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+RLMlag
+</td>
+<td style="text-align:left;">
+15.56 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+20.125 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+21.300 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+28.455 (&lt;0.001)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+SARMA
+</td>
+<td style="text-align:left;">
+28.32 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+136.419 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+153.116 (&lt;0.001)
+</td>
+<td style="text-align:left;">
+214.910 (&lt;0.001)
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; border:0;" colspan="100%">
+<sup></sup> P-values in parentheses
+</td>
+</tr>
+</tfoot>
+</table>
+<p>The Moran test results indicate a strong degree of spatial clustering (or “hot spots”) in both the raw dependent variable and the residuals, though the test statistic shrinks considerably in the residual, suggesting the observed explanatory variables control for a portion of this effect.</p>
+<p>For all four weighting schemes, the first-stage LM tests are inconclusive, rejecting the null in all cases. For all three specifications, the robust LM tests indicate a spatial lag specification is more appropriate than the spatial error specification. (The SARMA test suggests that spatial dependence of either type is present.)</p>
+</div>
+<div id="spatial-econometric-models" class="section level1">
+<h1><span class="header-section-number">3</span> Spatial econometric models</h1>
+<p>Here we present three Cliff-Ord type spatial models, one for each spatial weighting scheme. Based on the preceding tests, we estimate these models with both spatial lag (lambda) terms. We estimate these models via a GMM estimator that accounts for heteroskedastic errors of unknown form (<a href="https://doi.org/10.1016/j.jeconom.2009.10.025">Kelejian and Prucha 2010</a>).</p>
+<p>Unfortunately, these estimators do not behave well when other distance-based variables, including the distance to the nearest urban area, density of suppliers, and the basin fixed effect. Therefore, these variables are omitted from these specifications.</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:1200px; ">
+<table class="table table-hover" style="margin-left: auto; margin-right: auto;">
+<caption>
+Spatial dependence models
+</caption>
+<thead>
+<tr>
+<th style="border-bottom:hiddenposition: sticky; top:0; background-color: #FFFFFF;" colspan="1">
+</th>
+<th style="border-bottom:hiddenposition: sticky; top:0; background-color: #FFFFFF;" colspan="1">
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; position: sticky; top:0; background-color: #FFFFFF;" colspan="4">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+w/ Spatial Weights
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Term
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+OLS
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Band
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Decay
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Hybrid
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Decay w/ Time
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Intercept
+</td>
+<td style="text-align:center;">
+9.92***<br>(0.253)
+</td>
+<td style="text-align:center;">
+5.3***<br>(0.688)
+</td>
+<td style="text-align:center;">
+3.42***<br>(0.802)
+</td>
+<td style="text-align:center;">
+6.13***<br>(0.66)
+</td>
+<td style="text-align:center;">
+5.29***<br>(0.676)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Stream slope
+</td>
+<td style="text-align:center;">
+-3.96**<br>(1.86)
+</td>
+<td style="text-align:center;">
+-2.29<br>(1.84)
+</td>
+<td style="text-align:center;">
+-2.87<br>(1.76)
+</td>
+<td style="text-align:center;">
+-2.66<br>(1.77)
+</td>
+<td style="text-align:center;">
+-2.7<br>(1.74)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Bankfull width
+</td>
+<td style="text-align:center;">
+-0.00454<br>(0.00624)
+</td>
+<td style="text-align:center;">
+0.00125<br>(0.00563)
+</td>
+<td style="text-align:center;">
+-0.00555<br>(0.00571)
+</td>
+<td style="text-align:center;">
+-0.00204<br>(0.00551)
+</td>
+<td style="text-align:center;">
+-0.00203<br>(0.00554)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Stream slope X bankfull width
+</td>
+<td style="text-align:center;">
+0.95***<br>(0.364)
+</td>
+<td style="text-align:center;">
+0.841**<br>(0.387)
+</td>
+<td style="text-align:center;">
+0.75**<br>(0.359)
+</td>
+<td style="text-align:center;">
+0.752**<br>(0.363)
+</td>
+<td style="text-align:center;">
+0.672*<br>(0.343)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Road paved (dummy)
+</td>
+<td style="text-align:center;">
+0.198*<br>(0.115)
+</td>
+<td style="text-align:center;">
+0.0773<br>(0.118)
+</td>
+<td style="text-align:center;">
+0.091<br>(0.108)
+</td>
+<td style="text-align:center;">
+0.0815<br>(0.111)
+</td>
+<td style="text-align:center;">
+0.165<br>(0.106)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Road speed class: 3
+</td>
+<td style="text-align:center;">
+0.635**<br>(0.258)
+</td>
+<td style="text-align:center;">
+0.817**<br>(0.321)
+</td>
+<td style="text-align:center;">
+0.554*<br>(0.311)
+</td>
+<td style="text-align:center;">
+0.627**<br>(0.296)
+</td>
+<td style="text-align:center;">
+0.445<br>(0.282)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Road speed class: 4
+</td>
+<td style="text-align:center;">
+0.487*<br>(0.26)
+</td>
+<td style="text-align:center;">
+0.538**<br>(0.261)
+</td>
+<td style="text-align:center;">
+0.407*<br>(0.228)
+</td>
+<td style="text-align:center;">
+0.389*<br>(0.236)
+</td>
+<td style="text-align:center;">
+0.29<br>(0.228)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Road speed class: 5
+</td>
+<td style="text-align:center;">
+0.373***<br>(0.126)
+</td>
+<td style="text-align:center;">
+0.445***<br>(0.131)
+</td>
+<td style="text-align:center;">
+0.347***<br>(0.122)
+</td>
+<td style="text-align:center;">
+0.362***<br>(0.123)
+</td>
+<td style="text-align:center;">
+0.282**<br>(0.12)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Road speed class: 6
+</td>
+<td style="text-align:center;">
+0.226*<br>(0.137)
+</td>
+<td style="text-align:center;">
+0.333**<br>(0.13)
+</td>
+<td style="text-align:center;">
+0.327***<br>(0.126)
+</td>
+<td style="text-align:center;">
+0.315**<br>(0.126)
+</td>
+<td style="text-align:center;">
+0.235*<br>(0.122)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Road speed class: 7
+</td>
+<td style="text-align:center;">
+0.25***<br>(0.0866)
+</td>
+<td style="text-align:center;">
+0.26***<br>(0.0858)
+</td>
+<td style="text-align:center;">
+0.246***<br>(0.0782)
+</td>
+<td style="text-align:center;">
+0.219***<br>(0.0792)
+</td>
+<td style="text-align:center;">
+0.218***<br>(0.0746)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Terrain slope
+</td>
+<td style="text-align:center;">
+0.00735**<br>(0.00354)
+</td>
+<td style="text-align:center;">
+0.000563<br>(0.00317)
+</td>
+<td style="text-align:center;">
+0.00245<br>(0.0029)
+</td>
+<td style="text-align:center;">
+0.00257<br>(0.00289)
+</td>
+<td style="text-align:center;">
+0.00413<br>(0.00275)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Elevation
+</td>
+<td style="text-align:center;">
+-0.000055<br>(0.000198)
+</td>
+<td style="text-align:center;">
+-0.000369**<br>(0.000155)
+</td>
+<td style="text-align:center;">
+-0.000213*<br>(0.000119)
+</td>
+<td style="text-align:center;">
+-0.000217*<br>(0.000122)
+</td>
+<td style="text-align:center;">
+-0.000185*<br>(0.000112)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Land cover: Developed
+</td>
+<td style="text-align:center;">
+0.313***<br>(0.0759)
+</td>
+<td style="text-align:center;">
+0.244***<br>(0.0714)
+</td>
+<td style="text-align:center;">
+0.231***<br>(0.0649)
+</td>
+<td style="text-align:center;">
+0.23***<br>(0.0665)
+</td>
+<td style="text-align:center;">
+0.222***<br>(0.0631)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Land cover: Herbaceous
+</td>
+<td style="text-align:center;">
+-0.112<br>(0.176)
+</td>
+<td style="text-align:center;">
+-0.105<br>(0.112)
+</td>
+<td style="text-align:center;">
+-0.148<br>(0.108)
+</td>
+<td style="text-align:center;">
+-0.0929<br>(0.108)
+</td>
+<td style="text-align:center;">
+-0.146<br>(0.1)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Land cover: Planted-cultivated
+</td>
+<td style="text-align:center;">
+0.345**<br>(0.159)
+</td>
+<td style="text-align:center;">
+0.274*<br>(0.143)
+</td>
+<td style="text-align:center;">
+0.281**<br>(0.131)
+</td>
+<td style="text-align:center;">
+0.261*<br>(0.133)
+</td>
+<td style="text-align:center;">
+0.246*<br>(0.135)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Land cover: Shrubland
+</td>
+<td style="text-align:center;">
+0.188<br>(0.13)
+</td>
+<td style="text-align:center;">
+0.241*<br>(0.136)
+</td>
+<td style="text-align:center;">
+0.133<br>(0.125)
+</td>
+<td style="text-align:center;">
+0.176<br>(0.125)
+</td>
+<td style="text-align:center;">
+0.142<br>(0.122)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Land cover: Wetlands
+</td>
+<td style="text-align:center;">
+0.072<br>(0.136)
+</td>
+<td style="text-align:center;">
+0.00935<br>(0.13)
+</td>
+<td style="text-align:center;">
+0.0422<br>(0.123)
+</td>
+<td style="text-align:center;">
+0.00513<br>(0.121)
+</td>
+<td style="text-align:center;">
+0.0196<br>(0.114)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Housing density
+</td>
+<td style="text-align:center;">
+0.000308<br>(0.00125)
+</td>
+<td style="text-align:center;">
+0.0000732<br>(0.0017)
+</td>
+<td style="text-align:center;">
+-0.000696<br>(0.00143)
+</td>
+<td style="text-align:center;">
+-0.00029<br>(0.00158)
+</td>
+<td style="text-align:center;">
+0.000844<br>(0.00159)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Ag/forestry employment
+</td>
+<td style="text-align:center;">
+0.000148*<br>(0.0000823)
+</td>
+<td style="text-align:center;">
+-0.0000395<br>(0.0000648)
+</td>
+<td style="text-align:center;">
+-0.0000399<br>(0.0000604)
+</td>
+<td style="text-align:center;">
+-0.00000691<br>(0.0000604)
+</td>
+<td style="text-align:center;">
+0.000005<br>(0.0000578)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Construction employment
+</td>
+<td style="text-align:center;">
+-0.0000082<br>(0.00000925)
+</td>
+<td style="text-align:center;">
+0.00000594<br>(0.00000708)
+</td>
+<td style="text-align:center;">
+0.00000703<br>(0.0000069)
+</td>
+<td style="text-align:center;">
+0.00000594<br>(0.00000672)
+</td>
+<td style="text-align:center;">
+0.00000721<br>(0.00000661)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Private land, individual or company (% 500m buffer)
+</td>
+<td style="text-align:center;">
+-0.00741<br>(0.105)
+</td>
+<td style="text-align:center;">
+-0.129<br>(0.102)
+</td>
+<td style="text-align:center;">
+-0.0512<br>(0.0882)
+</td>
+<td style="text-align:center;">
+-0.0585<br>(0.0916)
+</td>
+<td style="text-align:center;">
+-0.00956<br>(0.0862)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Private land, managed by industry (% 500m buffer)
+</td>
+<td style="text-align:center;">
+-0.463***<br>(0.125)
+</td>
+<td style="text-align:center;">
+-0.358***<br>(0.113)
+</td>
+<td style="text-align:center;">
+-0.33***<br>(0.104)
+</td>
+<td style="text-align:center;">
+-0.289***<br>(0.107)
+</td>
+<td style="text-align:center;">
+-0.283***<br>(0.0976)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Private land, managed by non-industrial owner (% 500m buffer)
+</td>
+<td style="text-align:center;">
+0.649***<br>(0.228)
+</td>
+<td style="text-align:center;">
+0.41*<br>(0.23)
+</td>
+<td style="text-align:center;">
+0.528**<br>(0.232)
+</td>
+<td style="text-align:center;">
+0.458**<br>(0.231)
+</td>
+<td style="text-align:center;">
+0.376*<br>(0.214)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Number of worksites
+</td>
+<td style="text-align:center;">
+-0.423***<br>(0.0574)
+</td>
+<td style="text-align:center;">
+-0.392***<br>(0.0574)
+</td>
+<td style="text-align:center;">
+-0.327***<br>(0.0503)
+</td>
+<td style="text-align:center;">
+-0.348***<br>(0.0518)
+</td>
+<td style="text-align:center;">
+-0.287***<br>(0.051)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Number of worksites X distance
+</td>
+<td style="text-align:center;">
+0.0000484***<br>(0.0000137)
+</td>
+<td style="text-align:center;">
+0.0000433***<br>(0.0000136)
+</td>
+<td style="text-align:center;">
+0.0000459***<br>(0.0000124)
+</td>
+<td style="text-align:center;">
+0.0000449***<br>(0.0000121)
+</td>
+<td style="text-align:center;">
+0.0000404***<br>(0.0000107)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Culvert installation (dummy)
+</td>
+<td style="text-align:center;">
+0.234*<br>(0.137)
+</td>
+<td style="text-align:center;">
+0.137<br>(0.106)
+</td>
+<td style="text-align:center;">
+0.217**<br>(0.0997)
+</td>
+<td style="text-align:center;">
+0.16*<br>(0.0969)
+</td>
+<td style="text-align:center;">
+0.286***<br>(0.09)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Culvert removal (dummy)
+</td>
+<td style="text-align:center;">
+0.0262<br>(0.0821)
+</td>
+<td style="text-align:center;">
+0.0482<br>(0.0914)
+</td>
+<td style="text-align:center;">
+0.0893<br>(0.0859)
+</td>
+<td style="text-align:center;">
+0.0673<br>(0.0856)
+</td>
+<td style="text-align:center;">
+0.123<br>(0.0787)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: BLM
+</td>
+<td style="text-align:center;">
+0.895***<br>(0.125)
+</td>
+<td style="text-align:center;">
+0.633***<br>(0.115)
+</td>
+<td style="text-align:center;">
+0.442***<br>(0.0974)
+</td>
+<td style="text-align:center;">
+0.555***<br>(0.103)
+</td>
+<td style="text-align:center;">
+0.503***<br>(0.0997)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: HABITAT WORK SCHEDULE
+</td>
+<td style="text-align:center;">
+1.28***<br>(0.303)
+</td>
+<td style="text-align:center;">
+0.929***<br>(0.218)
+</td>
+<td style="text-align:center;">
+1.02***<br>(0.194)
+</td>
+<td style="text-align:center;">
+1.01***<br>(0.213)
+</td>
+<td style="text-align:center;">
+0.939***<br>(0.179)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: REO
+</td>
+<td style="text-align:center;">
+0.903***<br>(0.103)
+</td>
+<td style="text-align:center;">
+0.7***<br>(0.0958)
+</td>
+<td style="text-align:center;">
+0.59***<br>(0.0892)
+</td>
+<td style="text-align:center;">
+0.646***<br>(0.0919)
+</td>
+<td style="text-align:center;">
+0.595***<br>(0.0882)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: SRFBD
+</td>
+<td style="text-align:center;">
+1.04***<br>(0.269)
+</td>
+<td style="text-align:center;">
+0.976***<br>(0.195)
+</td>
+<td style="text-align:center;">
+1.05***<br>(0.201)
+</td>
+<td style="text-align:center;">
+1.04***<br>(0.202)
+</td>
+<td style="text-align:center;">
+0.887***<br>(0.163)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Project source: WA RCO
+</td>
+<td style="text-align:center;">
+0.409*<br>(0.231)
+</td>
+<td style="text-align:center;">
+0.273*<br>(0.165)
+</td>
+<td style="text-align:center;">
+0.561***<br>(0.142)
+</td>
+<td style="text-align:center;">
+0.394**<br>(0.159)
+</td>
+<td style="text-align:center;">
+0.484***<br>(0.134)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2002
+</td>
+<td style="text-align:center;">
+0.196*<br>(0.119)
+</td>
+<td style="text-align:center;">
+0.199*<br>(0.116)
+</td>
+<td style="text-align:center;">
+0.238**<br>(0.11)
+</td>
+<td style="text-align:center;">
+0.194*<br>(0.109)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2003
+</td>
+<td style="text-align:center;">
+0.23*<br>(0.125)
+</td>
+<td style="text-align:center;">
+0.267**<br>(0.125)
+</td>
+<td style="text-align:center;">
+0.237**<br>(0.111)
+</td>
+<td style="text-align:center;">
+0.223**<br>(0.113)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2004
+</td>
+<td style="text-align:center;">
+0.646***<br>(0.123)
+</td>
+<td style="text-align:center;">
+0.637***<br>(0.111)
+</td>
+<td style="text-align:center;">
+0.6***<br>(0.108)
+</td>
+<td style="text-align:center;">
+0.553***<br>(0.109)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2005
+</td>
+<td style="text-align:center;">
+0.312**<br>(0.124)
+</td>
+<td style="text-align:center;">
+0.314**<br>(0.122)
+</td>
+<td style="text-align:center;">
+0.245**<br>(0.116)
+</td>
+<td style="text-align:center;">
+0.258**<br>(0.116)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2006
+</td>
+<td style="text-align:center;">
+0.386***<br>(0.131)
+</td>
+<td style="text-align:center;">
+0.324**<br>(0.137)
+</td>
+<td style="text-align:center;">
+0.278**<br>(0.129)
+</td>
+<td style="text-align:center;">
+0.265**<br>(0.129)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2007
+</td>
+<td style="text-align:center;">
+0.54***<br>(0.141)
+</td>
+<td style="text-align:center;">
+0.624***<br>(0.14)
+</td>
+<td style="text-align:center;">
+0.498***<br>(0.135)
+</td>
+<td style="text-align:center;">
+0.48***<br>(0.135)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2008
+</td>
+<td style="text-align:center;">
+0.0505<br>(0.225)
+</td>
+<td style="text-align:center;">
+0.193<br>(0.254)
+</td>
+<td style="text-align:center;">
+0.058<br>(0.259)
+</td>
+<td style="text-align:center;">
+0.0874<br>(0.248)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2009
+</td>
+<td style="text-align:center;">
+0.5**<br>(0.204)
+</td>
+<td style="text-align:center;">
+0.358*<br>(0.206)
+</td>
+<td style="text-align:center;">
+0.237<br>(0.155)
+</td>
+<td style="text-align:center;">
+0.244<br>(0.163)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2010
+</td>
+<td style="text-align:center;">
+0.149<br>(0.214)
+</td>
+<td style="text-align:center;">
+0.0685<br>(0.228)
+</td>
+<td style="text-align:center;">
+0.0992<br>(0.217)
+</td>
+<td style="text-align:center;">
+-0.00792<br>(0.223)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2011
+</td>
+<td style="text-align:center;">
+0.201<br>(0.206)
+</td>
+<td style="text-align:center;">
+0.194<br>(0.198)
+</td>
+<td style="text-align:center;">
+0.259<br>(0.19)
+</td>
+<td style="text-align:center;">
+0.2<br>(0.192)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2012
+</td>
+<td style="text-align:center;">
+-0.138<br>(0.229)
+</td>
+<td style="text-align:center;">
+-0.127<br>(0.249)
+</td>
+<td style="text-align:center;">
+-0.0529<br>(0.231)
+</td>
+<td style="text-align:center;">
+-0.103<br>(0.216)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2013
+</td>
+<td style="text-align:center;">
+0.0383<br>(0.201)
+</td>
+<td style="text-align:center;">
+0.0884<br>(0.243)
+</td>
+<td style="text-align:center;">
+0.0678<br>(0.258)
+</td>
+<td style="text-align:center;">
+0.0442<br>(0.249)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2014
+</td>
+<td style="text-align:center;">
+0.16<br>(0.244)
+</td>
+<td style="text-align:center;">
+0.276<br>(0.212)
+</td>
+<td style="text-align:center;">
+0.181<br>(0.221)
+</td>
+<td style="text-align:center;">
+0.173<br>(0.215)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Year: 2015
+</td>
+<td style="text-align:center;">
+0.839*<br>(0.433)
+</td>
+<td style="text-align:center;">
+0.746***<br>(0.263)
+</td>
+<td style="text-align:center;">
+0.803***<br>(0.271)
+</td>
+<td style="text-align:center;">
+0.696**<br>(0.288)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Lambda (lag parameter)
+</td>
+<td style="text-align:center;">
+‒
+</td>
+<td style="text-align:center;">
+0.472***<br>(0.0669)
+</td>
+<td style="text-align:center;">
+0.64***<br>(0.0755)
+</td>
+<td style="text-align:center;">
+0.387***<br>(0.0645)
+</td>
+<td style="text-align:center;">
+0.477***<br>(0.0628)
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; border:0;" colspan="100%">
+<sup></sup> * p &lt; 0.1, ** p &lt; 0.05, *** p &lt; 0.01
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<p>Overall, the conclusions we draw about the associations between costs and the explanatory variables are quite consistent when compared to the basic OLS estimates.</p>
+<p>The spatial dependence parameters on all models are positive and statistically significant, indicating positive spatial spillovers from nearby projects. The positive lambdas indicate that more expensive worksites in one location drive up costs nearby. These spillovers are present both between years and within years, as indicated by the positive lambda estimate when the time-dependent weights are used.</p>
+<p>Because the spatial lag parameter is non-zero, we cannot interpret the coefficents as direct marginal effects as we would the OLS coefficients. A change in any of the explanatory variables at one worksite impacts not only the worksite’s costs, but also costs at neighboring worksites, which in turn impact costs at the original site. To account for these feedbacks, we can calculate direct, total, and indirect effects. A variable’s direct effect is the effect (in terms of a cost multiplier) of a single unit increase at one worksite on the costs at that same worksite, averaged over all worksites. A variable’s total effect is the effect of a single unit increase at one worksite on costs across all worksites, averaged over all worksites.</p>
+<p>Note that a “unit” change in different variables can be quite dramatic. For example, slope is measured on a unit interval though only really ranges fro 0 to about 0.3, so a unit change would be an unrealistic range to expect within the data. In the future, these effects calculations will be scaled to a standard deviation change rather than unit change where appropriate to aid in interpretation.</p>
+<p>These calculations are dependent on the spatial structure of the data, and therefore should be interpreted with the following caveat. The worksite data in PNSHP is not comprehensive for all culvert projects in the region during the time period. Because we cannot identify where projects absent in the database were, we cannot fully model the feedback effects that may occur with missing projects in the data. Therefore, I believe these effect calculations will be of limited use.</p>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:1200px; ">
+<table class="table table-hover" style="margin-left: auto; margin-right: auto;">
+<caption>
+Effects decomposition for spatial dependence models
+</caption>
+<thead>
+<tr>
+<th style="border-bottom:hiddenposition: sticky; top:0; background-color: #FFFFFF;" colspan="1">
+</th>
+<th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; position: sticky; top:0; background-color: #FFFFFF;" colspan="4">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Effect (Direct / Indirect / Total)
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Term
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Band
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Decay
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Hybrid
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;position: sticky; top:0; background-color: #FFFFFF;">
+Decay w/ Time
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Stream slope
+</td>
+<td style="text-align:center;">
+0.0952 / 0.138 / 0.0131
+</td>
+<td style="text-align:center;">
+0.0374 / 0.00922 / 0.000345
+</td>
+<td style="text-align:center;">
+0.0595 / 0.221 / 0.0132
+</td>
+<td style="text-align:center;">
+0.0521 / 0.11 / 0.00571
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Bankfull width
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+0.994 / 0.991 / 0.985
+</td>
+<td style="text-align:center;">
+0.998 / 0.999 / 0.997
+</td>
+<td style="text-align:center;">
+0.998 / 0.998 / 0.996
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Stream slope X bankfull width
+</td>
+<td style="text-align:center;">
+2.37 / 2.07 / 4.91
+</td>
+<td style="text-align:center;">
+2.36 / 3.41 / 8.04
+</td>
+<td style="text-align:center;">
+2.22 / 1.53 / 3.41
+</td>
+<td style="text-align:center;">
+2.08 / 1.73 / 3.61
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Road paved (dummy)
+</td>
+<td style="text-align:center;">
+1.08 / 1.07 / 1.16
+</td>
+<td style="text-align:center;">
+1.11 / 1.16 / 1.29
+</td>
+<td style="text-align:center;">
+1.09 / 1.05 / 1.14
+</td>
+<td style="text-align:center;">
+1.2 / 1.14 / 1.37
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Road speed class: 3
+</td>
+<td style="text-align:center;">
+2.31 / 2.03 / 4.69
+</td>
+<td style="text-align:center;">
+1.89 / 2.47 / 4.66
+</td>
+<td style="text-align:center;">
+1.95 / 1.43 / 2.78
+</td>
+<td style="text-align:center;">
+1.63 / 1.44 / 2.34
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Road speed class: 4
+</td>
+<td style="text-align:center;">
+1.74 / 1.59 / 2.77
+</td>
+<td style="text-align:center;">
+1.59 / 1.94 / 3.1
+</td>
+<td style="text-align:center;">
+1.51 / 1.25 / 1.89
+</td>
+<td style="text-align:center;">
+1.37 / 1.27 / 1.74
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Road speed class: 5
+</td>
+<td style="text-align:center;">
+1.58 / 1.47 / 2.32
+</td>
+<td style="text-align:center;">
+1.49 / 1.76 / 2.63
+</td>
+<td style="text-align:center;">
+1.47 / 1.23 / 1.81
+</td>
+<td style="text-align:center;">
+1.36 / 1.26 / 1.72
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Road speed class: 6
+</td>
+<td style="text-align:center;">
+1.41 / 1.33 / 1.88
+</td>
+<td style="text-align:center;">
+1.45 / 1.71 / 2.48
+</td>
+<td style="text-align:center;">
+1.4 / 1.2 / 1.67
+</td>
+<td style="text-align:center;">
+1.29 / 1.21 / 1.57
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Road speed class: 7
+</td>
+<td style="text-align:center;">
+1.31 / 1.25 / 1.64
+</td>
+<td style="text-align:center;">
+1.33 / 1.5 / 1.98
+</td>
+<td style="text-align:center;">
+1.26 / 1.13 / 1.43
+</td>
+<td style="text-align:center;">
+1.27 / 1.2 / 1.52
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Terrain slope
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1.01
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1.01
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Elevation
+</td>
+<td style="text-align:center;">
+1 / 1 / 0.999
+</td>
+<td style="text-align:center;">
+1 / 1 / 0.999
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Land cover: Developed
+</td>
+<td style="text-align:center;">
+1.29 / 1.23 / 1.59
+</td>
+<td style="text-align:center;">
+1.3 / 1.46 / 1.9
+</td>
+<td style="text-align:center;">
+1.28 / 1.14 / 1.46
+</td>
+<td style="text-align:center;">
+1.27 / 1.2 / 1.53
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Land cover: Herbaceous
+</td>
+<td style="text-align:center;">
+0.898 / 0.913 / 0.82
+</td>
+<td style="text-align:center;">
+0.844 / 0.785 / 0.662
+</td>
+<td style="text-align:center;">
+0.906 / 0.949 / 0.859
+</td>
+<td style="text-align:center;">
+0.852 / 0.887 / 0.756
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Land cover: Planted-cultivated
+</td>
+<td style="text-align:center;">
+1.33 / 1.27 / 1.68
+</td>
+<td style="text-align:center;">
+1.38 / 1.58 / 2.19
+</td>
+<td style="text-align:center;">
+1.32 / 1.16 / 1.53
+</td>
+<td style="text-align:center;">
+1.31 / 1.22 / 1.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Land cover: Shrubland
+</td>
+<td style="text-align:center;">
+1.28 / 1.23 / 1.58
+</td>
+<td style="text-align:center;">
+1.16 / 1.24 / 1.45
+</td>
+<td style="text-align:center;">
+1.21 / 1.1 / 1.33
+</td>
+<td style="text-align:center;">
+1.17 / 1.12 / 1.31
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Land cover: Wetlands
+</td>
+<td style="text-align:center;">
+1.01 / 1.01 / 1.02
+</td>
+<td style="text-align:center;">
+1.05 / 1.07 / 1.12
+</td>
+<td style="text-align:center;">
+1.01 / 1 / 1.01
+</td>
+<td style="text-align:center;">
+1.02 / 1.02 / 1.04
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Housing density
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+0.999 / 0.999 / 0.998
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Ag/forestry employment
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Construction employment
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Private land, individual or company (% 500m buffer)
+</td>
+<td style="text-align:center;">
+0.875 / 0.894 / 0.783
+</td>
+<td style="text-align:center;">
+0.943 / 0.92 / 0.867
+</td>
+<td style="text-align:center;">
+0.94 / 0.967 / 0.909
+</td>
+<td style="text-align:center;">
+0.99 / 0.992 / 0.982
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Private land, managed by industry (% 500m buffer)
+</td>
+<td style="text-align:center;">
+0.692 / 0.734 / 0.508
+</td>
+<td style="text-align:center;">
+0.685 / 0.583 / 0.399
+</td>
+<td style="text-align:center;">
+0.736 / 0.849 / 0.624
+</td>
+<td style="text-align:center;">
+0.734 / 0.794 / 0.583
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Private land, managed by non-industrial owner (% 500m buffer)
+</td>
+<td style="text-align:center;">
+1.52 / 1.43 / 2.17
+</td>
+<td style="text-align:center;">
+1.83 / 2.37 / 4.33
+</td>
+<td style="text-align:center;">
+1.63 / 1.3 / 2.11
+</td>
+<td style="text-align:center;">
+1.51 / 1.36 / 2.05
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Number of worksites
+</td>
+<td style="text-align:center;">
+0.669 / 0.713 / 0.477
+</td>
+<td style="text-align:center;">
+0.688 / 0.586 / 0.403
+</td>
+<td style="text-align:center;">
+0.691 / 0.821 / 0.567
+</td>
+<td style="text-align:center;">
+0.73 / 0.791 / 0.578
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Number of worksites X distance
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+<td style="text-align:center;">
+1 / 1 / 1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Culvert installation (dummy)
+</td>
+<td style="text-align:center;">
+1.15 / 1.13 / 1.29
+</td>
+<td style="text-align:center;">
+1.28 / 1.43 / 1.83
+</td>
+<td style="text-align:center;">
+1.19 / 1.1 / 1.3
+</td>
+<td style="text-align:center;">
+1.37 / 1.26 / 1.73
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Culvert removal (dummy)
+</td>
+<td style="text-align:center;">
+1.05 / 1.04 / 1.1
+</td>
+<td style="text-align:center;">
+1.11 / 1.16 / 1.28
+</td>
+<td style="text-align:center;">
+1.07 / 1.04 / 1.12
+</td>
+<td style="text-align:center;">
+1.14 / 1.11 / 1.27
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="closing-thoughts" class="section level1">
+<h1><span class="header-section-number">4</span> Closing Thoughts</h1>
+<p>Overall, the spatial econometric methods have little effect on inference regarding the explanatory variables. However, their inclusion does account for an additional source of unobserved variance in the OLS models, while the specific GMM methodology provides robustness against heteroskedastic errors. The spatial parameters themselves provide additional richness to the interpretation of the model. However, given the sparseness of our data, I believe these models are of limited use. Interpreting feedback effects seems particularly challenging, and prediction methods for out-of-sample points are still not particularly well developed. (Definitely no off-the-shelf tools.)</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

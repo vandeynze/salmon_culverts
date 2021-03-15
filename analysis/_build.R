@@ -27,16 +27,20 @@ spin(here("R/C.culvertsspatial/07.spatialcostmodels.R"), knit = FALSE, format = 
 file.copy(here("R/C.culvertsspatial/07.spatialcostmodels.Rmd"), to = here("analysis/spatial_cost_models.Rmd"), overwrite = TRUE)
 file.remove(here("R/C.culvertsspatial/07.spatialcostmodels.Rmd"))
 
-spin(here("R/C.culvertsspatial/09.spatialdependence.R"), knit = FALSE, format = "Rmd", precious = TRUE)
-file.copy(here("R/C.culvertsspatial/09.spatialdependence.Rmd"), to = here("analysis/spatial_dependence_models.Rmd"), overwrite = TRUE)
-file.remove(here("R/C.culvertsspatial/09.spatialdependence.Rmd"))
+spin(here("R/C.culvertsspatial/07.spatialcostmodels - ml.R"), knit = FALSE, format = "Rmd", precious = TRUE)
+file.copy(here("R/C.culvertsspatial/07.spatialcostmodels - ml.Rmd"), to = here("analysis/spatialcostmodels-ml.Rmd"), overwrite = TRUE)
+file.remove(here("R/C.culvertsspatial/07.spatialcostmodels - ml.Rmd"))
+
+spin(here("R/C.culvertsspatial/07.spatialcostmodels - spatialdependence.r"), knit = FALSE, format = "Rmd", precious = TRUE)
+file.copy(here("R/C.culvertsspatial/07.spatialcostmodels - spatialdependence.Rmd"), to = here("analysis/spatialcostmodels-spatialdependence.Rmd"), overwrite = TRUE)
+file.remove(here("R/C.culvertsspatial/07.spatialcostmodels - spatialdependence.Rmd"))
 
 
 # Build site
 wflow_build(
   files = list.files(
     here("analysis"), 
-    "*.Rmd",
+    "index.Rmd",
     full.names = TRUE
   ),
   clean_fig_files = TRUE,

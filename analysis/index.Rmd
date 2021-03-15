@@ -15,3 +15,5 @@ Research reports for the salmon_culverts repository.
 3. **[Culvert Cost Pilot Models](./culvert_pilot_models.html)**: A first-cut attempt to model culvert costs using just the PNSHP data  
 4. **[Summary of Spatially Derived Variables for Culvert Projects](./spatial_variables_summary.html)**: A summary of the additional explanatory variables gathered for cost models  
 5. **[Culvert Cost Models with Spatially Explicit Data](./spatial_cost_models.html)**: An expansion of the early cost models with data gathered from geospatial databases  
+6. **[Culvert Cost Models with Spatial Econometric Methods](./spatialcostmodels-spatialdependence.html)**: Builds on the base cost models with methods from the spatial econometrics literature  
+7. **[Culvert Cost Models with Machine Learning Methods](./spatialcostmodels-ml.html)**: Compares predictive performance between base OLS method and a suite of regression-tree based machine learning methods    

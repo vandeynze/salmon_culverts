@@ -90,16 +90,10 @@ sf_allculv_odfw %>% tabyl(fpb_ftr_ty)
 # Owner by characater vector
 sf_allculv_odfw %>% filter(fpb_ftr_ty == "Culvert") %>% tabyl(fpb_own)
 # Owner by type
-<<<<<<< Updated upstream
+
 sf_allculv_odfw %>% filter(fpb_ftr_ty == "Culvert") %>% tabyl(fpb_own_ty)
 # Fish passage status (45% unknown)
 sf_allculv_odfw %>% filter(fpb_ftr_ty == "Culvert") %>% tabyl(fpb_f_pas_sta)
-=======
-sf_allculv_odfw %>% tabyl(fpb_own_ty)
-# Fish passage status (52% unknown)
-sf_allculv_odfw %>% tabyl(fpb_f_pas_sta)
-
 
 # WA DNR RMAP data ----
 sf_rmap <- read_sf(here("data/culv_inventories/Public_Forest_Practices_WADNR_PUBLIC_FP_Road_Maint_Pts.lyr"))
->>>>>>> Stashed changes
