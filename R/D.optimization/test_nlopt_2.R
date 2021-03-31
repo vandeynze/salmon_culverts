@@ -39,8 +39,8 @@ brc <- c(rep(10, 9), 20) #barrier replacement cost vec
 
 # manager inputs
 B <- 40 #budget
-wh <- 1 #habitat weight
-we <- 0 #equity weight
+wh <- 0 #habitat weight
+we <- 1 #equity weight
 wd <- 0 #diversification weight
 
 ## Visualize
