@@ -1,16 +1,12 @@
 \documentclass[12pt]{elsarticle}
 \usepackage{times}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{natbib}
-\bibliographystyle{unsrt}
-\usepackage{hyperref}
-\usepackage{setspace}
-\usepackage[section]{placeins}
-\usepackage{graphicx}
-\usepackage{mathrsfs}
 \usepackage[margin=1in]{geometry}
 \pagestyle{empty}
+\usepackage{natbib}
+\bibliographystyle{unsrt}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{hyperref}
 \usepackage{titlesec}
 \titleformat{\section}[runin]{\normalfont\bfseries}{\thesection.}{3pt}{}
 
@@ -20,8 +16,20 @@
 \begin{center} \textbf{PROJECT NARRATIVE} \end{center}
 
 %
-\section{Goals and objectives}
+\section{Goals and objectives} [note the RFP does not require a section for goals and objectives, but I believe a summary upfront will increase readability of the proposal]
+\subsection{Goals}
+\begin{enumerate}
+\item
+\item
+\item
+\end{enumerate}
 
+\subsection{Objectives}
+\begin{enumerate}
+\item Synthesize methods and datasets for fish passage prioritization for all counties within the Washington state injunction area.
+\item Generate a geospatial dataset of current usual and accustomed fishing areas for tribal nations in Western Washington.
+\item Generate predicted cost estimates for all barriers to fish passage within the Washington state injunction area. 
+\end{enumerate}
 
 %
 \section{Background}
@@ -42,8 +50,26 @@
 
 We will explore two alternative approaches to define cost-effective restoration plans that meet multiple planning goals (e.g.\ salmon habitat gains, equity considerations, and risk mitigation). Both approaches are considered ``a priori'' methods for multiobjective optimization because the decision maker must specify their preferences related to the various objectives prior to the optimization. 
 
-In the first approach, called linear scalarization, managers specify weights for each of the objectives and the weighted sum of the objectives is minimized. In the second approach, called the $\epsilon-$constraint method, one objective function is minimized and upper bounds, $\epsilon$ parameters are provided for all remaining objectives.
+In the first approach (i.e.\ linear scalarization), managers specify weights for each of the objectives and the weighted sum of the objectives is maximized. In the second approach (i.e.\ $\epsilon-$constraint method), one objective function is maximized and lower bounds, $\epsilon$ parameters are provided for all remaining objectives.
 
+As an illustrative example of the first approach, suppose Lewis County wants to define a restoration plan (a package of culverts to be restored) that balances habitat increases for Chinook salmon in the injunction area with equity and risk mitigation. Further suppose Lewis County had a budget of B dollars to invest in the restoration plan and does not want to restore any culverts outside of its jurisdiction. Our framework would solve the following problem (blue text represents manager inputs):
+\begin{equation*}
+\substack{\text{\large max}}_{\boldsymbol{c}}\hspace{0.25in} \textcolor{blue}{w_1}\:\: \text{Chinook habitat metric} + \textcolor{blue}{w_2}\:\: \text{equity metric} + \textcolor{blue}{w_3}\:\: \text{risk mitigation metric},
+\end{equation*}
+\noindent subject to:  
+\begin{equation*}
+\text{total cost} \le \textcolor{blue}{B} 
+\end{equation*}
+\begin{equation*}
+\boldsymbol{c} \in \{\textcolor{blue}{\boldsymbol{c}_{lewis}}  \},
+\end{equation*}
+\begin{equation*}
+\text{hydrography}
+\end{equation*}
+
+where $\boldsymbol{c}$ are culverts included in the restoration plan, $\boldsymbol{c}_{lewis}$ are the subset of barrier culverts owned by Lewis county, B is total amount of funding that can be spent, and $w_1-w_3$ are the weights that managers place on each objective. The problem will be additionally constrained so that benefits from upstream culvert removal cannot be captured without first removing downstream blockages.
+
+As an illustrative example of the second approach, suppose Lewis County wants to define a restoration plan that maximizes habitat but 
 
 
 
