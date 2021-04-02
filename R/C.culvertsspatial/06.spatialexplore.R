@@ -76,6 +76,20 @@ sf_culv <-
 tibble(names(sf_culv), lapply(sf_culv, typeof) %>% unlist()) %>% print(n=Inf)
 summary(sf_culv)
 
+# Load in nhdplus v2.1 stream distances
+sf_culv <-
+  sf_culv %>%
+  left_join(
+    read_csv(here("output/spatial/culverts_nhdstreams.csv")) %>%
+      select(worksite_id, offset),
+      by = "worksite_id"
+  ) %>%
+  left_join(
+    read_csv(here("output/culverts_nhdstreams_metersmatch.csv")) %>%
+      select(worksite_id, offset_m = offset),
+    by = "worksite_id"
+  )
+
 #+
 #' # Data sources and variable definitions
 #'
@@ -203,7 +217,7 @@ sf_culv %>%
 # Number of "good" matches
 # sum(I(sf_culv$here_distm <= 50))/nrow(sf_culv); sum(I(sf_culv$here_distm <= 150))/nrow(sf_culv)
 
-# NHDPlus streams
+# NHDPlus HR streams
 sf_culv %>%
   group_by(
     project_year,
@@ -255,13 +269,76 @@ sf_culv %>%
   facet_wrap("basin", ncol = 3) +
   theme(legend.position = "none") +
   labs(
-    title = "Distance to nearest NHD+ stream (m), grouped by basin",
+    title = "Distance to nearest NHDPlus HR stream (m), grouped by basin",
     subtitle = wrapper("Nearly all (> 95%) culvert points are within 150m of a stream object, with > 85% within 50m; Many of those > 150m are culvert projects grouped in with other road maintenance classified work like drainage improvement so match rate strictly for culvert worksites is even better"),
     caption = "Points represent individual worksite observations, red line indicates 150m cut-off"
   )
 # Number of "good" matches
 # sum(I(sf_culv$nhd_dist_m <= 150), na.rm = TRUE)/nrow(sf_culv)
 
+# NHDPlus V2.1 streams
+sf_culv %>%
+  group_by(
+    project_year,
+    basin
+  ) %>%
+  # select(
+  # mutate(
+  # summarize(
+  # n = n(),
+  #   n_pure = sum(pure_culv == TRUE),
+  # across(
+  #   c(
+  #     where(is.numeric),
+  #     -c(
+  #       # project_year,
+  #       fips,
+#       state_fips,
+#       nhd_r_code,
+#       n,
+#       n_pure
+#     )
+#   ),
+#   list(
+#     mean = ~mean(., na.rm = TRUE), sd = ~sd(., na.rm = TRUE), min = ~min(., na.rm = TRUE), max = ~max(., na.rm = TRUE)
+#   )
+# ),
+# .groups = "keep"
+# ) %>%
+add_count() %>% ungroup() %>%
+  add_count(basin, name = "n_basin") %>%
+  filter(
+    # pure_culv == TRUE,
+    # n_basin > 90
+  ) %>%
+  filter(
+    # pure_culv == TRUE,
+    # n > 10
+  ) %>%
+  drop_na(offset_m) %>%
+  ggplot(
+    aes(
+      x = project_year,
+      y = offset_m,
+      color = basin,
+      fill = basin
+    )
+  ) +
+  geom_jitter(width = 0.25) +
+  geom_violin(aes(group = project_year), alpha = 0.7, scale = "width", width = 0.5) +
+  geom_hline(yintercept = 150, color = "red") +
+  # geom_label(aes(label = paste("n =", n)), x = 1998, y = 4500, fill = "white", color = "black", size = 3, data = sf_culv %>% count(basin)) +
+  # scale_size_continuous(range = c(0.1,1)) +
+  scale_y_continuous(label = label_comma(1)) +
+  facet_wrap("basin", ncol = 3) +
+  theme(legend.position = "none") +
+  labs(
+    title = "Distance to nearest NHDPlus V2.1 stream (m), grouped by basin",
+    subtitle = wrapper("Not as good of matches for NHDPlus HR, only ~75% culvert points are within 150 meters of a stream object (omitted as matching has 150m search buffer)"),
+    caption = "Points represent individual worksite observations, red line indicates 150m cut-off"
+  )
+# Number of "good" matches
+sum(is.na(sf_culv$offset_m), na.rm = TRUE)/nrow(sf_culv)
 # StreamNet streams
 sf_culv %>%
   group_by(

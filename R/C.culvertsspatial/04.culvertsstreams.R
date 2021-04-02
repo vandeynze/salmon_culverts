@@ -76,29 +76,46 @@ if(!file.exists(here("output","spatial","nhdplus_fln_sml.rds"))){
 
 fln_sml <- read_rds(here("output","spatial","nhdplus_fln_sml.rds"))
 # Reduce to linestring
-fln_sml_ls <- st_cast(fln_sml, "LINESTRING")
+fln_sml_ls <- st_cast(fln_sml, "LINESTRING") %>% st_transform(3857)
+df_culv <- st_transform(df_culv, 3857)
 
 # Get comids, reachcodes, reach size, and distance from linestring
-df_comids <- get_flowline_index(fln_sml_ls, df_culv)
+df_comids <- get_flowline_index(fln_sml_ls, df_culv, search_radius = 150)
+
+# Map it
+ggplot() +
+  geom_sf(data = fln_sml_ls, color = "blue") +
+  geom_sf(aes(fill = pure_culv), data = df_culv, size = 2, shape = 21) +
+  coord_sf(
+    xlim = c(-123.8, -123.3),
+    ylim = c(42, 42.5)
+  ) +
+  scale_fill_manual(values = c("red", "green")) +
+  ggthemes::theme_map() +
+  ggtitle("Map of arbitrary worksites against NHDPlus V2.1 flowlines", "Matches are surprisingly good!")
 
 # We have lift-off for a COMID and distance ("offset")
 # Surprisingly quick too!
 
 df_culv <-
   df_culv %>%
-  bind_cols(
+  rowid_to_column("id") %>%
+  left_join(
     df_comids %>%
-      clean_names()
+      janitor::clean_names(),
+    by = "id"
   ) %>%
   left_join(
     fln_sml %>%
       st_drop_geometry() %>%
-      clean_names() %>%
+      janitor::clean_names() %>%
       select(comid, slope),
     by = "comid"
   )
 
 # Really fast actually! Can easily be extended for use with other point collections
+write_csv(df_culv, here("output/culverts_nhdstreams_metersmatch.csv"))
+
 
 # Build function to calculate total potential upstream habitat from point (does not account for other blockages)
 upst_km <- function(x, nhd_source = fln_sml_ls) {
