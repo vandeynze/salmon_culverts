@@ -1,0 +1,58 @@
+\documentclass[12pt]{elsarticle}
+\usepackage{amsmath}
+\usepackage{times}
+\usepackage{color}
+\usepackage{amssymb}
+\usepackage{natbib}
+\bibliographystyle{unsrt}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage[section]{placeins}
+\usepackage{graphicx}
+\usepackage{mathrsfs}
+\usepackage[margin=1in]{geometry}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\lhead{}
+\chead{}
+\rhead{}
+\cfoot{}
+
+
+\begin{document}
+\begin{center} \textbf{Optimizing Barrier Culvert Removal in Washington State} \end{center}
+
+
+\section{Background} 
+In 2001, Washington State was sued on behalf of 21 Northwest tribes for violating treaty fishing rights. The plaintiff argued that state-owned culverts are barriers to salmon and steelhead accessing historical upstream spawning habitat, violating the Stevens Treaties. The lawsuit resulted in a 2013 federal court injunction requiring the state remove barrier culverts under its jurisdiction by 2030. After nearly two decades of legal battles, in 2018, the U.S. Supreme Court ruled in favor of the tribes, upholding the 2013 federal injunction. 
+
+As of 2020, the Washington State Department of Transportation (WSDOT), responsible for the vast majority of state-owned culverts within the case area, has corrected 87 injunction barrier culverts opening up an estimated 383.3 miles of habitat at a cost of over \$159 million. Since the ruling, WSDOT has replaced an average of 12.4 culverts per year, including 13 in 2020. To satisfy the federal injunction, the rate of culvert replacements must ramp up dramatically.  
+
+Importantly, the 2013 injunction strictly applies to state-owned culverts whereas there exist an estimated 3,000 and 1,300 additional barrier culverts owned by counties and cities respectively, along with barrier culverts on private lands, often on the same streams as state-owned culverts. Cities and counties are relatively resource constrained and depend on state and federal grant funds for barrier culvert removal and planning.
+
+Currently WSDOT prioritizes barrier culverts for removal based on factors such as: amount of habitat blocked and habitat quality, tribal input, project cost, traffic detour management during construction, maintenance issues, partnership opportunities, the presence and number of ESA listed species, and permitting constraints. Counties, cities, and other actors have developed their own prioritization frameworks with limited resources and data to inform prioritization. 
+
+\section{Project Summary}\label{sec:summary} % 1 1/2 page
+% Emphasize 4 components of optimization: costs, habitat, equity, risk associated with each plan ==> requires submodels to compute for each barrier under each setting
+
+Our proposed research will develop a data-driven framework for project prioritization, within the injunction area of Washington state, that synthesizes multiple geospatial datasets with statistical economic and ecological models to identify restoration plans that maximize ecological, social, and economic objectives at a given funding level. Our framework will be used to assess the tradeoffs between key objectives including creating salmon habitat, an equitable distribution of habitat gains across tribes, and avoiding risk. We will also use the framework to analyze gains from coordinating barrier culvert replacement across key actors (the state, counties, and cities) and alternative funding streams. We will make the framework accessible to users through an online decision support tool (DST) similar to \href{https://fishpass.psmfc.org}{FISH\emph{Pass}} developed for California and \href{https://greatlakesconnectivity.org}{Fishwerks} developed for the Great Lakes. The tool has the potential to improve the benefits from current restoration decisions and provide a coordinating function to the various actors currently funding barrier removal projects in Washington state. 
+
+
+% Step 1: Cost estimates (add sentence on how cost estimates are used in existing planning tools?)
+%Barrier removal is costly and managers are budget constrained. To incorporate this constraint, we will estimate the cost of culvert restoration for all existing fish passage-blocking culverts within the US vs. Washington injunction area. Culverts in need of restoration will be identified using the Washington State Fish Passage database maintained by the Washington Department of Fish and Wildlife (WDFW). Cost estimates will utilize predictive models of culvert restoration cost estimated using PNSHP data from 2001-2015 with several predictor variables, including stream slope (\%), bankfull width, road class, elevation, etc. Parametric cost models are currently being finalized by our research team. For the proposed project, we will leverage the datasets and code we have already compiled and produced to explore the predictive performance of several parametric and non-parametric cost models, selecting the model that provides superior out-of-sample predictive power in the injunction area.
+
+% Step 2: Benefit estimates 
+%A primary objective in barrier culvert removal is increased salmon habitat. For each culvert restoration plan, defined as a combination of multiple culverts restored, we will quantify the expected increase in habitat for the five species of Pacific salmon. Habitat increases will serve as a proxy for the economic benefits of a restoration strategy. Spatial dependence will drive restoration benefits, because the culvert restoration downstream determines the benefits from culvert restoration upstream. The benefit proxies will be calculated using the USGS National Hydrography Dataset, NDHPlus High Resolution, and the WDFW fish passage dataset, which contains information about fish species affected by culvert blockages.  Our team has developed code to estimate similar benefit proxies for culvert restoration projects in the PNSHP database, which can be leveraged to estimate upstream habitat gained by removing barriers cataloged in the Washington State Fish Passage database. 
+
+%
+%Equity is another important dimension to consider. A prioritization framework that simply maximized expected salmon habitat given a budget constraint could potentially lead all barrier culvert replacements in a restoration plan benefiting one tribe. We will explore equity strategies that prioritize restoration plans that generate equity in the benefits (increased habitat) across the 21 tribal nations involved in the 2001 lawsuit. Equity concerns are further complicated by the fact that some tribes have greater pre-existing access to salmon harvest. We will explore various definitions of equity using geospatial data on all salmon runs in the injunction area together with geospatial data on Tribal Lands maintained by the Washington State Department of Natural Resources. 
+
+%
+%Investments in barrier culvert removal are risky and include the risk of low salmon returns to habitat and population extinction driven by both environmental shocks and future human impacts including impacts to water quality through urbanization \citep{ettinger2021prioritizing}. We will explore risk metrics ranging in complexity from a simple measure of the spread of investments across all salmon runs with habitat in the injunction area to increasingly complex risk metrics that utilize information on the negative covariance in expected returns to multiple salmon populations to exploit opportunities for portfolio diversification.  
+
+
+
+
+\bibliography{wsg}
+\end{document}

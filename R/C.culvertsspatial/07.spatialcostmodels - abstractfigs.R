@@ -153,7 +153,9 @@ ggplot() +
     # title = "Potential projects in cost-benefit space: <span style='color:#4DAF4A;'>Ratio (C/B)</span> targeting",
     title = "Potential projects in cost-benefit space: <span style='color:#377EB8;'>Benefit (B)</span> targeting",
     # title = "Potential projects in cost-benefit space: <span style='color:#E41A1C;'>Cost (C)</span> targeting",
+
     # title = "Potential projects in cost-benefit space",
+
     # subtitle = wrapper("Lines illustrate thresholds for which projects would be selected under different targeting schemes; Projects above and to the left of each line would be selected under each scheme"),
     # subtitle = wrapper(" \n "),
     x = "Cost",
@@ -1335,56 +1337,60 @@ margins_custom <-
       )
   }
 
-map_df(
-  mods, 
-  margins_custom,
-  terms =
-    c(
-      "bankfull_width",
-      "slope",
-      "cat_basin_slope",
-      "cat_elev_mean",
-      "n_worksites",
-      "tot_dist",
-      "hdens_cat",
-      "emp_const",
-      "emp_agforest",
-      "ua_dist"
-    ),
-  .id = "model"
-  ) %>%
-  mutate(
-    factor = case_when(
-      factor == "bankfull_width" ~ "Bankfull width",
-      factor == "slope" ~ "Stream slope",
-      factor == "cat_basin_slope" ~ "Terrain slope",
-      factor == "cat_elev_mean" ~ "Elevation",
-      factor == "n_worksites" ~ "Number of worksites",
-      factor == "tot_dist" ~ "Distance between worksites",
-      factor == "hdens_cat" ~ "Housing density",
-      factor == "emp_const" ~ "Construction employment",
-      factor == "emp_agforest" ~ "Ag/forestry employment",
-      factor == "ua_dist" ~ "Distance to urban area"
-    ),
-    group = case_when(
-      factor %in% c("Bankfull width", "Stream slope") ~ "Stream features",
-      factor %in% c("Terrain slope", "Elevation") ~ "Terrain features",
-      factor %in% c("Distance between worksites", "Number of worksites") ~ "Project scale",
-      factor %in% c("Construction employment", "Ag/forestry employment", "Housing density", "Distance to urban area") ~ "Population features",
-    ),
-    estimate = exp(ame),
-    conf.low = exp(lower),
-    conf.high = exp(upper),
-    p.value = I(p < 0.05),
-    mod.color = case_when(
-      p.value == TRUE & model == "mod_full" ~ "sig-pref",
-      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
-      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
-      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
-    ),
-    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
-  ) %>%
-  select(model, factor, estimate, conf.low, conf.high, p.value, group, sd) %>%
+
+(
+  df_margeff <-
+    map_df(
+      mods, 
+      margins_custom,
+      terms =
+        c(
+          "bankfull_width",
+          "slope",
+          "cat_basin_slope",
+          "cat_elev_mean",
+          "n_worksites",
+          "tot_dist",
+          "hdens_cat",
+          "emp_const",
+          "emp_agforest",
+          "ua_dist"
+        ),
+      .id = "model"
+    ) %>%
+    mutate(
+      factor = case_when(
+        factor == "bankfull_width" ~ "Bankfull width",
+        factor == "slope" ~ "Stream slope",
+        factor == "cat_basin_slope" ~ "Terrain slope",
+        factor == "cat_elev_mean" ~ "Elevation",
+        factor == "n_worksites" ~ "Number of worksites",
+        factor == "tot_dist" ~ "Distance between worksites",
+        factor == "hdens_cat" ~ "Housing density",
+        factor == "emp_const" ~ "Construction employment",
+        factor == "emp_agforest" ~ "Ag/forestry employment",
+        factor == "ua_dist" ~ "Distance to urban area"
+      ),
+      group = case_when(
+        factor %in% c("Bankfull width", "Stream slope") ~ "Stream features",
+        factor %in% c("Terrain slope", "Elevation") ~ "Terrain features",
+        factor %in% c("Distance between worksites", "Number of worksites") ~ "Project scale",
+        factor %in% c("Construction employment", "Ag/forestry employment", "Housing density", "Distance to urban area") ~ "Population features",
+      ),
+      estimate = exp(ame),
+      conf.low = exp(lower),
+      conf.high = exp(upper),
+      p.value = I(p < 0.05),
+      mod.color = case_when(
+        p.value == TRUE & model == "mod_full" ~ "sig-pref",
+        p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+        p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+        p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+      ),
+      mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+    ) %>%
+    select(model, factor, estimate, conf.low, conf.high, p.value, group, sd)
+) %>%
   ggplot() +
   geom_pointrange(
     aes(
@@ -1679,24 +1685,27 @@ map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int
 # Land class
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 
-map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), .id = "model") %>%
-  filter(str_detect(term, "nlcd")) %>%
-  mutate(
-    nlcd_current = str_sub(term, 27),
-    estimate = exp(estimate),
-    conf.low = exp(conf.low),
-    conf.high = exp(conf.high),
-    p.value = I(p.value < 0.05),
-    mod.color = case_when(
-      p.value == TRUE & model == "mod_full" ~ "sig-pref",
-      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
-      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
-      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
-    ),
-    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
-  ) %>%
-  group_by(nlcd_current) %>%
-  select(model, nlcd_current, estimate, conf.low, conf.high, mod.color) %>%
+(
+  df_margeff_land <-
+    map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), .id = "model") %>%
+    filter(str_detect(term, "nlcd")) %>%
+    mutate(
+      nlcd_current = str_sub(term, 27),
+      estimate = exp(estimate),
+      conf.low = exp(conf.low),
+      conf.high = exp(conf.high),
+      p.value = I(p.value < 0.05),
+      mod.color = case_when(
+        p.value == TRUE & model == "mod_full" ~ "sig-pref",
+        p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+        p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+        p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+      ),
+      mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+    ) %>%
+    group_by(nlcd_current) %>%
+    select(model, nlcd_current, estimate, conf.low, conf.high, mod.color) 
+) %>%
   ggplot() +
   geom_pointrange(
     aes(
@@ -1749,27 +1758,30 @@ map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), .id = "m
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 
 # Road features
-map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), .id = "model") %>%
-  filter(str_detect(term, "here")) %>%
-  mutate(
-    here_var = case_when(
-      str_detect(term, "paved") ~ "Road paved (dummy)",
-      str_detect(term, "factor") ~ str_replace(term, "factor[(]here_speed[])]", "Road speed class: ")
+(
+  df_margeff_roads <-
+    map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), .id = "model") %>%
+    filter(str_detect(term, "here")) %>%
+    mutate(
+      here_var = case_when(
+        str_detect(term, "paved") ~ "Road paved (dummy)",
+        str_detect(term, "factor") ~ str_replace(term, "factor[(]here_speed[])]", "Road speed class: ")
       ),
-    estimate = exp(estimate),
-    conf.low = exp(conf.low),
-    conf.high = exp(conf.high),
-    p.value = I(p.value < 0.05),
-    mod.color = case_when(
-      p.value == TRUE & model == "mod_full" ~ "sig-pref",
-      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
-      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
-      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
-    ),
-    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
-  ) %>%
-  group_by(here_var) %>%
-  select(model, here_var, estimate, conf.low, conf.high, mod.color) %>%
+      estimate = exp(estimate),
+      conf.low = exp(conf.low),
+      conf.high = exp(conf.high),
+      p.value = I(p.value < 0.05),
+      mod.color = case_when(
+        p.value == TRUE & model == "mod_full" ~ "sig-pref",
+        p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+        p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+        p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+      ),
+      mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+    ) %>%
+    group_by(here_var) %>%
+    select(model, here_var, estimate, conf.low, conf.high, mod.color) 
+) %>%
   ggplot() +
   geom_pointrange(
     aes(
@@ -1882,6 +1894,7 @@ map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int
 #' indicate that distinctions between these categories in the data are loosely
 #' defined.
 #' 
+
 
 # ____ Maps ----
 #' ## Residual and predicted value maps  
@@ -2023,8 +2036,9 @@ base_map_draft <-
     axis.ticks = element_blank(),
     legend.position = c(0.99, 0.01),
     legend.justification = c("right", "bottom"),
-    legend.box.background = element_rect(color = "black", size = 1),
-    legend.title = element_text(size = 10)
+    # legend.box.background = element_rect(color = "black", size = 1),
+    legend.title = element_text(size = 8),
+    legend.text = element_text(size = 6)
   ) +
   labs(
     x = NULL,
@@ -2145,6 +2159,131 @@ base_map_draft +
     ylim = c(41.5, 49.5),
     expand = FALSE
   )
+
+
+sf_allculv_wdfw <- st_read(here("data/culv_inventories/WdfwFishPassage/WdfwFishPassage.gdb"), layer = "WDFW_FishPassageSite")
+sf_allculv_wdfw %>% clean_names() %>% 
+  filter(
+    feature_type == "Culvert"
+  ) %>% select(site_record_id:feature_type) %>% st_drop_geometry() %>% write_csv(here("output/allculvs/culvinventory_wdfw.csv"))
+# Check projection
+st_crs(sf_allculv_wdfw)
+sf_allculv_wdfw <-
+  sf_allculv_wdfw %>% clean_names() %>% st_transform(st_crs(sf_base)) %>%
+  filter(
+    feature_type == "Culvert",
+    fish_passage_barrier_status_code == 10
+  )
+
+sf_allculv_odfw <- st_read(here("data/culv_inventories/ODFW_44_5_ofpbds_gdb/ofpbds_gdb.gdb"), layer = "ofpbds_pt")
+sf_allculv_odfw %>% 
+  clean_names() %>%
+  filter(
+    fpb_ftr_ty == "Culvert",
+  ) %>% select(fpb_ftr_id:fpb_o_site_id) %>% st_drop_geometry() %>% write_csv(here("output/allculvs/culvinventory_odfw.csv"))
+sf_allculv_odfw <-
+  sf_allculv_odfw %>% clean_names() %>% st_transform(st_crs(sf_base)) %>%
+  filter(
+    fpb_ftr_ty == "Culvert",
+    fpb_f_pas_sta %in% c("Blocked", "Partial")
+  )
+
+sf_allculv_odfw <-
+  sf_allculv_odfw %>%
+  mutate(Ownership = case_when(
+    fpb_own_ty == "County" ~ "County",
+    fpb_own_ty == "State" ~ "State",
+    TRUE ~ "Other"
+  ))
+sf_allculv_wdfw <-
+  sf_allculv_wdfw %>%
+  mutate(Ownership = case_when(
+    owner_type_code == 2 ~ "County",
+    owner_type_code == 5 ~ "State",
+    TRUE ~ "Other"
+  ))
+
+fig_predvalues <-
+base_map_draft +
+  # base_map +
+  geom_sf(
+    aes(
+      color = Ownership
+    ),
+    data = sf_allculv_odfw,
+    size = 0.3,
+    # color = "grey60"
+  ) +
+  geom_sf(
+    aes(
+      color = Ownership
+    ),
+    data = sf_allculv_wdfw,
+    size = 0.3,
+    # color = "grey60"
+  ) +
+  geom_sf(data = sf_basin, fill = NA, color = "red") +
+  geom_sf(
+    data = 
+      sf_culv %>% 
+      bind_cols(
+        yhat_2015_owri = 
+          exp(
+            predict(
+              mod_full,
+              sf_culv %>% 
+                mutate(
+                  project_year = 2015, 
+                  n_worksites = 1,
+                  tot_dist = 0,
+                  project_source = "OWRI",
+                  basin = "SOUTHERN OREGON COASTAL")
+            )
+          ),
+        
+      ),
+    # pull(yhat_2015_owri) %>% summary
+    # filter(yhat_2015_owri < 200000),
+    aes(
+      # x = longitude,
+      # y = latitude,
+      fill = yhat_2015_owri
+    ),
+    shape = 21,
+    color = "black",
+    stroke = 0.1,
+    size = 1
+  ) +
+  scale_color_manual(values = c("State" = "grey40", "County" = "grey60", "Other" = "grey80"), breaks = c("County", "State", "Other"), guide = guide_legend(override.aes = list(size = 1))) +
+  scale_fill_distiller(
+    "Predicted cost",
+    # palette = "YlGn",
+    # palette = "Spectral",
+    palette = "RdYlGn",
+    labels = dollar_format(accuracy = 1),
+    # breaks = c(30000, 50000, 100000, 300000),
+    direction = -1,
+    trans = "log10",
+    na.value = "grey70",
+    guide = guide_colorbar(barwidth = unit(2, "pt"), barheight = unit(30, "pt"))
+  ) +
+  # ggtitle(
+  #   "Map of predicted values",
+  #   str_wrap("Year set to 2015, source set to OWRI, basin set to Southern Oregon Coastal, and number of culverts set to one for all worksites; Red boarders indicate basin (HUC6) boundaries for included basins")
+  # ) +
+  coord_sf(
+    xlim = c(-126, -117),
+    ylim = c(41.5, 49.5),
+    expand = FALSE
+  ) +
+  theme(
+    legend.position = "right",
+    legend.background = element_rect(color = "white", size = 0), 
+    legend.key.size = unit(0.3, "pt"), 
+    legend.title = element_text(size = 6),
+    legend.box.spacing = unit(0, "pt")
+  )
+
 
 #' The map of predicted values highlights areas where physical conditions (i.e.
 #' road, stream, and terrain features) have the largest impact on costs. By
@@ -2315,7 +2454,8 @@ sf_culv %>%
 #' by also examining the distributions of subsets of worksites by region and year.
 
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
-sf_culv %>% 
+fig_costbeni <-
+  sf_culv %>% 
   bind_cols(
     yhat_2015_owri = 
       exp(
@@ -2342,23 +2482,28 @@ sf_culv %>%
     x = yhat_2015_owri,
     y = upst_dist,
     # y = tot_stream_length,
-    color = basin
+    # color = basin
   ) + 
-  geom_point() +
+  geom_point(size = 0.5) +
   scale_y_log10("Total upstream length (km)", label = label_comma(1)) +
   scale_x_log10("Cost per culvert (K $USD)", label = label_dollar(1, scale = 0.001)) +
   # scale_color_fermenter("Project year", palette = "Spectral", show.limits = TRUE, guide = guide_colorsteps(barwidth = 10, title.position = "top")) +
   scale_color_brewer(type = "qual", palette = 2) +
+  theme_clean() +
   theme(
+    aspect.ratio = 1,
     legend.position = "none",
     plot.title.position = "plot",
-    text = element_text(size = 18),
-    axis.text = element_text(size = 10),
-    strip.text = element_text(size = 10)
-  ) +
+    panel.grid.major.y = element_blank(),
+    text = element_text(size = 8),
+    axis.text = element_text(size = 6),
+    axis.title = element_text(size = 6),
+    strip.text = element_text(size = 8),
+    plot.background = element_blank()
+  ) 
   # facet_wrap("basin") +
-  ggtitle("Worksites in cost - benefit space", "Both on a log scale for clarity; Colors indicate basin") +
-  coord_fixed(1000/4500)
+  # ggtitle("Worksites in cost - benefit space", "Both on a log scale for clarity; Colors indicate basin") +
+  # coord_fixed(1000/4500)
 
 sf_culv %>% 
   bind_cols(
@@ -2468,6 +2613,246 @@ sf_culv %>%
 #' # Conclusions  
 #' ## Key findings  
 #'   
+
+# Abstract Figures ----
+df_margeff_slopebfi <-
+  bind_rows(
+    margins(
+      mod_full, 
+      variables = c("bankfull_width"), 
+      change = "sd", 
+      vcov = vcovHC(mod_full, "HC1"),
+      at = list("slope" = c(0.005, 0.10))
+    ) %>% summary %>% clean_names() %>% rename(
+      at = slope,
+      estimate = ame,
+      conf.low = lower,
+      conf.high = upper
+    ) %>% rowwise() %>% mutate(at = paste("Stream slope =", at), across(c(estimate, conf.low, conf.high), exp), p.value = I(p < 0.05)),
+    margins(
+      mod_full, 
+      variables = c("slope"), 
+      change = "sd", 
+      vcov = vcovHC(mod_full, "HC3"),
+      at = list("bankfull_width" = c(3.8, 11.9))
+    ) %>% summary %>% clean_names() %>% rename(
+      at = bankfull_width,
+      estimate = ame,
+      conf.low = lower,
+      conf.high = upper
+    ) %>% rowwise() %>% mutate(at = paste("Bankfull width =", at, "m"), across(c(estimate, conf.low, conf.high), exp), p.value = I(p < 0.05), factor = "Stream slope")
+  ) %>% select(factor, at, estimate, conf.low, conf.high, p.value) %>% mutate(factor = str_to_sentence(factor) %>% str_replace("_", " "))
+
+(
+  fig_margeff <-
+    (
+      df_margeff_all <-
+        bind_rows(
+          df_margeff_slopebfi,
+          df_margeff %>% select(model:p.value),
+          df_margeff_land %>% rename(factor = nlcd_current) %>% rowwise() %>% mutate(p.value = !str_detect(mod.color, "nosig"), mod.color = NULL, factor = paste("Land cover:", factor)),
+          df_margeff_roads %>% rename(factor = here_var) %>% rowwise() %>% mutate(p.value = !str_detect(mod.color, "nosig"), mod.color = NULL)
+        ) %>%
+        ungroup() %>%
+        mutate(
+          factor = 
+            ordered(factor) %>%
+            fct_recode(.,
+                       "Road speed class: 55-64 mph" = "Road speed class: 3",
+                       "Road speed class: 41-54 mph" = "Road speed class: 4",
+                       "Road speed class: 31-40 mph" = "Road speed class: 5",
+                       "Road speed class: 21-30 mph" = "Road speed class: 6",
+                       "Road speed class: 6-20 mph" = "Road speed class: 7"
+            ) %>%
+            fct_relevel(.,
+                        "Bankfull width",
+                        "Stream slope",
+                        "Road speed class: 55-64 mph",
+                        "Road speed class: 41-54 mph",
+                        "Road speed class: 31-40 mph",
+                        "Road speed class: 21-30 mph",
+                        "Road speed class: 6-20 mph",
+                        "Road paved (dummy)",
+                        "Terrain slope",
+                        "Elevation",
+                        "Land cover: Planted-cultivated",
+                        "Land cover: Developed",
+                        "Land cover: Shrubland",
+                        "Land cover: Wetlands",
+                        "Land cover: Herbaceous",
+                        "Housing density",
+                        "Distance to urban area",
+                        "Ag/forestry employment",
+                        "Construction employment",
+                        "Number of worksites",
+                        "Distance between worksites"
+            ) %>%
+            fct_rev(.)
+        )
+    ) %>%
+    ggplot() +
+    geom_vline(xintercept = 1, linetype = "dashed") +
+    geom_pointrange(
+      aes(
+        y = factor,
+        x = estimate,
+        group = estimate,
+        xmin = conf.low,
+        xmax = conf.high,
+        color = p.value,
+        fill = p.value,
+        shape = at
+      ),
+      size = 0.35,
+      position = position_dodge(width = 0.6)
+    ) +
+    # geom_label(
+    #   aes(
+    #     y = factor,
+    #     label = round(estimate, 2)
+    #   ),
+    #   x = 0.1
+    # ) +
+    # geom_text(
+    #   aes(
+    #     y = factor,
+    #     label = at,
+  #     group = estimate,
+  #     x = estimate + 1
+  #   ),
+  #   position = position_dodge(width = 0.6)
+  # ) +
+  scale_shape_manual(
+    values = c("Stream slope = 0.1" = 22, "Stream slope = 0.005" = 23, "Bankfull width = 11.9 m" = 24, "Bankfull width = 3.8 m" = 25),
+    breaks = c("Stream slope = 0.1", "Stream slope = 0.005", "Bankfull width = 11.9 m", "Bankfull width = 3.8 m"),
+    na.value = 16,
+    guide = guide_legend(title = NULL, override.aes = list(fill = "darkolivegreen3", color = "darkolivegreen3"))
+  ) +
+    scale_color_manual(values = c("darkolivegreen3", "darkgreen", "grey60", "grey80"), guide = NULL) +
+    scale_fill_manual(values = c("darkolivegreen3", "darkgreen", "grey60", "grey80"), guide = NULL) +
+    labs(
+      y = NULL, 
+      x = "Project average costs ratio", 
+      # title = "NLCD land cover effects",
+      # subtitle = "Project average costs relative to Forest",
+      caption = str_wrap(paste0("Adj. R-squared = ", mod_full %>% glance() %>% pull(adj.r.squared) %>% round(3), "; N = ", mod_full %>% glance() %>% pull(nobs) %>% comma()))
+    ) +
+    theme_clean() +
+    # xlim(0.1, 5.1) +
+    theme(
+      legend.position = c(0.8, 0.1),
+      legend.background = element_blank(),
+      strip.background = element_blank(),
+      strip.text.x = element_blank(),
+      panel.grid.major.y = element_blank(),
+      panel.grid.major.x = element_line(color = "grey80", size = 0.6, linetype = "dotted"),
+      plot.background = element_rect(color = NA),
+      plot.title.position = "plot",
+      plot.caption.position = "plot",
+      text = element_text(size = 8),
+      axis.text = element_text(size = 6),
+      axis.title = element_text(size = 8),
+      legend.text = element_text(size = 6),
+      legend.key.size = unit(0.75, "pt")
+    )
+)
+
+# Final figure
+cowplot::plot_grid(
+  fig_margeff,
+  cowplot::plot_grid(
+    fig_predvalues,
+    fig_costbeni,
+    nrow = 2,
+    labels = c("B", "C")
+  ),
+  nrow = 1, labels = c("A", ""), rel_widths = c(0.6, 0.4)
+) %>% cowplot::save_plot(plot = ., filename = here("output/figs/culverts/fig_abstract.png"), base_width = 6.5, base_height = 4.5)
+
+# Proposal app mock-up maps
+# Load injunction area map
+sf_injunction <- read_sf(here("data/WSDOT_-_Fish_Passage_US_v._WA_Case_Area_Boundary-shp"))
+sf_injunction <- sf_injunction %>% clean_names() %>% st_transform(st_crs(sf_base))
+
+(
+fig_mapmockup <-
+  base_map_draft +
+  # base_map +
+  geom_sf(
+    aes(
+      # color = Ownership
+    ),
+    data = sf_allculv_wdfw,
+    size = 0.1,
+    # color = "grey60"
+  ) +
+  geom_sf(data = sf_injunction, fill = NA, color = "red") +
+  scale_color_manual(values = c("State" = "grey40", "County" = "grey60", "Other" = "grey80"), breaks = c("County", "State", "Other"), guide = guide_legend(override.aes = list(size = 1))) +
+
+  # ggtitle(
+  #   "Map of predicted values",
+  #   str_wrap("Year set to 2015, source set to OWRI, basin set to Southern Oregon Coastal, and number of culverts set to one for all worksites; Red boarders indicate basin (HUC6) boundaries for included basins")
+  # ) +
+  coord_sf(
+    xlim = c(-125, -120.1),
+    ylim = c(46.25, 49.2),
+    expand = FALSE
+  ) +
+  theme(
+    legend.position = "none",
+    legend.background = element_rect(color = "white", size = 0), 
+    legend.key.size = unit(0.3, "pt"), 
+    legend.title = element_text(size = 6),
+    legend.box.spacing = unit(0, "pt")
+  )
+)
+(
+fig_mapmockup_select <-
+  fig_mapmockup +
+  geom_sf(
+    aes(
+      # color = Ownership
+    ),
+    data = sf_allculv_wdfw %>% st_join(sf_injunction, join = st_within) %>% filter(
+      # county_name == "Kitsap", 
+      Ownership == "State",
+      !is.na(shape_st_are)
+    ),
+    size = 0.6,
+    color = "blue"
+  ) +
+    coord_sf(
+      xlim = c(-125, -120.1),
+      ylim = c(46.25, 49.2),
+      expand = FALSE
+    )
+)
+(
+  fig_mapmockup_select2 <-
+    fig_mapmockup_select +
+    geom_sf(
+      aes(
+        # color = Ownership
+      ),
+      data = sf_allculv_wdfw %>% st_join(sf_injunction, join = st_within) %>% filter(
+        # county_name == "Kitsap", 
+        Ownership == "State",
+        !is.na(shape_st_are)
+      ) %>% sample_n(30),
+      size = 1,
+      color = "green"
+    ) +
+    coord_sf(
+      xlim = c(-125, -120.1),
+      ylim = c(46.25, 49.2),
+      expand = FALSE
+    )
+)
+
+cowplot::save_plot(here("output/figs/fig_mapmockup.png"), fig_mapmockup, base_height = 5)
+cowplot::save_plot(here("output/figs/fig_mapmockup_select.png"), fig_mapmockup_select, base_height = 5)
+cowplot::save_plot(here("output/figs/fig_mapmockup_select2.png"), fig_mapmockup_select2, base_height = 5)
+
 
 # Key findings ----
 
