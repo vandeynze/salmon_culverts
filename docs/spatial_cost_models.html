@@ -11,7 +11,7 @@
 
 <meta name="author" content="B. Van Deynze" />
 
-<meta name="date" content="2021-01-07" />
+<meta name="date" content="2021-03-15" />
 
 <title>Culvert Cost Models with Spatially Explicit Data</title>
 
@@ -383,7 +383,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Culvert Cost Models with Spatially Explicit Data</h1>
 <h4 class="author">B. Van Deynze</h4>
-<h4 class="date">January 07, 2021</h4>
+<h4 class="date">March 15, 2021</h4>
 
 </div>
 
@@ -623,6 +623,97 @@ Distance to urban area (m)
 </tr>
 <tr>
 <td style="text-align:left;">
+Density of construction equipment wholesalers (workers per sq. km)
+</td>
+<td style="text-align:left;">
+0.0216
+</td>
+<td style="text-align:left;">
+0.032
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Density of brick, stone, and related wholesalers (workers per sq. km)
+</td>
+<td style="text-align:left;">
+0.00276
+</td>
+<td style="text-align:left;">
+0.00721
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Density of durable metals wholesalers (workers per sq. km)
+</td>
+<td style="text-align:left;">
+0.0049
+</td>
+<td style="text-align:left;">
+0.00939
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Density of sand and gravel sales yards (firms per sq. km)
+</td>
+<td style="text-align:left;">
+0.0000244
+</td>
+<td style="text-align:left;">
+0.00004
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Private land, individual or company owner (proportion of land within 500m radius)
+</td>
+<td style="text-align:left;">
+0.447
+</td>
+<td style="text-align:left;">
+0.436
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Private land, managed by industry (proportion of land within 500m radius)
+</td>
+<td style="text-align:left;">
+0.203
+</td>
+<td style="text-align:left;">
+0.356
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Private land, managed by non-industrial owner (proportion of land within 500m radius)
+</td>
+<td style="text-align:left;">
+0.0349
+</td>
+<td style="text-align:left;">
+0.169
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 Paved road
 </td>
 <td style="text-align:left;">
@@ -704,7 +795,8 @@ Reporting source
 <ul>
 <li><strong>Stream slope (% grade)</strong>: slope of stream at road crossing can require more expensive crossing design; identified via COMID matching with NHDPlus attributes.<br />
 </li>
-<li><strong>Bankfull width (m)</strong>: bankfull width is the preferred measure of stream width at road crossing, accounting for potential width during high-water events; identified via COMID matching with NHDPlus attributes.</li>
+<li><strong>Bankfull width (m)</strong>: bankfull width is the preferred measure of stream width at road crossing, accounting for potential width during high-water events; identified via COMID matching with NHDPlus attributes.<br />
+Note that these two variables are interacted to capture design guidelines that indicate increased complexity in culvert designs associated with streams that are both particularly wide and steep.</li>
 </ul>
 </div>
 <div id="road-features" class="section level2">
@@ -805,7 +897,7 @@ Speed category
 <div id="terrain-features" class="section level2">
 <h2>Terrain features</h2>
 <ul>
-<li><p><strong>Terrain slope (degrees)</strong>: steeper terrain is expected to require more expensive projects; measured by the <del><a href="https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-global-30-arc-second-elevation-gtopo30?qt-science_center_objects=0#qt-science_center_objects">GTOPO30</a> grid cell the worksite falls in</del> slope recorded for the <em>catchment</em> the stream is associated with, as opposed to the stream slope.</p></li>
+<li><p><strong>Terrain slope (degrees)</strong>: steeper terrain is expected to require more expensive projects; measured by the <del><a href="https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-global-30-arc-second-elevation-gtopo30?qt-science_center_objects=0#qt-science_center_objects">GTOPO30</a> grid cell the worksite falls in</del> slope recorded for the <em>catchment</em> the stream is associated with via NHDPlus Selected Attributes data release, as opposed to the stream slope.</p></li>
 <li><p><strong>Land cover (categorical)</strong>: different land covers may be associated more expensive projects (e.g. less accessible sites in forest, difficult soils in welands, etc.); identified via cover with worksite coordinates and NLCD land cover layer for nearest available year; here we use the broader NLCD Group definition rather than the more detailed classification (see below).</p></li>
 <li><p><strong>Elevation (m)</strong>: mean elevation in meters in NHDPlus catchment.</p></li>
 </ul>
@@ -1063,15 +1155,28 @@ Areas where perennial herbaceous vegetation accounts for greater than 80% of veg
 </li>
 <li><strong>Employment in construction (jobs in county)</strong>: see above.<br />
 </li>
-<li><strong>Distance to urban area (m)</strong>: as a measure of access to labor and equipment, euclidean distance to the nearest census designated urban area, defined as contiguous area with at least 50,000 residents.</li>
+<li><strong>Distance to urban area (m)</strong>: as a measure of access to labor and equipment, euclidean distance to the nearest census designated urban area, defined as contiguous area with at least 50,000 residents.<br />
+</li>
+<li><strong>Density of wholesalers (workers/firms per sq. km)</strong>: Using firm point data from <a href="https://gii.dhs.gov/hifld/">Homeland Infrastructure Foundation-Level Data (HIFLD)</a>, we calculate a kernel density field (1km resolution grid/100km search radius) to measure access to equipment and materials required for common culvert replacement designs, including…
+<ul>
+<li><em>Construction equipment (workers)</em>, representing heavy machinery required for digging, moving materials, etc.,<br />
+</li>
+<li><em>Brick, stone, and related (workers)</em>, representing concrete, pavement, and structural materials required to build replacement culverts,<br />
+</li>
+<li><em>Durable metals (workers)</em>, representing sheet metal used for piping, rebar, and other structural metals materials, and<br />
+</li>
+<li><em>Sand and gravel sales yards (firms)</em>, representing suppliers for fill commonly used to build roads back up after construction.<br />
+</li>
+</ul></li>
+<li><strong>Private land (proportion within 500m radius)</strong>: we use BLM’s 2019 Surface Jurisdiction Map to calculate the proportion of land within a 500m radius of each worksite that is privately managed, distinguishing between land managed by individuals or companies (residential or commercial land), industry (typically forestry in the region), and non-industrial (including private conservation) entities; Note that the baseline group (i.e., 0 in all three proportions) represents a pooled group of all other land ownership types, which includes all publicly-owned and managed land (i.e., national and state forests and parks, U.S. Fish and Wildlife land, BLM land, etc.).</li>
 </ul>
 </div>
-<div id="scale-and-scope-controls" class="section level2">
-<h2>Scale and scope controls</h2>
+<div id="scale-and-scope-features" class="section level2">
+<h2>Scale and scope features</h2>
 <ul>
 <li><strong>Number of worksites associated with project (count):</strong> addressing multiple culverts under the same project may provide scale benefits, but might also increase complexity; measured via PNSHP database.<br />
 </li>
-<li><strong>Distance between project worksites (m)</strong>: more dispersed worksites under a single project may increase project costs due to increased transportation costs (and time); measured as the total euclidean distance between worksites for multiple worksite projects. This variable is interacted with the number of worksites to allow flexible corrdination/scale effects.<br />
+<li><strong>Distance between project worksites (m)</strong>: more dispersed worksites under a single project may increase project costs due to increased transportation costs (and time); measured as the total euclidean distance between worksites for multiple worksite projects. This variable is interacted with the number of worksites to allow flexible coordination/scale effects.<br />
 </li>
 <li><strong>Action type (categorical):</strong> PNSHP distinguishes between culvert removals and culvert installations, in addition to culvert improvements (the dominate category); we expect removals to be cheapest, followed by improvements and installations; dummies are included when a project includes one or more culverts flagged as either removals or installations.</li>
 </ul>
@@ -1094,7 +1199,7 @@ Areas where perennial herbaceous vegetation accounts for greater than 80% of veg
 <p>It looks like distance between worksites and the number of culverts is positively correlated, and both are negatively correlated with average project costs. We would expect distance to increase costs but the number of culverts to decrease costs (due to economies of scale), all else equal. Disentangling these effects should be possible with multiple regression.</p>
 <p>Stream slope is negatively correlated with bankfull width, which means wider streams tend to be less steep. Stream slope is also positively correlated with terrain slope, as mentioned earlier. None of the three are strongly correlated with costs.</p>
 <p>Finally, the two employment variables are positively correlated, and construction employment is positively correlated with housing density. Ag/forestry employment is weakly positively correlated with measures that indicate more rugged terrain such as stream and terrain slope. Housing density and to a lesser degree construction employment are positively correlated with costs.</p>
-<p>No variables have particularly large VIFs, suggesting little potential for error-inflating multicollinearity. (A large VIF indicates that the variable is strongly correlated with the other variables in the model, leading to inflated standard errors and limiting the model’s usefulness for prediction or inference.)</p>
+<p><del>No variables have particularly large VIFs, suggesting little potential for error-inflating multicollinearity.</del> (A large VIF indicates that the variable is strongly correlated with the other variables in the model, leading to inflated standard errors and limiting the model’s usefulness for prediction or inference.)</p>
 </div>
 <div id="estimation" class="section level1">
 <h1>Estimation</h1>
@@ -1167,34 +1272,34 @@ mod_sources_core
 Intercept
 </td>
 <td style="text-align:center;">
-9.77***<br>(0.21)
+9.89***<br>(0.321)
 </td>
 <td style="text-align:center;">
-10.2***<br>(0.154)
+10.7***<br>(0.29)
 </td>
 <td style="text-align:center;">
-9.81***<br>(0.17)
+9.94***<br>(0.318)
 </td>
 <td style="text-align:center;">
-9.94***<br>(0.216)
+10.3***<br>(0.329)
 </td>
 <td style="text-align:center;">
-10***<br>(0.199)
+10.1***<br>(0.305)
 </td>
 <td style="text-align:center;">
-10.3***<br>(0.206)
+10.6***<br>(0.311)
 </td>
 <td style="text-align:center;">
-10.1***<br>(0.149)
+10.2***<br>(0.293)
 </td>
 <td style="text-align:center;">
-9.68***<br>(0.174)
+10.2***<br>(0.328)
 </td>
 <td style="text-align:center;">
-9.7***<br>(0.184)
+10***<br>(0.34)
 </td>
 <td style="text-align:center;">
-9.96***<br>(0.201)
+10.1***<br>(0.366)
 </td>
 </tr>
 <tr>
@@ -1202,34 +1307,34 @@ Intercept
 Stream slope
 </td>
 <td style="text-align:center;">
--2.41<br>(1.88)
+-3.77*<br>(1.99)
 </td>
 <td style="text-align:center;">
--3.46*<br>(2.02)
+-4.23**<br>(2.14)
 </td>
 <td style="text-align:center;">
--1.94<br>(1.86)
+-2.8<br>(2)
 </td>
 <td style="text-align:center;">
--3.16<br>(2)
+-4.65**<br>(2.08)
 </td>
 <td style="text-align:center;">
--2.29<br>(1.91)
+-3.6*<br>(2.02)
 </td>
 <td style="text-align:center;">
--2.93<br>(2.02)
+-4.38**<br>(2.12)
 </td>
 <td style="text-align:center;">
--1.7<br>(1.89)
+-2.55<br>(2.04)
 </td>
 <td style="text-align:center;">
--3.9**<br>(1.97)
+-4.63**<br>(2.08)
 </td>
 <td style="text-align:center;">
--5.59**<br>(2.33)
+-6.36**<br>(2.52)
 </td>
 <td style="text-align:center;">
--1.18<br>(3.06)
+-2.29<br>(3.37)
 </td>
 </tr>
 <tr>
@@ -1237,34 +1342,34 @@ Stream slope
 Bankfull width
 </td>
 <td style="text-align:center;">
--0.00164<br>(0.00626)
+-0.00316<br>(0.00674)
 </td>
 <td style="text-align:center;">
-0.00089<br>(0.00735)
+-0.0008<br>(0.00773)
 </td>
 <td style="text-align:center;">
--0.000173<br>(0.00625)
+-0.00133<br>(0.00671)
 </td>
 <td style="text-align:center;">
--0.00287<br>(0.00662)
+-0.00445<br>(0.00695)
 </td>
 <td style="text-align:center;">
-0.00027<br>(0.00636)
+-0.0014<br>(0.00689)
 </td>
 <td style="text-align:center;">
--0.00141<br>(0.0067)
+-0.00327<br>(0.0071)
 </td>
 <td style="text-align:center;">
-0.00217<br>(0.00641)
+0.00102<br>(0.00701)
 </td>
 <td style="text-align:center;">
--0.00179<br>(0.00706)
+-0.00306<br>(0.00734)
 </td>
 <td style="text-align:center;">
--0.00308<br>(0.00747)
+-0.004<br>(0.00777)
 </td>
 <td style="text-align:center;">
-0.00355<br>(0.00865)
+0.00218<br>(0.00882)
 </td>
 </tr>
 <tr>
@@ -1272,34 +1377,34 @@ Bankfull width
 Stream slope X bankfull width
 </td>
 <td style="text-align:center;">
-0.762*<br>(0.411)
+1.01**<br>(0.444)
 </td>
 <td style="text-align:center;">
-1.07**<br>(0.417)
+1.22***<br>(0.462)
 </td>
 <td style="text-align:center;">
-0.781**<br>(0.397)
+0.985**<br>(0.448)
 </td>
 <td style="text-align:center;">
-0.895**<br>(0.428)
+1.23***<br>(0.457)
 </td>
 <td style="text-align:center;">
-0.713*<br>(0.41)
+0.939**<br>(0.446)
 </td>
 <td style="text-align:center;">
-0.859**<br>(0.428)
+1.16**<br>(0.462)
 </td>
 <td style="text-align:center;">
-0.691*<br>(0.398)
+0.868*<br>(0.449)
 </td>
 <td style="text-align:center;">
-1.12***<br>(0.415)
+1.32***<br>(0.461)
 </td>
 <td style="text-align:center;">
-1.61***<br>(0.497)
+1.71***<br>(0.594)
 </td>
 <td style="text-align:center;">
-0.723<br>(0.684)
+1.06<br>(0.764)
 </td>
 </tr>
 <tr>
@@ -1307,34 +1412,34 @@ Stream slope X bankfull width
 Road paved (dummy)
 </td>
 <td style="text-align:center;">
-0.24**<br>(0.116)
+0.211*<br>(0.121)
 </td>
 <td style="text-align:center;">
-0.32***<br>(0.119)
+0.268**<br>(0.125)
 </td>
 <td style="text-align:center;">
-0.233**<br>(0.118)
+0.193<br>(0.128)
 </td>
 <td style="text-align:center;">
-0.248**<br>(0.115)
+0.228*<br>(0.12)
 </td>
 <td style="text-align:center;">
-0.292**<br>(0.114)
+0.278**<br>(0.121)
 </td>
 <td style="text-align:center;">
-0.306***<br>(0.114)
+0.307**<br>(0.12)
 </td>
 <td style="text-align:center;">
-0.28**<br>(0.116)
+0.249*<br>(0.128)
 </td>
 <td style="text-align:center;">
-0.285**<br>(0.121)
+0.217*<br>(0.125)
 </td>
 <td style="text-align:center;">
-0.24*<br>(0.127)
+0.147<br>(0.124)
 </td>
 <td style="text-align:center;">
-0.334**<br>(0.157)
+0.235<br>(0.167)
 </td>
 </tr>
 <tr>
@@ -1342,34 +1447,34 @@ Road paved (dummy)
 Road speed class: 3
 </td>
 <td style="text-align:center;">
-0.601*<br>(0.331)
+0.59*<br>(0.338)
 </td>
 <td style="text-align:center;">
-0.555*<br>(0.327)
+0.537<br>(0.335)
 </td>
 <td style="text-align:center;">
-0.618*<br>(0.331)
+0.59*<br>(0.34)
 </td>
 <td style="text-align:center;">
-0.703**<br>(0.324)
+0.712**<br>(0.34)
 </td>
 <td style="text-align:center;">
-0.56*<br>(0.327)
+0.517<br>(0.332)
 </td>
 <td style="text-align:center;">
-0.628*<br>(0.328)
+0.601*<br>(0.339)
 </td>
 <td style="text-align:center;">
-0.591*<br>(0.33)
+0.538<br>(0.337)
 </td>
 <td style="text-align:center;">
-0.624*<br>(0.318)
+0.623*<br>(0.334)
 </td>
 <td style="text-align:center;">
-0.788**<br>(0.346)
+0.802**<br>(0.367)
 </td>
 <td style="text-align:center;">
-0.603<br>(0.455)
+0.606<br>(0.489)
 </td>
 </tr>
 <tr>
@@ -1377,34 +1482,34 @@ Road speed class: 3
 Road speed class: 4
 </td>
 <td style="text-align:center;">
-0.435<br>(0.29)
+0.454<br>(0.308)
 </td>
 <td style="text-align:center;">
-0.596**<br>(0.29)
+0.515*<br>(0.311)
 </td>
 <td style="text-align:center;">
-0.483*<br>(0.285)
+0.441<br>(0.291)
 </td>
 <td style="text-align:center;">
-0.406<br>(0.315)
+0.449<br>(0.341)
 </td>
 <td style="text-align:center;">
-0.389<br>(0.282)
+0.378<br>(0.31)
 </td>
 <td style="text-align:center;">
-0.408<br>(0.306)
+0.409<br>(0.341)
 </td>
 <td style="text-align:center;">
-0.45<br>(0.275)
+0.388<br>(0.289)
 </td>
 <td style="text-align:center;">
-0.524*<br>(0.311)
+0.497<br>(0.326)
 </td>
 <td style="text-align:center;">
-0.59*<br>(0.347)
+0.582<br>(0.36)
 </td>
 <td style="text-align:center;">
-0.41<br>(0.344)
+0.377<br>(0.388)
 </td>
 </tr>
 <tr>
@@ -1412,34 +1517,34 @@ Road speed class: 4
 Road speed class: 5
 </td>
 <td style="text-align:center;">
-0.398***<br>(0.133)
+0.38***<br>(0.142)
 </td>
 <td style="text-align:center;">
-0.404***<br>(0.136)
+0.392***<br>(0.142)
 </td>
 <td style="text-align:center;">
-0.428***<br>(0.135)
+0.406***<br>(0.148)
 </td>
 <td style="text-align:center;">
-0.426***<br>(0.134)
+0.44***<br>(0.138)
 </td>
 <td style="text-align:center;">
-0.372***<br>(0.129)
+0.34**<br>(0.141)
 </td>
 <td style="text-align:center;">
-0.408***<br>(0.13)
+0.408***<br>(0.137)
 </td>
 <td style="text-align:center;">
-0.409***<br>(0.132)
+0.375**<br>(0.147)
 </td>
 <td style="text-align:center;">
-0.416***<br>(0.14)
+0.415***<br>(0.145)
 </td>
 <td style="text-align:center;">
-0.454***<br>(0.147)
+0.471***<br>(0.145)
 </td>
 <td style="text-align:center;">
-0.268<br>(0.173)
+0.272<br>(0.181)
 </td>
 </tr>
 <tr>
@@ -1447,34 +1552,34 @@ Road speed class: 5
 Road speed class: 6
 </td>
 <td style="text-align:center;">
-0.237*<br>(0.133)
+0.237*<br>(0.143)
 </td>
 <td style="text-align:center;">
-0.5***<br>(0.139)
+0.39***<br>(0.145)
 </td>
 <td style="text-align:center;">
-0.297**<br>(0.134)
+0.27*<br>(0.145)
 </td>
 <td style="text-align:center;">
-0.231*<br>(0.132)
+0.249*<br>(0.14)
 </td>
 <td style="text-align:center;">
-0.201<br>(0.131)
+0.19<br>(0.143)
 </td>
 <td style="text-align:center;">
-0.195<br>(0.131)
+0.2<br>(0.141)
 </td>
 <td style="text-align:center;">
-0.267**<br>(0.133)
+0.232<br>(0.147)
 </td>
 <td style="text-align:center;">
-0.453***<br>(0.141)
+0.379***<br>(0.143)
 </td>
 <td style="text-align:center;">
-0.449***<br>(0.159)
+0.355**<br>(0.166)
 </td>
 <td style="text-align:center;">
-0.435**<br>(0.176)
+0.401**<br>(0.191)
 </td>
 </tr>
 <tr>
@@ -1482,34 +1587,34 @@ Road speed class: 6
 Road speed class: 7
 </td>
 <td style="text-align:center;">
-0.244***<br>(0.0898)
+0.259**<br>(0.102)
 </td>
 <td style="text-align:center;">
-0.352***<br>(0.0953)
+0.396***<br>(0.106)
 </td>
 <td style="text-align:center;">
-0.269***<br>(0.0897)
+0.303***<br>(0.102)
 </td>
 <td style="text-align:center;">
-0.276***<br>(0.093)
+0.303***<br>(0.104)
 </td>
 <td style="text-align:center;">
-0.268***<br>(0.0878)
+0.276***<br>(0.103)
 </td>
 <td style="text-align:center;">
-0.315***<br>(0.0915)
+0.337***<br>(0.105)
 </td>
 <td style="text-align:center;">
-0.295***<br>(0.0882)
+0.321***<br>(0.102)
 </td>
 <td style="text-align:center;">
-0.319***<br>(0.0955)
+0.367***<br>(0.105)
 </td>
 <td style="text-align:center;">
-0.295***<br>(0.104)
+0.33***<br>(0.115)
 </td>
 <td style="text-align:center;">
-0.174<br>(0.114)
+0.268**<br>(0.128)
 </td>
 </tr>
 <tr>
@@ -1517,34 +1622,34 @@ Road speed class: 7
 Terrain slope
 </td>
 <td style="text-align:center;">
-0.00732**<br>(0.00356)
+0.00797**<br>(0.00399)
 </td>
 <td style="text-align:center;">
-0.00914***<br>(0.00323)
+0.0052<br>(0.00389)
 </td>
 <td style="text-align:center;">
-0.0047<br>(0.00319)
+0.00596<br>(0.00374)
 </td>
 <td style="text-align:center;">
-0.0106***<br>(0.00371)
+0.00911**<br>(0.00415)
 </td>
 <td style="text-align:center;">
-0.00813**<br>(0.00346)
+0.00901**<br>(0.0039)
 </td>
 <td style="text-align:center;">
-0.0124***<br>(0.00366)
+0.0106**<br>(0.00413)
 </td>
 <td style="text-align:center;">
-0.00478<br>(0.00311)
+0.00606<br>(0.00373)
 </td>
 <td style="text-align:center;">
-0.00901***<br>(0.00323)
+0.0059<br>(0.00382)
 </td>
 <td style="text-align:center;">
-0.0112***<br>(0.00381)
+0.00865*<br>(0.00448)
 </td>
 <td style="text-align:center;">
-0.000509<br>(0.00462)
+-0.000371<br>(0.00546)
 </td>
 </tr>
 <tr>
@@ -1552,34 +1657,34 @@ Terrain slope
 Elevation
 </td>
 <td style="text-align:center;">
--0.000301<br>(0.000217)
+-0.0000916<br>(0.000298)
 </td>
 <td style="text-align:center;">
-0.0000751<br>(0.000148)
+-0.000096<br>(0.000195)
 </td>
 <td style="text-align:center;">
--0.000269*<br>(0.000144)
+-0.000247<br>(0.000197)
 </td>
 <td style="text-align:center;">
--0.00002<br>(0.000221)
+0.0000319<br>(0.000295)
 </td>
 <td style="text-align:center;">
--0.000357*<br>(0.000216)
+-0.000168<br>(0.000292)
 </td>
 <td style="text-align:center;">
--0.0000373<br>(0.000221)
+-0.0000455<br>(0.000287)
 </td>
 <td style="text-align:center;">
--0.00027*<br>(0.000143)
+-0.000228<br>(0.000194)
 </td>
 <td style="text-align:center;">
-0.0000402<br>(0.000145)
+-0.000123<br>(0.000196)
 </td>
 <td style="text-align:center;">
--0.000253<br>(0.00025)
+-0.000266<br>(0.000351)
 </td>
 <td style="text-align:center;">
--0.0000529<br>(0.00024)
+-0.00012<br>(0.000274)
 </td>
 </tr>
 <tr>
@@ -1587,34 +1692,34 @@ Elevation
 Land cover: Developed
 </td>
 <td style="text-align:center;">
-0.332***<br>(0.0776)
+0.309***<br>(0.0817)
 </td>
 <td style="text-align:center;">
-0.426***<br>(0.0826)
+0.361***<br>(0.0907)
 </td>
 <td style="text-align:center;">
-0.307***<br>(0.076)
+0.256***<br>(0.0809)
 </td>
 <td style="text-align:center;">
-0.369***<br>(0.082)
+0.344***<br>(0.0857)
 </td>
 <td style="text-align:center;">
-0.332***<br>(0.0783)
+0.319***<br>(0.0848)
 </td>
 <td style="text-align:center;">
-0.421***<br>(0.083)
+0.398***<br>(0.091)
 </td>
 <td style="text-align:center;">
-0.303***<br>(0.0771)
+0.264***<br>(0.0844)
 </td>
 <td style="text-align:center;">
-0.361***<br>(0.0813)
+0.299***<br>(0.086)
 </td>
 <td style="text-align:center;">
-0.355***<br>(0.0896)
+0.302***<br>(0.0972)
 </td>
 <td style="text-align:center;">
-0.403***<br>(0.109)
+0.32***<br>(0.111)
 </td>
 </tr>
 <tr>
@@ -1622,34 +1727,34 @@ Land cover: Developed
 Land cover: Herbaceous
 </td>
 <td style="text-align:center;">
--0.0199<br>(0.133)
+-0.0662<br>(0.148)
 </td>
 <td style="text-align:center;">
--0.0502<br>(0.167)
+-0.0976<br>(0.185)
 </td>
 <td style="text-align:center;">
--0.00383<br>(0.139)
+-0.0914<br>(0.156)
 </td>
 <td style="text-align:center;">
--0.045<br>(0.133)
+-0.0382<br>(0.156)
 </td>
 <td style="text-align:center;">
--0.0449<br>(0.139)
+-0.0905<br>(0.151)
 </td>
 <td style="text-align:center;">
--0.0495<br>(0.14)
+-0.0422<br>(0.163)
 </td>
 <td style="text-align:center;">
--0.036<br>(0.144)
+-0.122<br>(0.158)
 </td>
 <td style="text-align:center;">
--0.0524<br>(0.157)
+-0.108<br>(0.177)
 </td>
 <td style="text-align:center;">
--0.0924<br>(0.172)
+-0.167<br>(0.196)
 </td>
 <td style="text-align:center;">
-0.0498<br>(0.219)
+-0.0511<br>(0.227)
 </td>
 </tr>
 <tr>
@@ -1657,34 +1762,34 @@ Land cover: Herbaceous
 Land cover: Planted-cultivated
 </td>
 <td style="text-align:center;">
-0.475***<br>(0.163)
+0.345**<br>(0.162)
 </td>
 <td style="text-align:center;">
-0.438***<br>(0.163)
+0.347**<br>(0.173)
 </td>
 <td style="text-align:center;">
-0.524***<br>(0.158)
+0.356**<br>(0.158)
 </td>
 <td style="text-align:center;">
-0.411**<br>(0.168)
+0.337**<br>(0.166)
 </td>
 <td style="text-align:center;">
-0.43**<br>(0.168)
+0.305*<br>(0.172)
 </td>
 <td style="text-align:center;">
-0.364**<br>(0.168)
+0.307*<br>(0.172)
 </td>
 <td style="text-align:center;">
-0.487***<br>(0.165)
+0.325*<br>(0.169)
 </td>
 <td style="text-align:center;">
-0.466***<br>(0.165)
+0.356**<br>(0.168)
 </td>
 <td style="text-align:center;">
-0.469***<br>(0.167)
+0.367**<br>(0.172)
 </td>
 <td style="text-align:center;">
-0.484**<br>(0.188)
+0.361*<br>(0.192)
 </td>
 </tr>
 <tr>
@@ -1692,34 +1797,34 @@ Land cover: Planted-cultivated
 Land cover: Shrubland
 </td>
 <td style="text-align:center;">
-0.181<br>(0.13)
+0.178<br>(0.142)
 </td>
 <td style="text-align:center;">
-0.184<br>(0.142)
+0.285*<br>(0.149)
 </td>
 <td style="text-align:center;">
-0.152<br>(0.128)
+0.152<br>(0.143)
 </td>
 <td style="text-align:center;">
-0.154<br>(0.139)
+0.219<br>(0.147)
 </td>
 <td style="text-align:center;">
-0.175<br>(0.128)
+0.171<br>(0.14)
 </td>
 <td style="text-align:center;">
-0.149<br>(0.139)
+0.228<br>(0.146)
 </td>
 <td style="text-align:center;">
-0.148<br>(0.126)
+0.148<br>(0.142)
 </td>
 <td style="text-align:center;">
-0.17<br>(0.139)
+0.256*<br>(0.148)
 </td>
 <td style="text-align:center;">
-0.133<br>(0.177)
+0.247<br>(0.187)
 </td>
 <td style="text-align:center;">
-0.121<br>(0.196)
+0.16<br>(0.219)
 </td>
 </tr>
 <tr>
@@ -1727,34 +1832,34 @@ Land cover: Shrubland
 Land cover: Wetlands
 </td>
 <td style="text-align:center;">
-0.0883<br>(0.134)
+0.0652<br>(0.156)
 </td>
 <td style="text-align:center;">
-0.207<br>(0.138)
+0.124<br>(0.162)
 </td>
 <td style="text-align:center;">
-0.108<br>(0.137)
+0.0298<br>(0.165)
 </td>
 <td style="text-align:center;">
-0.0626<br>(0.138)
+0.0683<br>(0.157)
 </td>
 <td style="text-align:center;">
-0.0595<br>(0.128)
+0.0535<br>(0.145)
 </td>
 <td style="text-align:center;">
-0.0843<br>(0.131)
+0.107<br>(0.147)
 </td>
 <td style="text-align:center;">
-0.0818<br>(0.132)
+0.0208<br>(0.158)
 </td>
 <td style="text-align:center;">
-0.131<br>(0.145)
+0.043<br>(0.171)
 </td>
 <td style="text-align:center;">
-0.046<br>(0.157)
+-0.0514<br>(0.182)
 </td>
 <td style="text-align:center;">
-0.205<br>(0.169)
+0.134<br>(0.19)
 </td>
 </tr>
 <tr>
@@ -1762,34 +1867,34 @@ Land cover: Wetlands
 Housing density
 </td>
 <td style="text-align:center;">
-0.000639<br>(0.00179)
+0.000463<br>(0.0019)
 </td>
 <td style="text-align:center;">
-0.00334*<br>(0.00175)
+0.00129<br>(0.00186)
 </td>
 <td style="text-align:center;">
-0.00103<br>(0.00177)
+0.000661<br>(0.00187)
 </td>
 <td style="text-align:center;">
-0.000997<br>(0.00185)
+0.000714<br>(0.002)
 </td>
 <td style="text-align:center;">
-0.000631<br>(0.0017)
+0.000514<br>(0.00181)
 </td>
 <td style="text-align:center;">
-0.00109<br>(0.0018)
+0.000892<br>(0.00197)
 </td>
 <td style="text-align:center;">
-0.000972<br>(0.00166)
+0.00059<br>(0.00177)
 </td>
 <td style="text-align:center;">
-0.00316*<br>(0.00184)
+0.00133<br>(0.00193)
 </td>
 <td style="text-align:center;">
-0.00317*<br>(0.00188)
+0.00106<br>(0.002)
 </td>
 <td style="text-align:center;">
-0.00179<br>(0.00388)
+0.000332<br>(0.00407)
 </td>
 </tr>
 <tr>
@@ -1797,34 +1902,34 @@ Housing density
 Ag/forestry employment
 </td>
 <td style="text-align:center;">
-0.0000475<br>(0.0000738)
+0.000128<br>(0.0000956)
 </td>
 <td style="text-align:center;">
-0.0000939<br>(0.0000705)
+0.0000428<br>(0.0000873)
 </td>
 <td style="text-align:center;">
-0.0000389<br>(0.0000654)
+0.0000429<br>(0.0000851)
 </td>
 <td style="text-align:center;">
-0.000116<br>(0.0000758)
+0.000197**<br>(0.0000962)
 </td>
 <td style="text-align:center;">
-0.0000778<br>(0.000073)
+0.000138<br>(0.0000929)
 </td>
 <td style="text-align:center;">
-0.000147*<br>(0.0000753)
+0.000201**<br>(0.0000951)
 </td>
 <td style="text-align:center;">
-0.0000682<br>(0.0000655)
+0.0000635<br>(0.0000848)
 </td>
 <td style="text-align:center;">
-0.0001<br>(0.0000707)
+0.0000617<br>(0.0000874)
 </td>
 <td style="text-align:center;">
-0.000116<br>(0.0000808)
+0.0000691<br>(0.0001)
 </td>
 <td style="text-align:center;">
-0.000154*<br>(0.0000862)
+0.0000864<br>(0.000119)
 </td>
 </tr>
 <tr>
@@ -1832,34 +1937,34 @@ Ag/forestry employment
 Construction employment
 </td>
 <td style="text-align:center;">
-0.00000408<br>(0.0000073)
+-0.00000881<br>(0.0000088)
 </td>
 <td style="text-align:center;">
-0.0000153**<br>(0.0000069)
+0.00000667<br>(0.00000913)
 </td>
 <td style="text-align:center;">
-0.000011*<br>(0.00000651)
+0.00000492<br>(0.00000769)
 </td>
 <td style="text-align:center;">
--0.0000024<br>(0.0000079)
+-0.0000184*<br>(0.0000101)
 </td>
 <td style="text-align:center;">
-0.00000495<br>(0.00000733)
+-0.00000466<br>(0.00000792)
 </td>
 <td style="text-align:center;">
--0.00000243<br>(0.00000746)
+-0.000014<br>(0.00000908)
 </td>
 <td style="text-align:center;">
-0.0000121*<br>(0.00000689)
+0.00000754<br>(0.00000792)
 </td>
 <td style="text-align:center;">
-0.0000127*<br>(0.00000716)
+0.00000276<br>(0.00000855)
 </td>
 <td style="text-align:center;">
-0.0000141*<br>(0.00000748)
+0.00000189<br>(0.00000914)
 </td>
 <td style="text-align:center;">
-0.0000116<br>(0.00000956)
+0.00000532<br>(0.0000141)
 </td>
 </tr>
 <tr>
@@ -1867,34 +1972,279 @@ Construction employment
 Distance to urban area
 </td>
 <td style="text-align:center;">
-0.00000173<br>(0.00000143)
+-0.00000062<br>(0.00000203)
 </td>
 <td style="text-align:center;">
-0.00000226**<br>(0.00000109)
+0.00000146<br>(0.00000182)
 </td>
 <td style="text-align:center;">
-0.0000019*<br>(0.00000103)
+0.000000322<br>(0.00000166)
 </td>
 <td style="text-align:center;">
--0.00000114<br>(0.00000142)
+-0.00000201<br>(0.00000207)
 </td>
 <td style="text-align:center;">
-0.00000137<br>(0.0000014)
+-0.00000114<br>(0.000002)
 </td>
 <td style="text-align:center;">
--0.0000012<br>(0.00000141)
+-0.00000209<br>(0.00000211)
 </td>
 <td style="text-align:center;">
-0.00000173*<br>(0.00000101)
+0.0000000525<br>(0.00000165)
 </td>
 <td style="text-align:center;">
-0.00000177<br>(0.0000011)
+0.00000119<br>(0.00000172)
 </td>
 <td style="text-align:center;">
-0.00000154<br>(0.00000153)
+0.00000191<br>(0.00000235)
 </td>
 <td style="text-align:center;">
--0.000000495<br>(0.00000163)
+-0.000000632<br>(0.00000231)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Density (employee-weighted) of construction equipment suppliers
+</td>
+<td style="text-align:center;">
+-12.1**<br>(5.68)
+</td>
+<td style="text-align:center;">
+9.2<br>(5.67)
+</td>
+<td style="text-align:center;">
+-4.62<br>(5.39)
+</td>
+<td style="text-align:center;">
+-6.17<br>(5.71)
+</td>
+<td style="text-align:center;">
+-11.9**<br>(5.48)
+</td>
+<td style="text-align:center;">
+-4.69<br>(5.55)
+</td>
+<td style="text-align:center;">
+-4.32<br>(5.2)
+</td>
+<td style="text-align:center;">
+6.75<br>(5.49)
+</td>
+<td style="text-align:center;">
+11.3*<br>(6.71)
+</td>
+<td style="text-align:center;">
+7.18<br>(7.5)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Density (employee-weighted) of brick, concrete, and related materials suppliers
+</td>
+<td style="text-align:center;">
+-88.5***<br>(29.4)
+</td>
+<td style="text-align:center;">
+54.6*<br>(28.9)
+</td>
+<td style="text-align:center;">
+-36.8<br>(25.9)
+</td>
+<td style="text-align:center;">
+-57.6*<br>(30.4)
+</td>
+<td style="text-align:center;">
+-87.3***<br>(28.9)
+</td>
+<td style="text-align:center;">
+-45.3<br>(30.1)
+</td>
+<td style="text-align:center;">
+-38.5<br>(25.5)
+</td>
+<td style="text-align:center;">
+40.6<br>(27.1)
+</td>
+<td style="text-align:center;">
+62.1*<br>(32.6)
+</td>
+<td style="text-align:center;">
+50.2<br>(40.7)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Density (employee-weighted) of metal materials suppliers
+</td>
+<td style="text-align:center;">
+96.9***<br>(34.2)
+</td>
+<td style="text-align:center;">
+-59.5*<br>(34.3)
+</td>
+<td style="text-align:center;">
+43.7<br>(31.1)
+</td>
+<td style="text-align:center;">
+58.7*<br>(35.2)
+</td>
+<td style="text-align:center;">
+94.4***<br>(33.4)
+</td>
+<td style="text-align:center;">
+43.6<br>(34.8)
+</td>
+<td style="text-align:center;">
+44<br>(30.3)
+</td>
+<td style="text-align:center;">
+-41.5<br>(32.5)
+</td>
+<td style="text-align:center;">
+-67*<br>(39.4)
+</td>
+<td style="text-align:center;">
+-55.5<br>(47.6)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Density of sand and gravel sales yards
+</td>
+<td style="text-align:center;">
+-3330*<br>(1940)
+</td>
+<td style="text-align:center;">
+-566<br>(1810)
+</td>
+<td style="text-align:center;">
+-2270<br>(1730)
+</td>
+<td style="text-align:center;">
+-2380<br>(2070)
+</td>
+<td style="text-align:center;">
+-3280*<br>(1920)
+</td>
+<td style="text-align:center;">
+-1910<br>(2060)
+</td>
+<td style="text-align:center;">
+-2460<br>(1720)
+</td>
+<td style="text-align:center;">
+-649<br>(1840)
+</td>
+<td style="text-align:center;">
+-788<br>(2200)
+</td>
+<td style="text-align:center;">
+1400<br>(2800)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Private land, individual or company (% 500m buffer)
+</td>
+<td style="text-align:center;">
+-0.0202<br>(0.119)
+</td>
+<td style="text-align:center;">
+-0.269**<br>(0.119)
+</td>
+<td style="text-align:center;">
+0.0314<br>(0.118)
+</td>
+<td style="text-align:center;">
+-0.357***<br>(0.114)
+</td>
+<td style="text-align:center;">
+0.0191<br>(0.12)
+</td>
+<td style="text-align:center;">
+-0.373***<br>(0.115)
+</td>
+<td style="text-align:center;">
+0.0707<br>(0.12)
+</td>
+<td style="text-align:center;">
+-0.245**<br>(0.116)
+</td>
+<td style="text-align:center;">
+-0.197<br>(0.124)
+</td>
+<td style="text-align:center;">
+-0.0327<br>(0.185)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Private land, managed by industry (% 500m buffer)
+</td>
+<td style="text-align:center;">
+-0.486***<br>(0.157)
+</td>
+<td style="text-align:center;">
+-0.931***<br>(0.151)
+</td>
+<td style="text-align:center;">
+-0.477***<br>(0.15)
+</td>
+<td style="text-align:center;">
+-0.739***<br>(0.158)
+</td>
+<td style="text-align:center;">
+-0.436***<br>(0.159)
+</td>
+<td style="text-align:center;">
+-0.737***<br>(0.162)
+</td>
+<td style="text-align:center;">
+-0.428***<br>(0.151)
+</td>
+<td style="text-align:center;">
+-0.923***<br>(0.146)
+</td>
+<td style="text-align:center;">
+-0.88***<br>(0.155)
+</td>
+<td style="text-align:center;">
+-0.616***<br>(0.182)
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Private land, managed by non-industrial owner (% 500m buffer)
+</td>
+<td style="text-align:center;">
+0.658**<br>(0.323)
+</td>
+<td style="text-align:center;">
+-0.22<br>(0.309)
+</td>
+<td style="text-align:center;">
+0.561*<br>(0.321)
+</td>
+<td style="text-align:center;">
+0.394<br>(0.324)
+</td>
+<td style="text-align:center;">
+0.531*<br>(0.315)
+</td>
+<td style="text-align:center;">
+0.18<br>(0.316)
+</td>
+<td style="text-align:center;">
+0.439<br>(0.313)
+</td>
+<td style="text-align:center;">
+0.0398<br>(0.322)
+</td>
+<td style="text-align:center;">
+0.0586<br>(0.337)
+</td>
+<td style="text-align:center;">
+0.236<br>(0.402)
 </td>
 </tr>
 <tr>
@@ -1902,34 +2252,34 @@ Distance to urban area
 Number of worksites
 </td>
 <td style="text-align:center;">
--0.435***<br>(0.0619)
+-0.426***<br>(0.112)
 </td>
 <td style="text-align:center;">
--0.573***<br>(0.0661)
+-0.527***<br>(0.122)
 </td>
 <td style="text-align:center;">
--0.505***<br>(0.061)
+-0.484***<br>(0.121)
 </td>
 <td style="text-align:center;">
--0.421***<br>(0.061)
+-0.426***<br>(0.11)
 </td>
 <td style="text-align:center;">
--0.454***<br>(0.0636)
+-0.448***<br>(0.116)
 </td>
 <td style="text-align:center;">
--0.436***<br>(0.0632)
+-0.447***<br>(0.114)
 </td>
 <td style="text-align:center;">
--0.535***<br>(0.0626)
+-0.515***<br>(0.123)
 </td>
 <td style="text-align:center;">
--0.542***<br>(0.0635)
+-0.493***<br>(0.12)
 </td>
 <td style="text-align:center;">
--0.544***<br>(0.0689)
+-0.467***<br>(0.124)
 </td>
 <td style="text-align:center;">
--0.599***<br>(0.0742)
+-0.52***<br>(0.145)
 </td>
 </tr>
 <tr>
@@ -1937,34 +2287,34 @@ Number of worksites
 Distance between worksites
 </td>
 <td style="text-align:center;">
--0.0000252<br>(0.0000709)
+-0.0000314<br>(0.000123)
 </td>
 <td style="text-align:center;">
--0.000071<br>(0.0000733)
+-0.0000484<br>(0.000127)
 </td>
 <td style="text-align:center;">
--0.0000452<br>(0.0000718)
+-0.0000344<br>(0.00014)
 </td>
 <td style="text-align:center;">
--0.0000263<br>(0.0000743)
+-0.0000345<br>(0.000124)
 </td>
 <td style="text-align:center;">
--0.0000253<br>(0.000061)
+-0.0000369<br>(0.000106)
 </td>
 <td style="text-align:center;">
--0.0000381<br>(0.000064)
+-0.0000482<br>(0.000107)
 </td>
 <td style="text-align:center;">
--0.0000462<br>(0.0000625)
+-0.0000413<br>(0.000125)
 </td>
 <td style="text-align:center;">
--0.000047<br>(0.000083)
+-0.0000271<br>(0.000145)
 </td>
 <td style="text-align:center;">
--0.0000347<br>(0.0000857)
+-0.00000757<br>(0.000138)
 </td>
 <td style="text-align:center;">
--0.0000836<br>(0.0000811)
+-0.0000565<br>(0.000151)
 </td>
 </tr>
 <tr>
@@ -1972,34 +2322,34 @@ Distance between worksites
 Number of worksites X distance
 </td>
 <td style="text-align:center;">
-0.0000476***<br>(0.0000148)
+0.0000487*<br>(0.000029)
 </td>
 <td style="text-align:center;">
-0.0000734***<br>(0.000015)
+0.0000623*<br>(0.0000326)
 </td>
 <td style="text-align:center;">
-0.0000598***<br>(0.0000154)
+0.0000581*<br>(0.0000351)
 </td>
 <td style="text-align:center;">
-0.0000469***<br>(0.0000149)
+0.0000492*<br>(0.0000282)
 </td>
 <td style="text-align:center;">
-0.0000499***<br>(0.0000137)
+0.0000519*<br>(0.0000272)
 </td>
 <td style="text-align:center;">
-0.0000498***<br>(0.0000139)
+0.0000528**<br>(0.0000264)
 </td>
 <td style="text-align:center;">
-0.0000637***<br>(0.0000146)
+0.0000626*<br>(0.0000345)
 </td>
 <td style="text-align:center;">
-0.0000666***<br>(0.0000162)
+0.0000568*<br>(0.0000339)
 </td>
 <td style="text-align:center;">
-0.0000597***<br>(0.0000189)
+0.0000433<br>(0.0000347)
 </td>
 <td style="text-align:center;">
-0.0000766***<br>(0.0000176)
+0.0000636*<br>(0.0000385)
 </td>
 </tr>
 <tr>
@@ -2007,34 +2357,34 @@ Number of worksites X distance
 Culvert installation (dummy)
 </td>
 <td style="text-align:center;">
-0.174<br>(0.12)
+0.21<br>(0.149)
 </td>
 <td style="text-align:center;">
-0.89***<br>(0.112)
+0.746***<br>(0.14)
 </td>
 <td style="text-align:center;">
-0.175<br>(0.119)
+0.174<br>(0.15)
 </td>
 <td style="text-align:center;">
-0.508***<br>(0.115)
+0.5***<br>(0.145)
 </td>
 <td style="text-align:center;">
-0.371***<br>(0.114)
+0.42***<br>(0.144)
 </td>
 <td style="text-align:center;">
-0.684***<br>(0.109)
+0.695***<br>(0.139)
 </td>
 <td style="text-align:center;">
-0.406***<br>(0.111)
+0.411***<br>(0.143)
 </td>
 <td style="text-align:center;">
-0.682***<br>(0.125)
+0.539***<br>(0.149)
 </td>
 <td style="text-align:center;">
-0.711***<br>(0.159)
+0.508***<br>(0.19)
 </td>
 <td style="text-align:center;">
-0.239<br>(0.478)
+0.186<br>(0.657)
 </td>
 </tr>
 <tr>
@@ -2042,34 +2392,34 @@ Culvert installation (dummy)
 Culvert removal (dummy)
 </td>
 <td style="text-align:center;">
-0.0106<br>(0.0935)
+0.0356<br>(0.117)
 </td>
 <td style="text-align:center;">
--0.221**<br>(0.0893)
+-0.0403<br>(0.116)
 </td>
 <td style="text-align:center;">
-0.000751<br>(0.0947)
+0.0493<br>(0.121)
 </td>
 <td style="text-align:center;">
--0.126<br>(0.0908)
+-0.0703<br>(0.113)
 </td>
 <td style="text-align:center;">
-0.0979<br>(0.0906)
+0.132<br>(0.114)
 </td>
 <td style="text-align:center;">
--0.0677<br>(0.0888)
+0.00382<br>(0.112)
 </td>
 <td style="text-align:center;">
-0.104<br>(0.0917)
+0.158<br>(0.118)
 </td>
 <td style="text-align:center;">
--0.274***<br>(0.0907)
+-0.119<br>(0.117)
 </td>
 <td style="text-align:center;">
--0.367***<br>(0.0971)
+-0.205<br>(0.125)
 </td>
 <td style="text-align:center;">
-0.0422<br>(0.104)
+0.122<br>(0.141)
 </td>
 </tr>
 <tr>
@@ -2077,25 +2427,25 @@ Culvert removal (dummy)
 Project source: BLM
 </td>
 <td style="text-align:center;">
-0.912***<br>(0.122)
+0.905***<br>(0.144)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.947***<br>(0.114)
+0.919***<br>(0.134)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.948***<br>(0.123)
+0.969***<br>(0.151)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.974***<br>(0.115)
+0.971***<br>(0.14)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2112,25 +2462,25 @@ Project source: BLM
 Project source: HABITAT WORK SCHEDULE
 </td>
 <td style="text-align:center;">
-1.19***<br>(0.277)
+1.18***<br>(0.322)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-1.57***<br>(0.198)
+1.61***<br>(0.258)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-1.05***<br>(0.254)
+1.11***<br>(0.308)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-1.54***<br>(0.179)
+1.62***<br>(0.255)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2147,25 +2497,25 @@ Project source: HABITAT WORK SCHEDULE
 Project source: REO
 </td>
 <td style="text-align:center;">
-0.954***<br>(0.0998)
+0.921***<br>(0.116)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.995***<br>(0.0913)
+0.953***<br>(0.11)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.967***<br>(0.0965)
+0.967***<br>(0.113)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-1.01***<br>(0.0896)
+0.996***<br>(0.107)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2182,25 +2532,25 @@ Project source: REO
 Project source: SRFBD
 </td>
 <td style="text-align:center;">
-1.07***<br>(0.225)
+1.01***<br>(0.24)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-1.32***<br>(0.199)
+1.3***<br>(0.225)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.884***<br>(0.217)
+0.827***<br>(0.218)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-1.19***<br>(0.191)
+1.18***<br>(0.199)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2217,25 +2567,25 @@ Project source: SRFBD
 Project source: WA RCO
 </td>
 <td style="text-align:center;">
-0.505**<br>(0.207)
+0.392*<br>(0.232)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.892***<br>(0.14)
+0.869***<br>(0.171)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.379**<br>(0.187)
+0.3<br>(0.202)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.864***<br>(0.124)
+0.858***<br>(0.146)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2252,19 +2602,16 @@ Project source: WA RCO
 Year: 2002
 </td>
 <td style="text-align:center;">
-0.247**<br>(0.122)
+0.191<br>(0.151)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.265**<br>(0.121)
+0.235<br>(0.149)
 </td>
 <td style="text-align:center;">
-0.447***<br>(0.124)
-</td>
-<td style="text-align:center;">
-‒
+0.378**<br>(0.151)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2273,13 +2620,16 @@ Year: 2002
 ‒
 </td>
 <td style="text-align:center;">
-0.499***<br>(0.122)
+‒
 </td>
 <td style="text-align:center;">
-0.556***<br>(0.126)
+0.429***<br>(0.15)
 </td>
 <td style="text-align:center;">
-0.398***<br>(0.143)
+0.479***<br>(0.154)
+</td>
+<td style="text-align:center;">
+0.363**<br>(0.18)
 </td>
 </tr>
 <tr>
@@ -2287,19 +2637,16 @@ Year: 2002
 Year: 2003
 </td>
 <td style="text-align:center;">
-0.206<br>(0.132)
+0.233<br>(0.157)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.227*<br>(0.134)
+0.271*<br>(0.159)
 </td>
 <td style="text-align:center;">
-0.493***<br>(0.132)
-</td>
-<td style="text-align:center;">
-‒
+0.486***<br>(0.156)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2308,13 +2655,16 @@ Year: 2003
 ‒
 </td>
 <td style="text-align:center;">
-0.597***<br>(0.134)
+‒
 </td>
 <td style="text-align:center;">
-0.624***<br>(0.137)
+0.557***<br>(0.158)
 </td>
 <td style="text-align:center;">
-0.468***<br>(0.166)
+0.58***<br>(0.162)
+</td>
+<td style="text-align:center;">
+0.473**<br>(0.197)
 </td>
 </tr>
 <tr>
@@ -2322,19 +2672,16 @@ Year: 2003
 Year: 2004
 </td>
 <td style="text-align:center;">
-0.604***<br>(0.116)
+0.643***<br>(0.144)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.665***<br>(0.117)
+0.704***<br>(0.147)
 </td>
 <td style="text-align:center;">
-0.758***<br>(0.119)
-</td>
-<td style="text-align:center;">
-‒
+0.798***<br>(0.146)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2343,13 +2690,16 @@ Year: 2004
 ‒
 </td>
 <td style="text-align:center;">
-0.891***<br>(0.125)
+‒
 </td>
 <td style="text-align:center;">
-0.881***<br>(0.135)
+0.887***<br>(0.151)
 </td>
 <td style="text-align:center;">
-0.576***<br>(0.14)
+0.889***<br>(0.164)
+</td>
+<td style="text-align:center;">
+0.628***<br>(0.183)
 </td>
 </tr>
 <tr>
@@ -2357,19 +2707,16 @@ Year: 2004
 Year: 2005
 </td>
 <td style="text-align:center;">
-0.304**<br>(0.122)
+0.298*<br>(0.161)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.326***<br>(0.124)
+0.326**<br>(0.165)
 </td>
 <td style="text-align:center;">
-0.462***<br>(0.129)
-</td>
-<td style="text-align:center;">
-‒
+0.441***<br>(0.164)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2378,13 +2725,16 @@ Year: 2005
 ‒
 </td>
 <td style="text-align:center;">
-0.573***<br>(0.133)
+‒
 </td>
 <td style="text-align:center;">
-0.608***<br>(0.137)
+0.517***<br>(0.17)
 </td>
 <td style="text-align:center;">
-0.289*<br>(0.148)
+0.542***<br>(0.172)
+</td>
+<td style="text-align:center;">
+0.27<br>(0.203)
 </td>
 </tr>
 <tr>
@@ -2392,19 +2742,16 @@ Year: 2005
 Year: 2006
 </td>
 <td style="text-align:center;">
-0.357**<br>(0.143)
+0.384**<br>(0.183)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.377***<br>(0.146)
+0.397**<br>(0.192)
 </td>
 <td style="text-align:center;">
-0.485***<br>(0.146)
-</td>
-<td style="text-align:center;">
-‒
+0.523***<br>(0.18)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2413,13 +2760,16 @@ Year: 2006
 ‒
 </td>
 <td style="text-align:center;">
-0.594***<br>(0.147)
+‒
 </td>
 <td style="text-align:center;">
-0.645***<br>(0.153)
+0.569***<br>(0.187)
 </td>
 <td style="text-align:center;">
-0.414**<br>(0.17)
+0.6***<br>(0.193)
+</td>
+<td style="text-align:center;">
+0.407*<br>(0.236)
 </td>
 </tr>
 <tr>
@@ -2427,19 +2777,16 @@ Year: 2006
 Year: 2007
 </td>
 <td style="text-align:center;">
-0.487***<br>(0.143)
+0.53***<br>(0.17)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.525***<br>(0.141)
+0.592***<br>(0.169)
 </td>
 <td style="text-align:center;">
-0.694***<br>(0.146)
-</td>
-<td style="text-align:center;">
-‒
+0.726***<br>(0.169)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2448,13 +2795,16 @@ Year: 2007
 ‒
 </td>
 <td style="text-align:center;">
-0.842***<br>(0.147)
+‒
 </td>
 <td style="text-align:center;">
-0.667***<br>(0.157)
+0.88***<br>(0.171)
 </td>
 <td style="text-align:center;">
-0.651***<br>(0.177)
+0.685***<br>(0.18)
+</td>
+<td style="text-align:center;">
+0.694***<br>(0.209)
 </td>
 </tr>
 <tr>
@@ -2462,19 +2812,16 @@ Year: 2007
 Year: 2008
 </td>
 <td style="text-align:center;">
--0.061<br>(0.258)
+0.00304<br>(0.293)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
--0.109<br>(0.261)
+-0.0467<br>(0.29)
 </td>
 <td style="text-align:center;">
-0.461*<br>(0.25)
-</td>
-<td style="text-align:center;">
-‒
+0.48*<br>(0.283)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2483,13 +2830,16 @@ Year: 2008
 ‒
 </td>
 <td style="text-align:center;">
-0.642**<br>(0.261)
+‒
 </td>
 <td style="text-align:center;">
-0.666**<br>(0.307)
+0.587**<br>(0.284)
 </td>
 <td style="text-align:center;">
-0.709**<br>(0.357)
+0.596*<br>(0.333)
+</td>
+<td style="text-align:center;">
+0.615*<br>(0.368)
 </td>
 </tr>
 <tr>
@@ -2497,19 +2847,16 @@ Year: 2008
 Year: 2009
 </td>
 <td style="text-align:center;">
-0.419*<br>(0.221)
+0.519*<br>(0.286)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.362*<br>(0.209)
+0.462<br>(0.281)
 </td>
 <td style="text-align:center;">
-0.985***<br>(0.234)
-</td>
-<td style="text-align:center;">
-‒
+1.01***<br>(0.301)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2518,13 +2865,16 @@ Year: 2009
 ‒
 </td>
 <td style="text-align:center;">
-1.1***<br>(0.21)
+‒
 </td>
 <td style="text-align:center;">
-1.11***<br>(0.246)
+1.02***<br>(0.277)
 </td>
 <td style="text-align:center;">
-0.541<br>(0.44)
+0.993***<br>(0.327)
+</td>
+<td style="text-align:center;">
+0.512<br>(0.448)
 </td>
 </tr>
 <tr>
@@ -2532,19 +2882,16 @@ Year: 2009
 Year: 2010
 </td>
 <td style="text-align:center;">
-0.154<br>(0.231)
+0.187<br>(0.249)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.131<br>(0.228)
+0.174<br>(0.243)
 </td>
 <td style="text-align:center;">
-0.531**<br>(0.24)
-</td>
-<td style="text-align:center;">
-‒
+0.495*<br>(0.254)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2553,13 +2900,16 @@ Year: 2010
 ‒
 </td>
 <td style="text-align:center;">
-0.826***<br>(0.225)
+‒
 </td>
 <td style="text-align:center;">
-0.839**<br>(0.335)
+0.723***<br>(0.235)
 </td>
 <td style="text-align:center;">
-0.617*<br>(0.334)
+0.63*<br>(0.35)
+</td>
+<td style="text-align:center;">
+0.457<br>(0.365)
 </td>
 </tr>
 <tr>
@@ -2567,19 +2917,16 @@ Year: 2010
 Year: 2011
 </td>
 <td style="text-align:center;">
-0.0917<br>(0.21)
+0.177<br>(0.272)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.0902<br>(0.208)
+0.178<br>(0.285)
 </td>
 <td style="text-align:center;">
-0.589***<br>(0.213)
-</td>
-<td style="text-align:center;">
-‒
+0.614**<br>(0.292)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2588,13 +2935,16 @@ Year: 2011
 ‒
 </td>
 <td style="text-align:center;">
-0.934***<br>(0.215)
+‒
 </td>
 <td style="text-align:center;">
-1***<br>(0.246)
+0.824***<br>(0.29)
 </td>
 <td style="text-align:center;">
-0.432<br>(0.303)
+0.87**<br>(0.361)
+</td>
+<td style="text-align:center;">
+0.358<br>(0.31)
 </td>
 </tr>
 <tr>
@@ -2602,19 +2952,16 @@ Year: 2011
 Year: 2012
 </td>
 <td style="text-align:center;">
--0.0353<br>(0.27)
+-0.101<br>(0.421)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
--0.00697<br>(0.254)
+-0.0491<br>(0.421)
 </td>
 <td style="text-align:center;">
-0.34<br>(0.278)
-</td>
-<td style="text-align:center;">
-‒
+0.176<br>(0.459)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2623,13 +2970,16 @@ Year: 2012
 ‒
 </td>
 <td style="text-align:center;">
-0.638**<br>(0.26)
+‒
 </td>
 <td style="text-align:center;">
-0.665**<br>(0.291)
+0.389<br>(0.464)
 </td>
 <td style="text-align:center;">
-0.734*<br>(0.394)
+0.384<br>(0.54)
+</td>
+<td style="text-align:center;">
+0.58<br>(0.502)
 </td>
 </tr>
 <tr>
@@ -2637,19 +2987,16 @@ Year: 2012
 Year: 2013
 </td>
 <td style="text-align:center;">
-0.114<br>(0.264)
+0.003<br>(0.291)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.114<br>(0.262)
+0.0585<br>(0.297)
 </td>
 <td style="text-align:center;">
-0.205<br>(0.272)
-</td>
-<td style="text-align:center;">
-‒
+0.116<br>(0.296)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2658,13 +3005,16 @@ Year: 2013
 ‒
 </td>
 <td style="text-align:center;">
-0.227<br>(0.282)
+‒
 </td>
 <td style="text-align:center;">
-0.298<br>(0.287)
+0.154<br>(0.31)
 </td>
 <td style="text-align:center;">
--0.109<br>(0.298)
+0.218<br>(0.317)
+</td>
+<td style="text-align:center;">
+-0.128<br>(0.358)
 </td>
 </tr>
 <tr>
@@ -2672,19 +3022,16 @@ Year: 2013
 Year: 2014
 </td>
 <td style="text-align:center;">
-0.173<br>(0.263)
+0.152<br>(0.293)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.178<br>(0.241)
+0.216<br>(0.278)
 </td>
 <td style="text-align:center;">
-0.231<br>(0.26)
-</td>
-<td style="text-align:center;">
-‒
+0.214<br>(0.291)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2693,13 +3040,16 @@ Year: 2014
 ‒
 </td>
 <td style="text-align:center;">
-0.224<br>(0.244)
+‒
 </td>
 <td style="text-align:center;">
-0.424*<br>(0.241)
+0.278<br>(0.28)
 </td>
 <td style="text-align:center;">
-0.14<br>(0.274)
+0.399<br>(0.307)
+</td>
+<td style="text-align:center;">
+0.204<br>(0.324)
 </td>
 </tr>
 <tr>
@@ -2707,19 +3057,16 @@ Year: 2014
 Year: 2015
 </td>
 <td style="text-align:center;">
-0.851***<br>(0.307)
+0.825**<br>(0.32)
 </td>
 <td style="text-align:center;">
 ‒
 </td>
 <td style="text-align:center;">
-0.866**<br>(0.346)
+0.887**<br>(0.359)
 </td>
 <td style="text-align:center;">
-1.58***<br>(0.288)
-</td>
-<td style="text-align:center;">
-‒
+1.44***<br>(0.315)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2728,10 +3075,13 @@ Year: 2015
 ‒
 </td>
 <td style="text-align:center;">
-1.81***<br>(0.378)
+‒
 </td>
 <td style="text-align:center;">
-1.81***<br>(0.392)
+1.6***<br>(0.379)
+</td>
+<td style="text-align:center;">
+1.62***<br>(0.39)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2742,7 +3092,7 @@ Year: 2015
 Basin: JOHN DAY
 </td>
 <td style="text-align:center;">
-0.0848<br>(0.332)
+-0.0324<br>(0.417)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2751,13 +3101,13 @@ Basin: JOHN DAY
 ‒
 </td>
 <td style="text-align:center;">
-0.27<br>(0.332)
+0.0886<br>(0.41)
 </td>
 <td style="text-align:center;">
-0.226<br>(0.333)
+0.173<br>(0.413)
 </td>
 <td style="text-align:center;">
-0.461<br>(0.331)
+0.34<br>(0.401)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2777,7 +3127,7 @@ Basin: JOHN DAY
 Basin: LOWER COLUMBIA
 </td>
 <td style="text-align:center;">
-0.409**<br>(0.187)
+0.55**<br>(0.231)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2786,13 +3136,13 @@ Basin: LOWER COLUMBIA
 ‒
 </td>
 <td style="text-align:center;">
-0.154<br>(0.187)
+0.338<br>(0.226)
 </td>
 <td style="text-align:center;">
-0.507***<br>(0.184)
+0.646***<br>(0.233)
 </td>
 <td style="text-align:center;">
-0.269<br>(0.184)
+0.459**<br>(0.225)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2812,7 +3162,7 @@ Basin: LOWER COLUMBIA
 Basin: MIDDLE COLUMBIA
 </td>
 <td style="text-align:center;">
-0.346<br>(0.277)
+0.307<br>(0.295)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2821,13 +3171,13 @@ Basin: MIDDLE COLUMBIA
 ‒
 </td>
 <td style="text-align:center;">
-0.311<br>(0.248)
+0.222<br>(0.256)
 </td>
 <td style="text-align:center;">
-0.46*<br>(0.276)
+0.449<br>(0.29)
 </td>
 <td style="text-align:center;">
-0.437*<br>(0.255)
+0.375<br>(0.263)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2847,7 +3197,7 @@ Basin: MIDDLE COLUMBIA
 Basin: NORTHERN OREGON COASTAL
 </td>
 <td style="text-align:center;">
--0.295**<br>(0.124)
+-0.151<br>(0.172)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2856,13 +3206,13 @@ Basin: NORTHERN OREGON COASTAL
 ‒
 </td>
 <td style="text-align:center;">
--0.571***<br>(0.123)
+-0.411**<br>(0.169)
 </td>
 <td style="text-align:center;">
--0.31**<br>(0.124)
+-0.17<br>(0.177)
 </td>
 <td style="text-align:center;">
--0.559***<br>(0.125)
+-0.412**<br>(0.178)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2882,7 +3232,7 @@ Basin: NORTHERN OREGON COASTAL
 Basin: PUGET SOUND
 </td>
 <td style="text-align:center;">
-0.569**<br>(0.243)
+1.19***<br>(0.342)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2891,13 +3241,13 @@ Basin: PUGET SOUND
 ‒
 </td>
 <td style="text-align:center;">
-0.834***<br>(0.207)
+1.37***<br>(0.332)
 </td>
 <td style="text-align:center;">
-0.684***<br>(0.236)
+1.26***<br>(0.313)
 </td>
 <td style="text-align:center;">
-0.96***<br>(0.195)
+1.4***<br>(0.319)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2917,7 +3267,7 @@ Basin: PUGET SOUND
 Basin: UPPER COLUMBIA
 </td>
 <td style="text-align:center;">
-0.181<br>(0.276)
+0.072<br>(0.304)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2926,13 +3276,13 @@ Basin: UPPER COLUMBIA
 ‒
 </td>
 <td style="text-align:center;">
-0.336<br>(0.256)
+0.213<br>(0.282)
 </td>
 <td style="text-align:center;">
-0.351<br>(0.271)
+0.269<br>(0.299)
 </td>
 <td style="text-align:center;">
-0.479*<br>(0.249)
+0.4<br>(0.276)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2952,7 +3302,7 @@ Basin: UPPER COLUMBIA
 Basin: WASHINGTON COASTAL
 </td>
 <td style="text-align:center;">
-0.405*<br>(0.221)
+0.622**<br>(0.242)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2961,13 +3311,13 @@ Basin: WASHINGTON COASTAL
 ‒
 </td>
 <td style="text-align:center;">
-0.517***<br>(0.184)
+0.632***<br>(0.202)
 </td>
 <td style="text-align:center;">
-0.54**<br>(0.217)
+0.745***<br>(0.235)
 </td>
 <td style="text-align:center;">
-0.704***<br>(0.171)
+0.773***<br>(0.186)
 </td>
 <td style="text-align:center;">
 ‒
@@ -2987,7 +3337,7 @@ Basin: WASHINGTON COASTAL
 Basin: WILLAMETTE
 </td>
 <td style="text-align:center;border-bottom: 1px solid">
-0.0902<br>(0.132)
+0.112<br>(0.183)
 </td>
 <td style="text-align:center;border-bottom: 1px solid">
 ‒
@@ -2996,13 +3346,13 @@ Basin: WILLAMETTE
 ‒
 </td>
 <td style="text-align:center;border-bottom: 1px solid">
--0.269**<br>(0.123)
+-0.19<br>(0.173)
 </td>
 <td style="text-align:center;border-bottom: 1px solid">
-0.106<br>(0.131)
+0.147<br>(0.182)
 </td>
 <td style="text-align:center;border-bottom: 1px solid">
--0.236*<br>(0.123)
+-0.128<br>(0.177)
 </td>
 <td style="text-align:center;border-bottom: 1px solid">
 ‒
@@ -3022,13 +3372,19 @@ Basin: WILLAMETTE
 Adj. R2
 </td>
 <td style="text-align:center;">
-0.388
+0.409
 </td>
 <td style="text-align:center;">
-0.24
+0.286
 </td>
 <td style="text-align:center;">
-0.377
+0.396
+</td>
+<td style="text-align:center;">
+0.357
+</td>
+<td style="text-align:center;">
+0.391
 </td>
 <td style="text-align:center;">
 0.328
@@ -3037,19 +3393,13 @@ Adj. R2
 0.374
 </td>
 <td style="text-align:center;">
-0.303
+0.324
 </td>
 <td style="text-align:center;">
-0.358
+0.34
 </td>
 <td style="text-align:center;">
-0.279
-</td>
-<td style="text-align:center;">
-0.294
-</td>
-<td style="text-align:center;">
-0.243
+0.274
 </td>
 </tr>
 <tr>
@@ -3057,34 +3407,34 @@ Adj. R2
 AIC
 </td>
 <td style="text-align:center;">
-3514.5
+3477.7
 </td>
 <td style="text-align:center;">
-3757.2
+3686.2
+</td>
+<td style="text-align:center;">
+3498.2
+</td>
+<td style="text-align:center;">
+3577.7
+</td>
+<td style="text-align:center;">
+3502
+</td>
+<td style="text-align:center;">
+3619.2
 </td>
 <td style="text-align:center;">
 3529.1
 </td>
 <td style="text-align:center;">
-3626.5
+3632.2
 </td>
 <td style="text-align:center;">
-3529.5
+3218.5
 </td>
 <td style="text-align:center;">
-3657.2
-</td>
-<td style="text-align:center;">
-3552.1
-</td>
-<td style="text-align:center;">
-3704.2
-</td>
-<td style="text-align:center;">
-3286.4
-</td>
-<td style="text-align:center;">
-2326.1
+2300.2
 </td>
 </tr>
 <tr>
@@ -3092,34 +3442,34 @@ AIC
 BIC
 </td>
 <td style="text-align:center;">
-3790.9
+3790
 </td>
 <td style="text-align:center;">
-3895.4
+3860.3
 </td>
 <td style="text-align:center;">
-3764.6
+3769.6
 </td>
 <td style="text-align:center;">
-3877.3
+3864.4
 </td>
 <td style="text-align:center;">
-3734.3
+3742.6
 </td>
 <td style="text-align:center;">
-3836.4
+3834.2
 </td>
 <td style="text-align:center;">
-3715.9
+3728.8
 </td>
 <td style="text-align:center;">
-3914.1
+3877.9
 </td>
 <td style="text-align:center;">
-3491.2
+3458.3
 </td>
 <td style="text-align:center;">
-2512.4
+2519.2
 </td>
 </tr>
 <tr>
@@ -3161,7 +3511,7 @@ N
 <tfoot>
 <tr>
 <td style="padding: 0; border:0;" colspan="100%">
-<sup></sup> * p &lt; 0.1, ** p &lt; 0.05, *** p &lt; 0.01; Heteroskedasticity-consistent standard errors in parentheses (HC3)
+<sup></sup> * p &lt; 0.1, ** p &lt; 0.05, *** p &lt; 0.01; Heteroskedasticity-consistent clustered standard errors in parentheses (HC3, clustered at project-level)
 </td>
 </tr>
 </tfoot>
@@ -3170,9 +3520,9 @@ N
 </div>
 <div id="model-fit-discussion" class="section level2">
 <h2>Model fit discussion</h2>
-<p>The full model has an adjusted R-squared of 0.388, indicating a decent model fit. The version of the model with no fixed effects has an adjusted R-squared of 0.24, indicating that a significant amount of variability is explained by the additional explanatory variables. When fixed effect categories are removed, we can check which fixed effects explain the most variation relative to each other. It looks like reporting source accounts for the most variation, followed by basin then year, based on the relative R-squareds of models where each is removed and where each is included on its own.</p>
-<p>We can also compare AIC and BIC; the model with only fixed effects for reporting source is preferred on the basis of BIC, which includes a stronger penalty for the number of estimated parameters, while the full model is preferred on the basis of AIC. We use the full model in what proceeds as the preferred model.</p>
-<p>When the model is fit only on culverts in the “core” basins or sources, adjusted R-squared falls dramatically. This may suggest that information from the additional sources and outside the core basins improves the fit of the model.</p>
+<p>The full model has an adjusted R-squared of 0.409, indicating a decent model fit. The version of the model with no fixed effects has an adjusted R-squared of 0.286, indicating that a significant amount of variability is explained by the additional explanatory variables. When fixed effect categories are removed, we can check which fixed effects explain the most variation relative to each other. It looks like reporting source accounts for the most variation, followed by basin then year, based on the relative R-squares of models where each is removed and where each is included on its own.</p>
+<p>We can also compare AIC and BIC; the model with only fixed effects for reporting source is preferred on the basis of BIC, which includes a stronger penalty for the number of estimated parameters, while the full model is superior on the basis of AIC. We use the full model in what proceeds as the preferred model.</p>
+<p>When the model is fit only on culverts in the “core” basins or sources, adjusted R-squared falls signifciantly This suggests that information from the additional sources and outside the core basins improves the fit of the model.</p>
 </div>
 </div>
 <div id="model-visualizations" class="section level1">
@@ -3194,8 +3544,9 @@ N
 <p>To display how costs vary across the continuous explanatory variables, we plot average marginal effects. These are scaled to a standard deviation change for each variable. Average marginal effects are calculated with other variables held at their means, which is most relevant for slope and bankfull width for which the model allows an interaction effect. The resulting estimate is exponentiated so that it can be interpreted as the expected ratio of costs resulting from a standard deviation change in the continuous variable.</p>
 <p><img src="figure/spatial_cost_models.Rmd/unnamed-chunk-22-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>A standard deviation increase in number of worksites is associated with 46% lower average costs in the preferred model when other variables, most importantly distance between worksites, are held at their means. On the other hand, a standard deviation increase in distance between worksites is associated with average costs 13% higher, though this marginal effect is not statistically different from zero. This conflict is at the core of the managerial tradeoffs to consider when grouping worksites under a single project, as described in the preceeding section. That the negative association between costs and the number of worksites exceeds the positive association with total distance for the mean project suggests that there are unexploited opportunities for economies of scale.</p>
-<p>The average marginal effects for all population features are insignificant in the preferred model. However, in some of the alternative models, housing density and distance to urban area has a slight positive association with costs. The housing density effect might be evidence of increased access costs due to negotiating with multiple landowners, while the distance association may be evidence of increased costs due to lack of access to materials or labor. We are in the process of gathering improved proxies for each of these potential mechanisms.</p>
-<p>Bankfull width and stream slope both have positive associations in the preferred models. A standard deviation increase in either is associated with about fifty percent higher average costs when the other is held at its mean. As seen in the earlier figure and raw coefficients, this effect is driven largely by the interaction term in the model.</p>
+<p>The average marginal effects for all population features are insignificant in the preferred model. <del>However, in some of the alternative models, housing density and distance to urban area has a slight positive association with costs. The housing density effect might be evidence of increased access costs due to negotiating with multiple landowners, while the distance association may be evidence of increased costs due to lack of access to materials or labor. We are in the process of gathering improved proxies for each of these potential mechanisms.</del></p>
+<p>One reason the population features may be insignificant is because we measure access to labor and materials in alternative ways in the model. Worksites closer to construction equipment and brick/concrete firms, and to a lesser extent gravel/sand sales yards, are associated with significantly lower costs, while those closer to metal suppliers have much higher costs.</p>
+<p>Private land ownership influences costs in an interesting way. Note that for these variables, the implicit baseline are worksites with no privately-managed land within a 500m buffer. Such culverts are most often owned by government agencies. Compared to this baseline, culverts surrounded by land managed by a non-industrial private owner (i.e., non-profit conservation groups) are associated with higher costs, while culverts surrounded by industrially-managed land (i.e., land managed for forestry) are associated with lower costs. This key result indicates efficiencies associated with barrier improvements conducted by large forest landowners. Bankfull width and stream slope both have positive associations in the preferred models. A standard deviation increase in either is associated with about fifty percent higher average costs when the other is held at its mean. As seen in the earlier figure and raw coefficients, this effect is driven largely by the interaction term in the model.</p>
 <p>Finally, a standard deviation increase in the terrain slope of the catchment the worksite is located in is associated with 19% higher costs. That is, culverts in hillier or more mountainous areas are more expensive to improve. On the otherhand, higher eleveations are associated with lower costs, though this relationship is not statistically significant.</p>
 </div>
 </div>
@@ -3237,7 +3588,7 @@ N
 <h2>Residual and predicted value maps</h2>
 <p>In this section, we map both the residuals and predicted values for each in-sample worksite. Patterns may reveal areas where costs are more expensive, where missing explanatory variables may be effecting costs over a specific region. They also demonstrate how these models could be used to project costs for the full inventories of fish passage barriers documented by state agencies.</p>
 <p><img src="figure/spatial_cost_models.Rmd/unnamed-chunk-33-1.png" width="768" style="display: block; margin: auto;" /></p>
-<p>By looking at the map of residuals, we can examine where the model performs better or worse. Few obvsious patterns emerge. There seems to be some clustering of positive residuals in the Portland area, suggesting that costs are underestimated for that region. Otherwise, the residuals appear to be fairly well distributed.</p>
+<p>By looking at the map of residuals, we can examine where the model performs better or worse. Few obvious patterns emerge. There seems to be some clustering of positive residuals in the Portland area, suggesting that costs are underestimated for that region. Otherwise, the residuals appear to be fairly well distributed. We examine the spatial concentration of the residuals and consider spatial lag specifications in a future report.</p>
 <p><img src="figure/spatial_cost_models.Rmd/unnamed-chunk-34-1.png" width="768" style="display: block; margin: auto;" /></p>
 <p>The map of predicted values highlights areas where physical conditions (i.e. road, stream, and terrain features) have the largest impact on costs. By holding year, basin, reporting source, and project scale effects constant, we can identify where the remaining variables in the model predict higher or lower costs. Here, we see higher costs particularly in the Southern Oregon Coastal basin. At the mouth of the Columbia and around the Portland area, there appear to be clusters of lower cost projects. The John Day basin projects in Eastern Oregon also appear to have lower costs than other areas.</p>
 <p><img src="figure/spatial_cost_models.Rmd/unnamed-chunk-35-1.png" width="768" style="display: block; margin: auto;" /></p>
@@ -3259,23 +3610,55 @@ Mean Predicted Value
 Predicted Value Coefficient of Variation
 </th>
 <th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
-Mean Prediction Standard Error
+Mean Prediction Standard Error (log scale)
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+Mean Absolute Residual (log scale)
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;">
+N
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td style="text-align:left;">
+NORTHERN OREGON COASTAL
+</td>
+<td style="text-align:center;">
+40,487
+</td>
+<td style="text-align:center;">
+0.441
+</td>
+<td style="text-align:center;">
+0.444
+</td>
+<td style="text-align:center;">
+0.828
+</td>
+<td style="text-align:center;">
+221
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 JOHN DAY
 </td>
 <td style="text-align:center;">
-44,495
+46,460
 </td>
 <td style="text-align:center;">
-0.243
+0.193
 </td>
 <td style="text-align:center;">
-0.514
+0.492
+</td>
+<td style="text-align:center;">
+0.648
+</td>
+<td style="text-align:center;">
+29
 </td>
 </tr>
 <tr>
@@ -3283,13 +3666,19 @@ JOHN DAY
 WILLAMETTE
 </td>
 <td style="text-align:center;">
-51,881
+58,278
 </td>
 <td style="text-align:center;">
-0.364
+0.529
 </td>
 <td style="text-align:center;">
-0.460
+0.453
+</td>
+<td style="text-align:center;">
+0.818
+</td>
+<td style="text-align:center;">
+281
 </td>
 </tr>
 <tr>
@@ -3297,83 +3686,19 @@ WILLAMETTE
 UPPER COLUMBIA
 </td>
 <td style="text-align:center;">
-52,546
+64,016
 </td>
 <td style="text-align:center;">
-0.464
+0.547
 </td>
 <td style="text-align:center;">
-0.482
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-LOWER COLUMBIA
+0.510
 </td>
 <td style="text-align:center;">
-52,759
+0.578
 </td>
 <td style="text-align:center;">
-0.328
-</td>
-<td style="text-align:center;">
-0.455
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-MIDDLE COLUMBIA
-</td>
-<td style="text-align:center;">
-52,975
-</td>
-<td style="text-align:center;">
-0.344
-</td>
-<td style="text-align:center;">
-0.468
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-NORTHERN OREGON COASTAL
-</td>
-<td style="text-align:center;">
-54,515
-</td>
-<td style="text-align:center;">
-0.355
-</td>
-<td style="text-align:center;">
-0.450
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-PUGET SOUND
-</td>
-<td style="text-align:center;">
-57,285
-</td>
-<td style="text-align:center;">
-0.305
-</td>
-<td style="text-align:center;">
-0.488
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-WASHINGTON COASTAL
-</td>
-<td style="text-align:center;">
-61,858
-</td>
-<td style="text-align:center;">
-0.311
-</td>
-<td style="text-align:center;">
-0.461
+40
 </td>
 </tr>
 <tr>
@@ -3381,18 +3706,104 @@ WASHINGTON COASTAL
 SOUTHERN OREGON COASTAL
 </td>
 <td style="text-align:center;">
-68,272
+66,862
 </td>
 <td style="text-align:center;">
-0.299
+0.290
 </td>
 <td style="text-align:center;">
-0.451
+0.447
+</td>
+<td style="text-align:center;">
+0.648
+</td>
+<td style="text-align:center;">
+458
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+MIDDLE COLUMBIA
+</td>
+<td style="text-align:center;">
+75,273
+</td>
+<td style="text-align:center;">
+0.343
+</td>
+<td style="text-align:center;">
+0.521
+</td>
+<td style="text-align:center;">
+0.657
+</td>
+<td style="text-align:center;">
+16
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LOWER COLUMBIA
+</td>
+<td style="text-align:center;">
+80,150
+</td>
+<td style="text-align:center;">
+0.452
+</td>
+<td style="text-align:center;">
+0.464
+</td>
+<td style="text-align:center;">
+0.794
+</td>
+<td style="text-align:center;">
+59
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WASHINGTON COASTAL
+</td>
+<td style="text-align:center;">
+96,876
+</td>
+<td style="text-align:center;">
+0.288
+</td>
+<td style="text-align:center;">
+0.480
+</td>
+<td style="text-align:center;">
+0.725
+</td>
+<td style="text-align:center;">
+61
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PUGET SOUND
+</td>
+<td style="text-align:center;">
+105,422
+</td>
+<td style="text-align:center;">
+0.413
+</td>
+<td style="text-align:center;">
+0.526
+</td>
+<td style="text-align:center;">
+0.750
+</td>
+<td style="text-align:center;">
+71
 </td>
 </tr>
 </tbody>
 </table>
-<p>The mean predicted value by basin indicates basins where culverts are more or less expensive. Southern Oregon Coastal culvert worksites are the most expensive, while John Day basin worksites are the least expensive. The predicted value coefficient of variation shows where costs vary the most <em>within</em> a basin on a consistent scale. Costs vary the most within the Upper Columbia basin, and the least in the John Day basin. Finally, the mean prediction standard error shows where model uncertainty is highest. As observed on the map, John Day and Puget Sound basins have the largest prediction standard errors, while the Western Oregon basins (Northern and Southern Oregon Coastal, and the Lower Columbaia) have the smallest.</p>
+<p>The mean predicted value by basin indicates basins where culverts are more or less expensive based on landscape conditions (fixed and project effects fixed). Puget Sound culvert worksites are the most expensive, while Northern Oregon Coastal worksites are the least expensive. The predicted value coefficient of variation shows where costs vary the most <em>within</em> a basin on a consistent scale. Costs vary the most within the Upper Columbia basin, and the least in the John Day basin. Finally, the mean prediction standard error shows where model uncertainty is highest. As observed on the map, Middle and Upper Columbia, and Puget Sound basins have the largest prediction standard errors, while the Western Oregon basins (Northern and Southern Oregon Coastal, and the Lower Columbaia) have the smallest, likely because these basins are releatively well-represented in the sample.</p>
 </div>
 </div>
 <div id="benefit---cost-visualizations" class="section level1">
@@ -3400,7 +3811,7 @@ SOUTHERN OREGON COASTAL
 <p>As a simple examination of what kind of decision rule might be in play for determining which culverts were selected, we plot as a benefit proxy total upstream length (in km) versus observed cost per culvert. Under a cost-targeting rule, all worksites would be to the left of a cost threshold, while for a benefit-targeting rule all would be above a benefit threshold. A benefit-cost ratio standard would be above an upward sloping line.</p>
 <p>It should be acknowledged there are severe limitations to this application. Most obviously, without including data on un-attempted projects we are left assuming the total possible project space is “dense” (i.e. in any point in cost-benefit space we don’t observe a project, we assume a project there would be possible). This assumption can be addressed by incorporating data from state agency culvert inventories. Second, our benefits measure is rough at best, and alternative measures that account for upstream/downstream barriers as well as habitat conditions and species ranges may more realistically describe the decision space. Finally, in looking across projects from the full study area, we may miss heterogeneity in targeting rules across jurisdictions or regions. We partially address this final point by also examining the distributions of subsets of worksites by region and year.</p>
 <p><img src="figure/spatial_cost_models.Rmd/unnamed-chunk-39-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/spatial_cost_models.Rmd/unnamed-chunk-39-2.png" width="768" style="display: block; margin: auto;" /><img src="figure/spatial_cost_models.Rmd/unnamed-chunk-39-3.png" width="768" style="display: block; margin: auto;" /></p>
-<p>No evidence that projects are selected on cost or benefit-cost ratio basis. It does somewhat appear that the observed projects follow a benefit targeting pattern with a fairly low benefit cut-off. For Lower Columbia, Upper Columbia, and Washington Coastal basins, there appears to be a slight upward tilt in the higher-cost region, indicating that benefit-cost targeting may be more frequent for higher-cost projects.</p>
+<p>No strong evidence that projects are selected on cost or benefit-cost ratio basis. It does somewhat appear that the observed projects follow a benefit targeting pattern with a fairly low benefit cut-off. For Lower Columbia, Upper Columbia, and Washington Coastal, and Puget Sound basins, there appears to be a slight upward tilt in the higher-cost region, indicating that benefit-cost targeting may be more frequent for higher-cost projects.</p>
 <p>Adding culverts where no project is observed with costs predicted via the above models could reveal where observed projects exist in the space relative to the universe of potential projects, which should provide more clarity to the above analysis.</p>
 </div>
 <div id="conclusions" class="section level1">
@@ -3412,25 +3823,18 @@ SOUTHERN OREGON COASTAL
 </li>
 <li>Paved roads are more expensive to improve, while other road variables have little discernible effect.<br />
 </li>
-<li>Some evidence of economies of scale, in that worksites associated with projects associated with more worksites tend to have lower average costs. This effect is countered by a postive association between costs and total distance between worksites.<br />
+<li>Some evidence of economies of scale, in that worksites associated with projects associated with more worksites tend to have lower average costs. This effect is countered by a positive association between costs and total distance between worksites.<br />
 </li>
-<li>John Day basin worksites are the lowest cost and lowest variance in costs between worksites. However, the model error is also highest in this basin. Costs are highest in the Southern Oregon Coastal and Washington Coastal basins. Cost variance is also particularly high in the Upper Columbia.</li>
+<li>John Day basin worksites are the lowest variance in costs between worksites, while Northern Oregon Coastal worksites have the lowest costs overall. Costs are highest in the Puget Sound and Washington Coastal basins. Cost variance is also particularly high in the Upper Columbia and Willamette basins.</li>
 </ol>
 </div>
 <div id="next-steps" class="section level2">
 <h2>Next steps</h2>
 <ol style="list-style-type: decimal">
-<li>More variables: additional population proximity measures, including distance to materials suppliers (gravel, pavement, metal, machinary, etc.) and parcel density data<br />
-</li>
-<li>Improved benefit estimates: total upstream distance by species and habitat use, accounting for upstream/downstream blockages, habitat potential measures, etc.<br />
-</li>
 <li>Forecast costs/benefits for culvert inventories from Oregon and Washington<br />
 </li>
-<li>Integrate Lorenz curve and Gini coefficient analysis from Babcock et al. (1997) for more consistent comparison between cost and benefit concentration among worksites<br />
-</li>
-<li>Highlight distribution of high-benefit/low-cost projects relative to traditional tribal lands, different recreational fishing areas, etc.<br />
-</li>
-<li>Analyze how outcomes (cost/benefit targeting efficiency relative to ratio targeting, cost levels/variation, model uncertainty) across culvert ownership, jursdictions</li>
+<li>Compare results of OLS estimates to estimates of models with spatial lags, and machine learning methods (boosted regression trees)</li>
+<li>Analyze how outcomes (cost/benefit targeting patterns, cost levels/variation, model uncertainty) across culvert ownership, jurisdictions</li>
 </ol>
 <br>
 <p>
@@ -3484,7 +3888,7 @@ loaded via a namespace (and not attached):
 [31] prettyunits_1.1.1   tools_4.0.2         igraph_1.2.5       
 [34] gtable_0.3.0        glue_1.4.2          reshape2_1.4.4     
 [37] RANN_2.6.1          Rcpp_1.0.5          cellranger_1.1.0   
-[40] vctrs_0.3.4         insight_0.11.1      xfun_0.16          
+[40] vctrs_0.3.4         insight_0.12.0      xfun_0.16          
 [43] ps_1.3.3            rvest_0.3.6         lifecycle_0.2.0    
 [46] hms_0.5.3           promises_1.1.1      RColorBrewer_1.1-2 
 [49] yaml_2.2.1          curl_4.3            stringi_1.4.6      

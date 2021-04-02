@@ -11,7 +11,7 @@
 
 <meta name="author" content="B. Van Deynze" />
 
-<meta name="date" content="2020-11-20" />
+<meta name="date" content="2021-03-15" />
 
 <title>Summary of Spatially Derived Variables for Culvert Projects</title>
 
@@ -27,10 +27,7 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
-<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
 <script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
-<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -41,15 +38,6 @@ div.section {
   padding-top: 12px;
 }
 </style>
-
-<style type="text/css">
-  code{white-space: pre-wrap;}
-  span.smallcaps{font-variant: small-caps;}
-  span.underline{text-decoration: underline;}
-  div.column{display: inline-block; vertical-align: top; width: 50%;}
-  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-  ul.task-list{list-style: none;}
-    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -395,44 +383,43 @@ div.tocify {
 
 <h1 class="title toc-ignore">Summary of Spatially Derived Variables for Culvert Projects</h1>
 <h4 class="author">B. Van Deynze</h4>
-<h4 class="date">November 20, 2020</h4>
+<h4 class="date">March 15, 2021</h4>
 
 </div>
 
 
-<p>This document summarizes spatially-derived variables for PNSHP culvert work sites. These variables are collected by linking the work site points to other spatial data sets via polygon covers or identifying the nearest line. Variables were selected for their value as either potential drivers of project cost, or as potential proxies for ecological benefits.</p>
+<p>This document summarizes spatially-derived variables for PNSHP culvert work sites. These variables are collected by linking the worksite points to other spatial data sets via polygon covers or identifying the nearest line. Variables were selected for their value as either potential drivers of project cost, or as potential proxies for ecological benefits.</p>
 <p>As of right now, we have data from Blake on roads, streams, habitat use, slope, and land cover. I also have collected some county-level data on employment levels in relevant sectors. With some help from Sunny, I also pulled the nearest NHD+ stream COMID, which was used to link a number of additional variables related to stream, land cover, and population features of the stream and upstream basins.</p>
 <p>In the first section, I summarize data sources and define important variables. In the next section, I evaluate the quality of matches for road and stream data. In the third sections, I present descriptive figures for the new variables. And, finally, I close with some early regression results incorporating the new variables.</p>
 <div id="data-sources-and-variable-definitions" class="section level1">
 <h1>Data sources and variable definitions</h1>
-<div id="culvert-work-site-data" class="section level2">
-<h2>Culvert work site data</h2>
-<p>Data on culvert work site locations and associated project information (reporting source, project cost, year, work site coordinates), are from the <strong><em>Pacific Northwest Salmon Habitat Projects</em></strong> database, which documents projects relevant to salmonid habitat restoration, including culvert improvements. We restrict the sample to projects that:</p>
+<div id="culvert-worksite-data" class="section level2">
+<h2>Culvert worksite data</h2>
+<p>Data on culvert worksite locations and associated project information (reporting source, project cost, year), are from the <strong><em>Pacific Northwest Salmon Habitat Projects</em></strong> database, which documents projects relevant to salmonid habitat restoration, including culvert improvements. We restrict the sample to projects that:</p>
 <ol style="list-style-type: decimal">
-<li>Only include culvert actions across any work sites;<br />
+<li>Only include culvert actions across any worksites;<br />
 </li>
 <li>Were completed between 2001 and 2015;<br />
 </li>
-<li>Consisted of work sites only in Washington or Oregon;<br />
+<li>Were located only in Washington or Oregon;<br />
 </li>
-<li>Consisted of work sites only located within basins with over 20 work sites;<br />
+<li>Were reported by a source that reports more than 20 total projects;<br />
 </li>
-<li>Reported project costs per culvert between $2,000 and $750,000 (roughly 5th and 95th percentiles).</li>
+<li>Were located in basins with over 20 worksites reported;<br />
+</li>
+<li>Reported project costs per culvert between $2,000 and $750,000 (roughly 5th and 95th percentiles of all reported project costs).</li>
 </ol>
 </div>
 </div>
 <div id="evaluating-accuracy-of-stream-and-road-matches" class="section level1">
 <h1>Evaluating accuracy of stream and road matches</h1>
-<p>First thing we’ll do is check how accurate the culvert work site points match up with the road and stream data recovered from three sources: (1) <a href="https://gii.dhs.gov/hifld/sites/default/files/2019-08/HIFLD%20Licensed%20HERE%20One%20Pager.pdf">HERE</a> for network-able road features, (2) <a href="https://hydro.nationalmap.gov/arcgis/rest/services/NHDPlus_HR/MapServer">NHDPlus HR</a> for stream/river classification and features, (3) <a href="https://www.streamnet.org/data/interactive-maps-and-gis-data/">StreamNet</a> for salmonid habitat use data by species. We will evaluate the precision of matches using distance to the “matching” line, measured in meters.</p>
-<p>We suspect two possible sources of imprecision. First, work site points may be reported with imprecision, in which case the match would represent the most likely feature, but with less certainty than if distance was lower. Second, the work site may be on a road or stream that is not represented in our source data. In this case, the matched feature would misrepresent the true feature we are trying to identify for the work site.</p>
-<p>In either case, we will need to identify and decide how to deal with “poor” matches. For now, we will <strong><em>define poor matches as work sites over 150m from the target feature</em></strong> (i.e. road or stream), represented in the figures below with a red horizontal line. This threshold is easily adjustable, and sensitivity to this threshold will also be examined.</p>
+<p>First thing we’ll do is check how accurate the culvert worksite points match up with the road and stream data recovered from three sources: (1) <a href="https://gii.dhs.gov/hifld/sites/default/files/2019-08/HIFLD%20Licensed%20HERE%20One%20Pager.pdf">HERE</a> for network-able road features, (2) <a href="https://hydro.nationalmap.gov/arcgis/rest/services/NHDPlus_HR/MapServer">NHDPlus HR</a> for stream/river classification and features, (3) <a href="https://www.streamnet.org/data/interactive-maps-and-gis-data/">StreamNet</a> for salmonid habitat use data by species. We will evaluate the precision of matches using distance to the “matching” line, measured in meters.</p>
+<p>We suspect two possible sources of imprecision. First, worksite points may be reported with imprecision, in which case the match would represent the most likely feature, but with less certainty than if distance was lower. Second, the worksite may be on a road or stream that is not represented in our source data. In this case, the matched feature would misrepresent the true feature we are trying to identify for the worksite.</p>
+<p>In either case, we will need to identify and decide how to deal with “poor” matches. For now, we will <strong><em>define poor matches as worksites over 150m from the target feature</em></strong> (i.e. road or stream), represented in the figures below with a red horizontal line. This threshold is easily adjustable, and sensitivity to this threshold will also be examined.</p>
 <p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-5-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-5-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-5-3.png" width="960" style="display: block; margin: auto;" /></p>
 <div id="dealing-with-poor-matches" class="section level2">
 <h2>Dealing with poor matches</h2>
 <p>So <strong><em>StreamNet</em></strong>’s less dense streams have the worst matches, while NHDPlus has very close matches. StreamNet is most useful for salmon habitat identification, though HUC code based habitat maps can be used instead (e.g. maps seen in <a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0217711">Crozier et al. (2018)</a>). I think using this approach might be preferred for consistency, given the large number of poor matches in the StreamNet data. For the cost modeling stage, this variables is less important. For StreamNet, <strong><em>wait for next steps.</em></strong></p>
-<pre class="r"><code># sf_culv &lt;-
-#   sf_culv %&gt;%
-#   select(-starts_with(&quot;snet_&quot;))</code></pre>
 <p>The HERE roads have lots of close matches, but also plenty that are far off the mark. For poor matches, we can consider two approaches. First, we can assume all poor matches are on “small roads” (e.g.. back roads, private access roads, logging roads, etc.) and <strong><em>assign to lowest HERE road class, and unpaved</em></strong>. Alternatively, we can drop these observations, or assign them to their own class.</p>
 <pre class="r"><code>sf_culv &lt;-
   sf_culv %&gt;%
@@ -469,7 +456,7 @@ div.tocify {
       TRUE ~ as.character(here_paved)
     )
   )</code></pre>
-<p>For <strong><em>NHDPlus</em></strong>, because the vast majority of the work sites are close matches, we can <strong><em>drop the poor match work sites</em></strong>, defined as sites more than 150m from the nearest stream line.</p>
+<p>For <strong><em>NHDPlus</em></strong>, because the vast majority of the worksites are close matches, we can <strong><em>drop the poor match worksites</em></strong>, defined as sites more than 150m from the nearest stream line.</p>
 <pre class="r"><code>sf_culv &lt;-
   sf_culv %&gt;%
   filter(
@@ -548,7 +535,7 @@ Roads whose volume and traffic movement are below the level of any functional cl
 6
 </td>
 <td style="text-align:left;">
-“Roads” associated with work sites &gt; 150m from the nearest HERE road for here_class_badmatch.
+“Roads” associated with worksites &gt; 150m from the nearest HERE road for here_class_badmatch.
 </td>
 </tr>
 <tr>
@@ -620,12 +607,12 @@ Speed category
 </tr>
 </tbody>
 </table>
-<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-10-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-10-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-10-3.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-10-4.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-10-5.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-10-6.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-9-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-9-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-9-3.png" width="960" style="display: block; margin: auto;" /></p>
 </div>
 <div id="salmonnet-salmon-habitat-use" class="section level2">
 <h2>SalmonNet: Salmon habitat use</h2>
 <p>The StreamNet data provides variables for <em>species</em> and <em>habitat use</em>. These variables will be valuable for modeling benefits of culvert improvement, but may also lead to stricter design requirements if in the habitat of ESA listed species.</p>
-<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-12-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-12-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-12-3.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-12-4.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-11-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-11-2.png" width="960" style="display: block; margin: auto;" /></p>
 <p>Key takeaway is that the culverts projects in Washington and Oregon are on distinctly different streams. In Washington, reported projects are more frequently on migration streams. These streams are likely to open up more upstream territory, but may also be wider and require more complex culvert designs. In Oregon, the reported projects are overwhelmingly on spawning and rearing streams, which (I believe) tend to be smaller and therefore would require less complex designs.</p>
 <p>We can dig into attributes of associated NHDPlus streams and their associated catchments to further dig into this finding on the stream side.</p>
 </div>
@@ -634,28 +621,29 @@ Speed category
 <p>Stream characteristics are likely critical cost drivers. All state culvert design guidelines point to specific design needs for stream crossings when the crossing is either particularly wide (as measured by <strong><em>bankfull width</em></strong>) or at a steep slope (as measured by <strong><em>slope</em></strong>).</p>
 <p>We gather these variables from <a href="https://www.sciencebase.gov/catalog/item/5669a79ee4b08895842a1d47">NHDPlus Selected Attributes Version 2.1 (Wiezorek, Jackson, &amp; Schwarz, 2018)</a>. by identifying the nearest NHDPlus stream object’s COMID and matching that COMID with the appropriate attributes. From the same database, we also gather <strong><em>population density</em></strong>, <strong><em>housing density</em></strong>, <strong><em>annual precipitation</em></strong>, <strong><em>road density</em></strong>, <strong><em>stream density</em></strong>, <strong><em>stream length</em></strong>, <strong><em>basin area</em></strong>, and <strong><em>NLCD land cover class share</em></strong> in the stream’s catchment.</p>
 <p>These variables area also available aggregated over upstream networked NHDPlus streams and catchments, allowing for measures such as <strong><em>total upstream length</em></strong> and habitat features for associated catchments (e.g. road density, land cover, precipitation). These aggregated variables are calculated via two methods. Using the <em>total</em> method, all area in upstream catchments is weighted equally. Using the <em>accumulated</em> methods, area in upstream catchments is weighted by the proportion of flow that reaches the target catchment, accounting for natural and anthropogenic diversions.</p>
-<p>For cost modeling, we focus on the <strong><em>bankfull width</em></strong> and <strong><em>slope</em></strong> variables. In the next steps, when benefit proxies are constructed for each culvert work site, we can use the remaining variables to characterize upstream habitat with restored access.</p>
-<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-15-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-15-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-15-3.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-15-4.png" width="960" style="display: block; margin: auto;" /></p>
-<p>So it looks like the slope variable is pretty well behaved. We will <strong><em>drop work sites with bankfull width over 50m</em></strong> to remove extreme outliers.</p>
+<p>For cost modeling, we focus on the <strong><em>bankfull width</em></strong> and <strong><em>slope</em></strong> variables. In the next steps, when benefit proxies are constructed for each culvert worksite, we can use the remaining variables to characterize upstream habitat with restored access.</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-14-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-14-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p>So it looks like the slope variable is pretty well behaved. We will <strong><em>drop worksites with bankfull width over 50m</em></strong> to remove extreme outliers.</p>
 <pre class="r"><code>sf_culv &lt;-
   sf_culv %&gt;%
   filter(
     bankfull_width &lt; 50
   )</code></pre>
 <p>Otherwise, these variables show good behavior across these two physical attributes. Culverts in Washington are associated with larger streams, which will likely mean more expensive projects.</p>
-<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-18-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-18-2.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-18-3.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-18-4.png" width="960" style="display: block; margin: auto;" /></p>
-<p>Population and housing density are highly correlated (Pearson’s coef. = 0.977), so we have to pick one or the other. Design documents point to site access as a crucial driver in project cost, and note that negotiating with private landowners can complicate projects. Housing density is a good proxy for this driver. Population density can be a good proxy for road traffic, which can increase flagging costs. Both effects are likely to increase costs. While we won’t be able to distinguish a mechanism, including either can control for density effects.</p>
-<p>We should also consider alternative measures here that might better capture the hypothetical mechanisms at play. For example, variables such as the number of distinct parcels in the catchment, whether the work site point is on public land, or the proportion of the catchment that is in public land might better capture increased costs due to access issues.</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-17-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-17-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Population and housing density are highly correlated (Pearson’s coef. = 0.977), so we probably have to pick one or the other. Design documents point to site access as a crucial driver in project cost, and note that negotiating with private landowners can complicate projects. Housing density is a good proxy for this driver. Population density can be a good proxy for road traffic, which can increase flagging costs. Both effects are likely to increase costs. While we won’t be able to distinguish a mechanism, including either can control for density effects.</p>
+<p>We should also consider alternative measures here that might better capture the hypothetical mechanisms at play. For example, variables such as the number of distinct parcels in the catchment, whether the worksite point is on public land, or the proportion of the catchment that is in public land might better capture increased costs due to access issues.</p>
 </div>
-<div id="slope-at-work-site" class="section level2">
-<h2>Slope at work site</h2>
-<p>The slope at the work site may increase project cost by restricting access to the culvert. We measure slope using the slope in degrees of the <a href="https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-global-30-arc-second-elevation-gtopo30?qt-science_center_objects=0#qt-science_center_objects">GTOPO30</a> grid cell the work site falls in.</p>
-<p>Note that slope at work sites and the stream slope are distinct, both in their measurement and the mechanism through which they influence costs. Stream slope is our best available proxy for the slope of the stream at the culvert, which can require more complex, expensive culvert design to ensure fish passage. Slope at work site is the <em>land</em> slope in the immediate vicinity of the culvert, which can restrict site access and available staging area, increasing project costs. While closely related, these are distinct (Pearson’s coef. = 0.533).</p>
-<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-20-1.png" width="960" style="display: block; margin: auto;" /></p>
+<div id="slope-at-worksite" class="section level2">
+<h2>Slope at worksite</h2>
+<p>The slope at the worksite may increase project cost by restricting access to the culvert. We measure slope using the slope in degrees of the <a href="https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-global-30-arc-second-elevation-gtopo30?qt-science_center_objects=0#qt-science_center_objects">GTOPO30</a> grid cell the worksite falls in.</p>
+<p>We can also measure slope using NHD+ attributes, which reports the slope of the catchment, distinct from the channel slope, for each stream segment.</p>
+<p>Note that slope at worksites and the stream slope are distinct, both in their measurement and the mechanism through which they influence costs. Stream slope is our best available proxy for the slope of the stream at the culvert, which can require more complex, expensive culvert design to ensure fish passage. Slope at worksite is the <em>land</em> slope in the immediate vicinity of the culvert, which can restrict site access and available staging area, increasing project costs. While closely related, these are distinct (Pearson’s coef. = 0.533).</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-19-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-19-2.png" width="960" style="display: block; margin: auto;" /></p>
 </div>
-<div id="land-cover-at-work-sites" class="section level2">
-<h2>Land cover at work sites</h2>
-<p>Land cover can proxy for land use, which can effect how difficult it is to access and perform construction activities at the work site, which may increase costs. It may also be correlated with road features (surface material, typical traffic, etc.) or stream features, and could be useful for providing more information for work sites where matches to roads and streams are poor.</p>
+<div id="land-cover-at-worksites" class="section level2">
+<h2>Land cover at worksites</h2>
+<p>Land cover can proxy for land use, which can effect how difficult it is to access and perform construction activities at the worksite, which may increase costs. It may also be correlated with road features (surface material, typical traffic, etc.) or stream features, and could be useful for providing more information for worksites where matches to roads and streams are poor.</p>
 <p>The table below presents the NLCD land cover classifications. We use the “class” level of detail in the figures that follow.</p>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
@@ -901,72 +889,242 @@ Areas where perennial herbaceous vegetation accounts for greater than 80% of veg
 </tr>
 </tbody>
 </table>
-<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-22-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-22-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-21-1.png" width="960" style="display: block; margin: auto;" /></p>
 </div>
 <div id="job-shares-in-relevant-sectors" class="section level2">
 <h2>Job shares in relevant sectors</h2>
-<p>To capture labor market patterns that might affect culvert costs, we collect the number of jobs for construction and ag/forestry NAICS codes for the county the work site is located in via <a href="https://www.census.gov/programs-surveys/cbp.html">County Business Patterns</a>. Access to experienced labor can keep costs down. These variables are intended to capture that effect.</p>
+<p>To capture labor market patterns that might affect culvert costs, we collect the number of jobs for construction and ag/forestry NAICS codes for the county the worksite is located in via <a href="https://www.census.gov/programs-surveys/cbp.html">County Business Patterns</a>. Access to experienced labor can keep costs down. These variables are intended to capture that effect.</p>
 <p>Because counties are so large in Oregon and Washington, this is not the ideal measure of job patterns. For example, culverts in rural King County will have jobs numbers driven largely by patterns in Seattle, despite being as much as 40 miles away. Other ideas on how to capture these effects would be appreciated!</p>
-<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-24-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-24-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-23-1.png" width="960" style="display: block; margin: auto;" /><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-23-2.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="us-census-distance-to-population-center" class="section level2">
+<h2>US Census: Distance to population center</h2>
+<p>We proxy for availability of supplies and labor by measuring the distance from each worksite to the boundary of census designated “Urban Areas” and “Urban Clusters” as of the 2010 census (<a href="https://www.census.gov/programs-surveys/geography/guidance/geo-areas/urban-rural/2010-urban-rural.html">source</a>). Urban areas are defined as contiguous areas of 50,000 or more people, while urban clusters are defined as contiguous areas of 2,500 to 50,000 people. (Worksites within urban areas/clusters are assigned 0.)</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-24-1.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="hifld-material-supply-operation-density" class="section level2">
+<h2>HIFLD: Material supply operation density</h2>
+<p>We proxy for availability of raw materials and machinery by generating a kernel density field for operations identified in the following NAICS categories:<br />
+- Merchant Wholesalers Durable Goods: Brick, Stone and Related (brick_coun/brick_totp)<br />
+- Merchant Wholesalers Durable Goods: Construction and Mining (const_coun/counst_top)<br />
+- Merchant Wholesalers Durable Goods: Metals Service Centers (metal_coun/metal_top)<br />
+- Merchant Wholesalers Durable Goods: All above sub-categores (merch_coun/merch_top)<br />
+- Sand &amp; Gravel Operations: Sales Yard (sales_coun)<br />
+- Sand &amp; Gravel Operations: All sub-categories, incl. Sales Yard (sand_count)<br />
+For the “Merchant Wholesalers Durable Goods” categories we include densities based on both simple site count (*_coun) and weighted by persons/site to scale for operation size (*_totp). For Sand &amp; Graveel Operations, only simple site count densities are estimated as persons/site data is unavailable.</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-26-1.png" width="960" style="display: block; margin: auto;" /> <img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-27-1.png" width="960" style="display: block; margin: auto;" /></p>
+</div>
+<div id="blm-surface-jurisdiction-of-land" class="section level2">
+<h2>BLM: Surface jurisdiction of land</h2>
+<p>We are also interested in public land and private land nearby worksites as a proxy for land access. We identify the proportion of land ownership by group within 500m, 1km, and 2.5km radius circular buffer of each worksite using BLM surface jurisdiction records from 2019. (<em>Blake could you provide more detailed sourcing on these data?</em>). We distinguish between the following ownership entities:</p>
+<pre class="r"><code>key_blm &lt;- read_xlsx(here(&quot;data/Culverts spatial overlays v 20Jan2021.xlsx&quot;), sheet = 5) %&gt;%
+  as_tibble() %&gt;%
+  filter(Present == 1) %&gt;%
+  mutate(Present = NULL)
+
+key_blm %&gt;%
+  arrange(Code) %&gt;%
+  kable(caption = &quot;Value key for BLM land ownership variables&quot;) %&gt;%
+  kable_styling() %&gt;%
+  collapse_rows(
+    1,
+    valign = &quot;top&quot;,
+    row_group_label_position = &quot;stacked&quot;,
+    headers_to_remove = 1
+  )</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>
+Value key for BLM land ownership variables
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+Code
+</th>
+<th style="text-align:left;">
+Description
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+BIA
+</td>
+<td style="text-align:left;">
+Bureau of Indian Affairs
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BLM
+</td>
+<td style="text-align:left;">
+Bureau of Land Management
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+BPA
+</td>
+<td style="text-align:left;">
+Bonneville Power Administration
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+COE
+</td>
+<td style="text-align:left;">
+Corps of Engineers
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+FWS
+</td>
+<td style="text-align:left;">
+U.S. Fish and Wildlife Service
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+GSA
+</td>
+<td style="text-align:left;">
+General Services Administration
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LG
+</td>
+<td style="text-align:left;">
+Local Government
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+NPS
+</td>
+<td style="text-align:left;">
+National Park Service
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PV
+</td>
+<td style="text-align:left;">
+Private Individual or Company
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PVI
+</td>
+<td style="text-align:left;">
+Lands Managed by Private Industry
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PVN
+</td>
+<td style="text-align:left;">
+Private Non-Industrial Owner
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PVU
+</td>
+<td style="text-align:left;">
+Private Urban Lands
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ST
+</td>
+<td style="text-align:left;">
+State Agency
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STF
+</td>
+<td style="text-align:left;">
+State Dept. of Forestry
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STL
+</td>
+<td style="text-align:left;">
+Division of State Lands
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STP
+</td>
+<td style="text-align:left;">
+State Dept. of Parks and Recreation
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+STW
+</td>
+<td style="text-align:left;">
+State Dept. of Fish and Wildlife
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+UND
+</td>
+<td style="text-align:left;">
+Undetermined
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+USFS
+</td>
+<td style="text-align:left;">
+U.S. Forest Service
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+WATER
+</td>
+<td style="text-align:left;">
+Water
+</td>
+</tr>
+</tbody>
+</table>
+<p>Lands managed by private industry in this context refer mainly to forestry activities. High values indicate that the culvert in question is likely owned by a timber company replacing the barrier under state forestland policies.</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-30-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>We also provide summaries for composite variables that group private land, state-managed land, and federally-managed land (other than BLM and USFS, which manage significant amounts on their onw) by summing across relevant variables.</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-31-1.png" width="960" style="display: block; margin: auto;" /></p>
 </div>
 <div id="pnshp-culvert-project-costs" class="section level2">
 <h2>PNSHP: Culvert project costs</h2>
-<p>Culvert project costs are the primary dependent variable in this study. We calculate cost per culvert at the project level by first tallying the number of culverts installed, upgraded, or removed at the project level. We then divide project-level costs by the number of culverts. This cost per culvert measure is assigned to each work site associated with that project.</p>
-<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-26-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>Culvert project costs are the primary dependent variable in this study. We calculate cost per culvert at the project level by first tallying the number of culverts installed, upgraded, or removed at the project level. We then divide project-level costs by the number of culverts. This cost per culvert measure is assigned to each worksite associated with that project.</p>
+<p><img src="figure/spatial_variables_summary.Rmd/unnamed-chunk-33-1.png" width="960" style="display: block; margin: auto;" /></p>
 </div>
 </div>
 <div id="key-takeaways" class="section level1">
 <h1>Key takeaways</h1>
-<p>There are noticeable differences between Washington and Oregon culvert projects represented in the data. Washington projects tend to more frequently be on migration routes and on paved roads, and on wider streams. Oregon projects are more likely to be on spawning and rearing streams, unpaved roads, and on narrower streams. This likely goes a long way in explaining the large differences in costs across the two states.</p>
-</div>
-<div id="end-matter" class="section level1">
-<h1>End Matter</h1>
-<pre class="r"><code># Created on...
-Sys.time()</code></pre>
-<pre><code>[1] &quot;2020-11-20 18:53:01 PST&quot;</code></pre>
-<pre class="r"><code># Using...
-sessionInfo()</code></pre>
-<pre><code>R version 4.0.2 (2020-06-22)
-Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 18363)
-
-Matrix products: default
-
-locale:
-[1] LC_COLLATE=English_United States.1252 
-[2] LC_CTYPE=English_United States.1252   
-[3] LC_MONETARY=English_United States.1252
-[4] LC_NUMERIC=C                          
-[5] LC_TIME=English_United States.1252    
-
-attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
-
-other attached packages:
- [1] mctest_1.3.1     ggcorrplot_0.1.3 kableExtra_1.3.1 knitr_1.30      
- [5] rmarkdown_2.5    janitor_2.0.1    readxl_1.3.1     sf_0.9-6        
- [9] here_0.1         forcats_0.5.0    stringr_1.4.0    dplyr_1.0.2     
-[13] purrr_0.3.4      readr_1.4.0      tidyr_1.1.2      tibble_3.0.4    
-[17] ggplot2_3.3.2    tidyverse_1.3.0  scales_1.1.1     workflowr_1.6.2 
-
-loaded via a namespace (and not attached):
- [1] httr_1.4.2         jsonlite_1.7.1     viridisLite_0.3.0  modelr_0.1.8      
- [5] assertthat_0.2.1   highr_0.8          selectr_0.4-2      blob_1.2.1        
- [9] cellranger_1.1.0   yaml_2.2.1         pillar_1.4.6       backports_1.1.10  
-[13] glue_1.4.2         digest_0.6.26      promises_1.1.1     rvest_0.3.6       
-[17] snakecase_0.11.0   colorspace_1.4-1   htmltools_0.5.0    httpuv_1.5.4      
-[21] pkgconfig_2.0.3    broom_0.7.2        haven_2.3.1        webshot_0.5.2     
-[25] later_1.1.0.1      git2r_0.27.1       generics_0.0.2     farver_2.0.3      
-[29] ellipsis_0.3.1     withr_2.3.0        cli_2.1.0          magrittr_1.5      
-[33] crayon_1.3.4       evaluate_0.14      ps_1.4.0           fs_1.5.0          
-[37] fansi_0.4.1        xml2_1.3.2         class_7.3-17       tools_4.0.2       
-[41] hms_0.5.3          lifecycle_0.2.0    munsell_0.5.0      reprex_0.3.0      
-[45] compiler_4.0.2     e1071_1.7-4        rlang_0.4.8        classInt_0.4-3    
-[49] units_0.6-7        grid_4.0.2         rstudioapi_0.11    labeling_0.4.2    
-[53] gtable_0.3.0       DBI_1.1.0          R6_2.4.1           lubridate_1.7.9   
-[57] utf8_1.1.4         rprojroot_1.3-2    KernSmooth_2.23-17 stringi_1.5.3     
-[61] Rcpp_1.0.5         vctrs_0.3.4        dbplyr_1.4.4       tidyselect_1.1.0  
-[65] xfun_0.18         </code></pre>
+<p>There are noticeable differences between Washington and Oregon culvert projects represented in the data. Washington projects tend to more frequently be on migration routes and on paved roads, and on wider streams. Oregon projects are more likely to be on spawning and rearing streams, unpaved roads, and on narrower streams. This likely goes a long way in explaining the large differences in costs across the two states, but can be accounted for with thoughtful inclusion of covariates in the conditioning set.</p>
+<p>The PNSHP culverts data also over-represent smaller, unpaved roads across the board. This limits the usefulness of the data for projecting costs for passage improvements on larger roads (i.e., with speed limits &gt;40 mph). These limitations are likely to be reflected by larger standard errors on any estimates of marginal effects, but should be noted with any presentation of results.</p>
+<p>Finally, a version of the proceeding analysis of the potential explanatory variables will be conducted for the fish passage barrier inventories maintained by Oregon and Washington Departments of Fish and Wildlife. This exercise will reveal how representative the PNSHP projects are relative to potential future projects.</p>
 <pre class="r"><code># Render output
 # rmarkdown::render(here::here(&quot;R/C.culvertsspatial/06.spatialexplore.R&quot;), output_file = here::here(&quot;output/culvertsspatial_report_2020sep24.html&quot;))</code></pre>
 <br>
@@ -979,7 +1137,7 @@ loaded via a namespace (and not attached):
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>R version 4.0.2 (2020-06-22)
 Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 18363)
+Running under: Windows 10 x64 (build 19041)
 
 Matrix products: default
 
@@ -994,30 +1152,30 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] mctest_1.3.1     ggcorrplot_0.1.3 kableExtra_1.3.1 knitr_1.30      
- [5] rmarkdown_2.5    janitor_2.0.1    readxl_1.3.1     sf_0.9-6        
- [9] here_0.1         forcats_0.5.0    stringr_1.4.0    dplyr_1.0.2     
-[13] purrr_0.3.4      readr_1.4.0      tidyr_1.1.2      tibble_3.0.4    
+ [1] mctest_1.3.1     ggcorrplot_0.1.3 kableExtra_1.1.0 knitr_1.29      
+ [5] rmarkdown_2.3    janitor_2.0.1    readxl_1.3.1     sf_0.9-5        
+ [9] here_0.1         forcats_0.5.0    stringr_1.4.0    dplyr_1.0.1     
+[13] purrr_0.3.4      readr_1.3.1      tidyr_1.1.1      tibble_3.0.4    
 [17] ggplot2_3.3.2    tidyverse_1.3.0  scales_1.1.1     workflowr_1.6.2 
 
 loaded via a namespace (and not attached):
  [1] httr_1.4.2         jsonlite_1.7.1     viridisLite_0.3.0  modelr_0.1.8      
  [5] assertthat_0.2.1   highr_0.8          selectr_0.4-2      blob_1.2.1        
- [9] cellranger_1.1.0   yaml_2.2.1         pillar_1.4.6       backports_1.1.10  
-[13] glue_1.4.2         digest_0.6.26      promises_1.1.1     rvest_0.3.6       
-[17] snakecase_0.11.0   colorspace_1.4-1   htmltools_0.5.0    httpuv_1.5.4      
-[21] pkgconfig_2.0.3    broom_0.7.2        haven_2.3.1        webshot_0.5.2     
-[25] later_1.1.0.1      git2r_0.27.1       generics_0.0.2     farver_2.0.3      
-[29] ellipsis_0.3.1     withr_2.3.0        cli_2.1.0          magrittr_1.5      
-[33] crayon_1.3.4       evaluate_0.14      ps_1.4.0           fs_1.5.0          
-[37] fansi_0.4.1        xml2_1.3.2         class_7.3-17       tools_4.0.2       
-[41] hms_0.5.3          lifecycle_0.2.0    munsell_0.5.0      reprex_0.3.0      
-[45] compiler_4.0.2     e1071_1.7-4        rlang_0.4.8        classInt_0.4-3    
-[49] units_0.6-7        grid_4.0.2         rstudioapi_0.11    labeling_0.4.2    
-[53] gtable_0.3.0       DBI_1.1.0          R6_2.4.1           lubridate_1.7.9   
-[57] utf8_1.1.4         rprojroot_1.3-2    KernSmooth_2.23-17 stringi_1.5.3     
-[61] Rcpp_1.0.5         vctrs_0.3.4        dbplyr_1.4.4       tidyselect_1.1.0  
-[65] xfun_0.18         </code></pre>
+ [9] cellranger_1.1.0   yaml_2.2.1         pillar_1.4.6       backports_1.1.8   
+[13] glue_1.4.2         digest_0.6.25      promises_1.1.1     rvest_0.3.6       
+[17] snakecase_0.11.0   colorspace_1.4-1   plyr_1.8.6         htmltools_0.5.0   
+[21] httpuv_1.5.4       pkgconfig_2.0.3    broom_0.7.0        haven_2.3.1       
+[25] webshot_0.5.2      later_1.1.0.1      git2r_0.27.1       generics_0.0.2    
+[29] farver_2.0.3       ellipsis_0.3.1     withr_2.2.0        cli_2.1.0         
+[33] magrittr_1.5       crayon_1.3.4       evaluate_0.14      ps_1.3.3          
+[37] fs_1.4.2           fansi_0.4.1        xml2_1.3.2         class_7.3-17      
+[41] tools_4.0.2        hms_0.5.3          lifecycle_0.2.0    munsell_0.5.0     
+[45] reprex_0.3.0       compiler_4.0.2     e1071_1.7-3        rlang_0.4.8       
+[49] classInt_0.4-3     units_0.6-7        grid_4.0.2         rstudioapi_0.11   
+[53] labeling_0.3       gtable_0.3.0       DBI_1.1.0          reshape2_1.4.4    
+[57] R6_2.4.1           lubridate_1.7.9    utf8_1.1.4         rprojroot_1.3-2   
+[61] KernSmooth_2.23-17 stringi_1.4.6      Rcpp_1.0.5         vctrs_0.3.4       
+[65] dbplyr_1.4.4       tidyselect_1.1.0   xfun_0.16         </code></pre>
 </div>
 </div>
 
@@ -1044,7 +1202,7 @@ footer is added to webpages before the MathJax javascript. -->
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();

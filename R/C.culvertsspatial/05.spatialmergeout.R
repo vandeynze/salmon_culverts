@@ -38,7 +38,8 @@ df_cbp <- read_csv(here("output/spatial/culverts_cbp.csv"))
 df_nhdstreams <- read_csv(here("output/spatial/culverts_nhdstreams.csv")) %>% select(worksite_id, project_year, comid, slope, upst_dist)
 
 # Blake's ArcGIS pulls
-df_blake <- read_xlsx(here("data/Culverts spatial overlays v 20Aug2020.xlsx"), sheet = 1) %>% as_tibble() %>% clean_names() %>% mutate(pure_culv = as.logical(pure_culv))
+df_blake <- read_xlsx(here("data/Culverts spatial overlays v 20Jan2021.xlsx"), sheet = 1) %>% as_tibble() %>% clean_names() %>% mutate(pure_culv = as.logical(pure_culv))
+df_blake <- df_blake %>% mutate(across(ends_with("_buff"), as.numeric))
 
 # NHDPlus Attributes ----
 # From https://www.sciencebase.gov/catalog/item/5669a79ee4b08895842a1d47
@@ -162,7 +163,7 @@ supp_names_unzip <-
     NA_character_
   )
 
-mapply(unzip, zipfile = supp_files, exdir = here("data", "NHDPlusSuppData", replace_na(supp_names_unzip, ".")))
+# mapply(unzip, zipfile = supp_files, exdir = here("data", "NHDPlusSuppData", replace_na(supp_names_unzip, ".")))
 
 # Unzip relevant years for recursively zipped structures
 supp_files_unzip <-
@@ -175,7 +176,7 @@ supp_files_unzip <-
     "RUN" = list.files(here("data","NHDPlusSuppData","RUN"), "*.zip", full.names = TRUE)[51:71],
     "TAV" = list.files(here("data","NHDPlusSuppData","TAV"), "*.zip", full.names = TRUE)[51:71]
   )
-mapply(unzip, zipfile = supp_files_unzip %>% unlist, exdir = gsub("(.*\\/).*", "\\1", supp_files_unzip %>% unlist(use.names = FALSE)) %>% str_sub(1, -2))
+# mapply(unzip, zipfile = supp_files_unzip %>% unlist, exdir = gsub("(.*\\/).*", "\\1", supp_files_unzip %>% unlist(use.names = FALSE)) %>% str_sub(1, -2))
 
 
 # ____ Water Balance Estimates ----
@@ -474,12 +475,13 @@ df_culv_out <-
   # NHD+ stream data
   left_join(df_nhdstreams, by = "worksite_id") %>%
   # Blake's ArcGIS data
-  left_join(df_blake %>% select(worksite_id = worksite_i, nlcd_2001:here_publi), by = "worksite_id")
+  left_join(df_blake %>% select(worksite_id = worksite_i, latitude, longitude, nlcd_2001:water_1km_buff), by = "worksite_id")
 
 # Identify nearest NLCD to project date
 df_culv_out <-
   df_culv_out %>%
   rowwise() %>%
+  select(-x1.x, -x1.y) %>%
   mutate(
     project_year = project_year.x,
     project_year.y = NULL,
@@ -500,24 +502,22 @@ df_culv_out <-
 
 # Write out
 df_culv_out %>%
-  mutate(
-    latitude = st_coordinates(geometry)[,2],
-    longitude = st_coordinates(geometry)[,1],
-    geometry = NULL
-  ) %>%
+  # mutate(
+    # latitude = st_coordinates(geometry)[,2],
+    # longitude = st_coordinates(geometry)[,1],
+    # geometry = NULL
+  # ) %>%
   # st_drop_geometry() %>%
+  # select(-x1.x, -x1.y) %>%
   write_csv(here("output/culverts_full_spatial.csv"))
 
 # Select only "pure" culverts and attach data with project culvert counts from B.culvertsexplore modulee
 df_culv_pure <- read_csv(here("output","culverts_wrk_working.csv")) %>% select(worksite_id, n_worksites, n_culverts, starts_with("action_fishpass"), cost_per_culvert, dist_max, dist_mean)
 df_culv_out_pure <-
   df_culv_out %>%
-  right_join(df_culv_pure) %>%
-  mutate(
-    latitude = st_coordinates(geometry)[,2],
-    longitude = st_coordinates(geometry)[,1],
-    geometry = NULL
-  )
+  right_join(df_culv_pure)
+
 
 df_culv_out_pure %>%
+  select(-x1.x, -x1.y) %>%
   write_csv(here("output/culverts_pure_spatial.csv"))
