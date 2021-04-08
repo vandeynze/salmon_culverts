@@ -37,7 +37,7 @@ cnt = rbind(c(3, 1), c(2, 2), c(0, 4), c(5, 3), c(5, 5), c(7, 3), c(5, 6), c(5, 
   st_multipoint()
 
 #plot
-vis <- function(soln) {
+vis <- function(soln, panel) {
 plot(str)
 plot(bar, col = "red", pch = 19, add = T)
 if(sum(soln) > 0) {
@@ -49,6 +49,8 @@ plot(eb,  col = "blue", add = T)
 text(x = c(3, 1, 4, 6, 5, 10, 9, 11, 15, 15) - 0.5, 
      y = c(0, 3, 2, 3, 4, 0, 2, 2, 0, 1), 
      labels = c("1", "2", "3", "5", "4", "6", "7", "8", "9", "10")) 
-text(x = c(3, 10, 15), y = c(8, 8, 8), 
+text(x = c(3, 10, 14), y = c(8, 8, 8), 
      labels = c("S1, TN1", "S2, TN1", "S3, TN2"))
+text(x = 0.1, y = 8, 
+     labels = panel)
 }

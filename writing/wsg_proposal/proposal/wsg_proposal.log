@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  2 APR 2021 11:25
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  8 APR 2021 11:41
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -306,17 +306,25 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip50
 )
+(/usr/local/texlive/2016/texmf-dist/tex/latex/wrapfig/wrapfig.sty
+\wrapoverhang=\dimen130
+\WF@size=\dimen131
+\c@WF@wrappedlines=\count120
+\WF@box=\box32
+\WF@everypar=\toks23
+Package: wrapfig 2003/01/31  v 3.6
+)
 (/usr/local/texlive/2016/texmf-dist/tex/latex/titlesec/titlesec.sty
 Package: titlesec 2016/03/21 v2.10.2 Sectioning titles
-\ttl@box=\box32
+\ttl@box=\box33
 \beforetitleunit=\skip51
 \aftertitleunit=\skip52
-\ttl@plus=\dimen130
-\ttl@minus=\dimen131
-\ttl@toksa=\toks23
-\titlewidth=\dimen132
-\titlewidthlast=\dimen133
-\titlewidthfirst=\dimen134
+\ttl@plus=\dimen132
+\ttl@minus=\dimen133
+\ttl@toksa=\toks24
+\titlewidth=\dimen134
+\titlewidthlast=\dimen135
+\titlewidthfirst=\dimen136
 
 
 Package titlesec Warning: Non standard sectioning command detected
@@ -325,38 +333,38 @@ Package titlesec Warning: Non standard sectioning command detected
 ) (./wsg_proposal.aux)
 \openout1 = `wsg_proposal.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 14.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 15.
+LaTeX Font Info:    ... okay on input line 15.
+LaTeX Font Info:    Try loading font information for OT1+ptm on input line 15.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
 (/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count120
-\scratchdimen=\dimen135
-\scratchbox=\box33
-\nofMPsegments=\count121
-\nofMParguments=\count122
-\everyMPshowfont=\toks24
-\MPscratchCnt=\count123
-\MPscratchDim=\dimen136
-\MPnumerator=\count124
-\makeMPintoPDFobject=\count125
-\everyMPtoPDFconversion=\toks25
+\scratchcounter=\count121
+\scratchdimen=\dimen137
+\scratchbox=\box34
+\nofMPsegments=\count122
+\nofMParguments=\count123
+\everyMPshowfont=\toks25
+\MPscratchCnt=\count124
+\MPscratchDim=\dimen138
+\MPnumerator=\count125
+\makeMPintoPDFobject=\count126
+\everyMPtoPDFconversion=\toks26
 ) (/usr/local/texlive/2016/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
 
@@ -406,82 +414,125 @@ e
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-\AtBeginShipoutBox=\box34
-Package hyperref Info: Link coloring OFF on input line 14.
+\AtBeginShipoutBox=\box35
+Package hyperref Info: Link coloring OFF on input line 15.
 (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
 (/usr/local/texlive/2016/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
-\c@section@level=\count126
+\c@section@level=\count127
 )
-LaTeX Info: Redefining \ref on input line 14.
-LaTeX Info: Redefining \pageref on input line 14.
-LaTeX Info: Redefining \nameref on input line 14.
+LaTeX Info: Redefining \ref on input line 15.
+LaTeX Info: Redefining \pageref on input line 15.
+LaTeX Info: Redefining \nameref on input line 15.
 
 (./wsg_proposal.out) (./wsg_proposal.out)
 \@outlinefile=\write4
 \openout4 = `wsg_proposal.out'.
 
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 16.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 17.
 
-Overfull \hbox (3.01834pt too wide) in paragraph at lines 53--54
-\OT1/ptm/m/n/12 tives and the weighted sum of the ob-jec-tives is max-i-mized. 
-In the sec-ond ap-proach (i.e. $\OML/cmm/m/it/12 ^^O\OMS/cmsy/m/n/12 ^^@$\OT1/p
-tm/m/n/12 constraint
+
+pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./figures/opt_s.pdf): PDF in
+clusion: found PDF version <1.6>, but at most version <1.5> allowed
+<figures/opt_s.pdf, id=88, 442.10721pt x 252.50636pt>
+File: figures/opt_s.pdf Graphic file (type pdf)
+ <use figures/opt_s.pdf>
+Package pdftex.def Info: figures/opt_s.pdf used on input line 55.
+(pdftex.def)             Requested size: 225.4804pt x 128.78423pt.
+
+
+pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./figures/opt_h.pdf): PDF in
+clusion: found PDF version <1.6>, but at most version <1.5> allowed
+<figures/opt_h.pdf, id=89, 442.10721pt x 252.50636pt>
+File: figures/opt_h.pdf Graphic file (type pdf)
+ <use figures/opt_h.pdf>
+Package pdftex.def Info: figures/opt_h.pdf used on input line 56.
+(pdftex.def)             Requested size: 225.4804pt x 128.78423pt.
+
+
+pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./figures/opt_e.pdf): PDF in
+clusion: found PDF version <1.6>, but at most version <1.5> allowed
+<figures/opt_e.pdf, id=90, 442.10721pt x 252.50636pt>
+File: figures/opt_e.pdf Graphic file (type pdf)
+ <use figures/opt_e.pdf>
+Package pdftex.def Info: figures/opt_e.pdf used on input line 57.
+(pdftex.def)             Requested size: 225.4804pt x 128.78423pt.
+
+
+pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./figures/opt_d.pdf): PDF in
+clusion: found PDF version <1.6>, but at most version <1.5> allowed
+<figures/opt_d.pdf, id=91, 442.10721pt x 252.50636pt>
+File: figures/opt_d.pdf Graphic file (type pdf)
+ <use figures/opt_d.pdf>
+Package pdftex.def Info: figures/opt_d.pdf used on input line 58.
+(pdftex.def)             Requested size: 225.4804pt x 128.78423pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 55--59
+[][]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 55--59
+[]
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 55--59
+[]
  []
 
 [1
 
 {/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 77--78
+[2 <./figures/opt_s.pdf> <./figures/opt_h.pdf> <./figures/opt_e.pdf> <./figures
+/opt_d.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 92--93
 
  []
 
-[2]
-No file wsg_proposal.bbl.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 91.
-
-Underfull \hbox (badness 10000) in paragraph at lines 88--91
+[3] (./wsg_proposal.bbl
+Underfull \hbox (badness 10000) in paragraph at lines 103--1
 
  []
 
-[3
+
+Package natbib Warning: Empty `thebibliography' environment on input line 3.
+
+)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 106.
+ [4
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 91.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 106.
  (./wsg_proposal.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 91.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 91.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 106.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 106.
 Package rerunfilecheck Info: File `wsg_proposal.out' has not changed.
 (rerunfilecheck)             Checksum: 5D84749651FF7117C0AA0D1175F4903E;1373.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 91.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 106.
  ) 
 Here is how much of TeX's memory you used:
- 7061 strings out of 493014
- 100793 string characters out of 6133351
- 202265 words of memory out of 5000000
- 10480 multiletter control sequences out of 15000+600000
- 18003 words of font info for 47 fonts, out of 8000000 for 9000
+ 7136 strings out of 493014
+ 101904 string characters out of 6133351
+ 203625 words of memory out of 5000000
+ 10550 multiletter control sequences out of 15000+600000
+ 15805 words of font info for 38 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,9n,32p,732b,332s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 34i,5n,32p,1362b,348s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/te
-xlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texl
-ive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/local/texl
-ive/2016/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmmib8.pfb></usr/local/
-texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/te
-xlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texli
-ve/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texliv
-e/2016/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/tex
-mf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fo
-nts/type1/urw/times/utmri8a.pfb>
-Output written on wsg_proposal.pdf (3 pages, 103221 bytes).
+xlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/tex
+live/2016/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/
+texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist
+/fonts/type1/urw/times/utmri8a.pfb>
+Output written on wsg_proposal.pdf (4 pages, 87225 bytes).
 PDF statistics:
- 160 PDF objects out of 1000 (max. 8388607)
- 143 compressed objects within 2 object streams
- 31 named destinations out of 1000 (max. 500000)
- 169 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 170 PDF objects out of 1000 (max. 8388607)
+ 149 compressed objects within 2 object streams
+ 33 named destinations out of 1000 (max. 500000)
+ 189 words of extra memory for PDF output out of 10000 (max. 10000000)
 

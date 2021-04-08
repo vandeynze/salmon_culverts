@@ -37,14 +37,16 @@ s <-  rbind(c(rep(1, 5), rep(0, 5)),
             c(rep(0, 8), rep(1, 2))) #stock mat
 brc <- c(rep(10, 9), 20) #barrier replacement cost vec
 
+## Visualize
+pdf("opt_syst.pdf")
+vis(rep(0, nb), "a)")
+dev.off()
+
 # manager inputs
 B <- 40 #budget
 wh <- 1 #habitat weight
 we <- 0 #equity weight
 wd <- 0 #diversification weight
-
-## Visualize
-vis(rep(0, nb))
 
 ## optimization 
 # objective function
@@ -67,4 +69,6 @@ nl_obj <- function(x) {ifelse(sum(brc * x) - B > 0, -99999999, #budget constrain
 soln1 <- genoud(nl_obj, nvars = nb, max = TRUE, Domains = cbind(rep(0, nb), rep(1, nb)),
                 data.type.int = TRUE, pop.size = 3000)
 
-vis(soln1$par)
+pdf(ifelse(wh == 1, "opt_h.pdf", ifelse(we == 1, "opt_e.pdf", "opt_d.pdf")))
+vis(soln1$par, ifelse(wh == 1, "b)", ifelse(we == 1, "c)", "d)")))
+dev.off()
