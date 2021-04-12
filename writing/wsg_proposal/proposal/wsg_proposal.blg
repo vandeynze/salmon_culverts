@@ -3,15 +3,17 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: wsg_proposal.aux
 The style file: unsrt.bst
 I couldn't open database file wsg.bib
----line 43 of file wsg_proposal.aux
+---line 46 of file wsg_proposal.aux
  : \bibdata{wsg
  :             }
 I'm skipping whatever remains of this command
-I found no \citation commands---while reading file wsg_proposal.aux
 I found no database files---while reading file wsg_proposal.aux
+Warning--I didn't find a database entry for "hickey2018highway"
+Warning--I didn't find a database entry for "brown2019coming"
+Warning--I didn't find a database entry for "o2005optimizing"
 You've used 0 entries,
             1791 wiz_defined-function locations,
-            445 strings with 3525 characters,
+            448 strings with 3572 characters,
 and the built_in function-call counts, 18 in all, are:
 = -- 0
 > -- 0
@@ -50,4 +52,4 @@ warning$ -- 0
 while$ -- 0
 width$ -- 0
 write$ -- 2
-(There were 3 error messages)
+(There were 2 error messages)

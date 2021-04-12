@@ -1,7 +1,7 @@
 \documentclass[12pt]{elsarticle}
 \usepackage{times}
 \usepackage[margin=1in]{geometry}
-\pagestyle{empty}
+%\pagestyle{empty}
 \usepackage{natbib}
 \bibliographystyle{unsrt}
 \usepackage{color}
@@ -9,6 +9,7 @@
 \usepackage{hyperref}
 \usepackage{wrapfig}
 \usepackage{titlesec}
+%\usepackage[section]{placeins}
 \titleformat{\section}[runin]{\normalfont\bfseries}{\thesection.}{3pt}{}
 
 
@@ -35,7 +36,27 @@
 %
 \section{Background}
 \subsection{Fish passage in Washington state}
+
+ In 2001, Washington State was sued by the United States Department of Justice on behalf of 21 Northwest tribes for violating treaty fishing rights. The plaintiff argued that state-owned culverts are barriers to salmon and steelhead accessing historical upstream spawning habitat, violating the Stevens Treaties \citep{hickey2018highway}. The lawsuit resulted in a 2013 federal court injunction requiring the state remove barrier culverts under its jurisdiction by 2030. After nearly two decades of legal battles, in 2018, the U.S. Supreme Court ruled in favor of the tribes, upholding the 2013 federal injunction. 
+
+As of 2020, the Washington State Department of Transportation (WSDOT), responsible for the vast majority of state-owned culverts within the case area, has corrected 87 injunction barrier culverts opening up an estimated 383.3 miles of habitat at a cost of over \$159 million. Since the ruling, WSDOT has replaced an average of 12.4 culverts per year, including 13 in 2020. To satisfy the federal injunction, the rate of culvert replacements must ramp up dramatically. 
+
+Importantly, the 2013 injunction strictly applies to state-owned culverts whereas there exist an estimated 3,000 and 1,300 additional barrier culverts owned by counties and cities respectively, along with barrier culverts on private lands, often on the same streams as state-owned culverts \citep{brown2019coming}. While some cities and counties are able to access the financial resources for fish passage projects, e.g.\ King county has used the surface water management fee to fund culvert restoration projects, other cities and counties do not have access to dedicated funding streams, primarily relying on grant funding.  
+
+The Brian Abbott Fish Barrier Removal Board, established by the Washington State Legislature, to recommend priority projects to the Governor's Office and Legislature for funding, thereby promoting the coordinated and strategic removal of barriers to fish passage. \href{https://rco.wa.gov/wp-content/uploads/2020/10/FBRB-Grants-2021.pdf}{In the 2021-2023 biennium, 87 ranked projects were recommended for funding at a total of \$61.3 million. Grant applicants include cities, counties, and non-profit organizations.}
+
+Currently WSDOT, the Brian Abbott Fish Barrier Removal Board, and cities and counties all \textcolor{red}{DESCRIBE THE PRIORITIZATION INDEX METHOD.}
+
+
+
 \subsection{Optimization tools in fish passage}
+
+While there is a rich academic literature applying optimization tools to fish passage (CITES), recently these tools have gained traction with resource managers. Here we highlight two such applications of optimization tools used in fish passage. 
+
+In the fall of 2019 the California Fish Passage Forum announced the launch of a web-based user-friendly optimization DST called \href{https://fishpass.psmfc.org}{FISH\emph{Pass}} to guide strategic planning around fish passage barrier removal across the state. The development of FISH\emph{Pass} resulted from a collaborative effort between the California Fish Passage Forum, the National Fish Passage Program, the Pacific States Marine Fisheries Commission, and others and is based on the mixed integer linear programming optimization framework developed by \citet{o2005optimizing}. The adoption of FISH\emph{Pass} in California replaced rank and score methods with stated goals of improving objectivity in recommendations, providing a systematic framework to project selection given limited financial resources, and balanced multiple and possibly competing objectives and constraints. \href{https://www.cafishpassageforum.org/2020-projects}{Currently, the California Fish Passage Forum is funding research that will apply the FISH\emph{Pass} tool to the Smith River watershed to learn about the performance of FISH\emph{Pass} and identify approaches and data inputs to strengthen the model.}
+
+A second application is \href{https://greatlakesconnectivity.org}{FishWerks} developed for the Great Lakes region as a collaboration between Cornell University and the University of Wisconsin. The FishWerks DST allows users to generate restoration plans including dam removal and barrier culvert restoration. \citet{moody2017pet} identify three necessary features for a DST to bring value to users. First, the underlying data must be dynamic and up-to-date. Second, maintenance must be made easy to ensure use, because organizations rarely have the resources including technical staff to support hosting and maintaining the DST beyond the initial project period. Third, due to a potential perceived black box nature of an optimization DST, the tool must offer significant improvements to the simpler planning methods to ensure adoption.
+
 \subsection{Optimization for Washington fish passage}
 
 %
@@ -47,6 +68,7 @@
 
 \subsection{Network configuration}
 \subsection{Ownership}
+
 \subsection{Optimization}
 
 We will explore two alternative approaches to define cost-effective restoration plans that meet multiple planning goals (e.g.\ salmon habitat gains, equity considerations, and risk mitigation). Both approaches are considered ``a priori'' methods for multiobjective optimization because the decision maker must specify their preferences related to the various objectives prior to the optimization. 
@@ -64,7 +86,6 @@ In the first approach (i.e.\ linear scalarization), managers specify importance 
 Panel (b) represents the habitat-maximizing solution (the habitat weight is set to one and all other weights are set to zero) , with 14 units of habitat gained (11 on stream 1 and 3 on stream 2), but all of the benefits going to a single tribal nation. In the habitat-maximizing solution, the budget is exhausted by restoring 4 culverts for a total cost of \$40. Panel (c) represents the equity-maximizing approach (the equity weight is set to one and all other weights are set to zero), with 9 units of habitat restored (4 on stream 1 and 5 on stream 3). In this solution, the budget is also exhausted and the habitat gains are nearly evenly split across tribal nations (4 for Tribal Nation 1 and 5 for Tribal Nation 2). Finally, panel (d) represents the diversification-maximizing solution (the weight on diversifying habitat gains across salmon stocks is set to one and all other weights are set to zero), with a total of 8 units of habitat gained (4 on stream 1, 3 on stream 2, and 1 on stream 3) spread across the three salmon stocks. Interestingly, the budget is not exhausted in the diversification-maximizing solution as total expenditures for the 3 culverts restored is \$30. Whenever objective functions are defined by even allocations, e.g.\ across tribal nations or salmon stocks, the budget constraint may not hold.
 
 In the second approach (i.e.\ $\epsilon-$constraint method), one objective function is maximized and lower bounds, $\epsilon$ parameters are provided for all remaining objectives. For example, the problem can be defined to maximize habitat gains subject to each tribal nation receiving some minimum fraction of the habitat gains or some minimum fraction of total expenditures, or a constraint such that habitat gains are distributed across some minimum number of salmon stocks.
-
 
 
 %As an illustrative example of the first approach, suppose Lewis County wants to define a restoration plan (a package of culverts to be restored) that balances habitat increases for Chinook salmon in the injunction area with equity and risk mitigation. Further suppose Lewis County had a budget of B dollars to invest in the restoration plan and does not want to restore any culverts outside of its jurisdiction. Our framework would solve the following problem (blue text represents manager inputs):
