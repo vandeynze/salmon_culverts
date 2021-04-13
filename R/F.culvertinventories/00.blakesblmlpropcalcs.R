@@ -10,10 +10,10 @@ library(janitor)
 df <- read_excel(here("data/First 50k 500m buff BLM own.xlsx"), sheet = 1)
 
 names(df)
-n_distinct(df$Fpb_ftr_id) # Site ID
-df %>% tabyl(Site_recor) # Not sure, all 0
-n_distinct(df$Invent_id) # A new internal Site ID (?)
-df %>% tabyl(Property_s) # Property ownership labels
+n_distinct(df$Fpb_ftr_id) # Site ID # Per BF: legacy site ID from ODFW inventory, not unique with WDFW invenotry so invent_id built across the two
+df %>% tabyl(Site_recor) # Not sure, all 0 # Per BF: legacy site ID from WDFW inventory not included in test run
+n_distinct(df$Invent_id) # A new internal Site ID # Confirmed by BF
+df %>% tabyl(Property_s) # Property ownership labels # Confirmed by BF not unique to site ID (multiple ownership "polygons" per site due to internal buffer - cover mechanics)
 summary(df$Area_Meters) # Area in of ownership type in sq meters
 
 # Pivot wider
@@ -51,7 +51,9 @@ df_wide <-
   clean_names() %>%
   # And add a total column
   rowwise() %>%
-  mutate(tot = sum(c_across(blm:nps), na.rm = TRUE))
+  mutate(tot = sum(c_across(blm:nps), na.rm = TRUE)) %>%
+  # New line to set NAs as true zeros per BF suggestion
+  mutate(across(c(blm:nps), ~replace_na(., 0)))
 
 # Sweet now we need proportions
 df_wide <-
@@ -63,6 +65,7 @@ df_wide <-
       .names = "{col}_prop"
     )
   )
+# NAs as zeros carrys through by properties of math
 
 # Great! Eye check for first 10 rows or so looks just like Blake's pivot tables. 
 
