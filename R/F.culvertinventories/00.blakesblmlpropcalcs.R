@@ -21,11 +21,11 @@ summary(df$Area_Meters) # Area in of ownership type in sq meters
 # We want it wider so that each row is a site and each column is the area for each property class
 
 # First lets drop the extra columns
-df <- df %>% clean_names() %>% select(-invent_id, -site_recor)
+df <- df %>% clean_names() %>% select(-fpb_ftr_id, -site_recor)
 
 # Let's check how many unique property classes there are by site
 df %>%
-  group_by(fpb_ftr_id) %>%
+  group_by(invent_id) %>%
   summarize(
     n = n(),
     n_prop = n_distinct(property_s),
@@ -36,14 +36,14 @@ df %>%
 # Okay so one problem is that the rows are not uniquely identified, so we need to do some summing first
 df <-
   df %>%
-  group_by(fpb_ftr_id, property_s) %>%
+  group_by(invent_id, property_s) %>%
   summarize(area_meters_sum = sum(area_meters))
 
 # Then we will "pivot_wide"
 df_wide <-
   df %>%
   pivot_wider(
-    id_cols = fpb_ftr_id,
+    id_cols = invent_id,
     names_from = property_s,
     values_from = area_meters_sum
   ) %>%
