@@ -2,54 +2,47 @@ This is BibTeX, Version 0.99d (TeX Live 2016)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: wsg_proposal.aux
 The style file: unsrt.bst
-I couldn't open database file wsg.bib
----line 46 of file wsg_proposal.aux
- : \bibdata{wsg
- :             }
-I'm skipping whatever remains of this command
-I found no database files---while reading file wsg_proposal.aux
-Warning--I didn't find a database entry for "hickey2018highway"
-Warning--I didn't find a database entry for "brown2019coming"
-Warning--I didn't find a database entry for "o2005optimizing"
-You've used 0 entries,
+Database file #1: wsg.bib
+Warning--I didn't find a database entry for "battin2007projected"
+You've used 4 entries,
             1791 wiz_defined-function locations,
-            448 strings with 3572 characters,
-and the built_in function-call counts, 18 in all, are:
-= -- 0
-> -- 0
+            475 strings with 4480 characters,
+and the built_in function-call counts, 879 in all, are:
+= -- 70
+> -- 51
 < -- 0
-+ -- 0
-- -- 0
-* -- 2
-:= -- 7
-add.period$ -- 0
-call.type$ -- 0
-change.case$ -- 0
++ -- 19
+- -- 15
+* -- 68
+:= -- 159
+add.period$ -- 12
+call.type$ -- 4
+change.case$ -- 4
 chr.to.int$ -- 0
-cite$ -- 0
-duplicate$ -- 0
-empty$ -- 1
-format.name$ -- 0
-if$ -- 1
+cite$ -- 4
+duplicate$ -- 35
+empty$ -- 78
+format.name$ -- 15
+if$ -- 180
 int.to.chr$ -- 0
-int.to.str$ -- 0
-missing$ -- 0
-newline$ -- 3
-num.names$ -- 0
-pop$ -- 0
+int.to.str$ -- 4
+missing$ -- 4
+newline$ -- 23
+num.names$ -- 4
+pop$ -- 6
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 1
+skip$ -- 13
 stack$ -- 0
-substring$ -- 0
-swap$ -- 0
+substring$ -- 47
+swap$ -- 4
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 0
-width$ -- 0
-write$ -- 2
-(There were 2 error messages)
+while$ -- 9
+width$ -- 5
+write$ -- 45
+(There was 1 warning)
