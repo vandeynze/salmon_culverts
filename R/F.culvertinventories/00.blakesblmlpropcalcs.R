@@ -42,6 +42,7 @@ df <-
 # Then we will "pivot_wide"
 df_wide <-
   df %>%
+  ungroup() %>%
   pivot_wider(
     id_cols = invent_id,
     names_from = property_s,
@@ -51,16 +52,16 @@ df_wide <-
   clean_names() %>%
   # And add a total column
   rowwise() %>%
-  mutate(tot = sum(c_across(blm:nps), na.rm = TRUE)) %>%
+  mutate(tot = sum(c_across(-invent_id), na.rm = TRUE)) %>%
   # New line to set NAs as true zeros per BF suggestion
-  mutate(across(c(blm:nps), ~replace_na(., 0)))
+  mutate(across(-invent_id, ~replace_na(., 0)))
 
 # Sweet now we need proportions
 df_wide <-
   df_wide %>%
   mutate(
     across(
-      blm:nps,
+      -invent_id,
       ~ . / tot,
       .names = "{col}_prop"
     )
