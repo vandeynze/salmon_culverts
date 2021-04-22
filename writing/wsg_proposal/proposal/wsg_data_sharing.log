@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  22 APR 2021 13:04
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  22 APR 2021 14:08
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -89,6 +89,7 @@ File: upsy.fd 2001/06/04 font definitions for U/psy.
 \@sep=\skip43
 \@@sep=\skip44
 
+(./wsg_data_sharing.spl)
 (/usr/local/texlive/2016/texmf-dist/tex/latex/natbib/natbib.sty
 Package: natbib 2010/09/13 8.31b (PWD, AO)
 \bibhang=\skip45
@@ -467,7 +468,7 @@ Package: array 2014/10/28 v2.4c Tabular extension package (FMi)
 \everycr=\toks28
 \minrowclearance=\skip55
 )
-No file wsg_data_sharing.aux.
+(./wsg_data_sharing.aux)
 \openout1 = `wsg_data_sharing.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 16.
@@ -484,6 +485,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 16.
 LaTeX Font Info:    ... okay on input line 16.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 16.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 16.
+
 (/usr/local/texlive/2016/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
@@ -569,6 +571,8 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 16.
 LaTeX Info: Redefining \pageref on input line 16.
 LaTeX Info: Redefining \nameref on input line 16.
+
+(./wsg_data_sharing.out) (./wsg_data_sharing.out)
 \@outlinefile=\write4
 \openout4 = `wsg_data_sharing.out'.
 
@@ -576,41 +580,110 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/bx/n' in size <12> not available
 (Font)              Font shape `T1/ntxtlf/b/n' tried instead on input line 18.
 LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 (Font)              scaled to size 12.0pt on input line 18.
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 22.
+
+Underfull \hbox (badness 10000) in paragraph at lines 23--24
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 25--26
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 27--28
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 29--30
+
+ []
+
+LaTeX Font Info:    Try loading font information for TS1+ntxtlf on input line 3
+5.
+(/usr/local/texlive/2016/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
+File: ts1ntxtlf.fd 2015/01/18 v1.0 fd file for TS1/ntxtlf
+)
+LaTeX Font Info:    Font shape `TS1/ntxtlf/m/n' will be
+(Font)              scaled to size 12.0pt on input line 35.
+
+Underfull \hbox (badness 10000) in paragraph at lines 38--39
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 41--43
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 44--47
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 48--51
+
+ []
 
 [1
 
 {/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 22.
+Underfull \hbox (badness 10000) in paragraph at lines 52--55
 
-(./wsg_data_sharing.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 22.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 22.
+ []
 
 
-Package rerunfilecheck Warning: File `wsg_data_sharing.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
+Underfull \hbox (badness 10000) in paragraph at lines 57--60
 
-Package rerunfilecheck Info: Checksums for `wsg_data_sharing.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  D41D8CD98F00B204E9800998ECF8427E;0.
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 61--64
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 65--68
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 69--72
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 73--76
+
+ []
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 80.
+[2]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 80.
+ (./wsg_data_sharing.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 80.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 80.
+Package rerunfilecheck Info: File `wsg_data_sharing.out' has not changed.
+(rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 8512 strings out of 493014
- 121616 string characters out of 6133351
- 217410 words of memory out of 5000000
- 11946 multiletter control sequences out of 15000+600000
- 11000 words of font info for 20 fonts, out of 8000000 for 9000
+ 8566 strings out of 493014
+ 122473 string characters out of 6133351
+ 221535 words of memory out of 5000000
+ 11974 multiletter control sequences out of 15000+600000
+ 11376 words of font info for 21 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,5n,68p,871b,348s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}</us
-r/local/texlive/2016/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb></usr/loca
-l/texlive/2016/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb>
-Output written on wsg_data_sharing.pdf (1 page, 48483 bytes).
+ 36i,5n,68p,871b,434s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc}{/usr/
+local/texlive/2016/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}</usr/local/
+texlive/2016/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb></usr/local/texliv
+e/2016/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb>
+Output written on wsg_data_sharing.pdf (2 pages, 57712 bytes).
 PDF statistics:
- 22 PDF objects out of 1000 (max. 8388607)
- 16 compressed objects within 1 object stream
- 2 named destinations out of 1000 (max. 500000)
+ 45 PDF objects out of 1000 (max. 8388607)
+ 38 compressed objects within 1 object stream
+ 16 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

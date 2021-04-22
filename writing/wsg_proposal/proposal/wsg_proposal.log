@@ -1,6 +1,6 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  22 APR 2021 07:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  22 APR 2021 14:23
 entering extended mode
- restricted \write18 enabled.
+ \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
 **wsg_proposal.tex
@@ -673,11 +673,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 128--129
 
  []
 
-[5]
+
+LaTeX Warning: Reference `sec:summary' on page 5 undefined on input line 156.
+
+[5] [6] [7]
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 14.4pt on input line 153.
+(Font)              scaled to size 14.4pt on input line 181.
  (./wsg_proposal.bbl
-Underfull \hbox (badness 10000) in paragraph at lines 153--1
+Underfull \hbox (badness 10000) in paragraph at lines 181--1
 
  []
 
@@ -685,22 +688,26 @@ Underfull \hbox (badness 10000) in paragraph at lines 153--1
 
 Package natbib Warning: There were undefined citations.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 156.
-[6
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 184.
+[8
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 156.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 184.
  (./wsg_proposal.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 156.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 156.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 184.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 184.
 Package rerunfilecheck Info: File `wsg_proposal.out' has not changed.
-(rerunfilecheck)             Checksum: 5D84749651FF7117C0AA0D1175F4903E;1373.
+(rerunfilecheck)             Checksum: 0F6F7149AA17DD8C27AEDC2DABD657AA;1374.
+
+
+LaTeX Warning: There were undefined references.
+
  ) 
 Here is how much of TeX's memory you used:
- 8699 strings out of 493014
- 124471 string characters out of 6133351
- 223080 words of memory out of 5000000
- 12062 multiletter control sequences out of 15000+600000
+ 8708 strings out of 493014
+ 124537 string characters out of 6133351
+ 224132 words of memory out of 5000000
+ 12064 multiletter control sequences out of 15000+600000
  22892 words of font info for 35 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  36i,9n,68p,1361b,372s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -711,10 +718,10 @@ exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
 xlive/2016/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb></usr/local/texlive/
 2016/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb></usr/local/texlive/2016/t
 exmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb>
-Output written on wsg_proposal.pdf (6 pages, 2648342 bytes).
+Output written on wsg_proposal.pdf (8 pages, 2653353 bytes).
 PDF statistics:
- 198 PDF objects out of 1000 (max. 8388607)
- 174 compressed objects within 2 object streams
- 41 named destinations out of 1000 (max. 500000)
+ 216 PDF objects out of 1000 (max. 8388607)
+ 190 compressed objects within 2 object streams
+ 48 named destinations out of 1000 (max. 500000)
  194 words of extra memory for PDF output out of 10000 (max. 10000000)
 
