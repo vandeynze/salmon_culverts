@@ -1,5 +1,5 @@
 \documentclass[12pt]{elsarticle}
-\usepackage{times}
+\usepackage{newtxtext}
 \usepackage[margin=1in]{geometry}
 %\pagestyle{empty}
 \usepackage{natbib}
@@ -9,7 +9,7 @@
 \usepackage{hyperref}
 \usepackage{wrapfig}
 \usepackage{titlesec}
-%\usepackage[section]{placeins}
+\usepackage{colortbl}
 \titleformat{\section}[runin]{\normalfont\bfseries}{\thesection.}{3pt}{}
 
 
@@ -28,32 +28,42 @@
 
 \subsection{Objectives}
 \begin{enumerate}
-\item Synthesize methods and datasets for fish passage prioritization for all counties within the Washington state injunction area.
+\item Synthesize methods and datasets for fish passage prioritization for all counties, and any other entities using prioritization indices, within the Washington state injunction area.
 \item Generate a geospatial dataset of current usual and accustomed fishing areas for tribal nations in Western Washington.
 \item Generate predicted cost estimates for all barriers to fish passage within the Washington state injunction area. 
 \end{enumerate}
 
+\clearpage
 %
 \section{Background}
 \subsection{Fish passage in Washington state}
+
+
+\begin{wrapfigure}{r}{10cm}
+\includegraphics[width=10cm]{figures/fig_mapconcrete.png}
+\caption{Barriers to fish passage in the WDNR XXXX database by ownership type. The small-scale map shows the entire Washington state injunction area (red dotted line) and the large-scale map shows barriers to fish passage for all ownership types for XXXXX.\label{fig:barrierMap}}
+\end{wrapfigure}%
+
+
 
  In 2001, Washington State was sued by the United States Department of Justice on behalf of 21 Northwest tribes for violating treaty fishing rights. The plaintiff argued that state-owned culverts are barriers to salmon and steelhead accessing historical upstream spawning habitat, violating the Stevens Treaties \citep{hickey2018highway}. The lawsuit resulted in a 2013 federal court injunction requiring the state remove barrier culverts under its jurisdiction by 2030. After nearly two decades of legal battles, in 2018, the U.S. Supreme Court ruled in favor of the tribes, upholding the 2013 federal injunction. 
 
 As of 2020, the Washington State Department of Transportation (WSDOT), responsible for the vast majority of state-owned culverts within the case area, has corrected 87 injunction barrier culverts opening up an estimated 383.3 miles of habitat at a cost of over \$159 million. Since the ruling, WSDOT has replaced an average of 12.4 culverts per year, including 13 in 2020. To satisfy the federal injunction, the rate of culvert replacements must ramp up dramatically. 
 
-Importantly, the 2013 injunction strictly applies to state-owned culverts whereas there exist an estimated 3,000 and 1,300 additional barrier culverts owned by counties and cities respectively, along with barrier culverts on private lands, often on the same streams as state-owned culverts \citep{brown2019coming}. While some cities and counties are able to access the financial resources for fish passage projects, e.g.\ King county has used the surface water management fee to fund culvert restoration projects, other cities and counties do not have access to dedicated funding streams, primarily relying on grant funding.  
+Importantly, the 2013 injunction strictly applies to state-owned culverts whereas there exist an estimated 3,000 and 1,300 additional barrier culverts owned by counties and cities respectively, along with barrier culverts on private lands, often on the same streams as state-owned culverts \citep{brown2019coming}. Figure~\ref{fig:barrierMap} shows blockages to fish passage recorded in the Washington Department of Natural Resources (WDNR) database for each of 6 ownership types: cities, counties, federal, private, state, and other. There is heterogeneity within many of these ownership types in terms of goals, priorities, and resources for removing barriers to fish passage. For example, while some cities and counties are able to access the financial resources for fish passage projects, e.g.\ King county has used the surface water management fee to fund culvert restoration projects, other cities and counties do not have access to dedicated funding streams, primarily relying on grant funding.  
 
-The Brian Abbott Fish Barrier Removal Board, established by the Washington State Legislature, to recommend priority projects to the Governor's Office and Legislature for funding, thereby promoting the coordinated and strategic removal of barriers to fish passage. \href{https://rco.wa.gov/wp-content/uploads/2020/10/FBRB-Grants-2021.pdf}{In the 2021-2023 biennium, 87 ranked projects were recommended for funding at a total of \$61.3 million. Grant applicants include cities, counties, and non-profit organizations.}
+The Brian Abbott Fish Barrier Removal Board, established by the Washington State Legislature, to recommend priority projects to the Governor's Office and Legislature for funding, thereby promoting the coordinated and strategic removal of barriers to fish passage. In the 2021-2023 biennium, 87 ranked projects were recommended for funding at a total of \$61.3 million. Grant applicants include cities, counties, and non-profit organizations.
 
 Currently WSDOT, the Brian Abbott Fish Barrier Removal Board, and cities and counties all \textcolor{red}{DESCRIBE THE PRIORITIZATION INDEX METHOD.}
-
 
 
 \subsection{Optimization tools in fish passage}
 
 While there is a rich academic literature applying optimization tools to fish passage (CITES), recently these tools have gained traction with resource managers. Here we highlight two such applications of optimization tools used in fish passage. 
 
-In the fall of 2019 the California Fish Passage Forum announced the launch of a web-based user-friendly optimization DST called \href{https://fishpass.psmfc.org}{FISH\emph{Pass}} to guide strategic planning around fish passage barrier removal across the state. The development of FISH\emph{Pass} resulted from a collaborative effort between the California Fish Passage Forum, the National Fish Passage Program, the Pacific States Marine Fisheries Commission, and others and is based on the mixed integer linear programming optimization framework developed by \citet{o2005optimizing}. The adoption of FISH\emph{Pass} in California replaced rank and score methods with stated goals of improving objectivity in recommendations, providing a systematic framework to project selection given limited financial resources, and balanced multiple and possibly competing objectives and constraints. \href{https://www.cafishpassageforum.org/2020-projects}{Currently, the California Fish Passage Forum is funding research that will apply the FISH\emph{Pass} tool to the Smith River watershed to learn about the performance of FISH\emph{Pass} and identify approaches and data inputs to strengthen the model.}
+In the fall of 2019 the California Fish Passage Forum announced the launch of a web-based user-friendly optimization DST called \href{https://fishpass.psmfc.org}{FISH\emph{Pass}} to guide strategic planning around fish passage barrier removal across the state. The development of FISH\emph{Pass} resulted from a collaborative effort between the California Fish Passage Forum, the National Fish Passage Program, the Pacific States Marine Fisheries Commission, and others and is based on the mixed integer linear programming optimization framework developed by \citet{o2005optimizing}. The adoption of FISH\emph{Pass} in California replaced rank and score methods with stated goals of improving objectivity in recommendations, providing a systematic framework to project selection given limited financial resources, and balanced multiple and possibly competing objectives and constraints. Currently, the California Fish Passage Forum is funding research that will apply the FISH\emph{Pass} tool to the Smith River watershed to learn about the performance of FISH\emph{Pass} and identify approaches and data inputs to strengthen the model.
+
+%\href{https://www.cafishpassageforum.org/2020-projects}{Currently, the California Fish Passage Forum is funding research that will apply the FISH\emph{Pass} tool to the Smith River watershed to learn about the performance of FISH\emph{Pass} and identify approaches and data inputs to strengthen the model.}
 
 A second application is \href{https://greatlakesconnectivity.org}{FishWerks} developed for the Great Lakes region as a collaboration between Cornell University and the University of Wisconsin. The FishWerks DST allows users to generate restoration plans including dam removal and barrier culvert restoration. \citet{moody2017pet} identify three necessary features for a DST to bring value to users. First, the underlying data must be dynamic and up-to-date. Second, maintenance must be made easy to ensure use, because organizations rarely have the resources including technical staff to support hosting and maintaining the DST beyond the initial project period. Third, due to a potential perceived black box nature of an optimization DST, the tool must offer significant improvements to the simpler planning methods to ensure adoption.
 
@@ -75,15 +85,16 @@ A second application is \href{https://greatlakesconnectivity.org}{FishWerks} dev
 
 \subsection{Optimization}
 
-We will explore two alternative approaches to define cost-effective restoration plans that meet multiple planning goals (e.g.\ salmon habitat gains, equity considerations, and risk mitigation). Both approaches are considered ``a priori'' methods for multiobjective optimization because the decision maker must specify their preferences related to the various objectives prior to the optimization. 
-
-\begin{wrapfigure}{R}{0.5\textwidth}
+\begin{wrapfigure}{r}{0.5\textwidth}
 \includegraphics[width=0.48\textwidth]{figures/opt_s.pdf}
 \includegraphics[width=0.48\textwidth]{figures/opt_h.pdf}
 \includegraphics[width=0.48\textwidth]{figures/opt_e.pdf}
 \includegraphics[width=0.48\textwidth]{figures/opt_d.pdf} 
 \caption{Solutions to a scalarized multiobjective problem in a stylized system where there are 3 salmon stocks (S1-S3) and 2 tribal nations (TN1-TN2). \label{fig:opt}}
-\end{wrapfigure}
+\end{wrapfigure}%
+
+
+We will explore two alternative approaches to define cost-effective restoration plans that meet multiple planning goals (e.g.\ salmon habitat gains, equity considerations, and risk mitigation). Both approaches are considered ``a priori'' methods for multiobjective optimization because the decision maker must specify their preferences related to the various objectives prior to the optimization. 
 
 In the first approach (i.e.\ linear scalarization), managers specify importance weights for each of the objectives and the weighted sum of the objectives is maximized. Weights are constrained to the interval [0, 1] and sum to one, e.g.\ a manager solely interested in habitat would set the habitat importance weight to 1 and all other weights to zero. The problem will also include a budget constraint, such that expenditures on barrier restoration are less than or equal to a fixed budget $B$, and a hydrography constraint such that habitat gains from restoring any one barrier cannot be realized if there exist any downstream barriers to fish passage. Figure~\ref{fig:opt} demonstrates solutions to this first optimization approach with a budget constraint of \$40. Panel (a) represents a model system with 10 barrier culverts (numbered red markers), 26 units of potential habitat (increments between two adjacent markers represent 1 unit of habitat), on 3 streams utilized by 3 salmon stocks (S1-S3), harvested by two tribal nations (TN1-2). Each of the culverts 1-9 costs \$10 to restore while culvert 10 costs \$20 to restore (and is outlined in blue).
 
@@ -120,6 +131,20 @@ In the second approach (i.e.\ $\epsilon-$constraint method), one objective funct
 %
 \section{Engagement plan}
 \subsection{Community collaborators} 
+
+\begin{table}[h]
+\caption{Anticipated Scientific Advisory Board \label{tab:sab}}
+\centering
+\begin{tabular}{lcc}\hline
+ Name & Job Title & Affiliation  \\\hline
+Jeff Dickison& Asstistant Natural Resources Director &  Squaxin Island Tribe\\
+& & Natural Resource Center\\
+\rowcolor[gray]{.9} Steve R Hinton &  Conservation Scientist&  Tulalip Tribes  \\
+\rowcolor[gray]{.9}& &Treaty Rights \& Government Affairs\\\hline
+\end{tabular}
+\end{table}
+
+
 \subsection{Target audiences}
 \subsection{Engagement activities}
 \subsection{Anticipated outcomes and evaluation}
