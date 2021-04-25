@@ -1,0 +1,41 @@
+\documentclass[12pt]{elsarticle}
+\usepackage{newtxtext}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{amsmath}
+
+
+\begin{document}
+
+\begin{center} \textbf{PROBLEM} \end{center}
+
+
+\begin{equation*}
+w_h \boldsymbol{h}\boldsymbol{x}  + w_e G(\boldsymbol{u_1 x}, \boldsymbol{u_2 x}) + w_d H(\boldsymbol{s_1 x}, \boldsymbol{s_2 x}, \boldsymbol{s_3 x})
+\end{equation*}
+
+\noindent subject to:
+
+\begin{equation*}
+\boldsymbol{c x} \le B
+\end{equation*}
+
+\begin{equation*}
+(\boldsymbol{I} - \boldsymbol{D}') \boldsymbol{x}  \le 1 - \boldsymbol{di}
+\end{equation*}
+
+\begin{itemize}
+\item $\boldsymbol{x}$ is the n$x$1 control vector where n is the number of barriers and $x_i \in \{0, 1\}$
+\item $\boldsymbol{D}$ is a n$x$n matrix where $d_{ij}$ = 1 if barrier $j$ is directly downstream from barrier $i$
+\item $\boldsymbol{h}$ is the 1$x$n vector with elements $h_i$ which are the habitat between barrier $i$ and the next upstream barrier(s)
+\item $\boldsymbol{u}_u$ are 1$x$n indicator vectors assigning a user group to each barrier where $u\in\{1, 2\}$
+\item $\boldsymbol{s}_s$ are 1$x$n indicator vectors assigning a salmon stock to each barrier where $s\in\{1, 2, 3\}$
+\item G is the non-linear function for the Gini coefficient
+\item H is the non-linear function for the  Herfindahl-Hirschman index
+\item $\boldsymbol{c}$ is the 1$x$n vector with elements $c_i$ that are the cost of removing barrier $i$ 
+\item B is the budget
+\item $\boldsymbol{I}$ is a n$x$n identity matrix
+\item $\boldsymbol{d}$ is a n$x$1 vector with elements $d_i$ that count the number of barriers directly downstream from barrier $i$ 
+\end{itemize}
+
+\end{document}
