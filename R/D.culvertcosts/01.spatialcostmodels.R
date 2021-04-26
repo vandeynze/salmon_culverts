@@ -813,6 +813,8 @@ mod_full <-
     df_culv
   )
 
+write_rds(mod_full, here("output/costfits/ols_full.rds"))
+
 coeftest(
 # summary(
   mod_full, 
@@ -1166,7 +1168,8 @@ map_df(mods, predict_cost_interaction, .id = "model") %>%
         "slope [mean]"
       )["predicted"],
     color = "black",
-    linetype = "solid"
+    linetype = "solid",
+    size = 1.5
   ) +
   geom_contour(
     breaks = 
@@ -1177,20 +1180,21 @@ map_df(mods, predict_cost_interaction, .id = "model") %>%
         vcov.type = "HC3",
       )[c("conf.low", "conf.high")],
     color = "black",
-    linetype = "dashed"
+    linetype = "dashed",
+    size = 1.5
   ) +
   scale_fill_brewer(
     name = str_wrap("Predicted cost per culvert, relative to mean", 30),
     direction = -1,
     palette = "Spectral",
     labels = c(
-      "0.25 to 0.5 x Mean",
-      "0.5 to 0.75 x Mean",
-      "0.75 to 1 x Mean",
-      "1 to 1.5 x Mean",
-      "1.5 to 2 x Mean",
-      "2 to 2.5 x Mean",
-      "Over 2.5 x Mean"
+      "0.25 to 0.5 x mean",
+      "0.5 to 0.75 x mean",
+      "0.75 to 1 x mean",
+      "1 to 1.5 x mean",
+      "1.5 to 2 x mean",
+      "2 to 2.5 x mean",
+      "Over 2.5 x mean"
     )
   ) +
   # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
@@ -1203,18 +1207,19 @@ map_df(mods, predict_cost_interaction, .id = "model") %>%
     data = df_culv,
     color = "grey30",
     alpha = 0.3,
-    size = 0.2
+    size = 1
   ) +
   theme(
-    legend.position = c(1, 1), legend.justification = c(1, 1),
-    aspect.ratio = 1
+    legend.position = c(0.96, 0.96), legend.justification = c(1, 1),
+    aspect.ratio = 1,
+    panel.background = element_rect(fill = "white"),
+    text = element_text(size = 20)
   ) +
   labs(
     title = wrapper("Predicted average costs by bankfull width (m) and slope (% grade)"),
     subtitle = 
-      wrapper(
-        "Predictions based on full model with other continuous variables at means and categorical variables at their modes;
-        points represent underlying observations; line indicates cost contour at mean slope and banfull width with 95% c.i."
+      str_wrap(
+        "Points represent underlying observations; Lines indicates cost contour at mean slope and banfull width with 95% c.i.", 78
       ),
     x = "Slope",
     y = "Bankfull width"
@@ -1290,13 +1295,13 @@ map_df(mods, predict_cost_interaction, var1 = "n_worksites", var2 = "tot_dist", 
     direction = -1,
     palette = "Spectral",
     labels = c(
-      "0.25 to 0.5 x Mean",
-      "0.5 to 0.75 x Mean",
-      "0.75 to 1 x Mean",
-      "1 to 1.5 x Mean",
-      "1.5 to 2 x Mean",
-      "2 to 2.5 x Mean",
-      "Over 2.5 x Mean"
+      "0.25 to 0.5 x mean",
+      "0.5 to 0.75 x mean",
+      "0.75 to 1 x mean",
+      "1 to 1.5 x mean",
+      "1.5 to 2 x mean",
+      "2 to 2.5 x mean",
+      "Over 2.5 x mean"
     )
   ) +
   # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
@@ -1338,15 +1343,17 @@ map_df(mods, predict_cost_interaction, var1 = "n_worksites", var2 = "tot_dist", 
     linetype = "dashed"
   ) +
   theme(
+    legend.position = c(0.04, 0.96), legend.justification = c(0, 1),
     aspect.ratio = 1,
-    legend.position = c(0, 1), legend.justification = c(0, 1)
+    panel.background = element_rect(fill = "white"),
+    text = element_text(size = 20)
   ) +
   scale_x_continuous(n.breaks = 6, limits = c(0,6)) +
   scale_shape_manual(values = c(4, 8), guide = NULL) +
   # scale_y_log10() +
   labs(
-    title = wrapper("Predicted average costs by number of worksites and total distance between worksites (km)"),
-    subtitle = wrapper("Predictions based on full model with other continuous variables at means and categorical variables at their modes; violin plots represent underlying observations"),
+    title = str_wrap("Predicted average costs by number of worksites and total distance between worksites (km)", 65),
+    subtitle = str_wrap("Violin plots represent underlying observations"),
     x = "Number of worksites",
     y = "Total distance between worksites (km)"
   )

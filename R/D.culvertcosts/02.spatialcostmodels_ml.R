@@ -187,7 +187,7 @@ names(df_culv)
 
 # Estimators for conditional cost distributions ----
 
-# ____ Basic OLS estimator ----
+# __ Basic OLS estimator ----
 # Full model
 mod_full <- 
   lm(
@@ -234,7 +234,7 @@ coeftest(
          # vcov. = vcovHC(mod_full)
 )
 
-# ____ Try ML models ----
+# __ Try ML models ----
 library(MASS)
 set.seed(1)
 
@@ -303,7 +303,7 @@ train = sample(1:nrow(df_tree), nrow(df_tree)/2)
 #' 
 
 #+ warning=F, message=F, fig.width=8, fig.height=10
-# Build a single regression tree
+# ____ Build a single regression tree ----
 library(rpart)
 library(rpart.plot)
 set.seed(1)
@@ -390,10 +390,12 @@ abline(0,1)
 #' "forest".
 
 #+ warning=F, message=F
+# ____ Fit random forest ----
 library(randomForest)
 set.seed(1)
 bag_culv <- randomForest(log(cost_per_culvert) ~ ., data = df_tree, subset = train, mtry = 25, ntree = 1000, importance = TRUE)
 # Looks like a good chance this is better than both the OLS and individual trees
+write_rds(bag_culv, here("output/costfits/randomforest.rds"))
 
 #' Because these fits aggregate hundreds of trees like those seen in the
 #' preceding section, they are vastly less interpretable. We will look at the
@@ -438,11 +440,13 @@ varImpPlot(bag_culv)
 #' 
 
 #+ warning=F, message=F
+# ____ Fit boosted regression tree ----
 library(gbm)
 set.seed(1)
 
 # Takes ~1min to fun on my machine
 boost_culv <- gbm(log(cost_per_culvert) ~ ., data = df_tree[train,], distribution = "gaussian", n.trees = 5000, interaction.depth = 4, cv.folds = 5)
+write_rds(boost_culv, here("output/costfits/boostedregression.rds"))
 
 #' Again, these trees are difficult to interpret because they aggregate several
 #' component models. Therefore, we will wait to look at relative performance and
@@ -611,7 +615,7 @@ features = unique(c(vi(bag_culv) %>% slice(1:25) %>% pull(Variable), vi(boost_cu
 
 #+ echo=F
 #' # Relative predictive power  
-# ____ Compare RMSE ----
+# __ Compare RMSE ----
 
 #' ## Root mean square error (RMSE) by method  
 
@@ -654,7 +658,7 @@ tibble(
 #' better.  
 #' 
 
-# ____ Compare fitted vs. observed plots ----
+# __ Compare fitted vs. observed plots ----
 #' ## Fitted vs. actual plots  
 
 #+ warning=F, message=F 

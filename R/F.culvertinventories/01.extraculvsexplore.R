@@ -13,6 +13,8 @@ library(tidyverse)
 library(here)
 library(janitor)
 library(tmap)
+library(nhdplusTools)
+library(patchwork)
 
 # Download data ----
 # ____ WDFW inventory ----
@@ -59,12 +61,14 @@ sf_allculv_wdfw %>% tabyl(significant_reach_code) # Codes needed (0 = NA, 10 = Y
 sf_allculv_wdfw %>% tabyl(case_area_flag) # No values
 # Lots of codes, will probably need to request a code book from WDFW
 
-# Map it
+# ________ Map it ----
+# Load borders
 sf_us <- getData("GADM", country = "USA", download = TRUE, path = here("output"), level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c('California', 'Nevada', 'Utah', 'Wyoming', 'Montana', 'Idaho', 'Oregon', 'Washington'))
 sf_canada <- getData("GADM", country = "CAN", download = TRUE, path = here("output"), level = 1) %>% st_as_sf() %>% filter(NAME_1 %in% c("British Columbia", "Alberta"))
 sf_base <- 
   rbind(sf_us, sf_canada)
 
+# Basin borders
 if(file.exists(here("output/wdb/WBD_National_GDB.zip"))) {
   sf_basin <-
     nhdplusTools::download_wbd(here("output/wdb")) %>% st_read(layer = "WBDHU6", quiet = TRUE)
@@ -75,43 +79,102 @@ if(file.exists(here("output/wdb/WBD_National_GDB.zip"))) {
 }
 
 # sf_basin <- sf_basin %>% filter(name %in% c("Puget Sound", "Willamette", "John Day", "Washington Coastal", "Southern Oregon Coastal", "Northern Oregon Coastal", "Lower Columbia", "Middle Columbia", "Upper Columbia"))
+# Case area borders
 sf_case <-
   st_read(here("data/WSDOT_-_Fish_Passage_US_v._WA_Case_Area_Boundary-shp/WSDOT_-_Fish_Passage_US_v._WA_Case_Area_Boundary.shp"), quiet = TRUE) %>%
   st_transform(st_crs(sf_base))
 
+# Set bounding parameters
+# Big focuses on case area
+xmin_big = -124.9
+xmax_big = -120.7
+ymin_big = 46.3
+ymax_big = 49
+# Sml focuses on concrete wa area
+# xmin_sml = -121.9
+# xmax_sml = -121.3
+# ymin_sml = 48.4
+# ymax_sml = 48.8
+
+# Sml focuses on concrete wa even smaller
+xmin_sml = -121.85
+xmax_sml = -121.5
+ymin_sml = 48.45
+ymax_sml = 48.56
+
+# Basemap for big map
 sf_landscape <-
   get_map(
-    location = c(-124.9, 46.3, -120.7, 49),
+    location = c(xmin_big, ymin_big, xmax_big, ymax_big),
     maptype = "terrain-background"
   )
 
-base_map_draft <-
+# High-res basemap for concrete
+sf_landscape_hr <-
+  get_map(
+    location = c(xmin_sml, ymin_sml, xmax_sml, ymax_sml),
+    maptype = "terrain-background"
+  )
+
+# High-res streams for concrete
+if(!file.exists(here("data/NHDPlusHR/17/NHDPLUS_H_1711_HU4_GDB.jpg"))) {
+  download_nhdplushr(here("data/NHDPlusHR"), "1711") 
+}
+sf_rivers_sml <- get_nhdplushr(here("data/NHDPlusHR"), layers = c("NHDFlowline", "NHDWaterbody"), proj = st_crs(sf_base))
+
+base_map_draft_big <-
   # ggplot() +
   ggmap(sf_landscape) +
+  # ggmap(sf_landscape_hr) +
   # geom_sf(data = sf_base, fill = "antiquewhite1", color = "black") +
   geom_sf(data = sf_basin, fill = NA, color = "black", linetype = "dashed", inherit.aes = FALSE) +
   geom_sf(data = sf_case, fill = NA, color = "red", inherit.aes = FALSE) +
-  coord_sf(
-    xlim = c(-124.9, -120.7),
-    ylim = c(46.3, 49),
-    expand = FALSE
-  ) +
+  # coord_sf(
+  #   xlim = c(-124.9, -120.7),
+  #   ylim = c(46.3, 49),
+  #   expand = FALSE
+  # ) +
   theme_bw() +
   theme(
     panel.background = element_rect(fill = "aliceblue", size = 1),
-    axis.text = element_blank(),
+    # axis.text = element_blank(),
     axis.ticks = element_blank(),
     # legend.position = c(0.99, 0.01),
     # legend.justification = c("right", "bottom"),
     legend.position = "right",
     legend.box.background = element_rect(color = "black", size = 1),
-    legend.title = element_text(size = 10)
-  ) +
-  labs(
-    x = NULL,
-    y = NULL
+    legend.title = element_text(size = 10),
+    axis.title = element_blank()
   )
 
+base_map_draft_sml <-
+  # ggplot() +
+  # ggmap(sf_landscape) +
+  ggmap(sf_landscape_hr) +
+  # geom_sf(data = sf_base, fill = "antiquewhite1", color = "black") +
+  geom_sf(data = sf_rivers_sml$NHDFlowline, color = "cornflowerblue", inherit.aes = FALSE) +
+  geom_sf(data = sf_rivers_sml$NHDWaterbody %>% filter(FTYPE != 378), color = "cornflowerblue", fill = "cornflowerblue", inherit.aes = FALSE) +
+  geom_sf(data = sf_basin, fill = NA, color = "black", linetype = "dashed", inherit.aes = FALSE) +
+  geom_sf(data = sf_case, fill = NA, color = "red", inherit.aes = FALSE) +
+  # coord_sf(
+  #   xlim = c(-124.9, -120.7),
+  #   ylim = c(46.3, 49),
+  #   expand = FALSE
+  # ) +
+  theme_bw() +
+  theme(
+    panel.background = element_rect(fill = "aliceblue", size = 1),
+    # axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    # legend.position = c(0.99, 0.01),
+    # legend.justification = c("right", "bottom"),
+    legend.position = "right",
+    legend.box.background = element_rect(color = "black", size = 1),
+    legend.title = element_text(size = 10),
+    axis.title = element_blank()
+  )
+
+# Set culvert data for mapping
 df_mapculv_wdfw <-
   sf_allculv_wdfw %>%
   mutate(
@@ -147,27 +210,52 @@ df_mapculv_wdfw <-
       is.na(fish_passage_feature_type_code) ~ NA_character_
     )
   ) %>%
-  st_transform(st_crs(sf_base))
+  st_transform(st_crs(sf_base)) %>%
+  drop_na(passability)
 
-base_map_draft +
+# Map small map
+map_sml <-
+  base_map_draft_sml +
   geom_sf(
     aes(
-      fill = passability,
+      # fill = passability,
       shape = type,
       size = type
     ),
-    data = df_mapculv_wdfw %>% filter(type %in% c("culvert", "non-culvert crossing", "dam")),
+    data = df_mapculv_wdfw %>% filter(type %in% c("non-culvert crossing", "dam")) %>% filter(passability != "100 percent"),
+    inherit.aes = FALSE,
+    fill = "black"
+  ) +  
+  geom_sf(
+    aes(
+      fill = ownership,
+      shape = type,
+      size = type
+    ),
+    data = df_mapculv_wdfw %>% filter(type %in% c("culvert")) %>% filter(passability != "100 percent"),
     inherit.aes = FALSE
   ) +
-  scale_fill_manual(
-    values = c(
-      "0 percent" = "red",
-      "33 percent" = "orange",
-      "66 percent" = "yellow",
-      "100 percent" = "darkgreen",
-      "Unknown" = "purple"
-    ),
-    na.value = "grey40",
+  # scale_fill_manual(
+  #   values = c(
+  #     "0 percent" = "red",
+  #     "33 percent" = "orange",
+  #     "66 percent" = "yellow",
+  #     "100 percent" = "darkgreen",
+  #     "Unknown" = "purple"
+  #   ),
+  #   na.value = "grey40",
+  #   guide = guide_legend(override.aes = list(shape = 22, size = 2))
+  # ) +
+  # scale_alpha_manual(
+  #   values = c(
+  #     "TRUE" = 0.5,
+  #     "FALSE" = 1
+  #   )
+  # ) +
+  scale_fill_brewer(
+    type = "qual",
+    na.value = "white",
+    na.translate = FALSE,
     guide = guide_legend(override.aes = list(shape = 22, size = 2))
   ) +
   scale_shape_manual(
@@ -182,9 +270,9 @@ base_map_draft +
   ) +
   scale_size_manual(
     values = c(
-      "culvert" = 2,
-      "non-culvert crossing" = 0.7,
-      "dam" = 2,
+      "culvert" = 2.5,
+      "non-culvert crossing" = 1,
+      "dam" = 1,
       "natural barrier" = 0.3,
       "other" = 0.3
     ),
@@ -201,9 +289,100 @@ base_map_draft +
   # )
   # Coordinates for Concrete, WA area
   coord_sf(
-    xlim = c(-122, -121.6),
-    ylim = c(48.3, 48.65)
+    xlim = c(xmin_sml, xmax_sml),
+    ylim = c(ymin_sml, ymax_sml)
+  ) +
+  theme(
+    legend.position = "none",
+    axis.text = element_blank()
   )
+
+# Map big map
+map_big <-
+  base_map_draft_big +
+  geom_sf(
+    aes(
+      # fill = passability,
+      shape = type,
+      size = type
+    ),
+    data = df_mapculv_wdfw %>% filter(type %in% c("non-culvert crossing", "dam")) %>% filter(passability != "100 percent"),
+    inherit.aes = FALSE,
+    fill = "black"
+  ) +
+  geom_sf(
+    aes(
+      fill = ownership,
+      shape = type,
+      size = type
+    ),
+    data = df_mapculv_wdfw %>% filter(type %in% c("culvert")) %>% filter(passability != "100 percent"),
+    inherit.aes = FALSE
+  ) +
+
+  geom_sf(
+    data = st_as_sfc(st_bbox(c(xmin = xmin_sml, xmax = xmax_sml, ymin = ymin_sml, ymax = ymax_sml), crs = st_crs(sf_base))),
+    color = "red",
+    size = 1.5,
+    fill = NA,
+    inherit.aes = FALSE
+  ) +
+  # scale_fill_manual(
+  #   values = c(
+  #     "0 percent" = "red",
+  #     "33 percent" = "orange",
+  #     "66 percent" = "yellow",
+  #     "100 percent" = "darkgreen",
+  #     "Unknown" = "purple"
+  #   ),
+  #   na.value = "grey40",
+  #   guide = guide_legend(override.aes = list(shape = 22, size = 2))
+  # ) +
+  scale_fill_brewer(
+    "Culvert ownership",
+    type = "qual",
+    na.value = "white",
+    na.translate = FALSE,
+    guide = guide_legend(override.aes = list(shape = 22, size = 3)),
+    labels = str_to_sentence
+  ) +
+  scale_shape_manual(
+    "Barrier type",
+    values = c(
+      "culvert" = 21,
+      "non-culvert crossing" = 23,
+      "dam" = 22,
+      "natural barrier" = 25,
+      "other" = 24
+    ),
+    guide = guide_legend(override.aes = list(size = 3)),
+    na.value = 4,
+    labels = str_to_sentence
+  ) +
+  scale_size_manual(
+    values = c(
+      "culvert" = 2,
+      "non-culvert crossing" = 1,
+      "dam" = 1,
+      "natural barrier" = 0.3,
+      "other" = 0.3
+    ),
+    na.value = 0.3,
+    guide = guide_none()
+  ) +
+  # Coordinates for full case area
+  coord_sf(
+    xlim = c(xmin_big, xmax_big),
+    ylim = c(ymin_big, ymax_big)
+  ) +
+  theme(
+    legend.position = "left",
+    legend.background = element_rect(color = "white")
+  )
+
+map_big + map_sml + 
+  plot_layout(widths = c(2, 1))
+
 # ____ ODFW inventory ----
 if(!file.exists(here("data/culv_inventories/ODFW_44_5_ofpbds_gdb.zip"))){
   download.file(

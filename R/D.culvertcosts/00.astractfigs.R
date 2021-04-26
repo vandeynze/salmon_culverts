@@ -743,7 +743,7 @@ ggcorrplot(
 mod_full <- 
   lm(
     log(cost_per_culvert) ~
-    # log(I(adj_cost / n_worksites)) ~
+      # log(I(adj_cost / n_worksites)) ~
       # Scale/scope of project controls: number of culverts, distance between worksites, type of culvert work
       n_worksites * tot_dist + # factor(I(n_worksites == 1)) +
       action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
@@ -756,6 +756,23 @@ mod_full <-
       cat_basin_slope + cat_elev_mean + factor(nlcd_current_class) +
       # Population features: housing density, jobs in construction, jobs in ag/forestry
       hdens_cat + emp_const + emp_agforest + ua_dist + # factor(publand) +
+      # Supplier density
+      # merch_totp + 
+      const_totp +
+      brick_totp +
+      metal_totp +
+      sales_coun +
+      # sand_count +
+      # Land ownership
+      # pvall_1km_buff +
+      pv_1km_buff +
+      pvi_1km_buff +
+      pvn_1km_buff +
+      # stall_1km_buff +
+      # I(fedother_1km_buff +
+      # blm_1km_buff +
+      # usfs_1km_buff +
+      # lg_1km_buff +
       # Fixed effects
       basin + factor(project_year) + project_source,
     df_culv
@@ -1329,7 +1346,7 @@ margins_custom <-
       mod, 
       variables = terms, 
       change = "sd", 
-      vcov = vcovHC(mod, "HC3")
+      vcov = vcovCL(mod, ~ project_id, "HC3")
     ) %>% summary %>% clean_names %>% # Returns marginal effect of a 1 s.d. change in variable
       rowwise() %>%
       mutate(
@@ -1354,7 +1371,17 @@ margins_custom <-
           "hdens_cat",
           "emp_const",
           "emp_agforest",
-          "ua_dist"
+          "ua_dist",
+          
+          
+          "const_totp",
+          "brick_totp",
+          "metal_totp",
+          "sales_coun",
+          "pv_1km_buff",
+          "pvi_1km_buff",
+          "pvn_1km_buff"
+          
         ),
       .id = "model"
     ) %>%
@@ -1369,13 +1396,33 @@ margins_custom <-
         factor == "hdens_cat" ~ "Housing density",
         factor == "emp_const" ~ "Construction employment",
         factor == "emp_agforest" ~ "Ag/forestry employment",
-        factor == "ua_dist" ~ "Distance to urban area"
+        factor == "ua_dist" ~ "Distance to urban area",
+        
+        factor == "const_totp" ~ "Construction equipment suppliers",
+        factor == "brick_totp" ~ "Brick, concrete, and related materials suppliers",
+        factor == "metal_totp" ~ "Metal materials suppliers",
+        factor == "sales_coun" ~ "Sand and gravel sales yards",
+        factor == "pv_1km_buff" ~ "Managed by individual or company",
+        factor == "pvi_1km_buff" ~ "Managed by industry",
+        factor == "pvn_1km_buff" ~ "Managed by non-industrial owner"
+        
       ),
       group = case_when(
         factor %in% c("Bankfull width", "Stream slope") ~ "Stream features",
         factor %in% c("Terrain slope", "Elevation") ~ "Terrain features",
         factor %in% c("Distance between worksites", "Number of worksites") ~ "Project scale",
         factor %in% c("Construction employment", "Ag/forestry employment", "Housing density", "Distance to urban area") ~ "Population features",
+        factor %in% c(
+          "Construction equipment suppliers",
+          "Brick, concrete, and related materials suppliers",
+          "Metal materials suppliers",
+          "Sand and gravel sales yards"
+        ) ~ "Supplier Density",
+        factor %in% c(
+          "Managed by individual or company",
+          "Managed by industry",
+          "Managed by non-industrial owner"
+        ) ~ "Private Land Ownership (% in 500m buffer)"
       ),
       estimate = exp(ame),
       conf.low = exp(lower),
@@ -1421,7 +1468,7 @@ margins_custom <-
     x = "Project average costs", 
     title = "Marginal effects for continuous variables",
     subtitle = "Project average costs relative to a single standard deviation shift",
-    caption = "Lines indicate 95% confidence interval; Significant coefficients highlighted in dark"
+    caption = str_wrap("Lines indicate 95% confidence interval based on clustered robust standard errors; Significant coefficients highlighted in dark; Point-range for metal supplier density excluded due to scale mismatch")
   ) +
   theme(
     legend.position = "none",
@@ -1687,7 +1734,7 @@ map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int
 
 (
   df_margeff_land <-
-    map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), .id = "model") %>%
+    map_df(mods, ~ coeftest(., vcovCL(., ~ project_id, "HC3")) %>% tidy(conf.int = TRUE), .id = "model") %>%
     filter(str_detect(term, "nlcd")) %>%
     mutate(
       nlcd_current = str_sub(term, 27),
@@ -1760,7 +1807,7 @@ map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int
 # Road features
 (
   df_margeff_roads <-
-    map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), .id = "model") %>%
+    map_df(mods, ~ coeftest(., vcovCL(., ~ project_id, "HC3")) %>% tidy(conf.int = TRUE), .id = "model") %>%
     filter(str_detect(term, "here")) %>%
     mutate(
       here_var = case_when(
@@ -1834,7 +1881,7 @@ map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int
 #+ echo=F, message=F, warning=F, fig.dim=c(8,4)
 
 # Project scope effects
-map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int = TRUE, .id = "model") %>%
+map_df(mods, ~ coeftest(., vcovCL(., ~ project_id, "HC3")) %>% tidy(conf.int = TRUE), conf.int = TRUE, .id = "model") %>%
   filter(str_detect(term, "action")) %>%
   mutate(
     action_var = case_when(
@@ -2034,11 +2081,11 @@ base_map_draft <-
     panel.background = element_rect(fill = "aliceblue", size = 1),
     axis.text = element_blank(),
     axis.ticks = element_blank(),
-    legend.position = c(0.99, 0.01),
-    legend.justification = c("right", "bottom"),
+    # legend.position = c(0.99, 0.01),
+    # legend.justification = c("right", "bottom"),
     # legend.box.background = element_rect(color = "black", size = 1),
-    legend.title = element_text(size = 8),
-    legend.text = element_text(size = 6)
+    # legend.title = element_text(size = 8),
+    # legend.text = element_text(size = 6)
   ) +
   labs(
     x = NULL,
@@ -2204,14 +2251,14 @@ sf_allculv_wdfw <-
   ))
 
 fig_predvalues <-
-base_map_draft +
+  base_map_draft +
   # base_map +
   geom_sf(
     aes(
       color = Ownership
     ),
     data = sf_allculv_odfw,
-    size = 0.3,
+    size = 1,
     # color = "grey60"
   ) +
   geom_sf(
@@ -2219,11 +2266,16 @@ base_map_draft +
       color = Ownership
     ),
     data = sf_allculv_wdfw,
-    size = 0.3,
+    size = 1,
     # color = "grey60"
   ) +
   geom_sf(data = sf_basin, fill = NA, color = "red") +
   geom_sf(
+    aes(
+      # x = longitude,
+      # y = latitude,
+      fill = yhat_2015_owri
+    ),
     data = 
       sf_culv %>% 
       bind_cols(
@@ -2239,22 +2291,16 @@ base_map_draft +
                   project_source = "OWRI",
                   basin = "SOUTHERN OREGON COASTAL")
             )
-          ),
-        
+          )
       ),
     # pull(yhat_2015_owri) %>% summary
     # filter(yhat_2015_owri < 200000),
-    aes(
-      # x = longitude,
-      # y = latitude,
-      fill = yhat_2015_owri
-    ),
     shape = 21,
     color = "black",
     stroke = 0.1,
-    size = 1
+    size = 3
   ) +
-  scale_color_manual(values = c("State" = "grey40", "County" = "grey60", "Other" = "grey80"), breaks = c("County", "State", "Other"), guide = guide_legend(override.aes = list(size = 1))) +
+  scale_color_manual(values = c("State" = "grey40", "County" = "grey60", "Other" = "grey80"), breaks = c("County", "State", "Other"), guide = guide_legend(override.aes = list(size = 3))) +
   scale_fill_distiller(
     "Predicted cost",
     # palette = "YlGn",
@@ -2265,7 +2311,7 @@ base_map_draft +
     direction = -1,
     trans = "log10",
     na.value = "grey70",
-    guide = guide_colorbar(barwidth = unit(2, "pt"), barheight = unit(30, "pt"))
+    guide = guide_colorbar(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
   ) +
   # ggtitle(
   #   "Map of predicted values",
@@ -2277,13 +2323,97 @@ base_map_draft +
     expand = FALSE
   ) +
   theme(
-    legend.position = "right",
-    legend.background = element_rect(color = "white", size = 0), 
+    text = element_text(size = 20),
+    legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
+    # legend.position = "right",
+    legend.background = element_rect(color = "black", size = 1), 
     legend.key.size = unit(0.3, "pt"), 
-    legend.title = element_text(size = 6),
+    # legend.title = element_text(size = 6),
     legend.box.spacing = unit(0, "pt")
   )
 
+
+fig_truevalues <-
+  base_map_draft +
+  # base_map +
+  geom_sf(
+    aes(
+      color = Ownership
+    ),
+    data = sf_allculv_odfw,
+    size = 1,
+    # color = "grey60"
+  ) +
+  geom_sf(
+    aes(
+      color = Ownership
+    ),
+    data = sf_allculv_wdfw,
+    size = 1,
+    # color = "grey60"
+  ) +
+  geom_sf(data = sf_basin, fill = NA, color = "red") +
+  geom_sf(
+    aes(
+      # x = longitude,
+      # y = latitude,
+      fill = cost_per_culvert
+    ),
+    data = 
+      sf_culv %>% 
+      bind_cols(
+        yhat_2015_owri = 
+          exp(
+            predict(
+              mod_full,
+              sf_culv %>% 
+                mutate(
+                  project_year = 2015, 
+                  n_worksites = 1,
+                  tot_dist = 0,
+                  project_source = "OWRI",
+                  basin = "SOUTHERN OREGON COASTAL")
+            )
+          )
+      ),
+    # pull(yhat_2015_owri) %>% summary
+    # filter(yhat_2015_owri < 200000),
+    shape = 21,
+    color = "black",
+    stroke = 0.1,
+    size = 3.5
+  ) +
+  scale_color_manual(values = c("State" = "grey40", "County" = "grey60", "Other" = "grey80"), breaks = c("County", "State", "Other"), guide = guide_legend(override.aes = list(size = 3))) +
+  scale_fill_distiller(
+    "Reported cost per culvert",
+    # palette = "YlGn",
+    # palette = "Spectral",
+    palette = "RdYlGn",
+    labels = dollar_format(accuracy = 1),
+    # breaks = c(30000, 50000, 100000, 300000),
+    direction = -1,
+    trans = "log10",
+    na.value = "grey70",
+    guide = guide_colorbar(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
+  ) +
+  # ggtitle(
+  #   "Map of predicted values",
+  #   str_wrap("Year set to 2015, source set to OWRI, basin set to Southern Oregon Coastal, and number of culverts set to one for all worksites; Red boarders indicate basin (HUC6) boundaries for included basins")
+  # ) +
+  coord_sf(
+    xlim = c(-126, -117),
+    ylim = c(41.5, 49.5),
+    expand = FALSE
+  ) +
+  theme(
+    text = element_text(size = 20),
+    legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
+    # legend.position = "right",
+    legend.background = element_rect(color = "black", size = 1), 
+    legend.key.size = unit(0.3, "pt"), 
+    # legend.title = element_text(size = 6),
+    legend.box.spacing = unit(0, "pt")
+  )
 
 #' The map of predicted values highlights areas where physical conditions (i.e.
 #' road, stream, and terrain features) have the largest impact on costs. By
@@ -2621,7 +2751,7 @@ df_margeff_slopebfi <-
       mod_full, 
       variables = c("bankfull_width"), 
       change = "sd", 
-      vcov = vcovHC(mod_full, "HC1"),
+      vcov = vcovCL(mod_full, ~ project_id, "HC3"),
       at = list("slope" = c(0.005, 0.10))
     ) %>% summary %>% clean_names() %>% rename(
       at = slope,
@@ -2633,7 +2763,7 @@ df_margeff_slopebfi <-
       mod_full, 
       variables = c("slope"), 
       change = "sd", 
-      vcov = vcovHC(mod_full, "HC3"),
+      vcov = vcovCL(mod_full, ~ project_id, "HC3"),
       at = list("bankfull_width" = c(3.8, 11.9))
     ) %>% summary %>% clean_names() %>% rename(
       at = bankfull_width,
@@ -2654,6 +2784,7 @@ df_margeff_slopebfi <-
           df_margeff_roads %>% rename(factor = here_var) %>% rowwise() %>% mutate(p.value = !str_detect(mod.color, "nosig"), mod.color = NULL)
         ) %>%
         ungroup() %>%
+        filter(factor != "Metal materials suppliers") %>%
         mutate(
           factor = 
             ordered(factor) %>%
@@ -2680,12 +2811,21 @@ df_margeff_slopebfi <-
                         "Land cover: Shrubland",
                         "Land cover: Wetlands",
                         "Land cover: Herbaceous",
+                        "Managed by individual or company",
+                        "Managed by industry",
+                        "Managed by non-industrial owner",
                         "Housing density",
                         "Distance to urban area",
                         "Ag/forestry employment",
                         "Construction employment",
+                        "Sand and gravel sales yards",
+                        # "Metal materials suppliers",
+                        "Construction equipment suppliers",
+                        "Brick, concrete, and related materials suppliers",
                         "Number of worksites",
                         "Distance between worksites"
+
+                        
             ) %>%
             fct_rev(.)
         )
@@ -2703,7 +2843,7 @@ df_margeff_slopebfi <-
         fill = p.value,
         shape = at
       ),
-      size = 0.35,
+      size = 1.5,
       position = position_dodge(width = 0.6)
     ) +
     # geom_label(
@@ -2732,15 +2872,16 @@ df_margeff_slopebfi <-
     scale_fill_manual(values = c("darkolivegreen3", "darkgreen", "grey60", "grey80"), guide = NULL) +
     labs(
       y = NULL, 
-      x = "Project average costs ratio", 
+      x = "Cost multiplier", 
       # title = "NLCD land cover effects",
+      title = "Standardized cost multipliers for culvert projects",
       # subtitle = "Project average costs relative to Forest",
-      caption = str_wrap(paste0("Adj. R-squared = ", mod_full %>% glance() %>% pull(adj.r.squared) %>% round(3), "; N = ", mod_full %>% glance() %>% pull(nobs) %>% comma()))
+      caption = str_wrap(paste0("Adj. R-squared = ", mod_full %>% glance() %>% pull(adj.r.squared) %>% round(3), "; N = ", mod_full %>% glance() %>% pull(nobs) %>% comma(), "; Lines indicate 90-percent confidence intervals"), 100)
     ) +
     theme_clean() +
     # xlim(0.1, 5.1) +
     theme(
-      legend.position = c(0.8, 0.1),
+      legend.position = c(0.8, 0.90),
       legend.background = element_blank(),
       strip.background = element_blank(),
       strip.text.x = element_blank(),
@@ -2749,10 +2890,11 @@ df_margeff_slopebfi <-
       plot.background = element_rect(color = NA),
       plot.title.position = "plot",
       plot.caption.position = "plot",
-      text = element_text(size = 8),
-      axis.text = element_text(size = 6),
-      axis.title = element_text(size = 8),
-      legend.text = element_text(size = 6),
+      text = element_text(size = 20),
+      plot.title = element_text(size = 24),
+      axis.text = element_text(size = 20),
+      axis.title = element_text(size = 20),
+      legend.text = element_text(size = 20),
       legend.key.size = unit(0.75, "pt")
     )
 )
