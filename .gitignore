@@ -1191,3 +1191,7 @@ data/cb_2018_us_county_500k/cb_2018_us_county_500k.prj
 data/cb_2018_us_county_500k/cb_2018_us_county_500k.dbf
 data/cb_2018_us_county_500k/cb_2018_us_county_500k.cpg
 data/cb_2018_us_county_500k.zip
+output/costfits/boostedregression.rds
+output/costfits/ols_full.rds
+output/costfits/randomforest.rds
+output/spatial/inv_uacdist.csv
