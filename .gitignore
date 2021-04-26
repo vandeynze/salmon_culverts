@@ -1195,3 +1195,7 @@ output/costfits/boostedregression.rds
 output/costfits/ols_full.rds
 output/costfits/randomforest.rds
 output/spatial/inv_uacdist.csv
+output/figs/fig_mapconcrete_sml.png
+output/figs/fig_mapconcrete_big.png
+output/figs/fig_mapconcrete.png
+output/figs/fig_map_costpreds.png
