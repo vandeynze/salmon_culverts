@@ -87,7 +87,7 @@ wrapper <- function(label, dev_width = dev.size("in")[1], dev_scaler = 12)  {
 key_nlcd <-
   read_xlsx(
     here(
-      "data/Culverts spatial overlays v 06Aug2020.xlsx"
+      "/data/Culverts spatial overlays v 20Jan2021.xlsx"
     ), 
     sheet = 3
   ) %>% 
@@ -288,7 +288,7 @@ df_culv %>%
 #' be more expensive; measured via HERE road data for nearest object; classes range from  2 (fastest) to 7 (slowest).
 #' 
 #+ echo=F
-key_here <- read_xlsx(here("data/Culverts spatial overlays v 20Aug2020.xlsx"), sheet = 3) %>%
+key_here <- read_xlsx(here("/data/Culverts spatial overlays v 20Jan2021.xlsx"), sheet = 3) %>%
   as_tibble() %>%
   mutate(Classification = str_to_sentence(Classification), Description = str_to_sentence(Description))
   # bind_rows(
@@ -330,7 +330,7 @@ key_here %>%
   key_nlcd <-
     read_xlsx(
       here(
-        "data/Culverts spatial overlays v 06Aug2020.xlsx"
+        "/data/Culverts spatial overlays v 20Jan2021.xlsx"
       ), 
       sheet = 3
     ) %>% 

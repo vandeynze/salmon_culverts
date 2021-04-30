@@ -1,3 +1,5 @@
+# Doesn't work right now! Experiments with reading WSDOT PDF reports
+
 library(tidyverse)
 library(pdftools)
 wsdot_report <- "C:/Users/Braeden/Downloads/Env-StrRest-FishPassageAnnualReport.pdf"
