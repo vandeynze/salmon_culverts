@@ -97,7 +97,7 @@ library(kableExtra)
 key_nlcd <-
   read_xlsx(
     here(
-      "data/Culverts spatial overlays v 06Aug2020.xlsx"
+      "/data/Culverts spatial overlays v 20Jan2021.xlsx"
     ), 
     sheet = 3
   ) %>% 
@@ -406,7 +406,7 @@ write_rds(bag_culv, here("output/costfits/randomforest.rds"))
 yhat_culv_bag = predict(bag_culv, newdata = df_tree[-train,])
 (rmse_bag <- sqrt(sum((yhat_culv_bag - log(y_test)) ^ 2)/length(yhat_culv_bag)) %>% c("Root Mean Squared Error" = .))
 # Even lower root mean square error than OLS or the individual trees
-plot(x = yhat_culv_bag, y = log(y_test) %>% pull(cost_per_culvert))
+plot(y = yhat_culv_bag, x = log(y_test) %>% pull(cost_per_culvert))
 abline(0,1)
 # Looking better... but consistently underestimates costs at high level and over estimates at low end
 
@@ -426,6 +426,46 @@ varImpPlot(bag_culv)
 # Distance to nearest road (here_distm)
 
 # These are a lot of the variables we found important in the OLS model
+
+# Try some tuning
+# Tune m
+bag_culv_m50 <- randomForest(log(cost_per_culvert) ~ ., data = df_tree, subset = train, mtry = 50, ntree = 1000, importance = TRUE)
+bag_culv_m100 <- randomForest(log(cost_per_culvert) ~ ., data = df_tree, subset = train, mtry = 50, ntree = 1000, importance = TRUE)
+
+
+yhat_culv_bag_m50 = predict(bag_culv_m50, newdata = df_tree[-train,])
+(rmse_bag_m50 <- sqrt(sum((yhat_culv_bag_m50 - log(y_test)) ^ 2)/length(yhat_culv_bag_m50)) %>% c("Root Mean Squared Error" = .))
+# Even lower root mean square error than OLS or the individual trees
+plot(y = yhat_culv_bag_m50, x = log(y_test) %>% pull(cost_per_culvert))
+abline(0,1)
+
+
+yhat_culv_bag_m100 = predict(bag_culv_m100, newdata = df_tree[-train,])
+(rmse_bag_m100 <- sqrt(sum((yhat_culv_bag_m100 - log(y_test)) ^ 2)/length(yhat_culv_bag_m100)) %>% c("Root Mean Squared Error" = .))
+# Even lower root mean square error than OLS or the individual trees
+plot(y = yhat_culv_bag_m100, x = log(y_test) %>% pull(cost_per_culvert))
+abline(0,1)
+
+# Still showing that weird bias at the tails as we increase mtry
+
+# Tune ntree
+bag_culv_ntree5000 <- randomForest(log(cost_per_culvert) ~ ., data = df_tree, subset = train, mtry = 50, ntree = 5000, importance = TRUE)
+bag_culv_ntree10000 <- randomForest(log(cost_per_culvert) ~ ., data = df_tree, subset = train, mtry = 50, ntree = 10000, importance = TRUE)
+
+yhat_culv_bag_ntree5000 = predict(bag_culv_ntree5000, newdata = df_tree[-train,])
+(rmse_bag_ntree5000 <- sqrt(sum((yhat_culv_bag_ntree5000 - log(y_test)) ^ 2)/length(yhat_culv_bag_ntree5000)) %>% c("Root Mean Squared Error" = .))
+# Even lower root mean square error than OLS or the individual trees
+plot(y = yhat_culv_bag_ntree5000, x = log(y_test) %>% pull(cost_per_culvert))
+abline(0,1)
+
+
+yhat_culv_bag_ntree10k = predict(bag_culv_ntree10000, newdata = df_tree[-train,])
+(rmse_bag_ntree10k <- sqrt(sum((yhat_culv_bag_ntree10k - log(y_test)) ^ 2)/length(yhat_culv_bag_ntree10k)) %>% c("Root Mean Squared Error" = .))
+# Even lower root mean square error than OLS or the individual trees
+plot(y = yhat_culv_bag_ntree10k, x = log(y_test) %>% pull(cost_per_culvert))
+abline(0,1)
+
+# Doesn't seem to change RMSE or the tail problem much
 
 #+
 #' ## Boosted regression tree (BRT)
@@ -535,6 +575,14 @@ abline(0,1)
 # It might also be possible to tune the model for better performance in specific
 # regions by adjusting the train/test balance or a custom loss function, but I
 # have to dig deeper into the methods here.
+
+# Tune BRT ntrees
+boost_culv_n10k <- gbm(log(cost_per_culvert) ~ ., data = df_tree[train,], distribution = "gaussian", n.trees = 10000, interaction.depth = 4, cv.folds = 5)
+yhat_boost_n10k = predict(boost_culv_n10k, newdata = df_tree[-train,], n.trees = 10000)
+plot(y = yhat_boost_n10k, x = log(y_test) %>% pull(cost_per_culvert))
+abline(0,1)
+
+(rmse_boost_n10k <- sqrt(sum((yhat_boost_n10k - log(y_test)) ^ 2)/length(yhat_boost_n10k)) %>% c("Root Mean Squared Error" = .))
 
 # Variable importance ----
 

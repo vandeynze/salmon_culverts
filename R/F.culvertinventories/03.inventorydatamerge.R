@@ -580,27 +580,3 @@ rm(df_census, df_census_summs, list_years, list_fips_state, list_fips, census_ke
 
 # Save out ----
 write_csv(sf_base, here("output/inv_draft22042021.csv"))
-# This draft is missing data on distances to urban areas
-
-sf_base <- 
-  read_csv(here("output/inv_draft21042021.csv"), guess_max = 30000) %>%
-  select(-geometry) %>%
-  left_join(df_wdfw %>% select(site_record_id, site_longitude, site_latitude), by = c("site_recor" = "site_record_id")) %>%
-  left_join(df_odfw %>% select(fpb_ftr_id, fpb_long, fpb_lat), by = "fpb_ftr_id") %>%
-  mutate(
-    long =
-      case_when(
-        is.na(site_longitude) ~ fpb_long,
-        is.na(fpb_long) ~ site_longitude
-      ),
-    lat =
-      case_when(
-        is.na(site_latitude) ~ fpb_lat,
-        is.na(fpb_lat) ~ site_latitude
-      )
-  ) %>%
-  select(
-    -c(fpb_long, fpb_lat, site_longitude, site_latitude)
-  ) %>% 
-  st_as_sf(., coords = c('long', 'lat'), crs = 4326) %>% 
-  st_transform(., crs = 4269)

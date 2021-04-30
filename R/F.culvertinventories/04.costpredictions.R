@@ -26,7 +26,7 @@ library(rgdal)
 key_nlcd <-
   read_xlsx(
     here(
-      "data/Culverts spatial overlays v 06Aug2020.xlsx"
+      "/data/Culverts spatial overlays v 20Jan2021.xlsx"
     ), 
     sheet = 3
   ) %>% 

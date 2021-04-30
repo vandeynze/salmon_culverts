@@ -422,4 +422,4 @@ sf_allculv_odfw %>% filter(fpb_ftr_ty == "Culvert") %>% tabyl(fpb_own_ty)
 sf_allculv_odfw %>% filter(fpb_ftr_ty == "Culvert") %>% tabyl(fpb_f_pas_sta)
 
 # WA DNR RMAP data ----
-sf_rmap <- read_sf(here("data/culv_inventories/Public_Forest_Practices_WADNR_PUBLIC_FP_Road_Maint_Pts.lyr"))
+# sf_rmap <- read_sf(here("data/culv_inventories/Public_Forest_Practices_WADNR_PUBLIC_FP_Road_Maint_Pts.lyr"))

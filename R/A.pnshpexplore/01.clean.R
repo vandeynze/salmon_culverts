@@ -48,7 +48,7 @@ df_pnshp <-
       "/data/PNSHP_raw.csv"
     ),
     # "PNSHP_worksite-subtype_20200113.csv", # Outdated; missing values for most subtypes; remove once 20200210 version works
-    guess_max = 200000 # Neccessary to avoid type identification issues resulting from missing values
+    guess_max = 200000 # Necessary to avoid type identification issues resulting from missing values
   ) %>%
   select(
     project_id = ProjectPK,
