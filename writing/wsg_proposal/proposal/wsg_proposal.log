@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.4.5)  5 MAY 2021 17:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.4.5)  6 MAY 2021 15:24
 entering extended mode
 **./wsg_proposal.tex
 (wsg_proposal.tex
@@ -550,23 +550,19 @@ File: t1ntxtt.fd 2012/04/20 v3.1
 LaTeX Font Info:    Font shape `T1/ntxtt/m/n' will be
 (Font)              scaled to size 10.0pt on input line 75.
 [3] [4]
-<figures/predCost.png, id=146, 469.755pt x 289.08pt>
+<figures/predCost.png, id=143, 469.755pt x 289.08pt>
 File: figures/predCost.png Graphic file (type png)
 <use figures/predCost.png>
-Package pdftex.def Info: figures/predCost.png  used on input line 107.
+Package pdftex.def Info: figures/predCost.png  used on input line 108.
 (pdftex.def)             Requested size: 284.52756pt x 175.09464pt.
-
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[5] [6 <./figures/predCost.png (PNG copy)>] [7]
+ [5] [6 <./figures/predCost.png (PNG copy)>] [7]
 
 pdfTeX warning: pdflatex.exe (file ./figures/opt_s.pdf): PDF inclusion: found P
 DF version <1.6>, but at most version <1.5> allowed
 <figures/opt_s.pdf, id=173, 424.31706pt x 252.31364pt>
 File: figures/opt_s.pdf Graphic file (type pdf)
 <use figures/opt_s.pdf>
-Package pdftex.def Info: figures/opt_s.pdf  used on input line 134.
+Package pdftex.def Info: figures/opt_s.pdf  used on input line 147.
 (pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
 
 
@@ -575,7 +571,7 @@ DF version <1.6>, but at most version <1.5> allowed
 <figures/opt_h.pdf, id=174, 424.31706pt x 252.31364pt>
 File: figures/opt_h.pdf Graphic file (type pdf)
 <use figures/opt_h.pdf>
-Package pdftex.def Info: figures/opt_h.pdf  used on input line 135.
+Package pdftex.def Info: figures/opt_h.pdf  used on input line 148.
 (pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
 
 
@@ -584,7 +580,7 @@ DF version <1.6>, but at most version <1.5> allowed
 <figures/opt_e.pdf, id=175, 424.31706pt x 252.31364pt>
 File: figures/opt_e.pdf Graphic file (type pdf)
 <use figures/opt_e.pdf>
-Package pdftex.def Info: figures/opt_e.pdf  used on input line 136.
+Package pdftex.def Info: figures/opt_e.pdf  used on input line 149.
 (pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
 
 
@@ -593,20 +589,20 @@ DF version <1.6>, but at most version <1.5> allowed
 <figures/opt_d.pdf, id=176, 424.31706pt x 252.31364pt>
 File: figures/opt_d.pdf Graphic file (type pdf)
 <use figures/opt_d.pdf>
-Package pdftex.def Info: figures/opt_d.pdf  used on input line 137.
+Package pdftex.def Info: figures/opt_d.pdf  used on input line 150.
 (pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 134--138
+Underfull \hbox (badness 10000) in paragraph at lines 147--151
 [][]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 134--138
+Underfull \hbox (badness 10000) in paragraph at lines 147--151
 []
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 134--138
+Underfull \hbox (badness 10000) in paragraph at lines 147--151
 []
  []
 
@@ -614,27 +610,37 @@ Underfull \hbox (badness 10000) in paragraph at lines 134--138
 
  <./figures/opt_s.pdf> <./figures/opt_h.pdf> <./figures/opt_e.pdf> <./figures/o
 pt_d.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 166--167
+Underfull \hbox (badness 10000) in paragraph at lines 180--181
 
  []
 
 [9]
-Underfull \hbox (badness 10000) in paragraph at lines 169--170
+Underfull \hbox (badness 10000) in paragraph at lines 183--184
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 171--172
+Underfull \hbox (badness 10000) in paragraph at lines 185--186
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 173--174
+Underfull \hbox (badness 10000) in paragraph at lines 187--188
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 175--176
+Underfull \hbox (badness 10000) in paragraph at lines 189--190
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 191--192
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 193--194
 
  []
 
@@ -643,9 +649,9 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 
 [10] [11] [12]
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 14.4pt on input line 232.
+(Font)              scaled to size 14.4pt on input line 252.
  (wsg_proposal.bbl
-Underfull \hbox (badness 10000) in paragraph at lines 232--1
+Underfull \hbox (badness 10000) in paragraph at lines 252--1
 
  []
 
@@ -661,18 +667,18 @@ Package rerunfilecheck Info: File `wsg_proposal.out' has not changed.
 Here is how much of TeX's memory you used:
  11709 strings out of 479325
  166897 string characters out of 2873246
- 493305 words of memory out of 3000000
+ 494359 words of memory out of 3000000
  28900 multiletter control sequences out of 15000+600000
  423573 words of font info for 49 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,9n,88p,1486b,435s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 83i,9n,88p,1521b,435s stack positions out of 5000i,500n,10000p,200000b,80000s
 {C:/MiKTeX/fonts/enc/dvips/newtx/ntxsups_t1.enc}{C:/MiKTeX/fonts/enc/dvips/ne
 wtx/ntx-ec-tlf.enc}<C:/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/MiK
 TeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/MiKTeX/fonts/type1/public/new
 tx/ntxsups-Regular.pfb><C:/MiKTeX/fonts/type1/public/txfonts/t1xtt.pfb><C:/MiKT
 eX/fonts/type1/public/newtx/ztmb.pfb><C:/MiKTeX/fonts/type1/public/newtx/ztmr.p
 fb><C:/MiKTeX/fonts/type1/public/newtx/ztmri.pfb>
-Output written on wsg_proposal.pdf (13 pages, 4220909 bytes).
+Output written on wsg_proposal.pdf (13 pages, 4223290 bytes).
 PDF statistics:
  276 PDF objects out of 1000 (max. 8388607)
  68 named destinations out of 1000 (max. 500000)
