@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.4.5)  6 MAY 2021 15:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.4.5)  10 MAY 2021 11:32
 entering extended mode
 **./wsg_proposal.tex
 (wsg_proposal.tex
@@ -522,14 +522,25 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
  [1
 
 {C:/Users/Braeden/AppData/Local/MiKTeX/pdftex/config/pdftex.map}]
-<figures/fig_mapconcrete.png, id=103, 469.755pt x 505.89pt>
+<figures/fig_mapconcrete.png, id=111, 469.755pt x 505.89pt>
 File: figures/fig_mapconcrete.png Graphic file (type png)
 <use figures/fig_mapconcrete.png>
 Package pdftex.def Info: figures/fig_mapconcrete.png  used on input line 53.
 (pdftex.def)             Requested size: 284.52756pt x 306.4156pt.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
 (Font)              scaled to size 10.0pt on input line 54.
- [2
+
+Underfull \hbox (badness 1552) in paragraph at lines 57--58
+\T1/ntxtlf/m/n/12 and steel-head na-tive to West-ern
+ []
+
+
+Underfull \hbox (badness 3098) in paragraph at lines 57--58
+\T1/ntxtlf/m/n/12 Wash-ing-ton (\T1/ntxtlf/m/it/12 On-corhynchus \T1/ntxtlf/m/n
+/12 spp.)
+ []
+
+[2
 
  <./figures/fig_mapconcrete.png (PNG copy)>]
 LaTeX Font Info:    Trying to load font information for T1+ntxsups on input lin
@@ -549,77 +560,72 @@ File: t1ntxtt.fd 2012/04/20 v3.1
 )
 LaTeX Font Info:    Font shape `T1/ntxtt/m/n' will be
 (Font)              scaled to size 10.0pt on input line 75.
-[3] [4]
-<figures/predCost.png, id=143, 469.755pt x 289.08pt>
+[3] [4] [5]
+<figures/predCost.png, id=160, 469.755pt x 289.08pt>
 File: figures/predCost.png Graphic file (type png)
 <use figures/predCost.png>
-Package pdftex.def Info: figures/predCost.png  used on input line 108.
+Package pdftex.def Info: figures/predCost.png  used on input line 110.
 (pdftex.def)             Requested size: 284.52756pt x 175.09464pt.
- [5] [6 <./figures/predCost.png (PNG copy)>] [7]
+ [6 <./figures/predCost.png (PNG copy)>] [7] [8]
 
 pdfTeX warning: pdflatex.exe (file ./figures/opt_s.pdf): PDF inclusion: found P
 DF version <1.6>, but at most version <1.5> allowed
-<figures/opt_s.pdf, id=173, 424.31706pt x 252.31364pt>
+<figures/opt_s.pdf, id=186, 424.31706pt x 252.31364pt>
 File: figures/opt_s.pdf Graphic file (type pdf)
 <use figures/opt_s.pdf>
-Package pdftex.def Info: figures/opt_s.pdf  used on input line 147.
+Package pdftex.def Info: figures/opt_s.pdf  used on input line 149.
 (pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
 
 
 pdfTeX warning: pdflatex.exe (file ./figures/opt_h.pdf): PDF inclusion: found P
 DF version <1.6>, but at most version <1.5> allowed
-<figures/opt_h.pdf, id=174, 424.31706pt x 252.31364pt>
+<figures/opt_h.pdf, id=187, 424.31706pt x 252.31364pt>
 File: figures/opt_h.pdf Graphic file (type pdf)
 <use figures/opt_h.pdf>
-Package pdftex.def Info: figures/opt_h.pdf  used on input line 148.
+Package pdftex.def Info: figures/opt_h.pdf  used on input line 150.
 (pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
 
 
 pdfTeX warning: pdflatex.exe (file ./figures/opt_e.pdf): PDF inclusion: found P
 DF version <1.6>, but at most version <1.5> allowed
-<figures/opt_e.pdf, id=175, 424.31706pt x 252.31364pt>
+<figures/opt_e.pdf, id=188, 424.31706pt x 252.31364pt>
 File: figures/opt_e.pdf Graphic file (type pdf)
 <use figures/opt_e.pdf>
-Package pdftex.def Info: figures/opt_e.pdf  used on input line 149.
+Package pdftex.def Info: figures/opt_e.pdf  used on input line 151.
 (pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
 
 
 pdfTeX warning: pdflatex.exe (file ./figures/opt_d.pdf): PDF inclusion: found P
 DF version <1.6>, but at most version <1.5> allowed
-<figures/opt_d.pdf, id=176, 424.31706pt x 252.31364pt>
+<figures/opt_d.pdf, id=189, 424.31706pt x 252.31364pt>
 File: figures/opt_d.pdf Graphic file (type pdf)
 <use figures/opt_d.pdf>
-Package pdftex.def Info: figures/opt_d.pdf  used on input line 150.
+Package pdftex.def Info: figures/opt_d.pdf  used on input line 152.
 (pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 147--151
+Underfull \hbox (badness 10000) in paragraph at lines 149--153
 [][]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 147--151
+Underfull \hbox (badness 10000) in paragraph at lines 149--153
 []
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 147--151
+Underfull \hbox (badness 10000) in paragraph at lines 149--153
 []
  []
 
-[8
+[9
 
  <./figures/opt_s.pdf> <./figures/opt_h.pdf> <./figures/opt_e.pdf> <./figures/o
 pt_d.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 180--181
+Underfull \hbox (badness 10000) in paragraph at lines 182--183
 
  []
 
-[9]
-Underfull \hbox (badness 10000) in paragraph at lines 183--184
-
- []
-
-
+[10]
 Underfull \hbox (badness 10000) in paragraph at lines 185--186
 
  []
@@ -645,42 +651,49 @@ Underfull \hbox (badness 10000) in paragraph at lines 193--194
  []
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[10] [11] [12]
-LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 14.4pt on input line 252.
- (wsg_proposal.bbl
-Underfull \hbox (badness 10000) in paragraph at lines 252--1
+Underfull \hbox (badness 10000) in paragraph at lines 195--196
 
  []
 
-) [13
+[11]
+Overfull \hbox (5.04898pt too wide) in paragraph at lines 211--227
+ [][] 
+ []
+
+[12] [13]
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 14.4pt on input line 262.
+ (wsg_proposal.bbl
+Underfull \hbox (badness 10000) in paragraph at lines 262--1
+
+ []
+
+) [14
 
 ] (wsg_proposal.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `wsg_proposal.out' has not changed.
-(rerunfilecheck)             Checksum: 8878568BCB87EEAA58557AF5CA47E65D;3332.
+(rerunfilecheck)             Checksum: 0B753FAF353E6559CE97C4331D669D45;3629.
  ) 
 Here is how much of TeX's memory you used:
- 11709 strings out of 479325
- 166897 string characters out of 2873246
- 494359 words of memory out of 3000000
- 28900 multiletter control sequences out of 15000+600000
+ 11714 strings out of 479325
+ 166964 string characters out of 2873246
+ 493365 words of memory out of 3000000
+ 28902 multiletter control sequences out of 15000+600000
  423573 words of font info for 49 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,9n,88p,1521b,435s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 83i,9n,88p,1429b,370s stack positions out of 5000i,500n,10000p,200000b,80000s
 {C:/MiKTeX/fonts/enc/dvips/newtx/ntxsups_t1.enc}{C:/MiKTeX/fonts/enc/dvips/ne
 wtx/ntx-ec-tlf.enc}<C:/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/MiK
 TeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/MiKTeX/fonts/type1/public/new
 tx/ntxsups-Regular.pfb><C:/MiKTeX/fonts/type1/public/txfonts/t1xtt.pfb><C:/MiKT
 eX/fonts/type1/public/newtx/ztmb.pfb><C:/MiKTeX/fonts/type1/public/newtx/ztmr.p
 fb><C:/MiKTeX/fonts/type1/public/newtx/ztmri.pfb>
-Output written on wsg_proposal.pdf (13 pages, 4223290 bytes).
+Output written on wsg_proposal.pdf (14 pages, 4226931 bytes).
 PDF statistics:
- 276 PDF objects out of 1000 (max. 8388607)
- 68 named destinations out of 1000 (max. 500000)
- 199 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 290 PDF objects out of 1000 (max. 8388607)
+ 71 named destinations out of 1000 (max. 500000)
+ 215 words of extra memory for PDF output out of 10000 (max. 10000000)
 

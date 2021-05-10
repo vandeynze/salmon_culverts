@@ -1,7 +1,9 @@
-This is BibTeX, Version 0.99d (TeX Live 2016)
-Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: wsg_proposal.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
 The style file: abbrvnat.bst
+Reallocating 'name_of_file' (item size: 1) to 4 items.
 Database file #1: wsg.bib
 You've used 13 entries,
             2773 wiz_defined-function locations,

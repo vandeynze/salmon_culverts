@@ -1,0 +1,66 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: psp_loi.aux
+Reallocating 'name_of_file' (item size: 1) to 6 items.
+The style file: unsrt.bst
+Reallocating 'name_of_file' (item size: 1) to 4 items.
+I couldn't open database file wsg.bib
+---line 38 of file psp_loi.aux
+ : \bibdata{wsg
+ :             }
+I'm skipping whatever remains of this command
+I found no database files---while reading file psp_loi.aux
+Warning--I didn't find a database entry for "hickey2018highway"
+Warning--I didn't find a database entry for "brown2019coming"
+Warning--I didn't find a database entry for "o2005optimizing"
+Warning--I didn't find a database entry for "kuby2005multiobjective"
+Warning--I didn't find a database entry for "mcmanamay2019commonalities"
+Warning--I didn't find a database entry for "couto2021safeguarding"
+Warning--I didn't find a database entry for "optipass2015migratory"
+Warning--I didn't find a database entry for "moody2017pet"
+Warning--I didn't find a database entry for "ettinger2021prioritizing"
+Warning--I didn't find a database entry for "sanchirico2008empirical"
+Warning--I didn't find a database entry for "jardine2015fishermen"
+Warning--I didn't find a database entry for "johnston2002combining"
+You've used 0 entries,
+            1791 wiz_defined-function locations,
+            457 strings with 3752 characters,
+and the built_in function-call counts, 18 in all, are:
+= -- 0
+> -- 0
+< -- 0
++ -- 0
+- -- 0
+* -- 2
+:= -- 7
+add.period$ -- 0
+call.type$ -- 0
+change.case$ -- 0
+chr.to.int$ -- 0
+cite$ -- 0
+duplicate$ -- 0
+empty$ -- 1
+format.name$ -- 0
+if$ -- 1
+int.to.chr$ -- 0
+int.to.str$ -- 0
+missing$ -- 0
+newline$ -- 3
+num.names$ -- 0
+pop$ -- 0
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 1
+stack$ -- 0
+substring$ -- 0
+swap$ -- 0
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 0
+while$ -- 0
+width$ -- 0
+write$ -- 2
+(There were 2 error messages)
