@@ -1,4 +1,4 @@
-\begin{thebibliography}{28}
+\begin{thebibliography}{29}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -9,22 +9,16 @@
 Fish {Passage} {Inventory}, {Assessment}, and {Prioritization} {Manual}.
 \newblock Technical report, Washington Department of Fish and Wildlife,
   Olympia, Washington, 2019.
-\newblock URL
-  \url{https://wdfw.wa.gov/sites/default/files/publications/02061/Fish%20Passage%20Inventory%2C%20Assessment%2C%20and%20Prioritization%20Manual.pdf}.
 
 \bibitem[noa(2020{\natexlab{a}})]{noauthor_2020_2020}
 2020 {State} of {Our} {Watersheds}.
 \newblock Technical report, Northwest Indian Fisheries Commission,
   2020{\natexlab{a}}.
-\newblock URL
-  \url{http://files.nwifc.org/sow/2020/state-of-our-watersheds-sow-2020-final-web.pdf}.
 
 \bibitem[noa(2020{\natexlab{b}})]{noauthor_wsdot_2020}
 {WSDOT} {Fish} {Passage} {Performance} {Report}.
 \newblock Technical report, Washington Department of Transportation, Olympia,
   Washington, 2020{\natexlab{b}}.
-\newblock URL
-  \url{https://wsdot.wa.gov/sites/default/files/2019/09/20/Env-StrRest-FishPassageAnnualReport.pdf}.
 
 \bibitem[Babcock et~al.(1997)Babcock, Lakshminarayan, Wu, and
   Zilberman]{babcock_targeting_1997}
@@ -32,8 +26,6 @@ B.~A. Babcock, P.~G. Lakshminarayan, J.~Wu, and D.~Zilberman.
 \newblock Targeting {Tools} for the {Purchase} of {Environmental} {Amenities}.
 \newblock \emph{Land Economics}, 73\penalty0 (3):\penalty0 325--339, 1997.
 \newblock ISSN 0023-7639.
-\newblock \doi{10.2307/3147171}.
-\newblock URL \url{https://www.jstor.org/stable/3147171}.
 \newblock Publisher: [Board of Regents of the University of Wisconsin System,
   University of Wisconsin Press].
 
@@ -46,8 +38,8 @@ J.~Battin, M.~W. Wiley, M.~H. Ruckelshaus, R.~N. Palmer, E.~Korb, K.~K. Bartz,
   (16):\penalty0 6720--6725, 2007.
 \newblock Publisher: National Acad Sciences.
 
-\bibitem[Brown(2019)]{brown_coming_2019}
-A.~Brown.
+\bibitem[{Brown, Alex}(2019)]{brown_coming_2019}
+{Brown, Alex}.
 \newblock Coming {Down} the {Pipe}: {Saving} {Washington}'s {Salmon} {May}
   {Require} {Replacing} {Tens} of {Thousands} of {Culverts}, and {Nobody}
   {Knows} {Where} the {Money} {Will} {Come} {From}.
@@ -62,12 +54,6 @@ K.~M. Burnett, G.~H. Reeves, D.~J. Miller, S.~Clarke, K.~Vance-Borland, and
 \newblock \emph{Ecological Applications}, 17\penalty0 (1):\penalty0 66--80,
   2007.
 \newblock ISSN 1939-5582.
-\newblock
-  \doi{https://doi.org/10.1890/1051-0761(2007)017[0066:DOSPRT]2.0.CO;2}.
-\newblock URL
-  \url{http://esajournals.onlinelibrary.wiley.com/doi/abs/10.1890/1051-0761%282007%29017%5B0066%3ADOSPRT%5D2.0.CO%3B2}.
-\newblock \_eprint:
-  https://onlinelibrary.wiley.com/doi/pdf/10.1890/1051-0761\%282007\%29017\%5B0066\%3ADOSPRT\%5D2.0.CO\%3B2.
 
 \bibitem[Couto et~al.(2021)Couto, Messager, and Olden]{couto_safeguarding_2021}
 T.~B. Couto, M.~L. Messager, and J.~D. Olden.
@@ -83,10 +69,6 @@ J.~Elith, J.~R. Leathwick, and T.~Hastie.
   2008.
 \newblock ISSN 1365-2656.
 \newblock \doi{https://doi.org/10.1111/j.1365-2656.2008.01390.x}.
-\newblock URL
-  \url{http://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/j.1365-2656.2008.01390.x}.
-\newblock \_eprint:
-  https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1365-2656.2008.01390.x.
 
 \bibitem[Ettinger et~al.(2021)Ettinger, Buhle, Feist, Howe, Spromberg, Scholz,
   and Levin]{ettinger_prioritizing_2021}
@@ -103,8 +85,6 @@ C.~R. Field and C.~S. Elphick.
 \newblock \emph{Environmental Research Letters}, 14\penalty0 (12):\penalty0
   124081, Dec. 2019.
 \newblock ISSN 1748-9326.
-\newblock \doi{10.1088/1748-9326/ab5cae}.
-\newblock URL \url{https://doi.org/10.1088/1748-9326/ab5cae}.
 \newblock Publisher: IOP Publishing.
 
 \bibitem[{G. Mauger} et~al.(){G. Mauger}, {S. Lee}, {J. Won}, {K. Byun}, and
@@ -114,8 +94,6 @@ C.~R. Field and C.~S. Elphick.
   passage impediments.
 \newblock Final report for the {Skagit} {Climate} {Science} {Consortium},
   Climate Impacts Group, University of Washington, Seattle.
-\newblock URL
-  \url{https://cig.uw.edu/wp-content/uploads/sites/2/2018/07/Final_Report_SC2-Culverts_FINAL.compressed_3.pdf}.
 
 \bibitem[Hermoso et~al.(2021)Hermoso, Clavero, and
   Filipe]{hermoso_accessible_2021}
@@ -126,8 +104,6 @@ V.~Hermoso, M.~Clavero, and A.~F. Filipe.
   2021.
 \newblock ISSN 0048-9697.
 \newblock \doi{10.1016/j.scitotenv.2020.141943}.
-\newblock URL
-  \url{https://www.sciencedirect.com/science/article/pii/S0048969720354723}.
 
 \bibitem[Hickey(2018)]{hickey_highway_2018}
 R.~Hickey.
@@ -161,10 +137,6 @@ S.~King, J.~R. O'Hanley, L.~R. Newbold, P.~S. Kemp, and M.~W. Diebel.
   599--611, 2017.
 \newblock ISSN 1365-2664.
 \newblock \doi{https://doi.org/10.1111/1365-2664.12706}.
-\newblock URL
-  \url{http://besjournals.onlinelibrary.wiley.com/doi/abs/10.1111/1365-2664.12706}.
-\newblock \_eprint:
-  https://onlinelibrary.wiley.com/doi/pdf/10.1111/1365-2664.12706.
 
 \bibitem[Kuby et~al.(2005)Kuby, Fagan, ReVelle, and
   Graf]{kuby_multiobjective_2005}
@@ -193,8 +165,6 @@ A.~W. Milt, P.~J. Doran, M.~C. Ferris, A.~T. Moody, T.~M. Neeson, and P.~B.
 \newblock \emph{River Research and Applications}, 33\penalty0 (5):\penalty0
   788--795, 2017.
 \newblock ISSN 1535-1467.
-\newblock \doi{https://doi.org/10.1002/rra.3135}.
-\newblock URL \url{http://onlinelibrary.wiley.com/doi/abs/10.1002/rra.3135}.
 \newblock \_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1002/rra.3135.
 
 \bibitem[Moody et~al.(2017)Moody, Neeson, Wangen, Dischler, Diebel, Milt,
@@ -214,21 +184,16 @@ R.~Naidoo, A.~Balmford, P.~J. Ferraro, S.~Polasky, T.~H. Ricketts, and
 \newblock \emph{Trends in Ecology \& Evolution}, 21\penalty0 (12):\penalty0
   681--687, Dec. 2006.
 \newblock ISSN 0169-5347.
-\newblock \doi{10.1016/j.tree.2006.10.003}.
-\newblock URL
-  \url{http://www.sciencedirect.com/science/article/pii/S0169534706003338}.
 
-\bibitem[Neeson et~al.(2015)Neeson, Ferris, Diebel, Doran, O’Hanley, and
+\bibitem[Neeson et~al.(2015)Neeson, Ferris, Diebel, Doran, O'Hanley, and
   McIntyre]{neeson_enhancing_2015}
-T.~M. Neeson, M.~C. Ferris, M.~W. Diebel, P.~J. Doran, J.~R. O’Hanley, and
+T.~M. Neeson, M.~C. Ferris, M.~W. Diebel, P.~J. Doran, J.~R. O'Hanley, and
   P.~B. McIntyre.
 \newblock Enhancing ecosystem restoration efficiency through spatial and
   temporal coordination.
 \newblock \emph{Proceedings of the National Academy of Sciences}, 112\penalty0
   (19):\penalty0 6236--6241, May 2015.
 \newblock ISSN 0027-8424, 1091-6490.
-\newblock \doi{10.1073/pnas.1423812112}.
-\newblock URL \url{http://www.pnas.org/content/112/19/6236}.
 \newblock Publisher: National Academy of Sciences Section: Biological Sciences.
 
 \bibitem[O'Hanley(2015)]{ohanley_optipass_2015}
@@ -252,9 +217,6 @@ J.~R. O'Hanley, J.~Wright, M.~Diebel, M.~A. Fedora, and C.~L. Soucy.
 \newblock \emph{Journal of Environmental Management}, 125:\penalty0 19--27,
   Aug. 2013.
 \newblock ISSN 0301-4797.
-\newblock \doi{10.1016/j.jenvman.2013.02.055}.
-\newblock URL
-  \url{http://www.sciencedirect.com/science/article/pii/S0301479713001710}.
 
 \bibitem[Roni et~al.(2002)Roni, Beechie, Bilby, Leonetti, Pollock, and
   Pess]{roni_review_2002}
@@ -266,12 +228,6 @@ P.~Roni, T.~J. Beechie, R.~E. Bilby, F.~E. Leonetti, M.~M. Pollock, and G.~R.
 \newblock \emph{North American Journal of Fisheries Management}, 22\penalty0
   (1):\penalty0 1--20, 2002.
 \newblock ISSN 1548-8675.
-\newblock
-  \doi{https://doi.org/10.1577/1548-8675(2002)022<0001:AROSRT>2.0.CO;2}.
-\newblock URL
-  \url{https://afspubs.onlinelibrary.wiley.com/doi/abs/10.1577/1548-8675%282002%29022%3C0001%3AAROSRT%3E2.0.CO%3B2}.
-\newblock \_eprint:
-  https://afspubs.onlinelibrary.wiley.com/doi/pdf/10.1577/1548-8675\%282002\%29022\%3C0001\%3AAROSRT\%3E2.0.CO\%3B2.
 
 \bibitem[Sanchirico et~al.(2008)Sanchirico, Smith, and
   Lipton]{sanchirico_empirical_2008}
@@ -280,5 +236,11 @@ J.~N. Sanchirico, M.~D. Smith, and D.~W. Lipton.
 \newblock \emph{Ecological Economics}, 64\penalty0 (3):\penalty0 586--596,
   2008.
 \newblock Publisher: Elsevier.
+
+\bibitem[Theu{\ss}l et~al.(2019)Theu{\ss}l, Schwendinger, and
+  Hornik]{theussl2019roi}
+S.~Theu{\ss}l, F.~Schwendinger, and K.~Hornik.
+\newblock Roi: an extensible r optimization infrastructure.
+\newblock 2019.
 
 \end{thebibliography}

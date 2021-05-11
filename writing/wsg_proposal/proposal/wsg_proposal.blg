@@ -3,11 +3,6 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: wsg_proposal.aux
 The style file: abbrvnat.bst
 Database file #1: wsg-bvd.bib
-Repeated entry---line 468 of file wsg-bvd.bib
- : @article{brown_coming_2019
- :                           ,
-I'm skipping whatever remains of this entry
-Warning--I didn't find a database entry for "couto2021safeguarding"
 Warning--to sort, need author or key in noauthor_2020_2020
 Warning--to sort, need author or key in noauthor_wsdot_2020
 Warning--to sort, need author or key in noauthor_fish_2019
@@ -16,45 +11,46 @@ Warning--empty author in noauthor_2020_2020
 Warning--empty author in noauthor_wsdot_2020
 Warning--empty year in guillaume_mauger_climate_nodate
 Warning--empty year in guillaume_mauger_climate_nodate
-You've used 28 entries,
+Warning--empty journal in theussl2019roi
+You've used 29 entries,
             2773 wiz_defined-function locations,
-            820 strings with 13404 characters,
-and the built_in function-call counts, 15040 in all, are:
-= -- 1401
-> -- 1023
+            797 strings with 11751 characters,
+and the built_in function-call counts, 15094 in all, are:
+= -- 1357
+> -- 1053
 < -- 7
-+ -- 347
-- -- 318
-* -- 1407
-:= -- 2391
-add.period$ -- 137
-call.type$ -- 28
-change.case$ -- 195
-chr.to.int$ -- 27
-cite$ -- 67
-duplicate$ -- 558
-empty$ -- 1032
-format.name$ -- 349
-if$ -- 3064
++ -- 357
+- -- 327
+* -- 1395
+:= -- 2380
+add.period$ -- 113
+call.type$ -- 29
+change.case$ -- 201
+chr.to.int$ -- 28
+cite$ -- 70
+duplicate$ -- 578
+empty$ -- 1063
+format.name$ -- 359
+if$ -- 3070
 int.to.chr$ -- 2
 int.to.str$ -- 1
-missing$ -- 23
-newline$ -- 201
-num.names$ -- 100
-pop$ -- 284
+missing$ -- 24
+newline$ -- 179
+num.names$ -- 104
+pop$ -- 325
 preamble$ -- 1
-purify$ -- 162
+purify$ -- 167
 quote$ -- 0
-skip$ -- 435
+skip$ -- 450
 stack$ -- 0
-substring$ -- 533
+substring$ -- 535
 swap$ -- 36
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 308
-warning$ -- 8
-while$ -- 116
+type$ -- 319
+warning$ -- 9
+while$ -- 119
 width$ -- 0
-write$ -- 478
-(There was 1 error message)
+write$ -- 435
+(There were 9 warnings)
