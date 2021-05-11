@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.4.5)  10 MAY 2021 11:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.4.5)  10 MAY 2021 17:08
 entering extended mode
 **./wsg_proposal.tex
 (wsg_proposal.tex
@@ -530,12 +530,12 @@ Package pdftex.def Info: figures/fig_mapconcrete.png  used on input line 53.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
 (Font)              scaled to size 10.0pt on input line 54.
 
-Underfull \hbox (badness 1552) in paragraph at lines 57--58
+Underfull \hbox (badness 1552) in paragraph at lines 57--60
 \T1/ntxtlf/m/n/12 and steel-head na-tive to West-ern
  []
 
 
-Underfull \hbox (badness 3098) in paragraph at lines 57--58
+Underfull \hbox (badness 3098) in paragraph at lines 57--60
 \T1/ntxtlf/m/n/12 Wash-ing-ton (\T1/ntxtlf/m/it/12 On-corhynchus \T1/ntxtlf/m/n
 /12 spp.)
  []
@@ -544,76 +544,76 @@ Underfull \hbox (badness 3098) in paragraph at lines 57--58
 
  <./figures/fig_mapconcrete.png (PNG copy)>]
 LaTeX Font Info:    Trying to load font information for T1+ntxsups on input lin
-e 75.
+e 78.
 
 (C:\MiKTeX\tex/latex/newtx\t1ntxsups.fd
 File: t1ntxsups.fd 2015/01/17 v1.0
 )
 LaTeX Font Info:    Font shape `T1/ntxsups/m/n' will be
-(Font)              scaled to size 12.0pt on input line 75.
+(Font)              scaled to size 12.0pt on input line 78.
 LaTeX Font Info:    Font shape `T1/ntxsups/m/n' will be
-(Font)              scaled to size 10.0pt on input line 75.
+(Font)              scaled to size 10.0pt on input line 78.
 LaTeX Font Info:    Trying to load font information for T1+ntxtt on input line 
-75.
+78.
  (C:\MiKTeX\tex/latex/newtx\t1ntxtt.fd
 File: t1ntxtt.fd 2012/04/20 v3.1
 )
 LaTeX Font Info:    Font shape `T1/ntxtt/m/n' will be
-(Font)              scaled to size 10.0pt on input line 75.
+(Font)              scaled to size 10.0pt on input line 78.
 [3] [4] [5]
-<figures/predCost.png, id=160, 469.755pt x 289.08pt>
+<figures/predCost.png, id=172, 469.755pt x 289.08pt>
 File: figures/predCost.png Graphic file (type png)
 <use figures/predCost.png>
-Package pdftex.def Info: figures/predCost.png  used on input line 110.
+Package pdftex.def Info: figures/predCost.png  used on input line 113.
 (pdftex.def)             Requested size: 284.52756pt x 175.09464pt.
  [6 <./figures/predCost.png (PNG copy)>] [7] [8]
 
 pdfTeX warning: pdflatex.exe (file ./figures/opt_s.pdf): PDF inclusion: found P
 DF version <1.6>, but at most version <1.5> allowed
-<figures/opt_s.pdf, id=186, 424.31706pt x 252.31364pt>
+<figures/opt_s.pdf, id=217, 424.31706pt x 252.31364pt>
 File: figures/opt_s.pdf Graphic file (type pdf)
 <use figures/opt_s.pdf>
-Package pdftex.def Info: figures/opt_s.pdf  used on input line 149.
+Package pdftex.def Info: figures/opt_s.pdf  used on input line 152.
 (pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
 
 
 pdfTeX warning: pdflatex.exe (file ./figures/opt_h.pdf): PDF inclusion: found P
 DF version <1.6>, but at most version <1.5> allowed
-<figures/opt_h.pdf, id=187, 424.31706pt x 252.31364pt>
+<figures/opt_h.pdf, id=218, 424.31706pt x 252.31364pt>
 File: figures/opt_h.pdf Graphic file (type pdf)
 <use figures/opt_h.pdf>
-Package pdftex.def Info: figures/opt_h.pdf  used on input line 150.
+Package pdftex.def Info: figures/opt_h.pdf  used on input line 153.
 (pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
 
 
 pdfTeX warning: pdflatex.exe (file ./figures/opt_e.pdf): PDF inclusion: found P
 DF version <1.6>, but at most version <1.5> allowed
-<figures/opt_e.pdf, id=188, 424.31706pt x 252.31364pt>
+<figures/opt_e.pdf, id=219, 424.31706pt x 252.31364pt>
 File: figures/opt_e.pdf Graphic file (type pdf)
 <use figures/opt_e.pdf>
-Package pdftex.def Info: figures/opt_e.pdf  used on input line 151.
+Package pdftex.def Info: figures/opt_e.pdf  used on input line 154.
 (pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
 
 
 pdfTeX warning: pdflatex.exe (file ./figures/opt_d.pdf): PDF inclusion: found P
 DF version <1.6>, but at most version <1.5> allowed
-<figures/opt_d.pdf, id=189, 424.31706pt x 252.31364pt>
+<figures/opt_d.pdf, id=220, 424.31706pt x 252.31364pt>
 File: figures/opt_d.pdf Graphic file (type pdf)
 <use figures/opt_d.pdf>
-Package pdftex.def Info: figures/opt_d.pdf  used on input line 152.
+Package pdftex.def Info: figures/opt_d.pdf  used on input line 155.
 (pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 149--153
+Underfull \hbox (badness 10000) in paragraph at lines 152--156
 [][]
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 149--153
+Underfull \hbox (badness 10000) in paragraph at lines 152--156
 []
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 149--153
+Underfull \hbox (badness 10000) in paragraph at lines 152--156
 []
  []
 
@@ -621,56 +621,154 @@ Underfull \hbox (badness 10000) in paragraph at lines 149--153
 
  <./figures/opt_s.pdf> <./figures/opt_h.pdf> <./figures/opt_e.pdf> <./figures/o
 pt_d.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 182--183
-
- []
-
-[10]
 Underfull \hbox (badness 10000) in paragraph at lines 185--186
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 187--188
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 189--190
+[10]
+Underfull \hbox (badness 10000) in paragraph at lines 188--189
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 191--192
+Underfull \hbox (badness 10000) in paragraph at lines 190--191
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 193--194
+Underfull \hbox (badness 10000) in paragraph at lines 192--193
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 195--196
+Underfull \hbox (badness 10000) in paragraph at lines 194--195
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 196--197
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 198--199
 
  []
 
 [11]
-Overfull \hbox (5.04898pt too wide) in paragraph at lines 211--227
+Overfull \hbox (5.04898pt too wide) in paragraph at lines 214--230
  [][] 
  []
 
 [12] [13]
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 14.4pt on input line 262.
+(Font)              scaled to size 14.4pt on input line 265.
  (wsg_proposal.bbl
-Underfull \hbox (badness 10000) in paragraph at lines 262--1
+Underfull \hbox (badness 10000) in paragraph at lines 265--1
 
  []
 
-) [14
+LaTeX Font Info:    Font shape `T1/ntxtt/m/n' will be
+(Font)              scaled to size 12.0pt on input line 13.
 
-] (wsg_proposal.aux)
+Underfull \hbox (badness 10000) in paragraph at lines 9--14
+\T1/ntxtt/m/n/12 / / wdfw . wa . gov / sites / default / files / publications /
+ 02061 / Fish % 20Passage %
+ []
+
+
+Underfull \hbox (badness 5316) in paragraph at lines 16--21
+[]\T1/ntxtlf/m/n/12 2020 State of Our Wa-ter-sheds.  Tech-ni-cal re-port, North
+-west In-dian Fish-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 16--21
+\T1/ntxtlf/m/n/12 eries Com-mis-sion, 2020.  URL []$\T1/ntxtt/m/n/12 http : / /
+ files . nwifc . org / sow / 2020 /
+ []
+
+
+Underfull \hbox (badness 1281) in paragraph at lines 58--71
+[]\T1/ntxtlf/m/n/12 K. M. Bur-nett, G. H. Reeves, D. J. Miller, S. Clarke, K. V
+ance-Borland, and
+ []
+
+
+Underfull \hbox (badness 1527) in paragraph at lines 58--71
+\T1/ntxtlf/m/n/12 K. Chris-tiansen.  Dis-tri-bu-tion of Salmon-Habitat Po-ten-t
+ial Rel-a-tive to Land-scape
+ []
+
+
+Underfull \hbox (badness 2781) in paragraph at lines 58--71
+\T1/ntxtlf/m/n/12 Char-ac-ter-is-tics and Im-pli-ca-tions for Con-ser-va-tion. 
+ \T1/ntxtlf/m/it/12 Eco-log-i-cal Ap-pli-ca-tions\T1/ntxtlf/m/n/12 , 17
+ []
+
+
+Underfull \hbox (badness 1033) in paragraph at lines 58--71
+\T1/ntxtlf/m/n/12 (1):66--80, 2007.  ISSN 1939-5582.  doi: $https : / / doi . o
+rg / 10 . 1890 / 1051-[]0761(2007 )
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 58--71
+\T1/ntxtlf/m/n/12 017[0066 : DOSPRT ] 2 . 0 . CO ; 2$.  URL []$\T1/ntxtt/m/n/12
+ http : / / esajournals . onlinelibrary .
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 58--71
+\T1/ntxtt/m/n/12 wiley . com / doi / abs / 10 . 1890 / 1051-[]0761 % 282007 % 2
+9017 % 5B0066 % 3ADOSPRT %
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 58--71
+\T1/ntxtt/m/n/12 5D2 . 0 . CO % 3B2$[]\T1/ntxtlf/m/n/12 .  _eprint: https://onl
+inelibrary.wiley.com/doi/pdf/10.1890/1051-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 80--90
+\T1/ntxtlf/m/n/12 https : / / doi . org / 10 . 1111 / j . 1365-[]2656 . 2008 . 
+01390 . x$.  URL []$\T1/ntxtt/m/n/12 http : / / besjournals .
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 80--90
+\T1/ntxtt/m/n/12 onlinelibrary . wiley . com / doi / abs / 10 . 1111 / j . 1365
+-[]2656 . 2008 . 01390 . x$[]\T1/ntxtlf/m/n/12 .
+ []
+
+[14
+
+]
+Underfull \hbox (badness 5036) in paragraph at lines 158--168
+\T1/ntxtt/m/n/12 1365-[]2664 . 12706$[]\T1/ntxtlf/m/n/12 .  _eprint: https://on
+linelibrary.wiley.com/doi/pdf/10.1111/1365-
+ []
+
+[15]
+Underfull \hbox (badness 5161) in paragraph at lines 261--275
+\T1/ntxtlf/m/n/12 022<[]0001 : AROSRT >[] 2 . 0 . CO ; 2$.  URL []$\T1/ntxtt/m/
+n/12 https : / / afspubs . onlinelibrary . wiley .
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 261--275
+\T1/ntxtt/m/n/12 com / doi / abs / 10 . 1577 / 1548-[]8675 % 282002 % 29022 % 3
+C0001 % 3AAROSRT % 3E2 . 0 .
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 261--275
+\T1/ntxtt/m/n/12 CO % 3B2$[]\T1/ntxtlf/m/n/12 .  _eprint: https://afspubs.onlin
+elibrary.wiley.com/doi/pdf/10.1577/1548-
+ []
+
+[16]) [17] (wsg_proposal.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
@@ -678,22 +776,22 @@ Package rerunfilecheck Info: File `wsg_proposal.out' has not changed.
 (rerunfilecheck)             Checksum: 0B753FAF353E6559CE97C4331D669D45;3629.
  ) 
 Here is how much of TeX's memory you used:
- 11714 strings out of 479325
- 166964 string characters out of 2873246
- 493365 words of memory out of 3000000
- 28902 multiletter control sequences out of 15000+600000
- 423573 words of font info for 49 fonts, out of 8000000 for 9000
+ 11778 strings out of 479325
+ 168819 string characters out of 2873246
+ 497351 words of memory out of 3000000
+ 28948 multiletter control sequences out of 15000+600000
+ 423895 words of font info for 50 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,9n,88p,1429b,370s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 83i,9n,88p,1434b,516s stack positions out of 5000i,500n,10000p,200000b,80000s
 {C:/MiKTeX/fonts/enc/dvips/newtx/ntxsups_t1.enc}{C:/MiKTeX/fonts/enc/dvips/ne
 wtx/ntx-ec-tlf.enc}<C:/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/MiK
 TeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/MiKTeX/fonts/type1/public/new
 tx/ntxsups-Regular.pfb><C:/MiKTeX/fonts/type1/public/txfonts/t1xtt.pfb><C:/MiKT
 eX/fonts/type1/public/newtx/ztmb.pfb><C:/MiKTeX/fonts/type1/public/newtx/ztmr.p
 fb><C:/MiKTeX/fonts/type1/public/newtx/ztmri.pfb>
-Output written on wsg_proposal.pdf (14 pages, 4226931 bytes).
+Output written on wsg_proposal.pdf (17 pages, 4251528 bytes).
 PDF statistics:
- 290 PDF objects out of 1000 (max. 8388607)
- 71 named destinations out of 1000 (max. 500000)
+ 368 PDF objects out of 1000 (max. 8388607)
+ 89 named destinations out of 1000 (max. 500000)
  215 words of extra memory for PDF output out of 10000 (max. 10000000)
 

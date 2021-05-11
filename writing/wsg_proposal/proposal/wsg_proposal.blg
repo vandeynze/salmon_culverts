@@ -3,46 +3,59 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: wsg_proposal.aux
 Reallocating 'name_of_file' (item size: 1) to 9 items.
 The style file: abbrvnat.bst
-Reallocating 'name_of_file' (item size: 1) to 4 items.
-Database file #1: wsg.bib
-You've used 13 entries,
+Reallocating 'name_of_file' (item size: 1) to 8 items.
+Database file #1: wsg-bvd.bib
+Repeated entry---line 468 of file wsg-bvd.bib
+ : @article{brown_coming_2019
+ :                           ,
+I'm skipping whatever remains of this entry
+Warning--to sort, need author or key in noauthor_2020_2020
+Warning--to sort, need author or key in noauthor_wsdot_2020
+Warning--to sort, need author or key in noauthor_fish_2019
+Warning--empty author in noauthor_fish_2019
+Warning--empty author in noauthor_2020_2020
+Warning--empty author in noauthor_wsdot_2020
+Warning--empty year in guillaume_mauger_climate_nodate
+Warning--empty year in guillaume_mauger_climate_nodate
+You've used 28 entries,
             2773 wiz_defined-function locations,
-            685 strings with 7506 characters,
-and the built_in function-call counts, 6739 in all, are:
-= -- 584
-> -- 473
-< -- 6
-+ -- 160
-- -- 147
-* -- 601
-:= -- 1070
-add.period$ -- 39
-call.type$ -- 13
-change.case$ -- 88
-chr.to.int$ -- 13
-cite$ -- 26
-duplicate$ -- 267
-empty$ -- 489
-format.name$ -- 164
-if$ -- 1367
-int.to.chr$ -- 1
+            819 strings with 13383 characters,
+and the built_in function-call counts, 15040 in all, are:
+= -- 1401
+> -- 1023
+< -- 7
++ -- 347
+- -- 318
+* -- 1407
+:= -- 2391
+add.period$ -- 137
+call.type$ -- 28
+change.case$ -- 195
+chr.to.int$ -- 27
+cite$ -- 67
+duplicate$ -- 558
+empty$ -- 1032
+format.name$ -- 349
+if$ -- 3064
+int.to.chr$ -- 2
 int.to.str$ -- 1
-missing$ -- 12
-newline$ -- 73
-num.names$ -- 52
-pop$ -- 154
+missing$ -- 23
+newline$ -- 201
+num.names$ -- 100
+pop$ -- 284
 preamble$ -- 1
-purify$ -- 74
+purify$ -- 162
 quote$ -- 0
-skip$ -- 213
+skip$ -- 435
 stack$ -- 0
-substring$ -- 254
-swap$ -- 18
+substring$ -- 533
+swap$ -- 36
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 143
-warning$ -- 0
-while$ -- 60
+type$ -- 308
+warning$ -- 8
+while$ -- 116
 width$ -- 0
-write$ -- 175
+write$ -- 478
+(There was 1 error message)
