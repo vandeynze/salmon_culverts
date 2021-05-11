@@ -1,14 +1,13 @@
-This is BibTeX, Version 0.99d
-Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+This is BibTeX, Version 0.99d (TeX Live 2016)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: wsg_proposal.aux
-Reallocating 'name_of_file' (item size: 1) to 9 items.
 The style file: abbrvnat.bst
-Reallocating 'name_of_file' (item size: 1) to 8 items.
 Database file #1: wsg-bvd.bib
 Repeated entry---line 468 of file wsg-bvd.bib
  : @article{brown_coming_2019
  :                           ,
 I'm skipping whatever remains of this entry
+Warning--I didn't find a database entry for "couto2021safeguarding"
 Warning--to sort, need author or key in noauthor_2020_2020
 Warning--to sort, need author or key in noauthor_wsdot_2020
 Warning--to sort, need author or key in noauthor_fish_2019
@@ -19,7 +18,7 @@ Warning--empty year in guillaume_mauger_climate_nodate
 Warning--empty year in guillaume_mauger_climate_nodate
 You've used 28 entries,
             2773 wiz_defined-function locations,
-            819 strings with 13383 characters,
+            820 strings with 13404 characters,
 and the built_in function-call counts, 15040 in all, are:
 = -- 1401
 > -- 1023
