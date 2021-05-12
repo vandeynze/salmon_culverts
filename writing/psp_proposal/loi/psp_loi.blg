@@ -4,63 +4,56 @@ The top-level auxiliary file: psp_loi.aux
 Reallocating 'name_of_file' (item size: 1) to 6 items.
 The style file: unsrt.bst
 Reallocating 'name_of_file' (item size: 1) to 4 items.
-I couldn't open database file wsg.bib
----line 38 of file psp_loi.aux
- : \bibdata{wsg
- :             }
-I'm skipping whatever remains of this command
-I found no database files---while reading file psp_loi.aux
-Warning--I didn't find a database entry for "hickey2018highway"
-Warning--I didn't find a database entry for "brown2019coming"
-Warning--I didn't find a database entry for "o2005optimizing"
-Warning--I didn't find a database entry for "kuby2005multiobjective"
-Warning--I didn't find a database entry for "mcmanamay2019commonalities"
-Warning--I didn't find a database entry for "couto2021safeguarding"
-Warning--I didn't find a database entry for "optipass2015migratory"
-Warning--I didn't find a database entry for "moody2017pet"
-Warning--I didn't find a database entry for "ettinger2021prioritizing"
-Warning--I didn't find a database entry for "sanchirico2008empirical"
-Warning--I didn't find a database entry for "jardine2015fishermen"
-Warning--I didn't find a database entry for "johnston2002combining"
-You've used 0 entries,
+Database file #1: psp.bib
+I was expecting a `,' or a `}'---line 466 of file psp.bib
+ : 
+ : @article{brown_coming_2019,
+(Error may have been on previous line)
+I'm skipping whatever remains of this entry
+Repeated entry---line 466 of file psp.bib
+ : @article{brown_coming_2019
+ :                           ,
+I'm skipping whatever remains of this entry
+Warning--empty author in noauthor_pacific_2021
+You've used 15 entries,
             1791 wiz_defined-function locations,
-            457 strings with 3752 characters,
-and the built_in function-call counts, 18 in all, are:
-= -- 0
-> -- 0
-< -- 0
-+ -- 0
-- -- 0
-* -- 2
-:= -- 7
-add.period$ -- 0
-call.type$ -- 0
-change.case$ -- 0
+            539 strings with 6979 characters,
+and the built_in function-call counts, 3548 in all, are:
+= -- 314
+> -- 185
+< -- 1
++ -- 68
+- -- 53
+* -- 285
+:= -- 595
+add.period$ -- 45
+call.type$ -- 15
+change.case$ -- 17
 chr.to.int$ -- 0
-cite$ -- 0
-duplicate$ -- 0
-empty$ -- 1
-format.name$ -- 0
-if$ -- 1
+cite$ -- 16
+duplicate$ -- 133
+empty$ -- 318
+format.name$ -- 53
+if$ -- 749
 int.to.chr$ -- 0
-int.to.str$ -- 0
-missing$ -- 0
-newline$ -- 3
-num.names$ -- 0
-pop$ -- 0
+int.to.str$ -- 15
+missing$ -- 13
+newline$ -- 78
+num.names$ -- 14
+pop$ -- 21
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 1
+skip$ -- 49
 stack$ -- 0
-substring$ -- 0
-swap$ -- 0
-text.length$ -- 0
+substring$ -- 269
+swap$ -- 18
+text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 0
-while$ -- 0
-width$ -- 0
-write$ -- 2
+warning$ -- 1
+while$ -- 38
+width$ -- 17
+write$ -- 166
 (There were 2 error messages)

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.4.5)  10 MAY 2021 10:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.4.5)  11 MAY 2021 13:13
 entering extended mode
 **./psp_loi.tex
 (psp_loi.tex
@@ -460,116 +460,45 @@ LaTeX Info: Redefining \nameref on input line 25.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 
-Overfull \hbox (12.61555pt too wide) in paragraph at lines 30--31
+Overfull \hbox (12.61555pt too wide) in paragraph at lines 32--33
 \OT1/ptm/m/n/12 ciate, Uni-ver-sity of Wash-ing-ton -- School of Ma-rine & En-v
 i-ron-men-tal Af-fairs); Mark Schueurell
  []
 
-
-Package natbib Warning: Citation `hickey2018highway' on page 1 undefined on inp
-ut line 37.
-
-
-Package natbib Warning: Citation `brown2019coming' on page 1 undefined on input
- line 39.
-
-
-Package natbib Warning: Citation `o2005optimizing' on page 1 undefined on input
- line 43.
-
-
-Package natbib Warning: Citation `kuby2005multiobjective' on page 1 undefined o
-n input line 43.
-
-
-Package natbib Warning: Citation `mcmanamay2019commonalities' on page 1 undefin
-ed on input line 43.
-
-
-Package natbib Warning: Citation `couto2021safeguarding' on page 1 undefined on
- input line 43.
-
-
-Package natbib Warning: Citation `optipass2015migratory' on page 1 undefined on
- input line 43.
-
-
-Package natbib Warning: Citation `moody2017pet' on page 1 undefined on input li
-ne 43.
-
 [1
 
 {C:/Users/Braeden/AppData/Local/MiKTeX/pdftex/config/pdftex.map}] [2]
+LaTeX Font Info:    Trying to load font information for U+msa on input line 74.
 
-Package natbib Warning: Citation `ettinger2021prioritizing' on page 3 undefined
- on input line 67.
-
-
-Package natbib Warning: Citation `sanchirico2008empirical' on page 3 undefined 
-on input line 67.
-
-
-Package natbib Warning: Citation `jardine2015fishermen' on page 3 undefined on 
-input line 67.
-
-
-Package natbib Warning: Citation `johnston2002combining' on page 3 undefined on
- input line 67.
-
-LaTeX Font Info:    Trying to load font information for U+msa on input line 73.
 
 (C:\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 73.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 74.
 
  (C:\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for U+rsfs on input line 73
+LaTeX Font Info:    Trying to load font information for U+rsfs on input line 74
 .
 
 (C:\MiKTeX\tex/latex/jknappen\ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
-)
+) [3] [4] [5] (psp_loi.bbl [6
 
-Package natbib Warning: Citation `optipass2015migratory' on page 3 undefined on
- input line 88.
-
-
-Package natbib Warning: Citation `moody2017pet' on page 3 undefined on input li
-ne 88.
-
-
-Package natbib Warning: Citation `mcmanamay2019commonalities' on page 3 undefin
-ed on input line 88.
-
-[3] [4] [5] (psp_loi.bbl
-Underfull \hbox (badness 10000) in paragraph at lines 129--1
-
- []
-
-
-Package natbib Warning: Empty `thebibliography' environment on input line 3.
-
-)
-
-Package natbib Warning: There were undefined citations.
-
-[6
-
-] (psp_loi.aux)
+]) [7]
+(psp_loi.aux)
 Package rerunfilecheck Info: File `psp_loi.out' has not changed.
 (rerunfilecheck)             Checksum: 61C14EA46BD3D9417B62467EDC74D6AB;1096.
  ) 
 Here is how much of TeX's memory you used:
- 10877 strings out of 479325
- 152797 string characters out of 2873246
- 468902 words of memory out of 3000000
- 28133 multiletter control sequences out of 15000+600000
- 418832 words of font info for 67 fonts, out of 8000000 for 9000
+ 10944 strings out of 479325
+ 154617 string characters out of 2873246
+ 470133 words of memory out of 3000000
+ 28181 multiletter control sequences out of 15000+600000
+ 423727 words of font info for 73 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,9n,88p,1352b,346s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 83i,9n,88p,1361b,486s stack positions out of 5000i,500n,10000p,200000b,80000s
 {C:/MiKTeX/fonts/enc/dvips/base/8r.enc}<C:/MiKTeX/fonts/type1/public/amsfonts
 /cm/cmmi12.pfb><C:/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/MiKTeX/f
 onts/type1/public/amsfonts/cm/cmmib10.pfb><C:/MiKTeX/fonts/type1/public/amsfont
@@ -577,9 +506,9 @@ s/cmextra/cmmib8.pfb><C:/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Mi
 KTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/MiKTeX/fonts/type1/public/amsf
 onts/cm/cmsy10.pfb><C:/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/MiKTeX/fonts
 /type1/urw/times/utmr8a.pfb><C:/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on psp_loi.pdf (6 pages, 128541 bytes).
+Output written on psp_loi.pdf (7 pages, 139185 bytes).
 PDF statistics:
- 115 PDF objects out of 1000 (max. 8388607)
- 19 named destinations out of 1000 (max. 500000)
+ 156 PDF objects out of 1000 (max. 8388607)
+ 35 named destinations out of 1000 (max. 500000)
  65 words of extra memory for PDF output out of 10000 (max. 10000000)
 
