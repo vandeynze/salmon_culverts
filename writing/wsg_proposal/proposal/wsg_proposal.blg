@@ -1,56 +1,60 @@
-This is BibTeX, Version 0.99d (TeX Live 2016)
-Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: wsg_proposal.aux
+Reallocating 'name_of_file' (item size: 1) to 9 items.
 The style file: abbrvnat.bst
+Reallocating 'name_of_file' (item size: 1) to 8 items.
 Database file #1: wsg-bvd.bib
 Warning--to sort, need author or key in noauthor_2020_2020
 Warning--to sort, need author or key in noauthor_wsdot_2020
 Warning--to sort, need author or key in noauthor_fish_2019
+Warning--to sort, need author or key in noauthor_pacific_2021
 Warning--empty author in noauthor_fish_2019
 Warning--empty author in noauthor_2020_2020
 Warning--empty author in noauthor_wsdot_2020
+Warning--empty author in noauthor_pacific_2021
 Warning--empty year in guillaume_mauger_climate_nodate
 Warning--empty year in guillaume_mauger_climate_nodate
 Warning--empty journal in theussl2019roi
-You've used 29 entries,
+You've used 31 entries,
             2773 wiz_defined-function locations,
-            797 strings with 11751 characters,
-and the built_in function-call counts, 15094 in all, are:
-= -- 1357
-> -- 1053
+            809 strings with 12289 characters,
+and the built_in function-call counts, 15961 in all, are:
+= -- 1442
+> -- 1101
 < -- 7
-+ -- 357
-- -- 327
-* -- 1395
-:= -- 2380
-add.period$ -- 113
-call.type$ -- 29
-change.case$ -- 201
-chr.to.int$ -- 28
-cite$ -- 70
-duplicate$ -- 578
-empty$ -- 1063
-format.name$ -- 359
-if$ -- 3070
++ -- 374
+- -- 342
+* -- 1476
+:= -- 2508
+add.period$ -- 121
+call.type$ -- 31
+change.case$ -- 213
+chr.to.int$ -- 30
+cite$ -- 77
+duplicate$ -- 614
+empty$ -- 1130
+format.name$ -- 375
+if$ -- 3251
 int.to.chr$ -- 2
 int.to.str$ -- 1
-missing$ -- 24
-newline$ -- 179
-num.names$ -- 104
-pop$ -- 325
+missing$ -- 25
+newline$ -- 191
+num.names$ -- 108
+pop$ -- 343
 preamble$ -- 1
-purify$ -- 167
+purify$ -- 176
 quote$ -- 0
-skip$ -- 450
+skip$ -- 478
 stack$ -- 0
-substring$ -- 535
-swap$ -- 36
+substring$ -- 565
+swap$ -- 37
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 319
-warning$ -- 9
-while$ -- 119
+type$ -- 341
+warning$ -- 11
+while$ -- 124
 width$ -- 0
-write$ -- 435
-(There were 9 warnings)
+write$ -- 465
+(There were 11 warnings)
