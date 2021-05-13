@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.4.5)  13 MAY 2021 10:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.4.5)  13 MAY 2021 11:59
 entering extended mode
 **./psp_loi.tex
 (psp_loi.tex
@@ -520,7 +520,7 @@ File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 
 {C:/Users/Braeden/AppData/Local/MiKTeX/pdftex/config/pdftex.map}] [2] [3] [4]
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
-33.
+32.
  (C:\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 ) [5] (psp_loi.bbl) [6
@@ -557,7 +557,7 @@ eX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/MiKTeX/fonts/type1/public/amsfon
 ts/cm/cmsy10.pfb><C:/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/MiKTeX/fonts/t
 ype1/urw/times/utmbi8a.pfb><C:/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/MiKT
 eX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on psp_loi.pdf (6 pages, 149363 bytes).
+Output written on psp_loi.pdf (6 pages, 149378 bytes).
 PDF statistics:
  168 PDF objects out of 1000 (max. 8388607)
  39 named destinations out of 1000 (max. 500000)
