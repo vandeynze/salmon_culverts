@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.4.5)  10 MAY 2021 10:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 21.1) (preloaded format=pdflatex 2021.4.5)  12 MAY 2021 15:31
 entering extended mode
 **./psp_loi.tex
 (psp_loi.tex
@@ -319,6 +319,22 @@ Package: placeins 2005/04/18  v 2.2
 Package: mathrsfs 1996/01/01 Math RSFS package v1.0 (jk)
 \symrsfs=\mathgroup6
 )
+(C:\MiKTeX\tex/latex/colortbl\colortbl.sty
+Package: colortbl 2020/01/04 v1.0e Color table columns (DPC)
+
+(C:\MiKTeX\tex/latex/latex-tools\array.sty
+Package: array 2020/10/01 v2.5c Tabular extension package (FMi)
+\col@sep=\dimen159
+\ar@mcellbox=\box56
+\extrarowheight=\dimen160
+\NC@list=\toks23
+\extratabsurround=\skip57
+\backup@length=\skip58
+\ar@cellbox=\box57
+)
+\everycr=\toks24
+\minrowclearance=\skip59
+)
 (C:\MiKTeX\tex/latex/geometry\geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
 
@@ -328,28 +344,28 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@cnth=\count284
 \Gm@cntv=\count285
 \c@Gm@tempcnt=\count286
-\Gm@bindingoffset=\dimen159
-\Gm@wd@mp=\dimen160
-\Gm@odd@mp=\dimen161
-\Gm@even@mp=\dimen162
-\Gm@layoutwidth=\dimen163
-\Gm@layoutheight=\dimen164
-\Gm@layouthoffset=\dimen165
-\Gm@layoutvoffset=\dimen166
-\Gm@dimlist=\toks23
+\Gm@bindingoffset=\dimen161
+\Gm@wd@mp=\dimen162
+\Gm@odd@mp=\dimen163
+\Gm@even@mp=\dimen164
+\Gm@layoutwidth=\dimen165
+\Gm@layoutheight=\dimen166
+\Gm@layouthoffset=\dimen167
+\Gm@layoutvoffset=\dimen168
+\Gm@dimlist=\toks25
 
 (C:\MiKTeX\tex/latex/geometry\geometry.cfg))
 (C:\MiKTeX\tex/latex/titlesec\titlesec.sty
 Package: titlesec 2019/10/16 v2.13 Sectioning titles
-\ttl@box=\box56
-\beforetitleunit=\skip57
-\aftertitleunit=\skip58
-\ttl@plus=\dimen167
-\ttl@minus=\dimen168
-\ttl@toksa=\toks24
-\titlewidth=\dimen169
-\titlewidthlast=\dimen170
-\titlewidthfirst=\dimen171
+\ttl@box=\box58
+\beforetitleunit=\skip60
+\aftertitleunit=\skip61
+\ttl@plus=\dimen169
+\ttl@minus=\dimen170
+\ttl@toksa=\toks26
+\titlewidth=\dimen171
+\titlewidthlast=\dimen172
+\titlewidthfirst=\dimen173
 
 
 Package titlesec Warning: Non standard sectioning command \paragraph
@@ -357,44 +373,44 @@ Package titlesec Warning: Non standard sectioning command \paragraph
 
 )
 LaTeX Font Info:    Trying to load font information for OT1+ptm on input line 2
-5.
+6.
  (C:\MiKTeX\tex/latex/psnfss\ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 ) (psp_loi.aux)
 \openout1 = `psp_loi.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 25.
-LaTeX Font Info:    ... okay on input line 25.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
 
 (C:\MiKTeX\tex/context/base/mkii\supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count287
-\scratchdimen=\dimen172
-\scratchbox=\box57
+\scratchdimen=\dimen174
+\scratchbox=\box59
 \nofMPsegments=\count288
 \nofMParguments=\count289
-\everyMPshowfont=\toks25
+\everyMPshowfont=\toks27
 \MPscratchCnt=\count290
-\MPscratchDim=\dimen173
+\MPscratchDim=\dimen175
 \MPnumerator=\count291
 \makeMPintoPDFobject=\count292
-\everyMPtoPDFconversion=\toks26
+\everyMPtoPDFconversion=\toks28
 ) (C:\MiKTeX\tex/latex/epstopdf-pkg\epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
 Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
@@ -403,7 +419,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 (C:\MiKTeX\tex/latex/00miktex\epstopdf-sys.cfg
 File: epstopdf-sys.cfg 2021/03/18 v2.0 Configuration of epstopdf for MiKTeX
 ))
-Package hyperref Info: Link coloring OFF on input line 25.
+Package hyperref Info: Link coloring OFF on input line 26.
 
 (C:\MiKTeX\tex/latex/hyperref\nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
@@ -416,9 +432,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count293
 )
-LaTeX Info: Redefining \ref on input line 25.
-LaTeX Info: Redefining \pageref on input line 25.
-LaTeX Info: Redefining \nameref on input line 25.
+LaTeX Info: Redefining \ref on input line 26.
+LaTeX Info: Redefining \pageref on input line 26.
+LaTeX Info: Redefining \nameref on input line 26.
  (psp_loi.out)
 (psp_loi.out)
 \@outlinefile=\write4
@@ -459,127 +475,70 @@ LaTeX Info: Redefining \nameref on input line 25.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-
-Overfull \hbox (12.61555pt too wide) in paragraph at lines 30--31
-\OT1/ptm/m/n/12 ciate, Uni-ver-sity of Wash-ing-ton -- School of Ma-rine & En-v
-i-ron-men-tal Af-fairs); Mark Schueurell
- []
-
-
-Package natbib Warning: Citation `hickey2018highway' on page 1 undefined on inp
-ut line 37.
-
-
-Package natbib Warning: Citation `brown2019coming' on page 1 undefined on input
- line 39.
-
-
-Package natbib Warning: Citation `o2005optimizing' on page 1 undefined on input
- line 43.
-
-
-Package natbib Warning: Citation `kuby2005multiobjective' on page 1 undefined o
-n input line 43.
-
-
-Package natbib Warning: Citation `mcmanamay2019commonalities' on page 1 undefin
-ed on input line 43.
-
-
-Package natbib Warning: Citation `couto2021safeguarding' on page 1 undefined on
- input line 43.
-
-
-Package natbib Warning: Citation `optipass2015migratory' on page 1 undefined on
- input line 43.
-
-
-Package natbib Warning: Citation `moody2017pet' on page 1 undefined on input li
-ne 43.
-
-[1
-
-{C:/Users/Braeden/AppData/Local/MiKTeX/pdftex/config/pdftex.map}] [2]
-
-Package natbib Warning: Citation `ettinger2021prioritizing' on page 3 undefined
- on input line 67.
-
-
-Package natbib Warning: Citation `sanchirico2008empirical' on page 3 undefined 
-on input line 67.
-
-
-Package natbib Warning: Citation `jardine2015fishermen' on page 3 undefined on 
-input line 67.
-
-
-Package natbib Warning: Citation `johnston2002combining' on page 3 undefined on
- input line 67.
-
-LaTeX Font Info:    Trying to load font information for U+msa on input line 73.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 34.
 
 (C:\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 73.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 34.
 
  (C:\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for U+rsfs on input line 73
+LaTeX Font Info:    Trying to load font information for U+rsfs on input line 34
 .
 
 (C:\MiKTeX\tex/latex/jknappen\ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
+) [1
+
+{C:/Users/Braeden/AppData/Local/MiKTeX/pdftex/config/pdftex.map}] [2] [3] [4]
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
+30.
+ (C:\MiKTeX\tex/latex/psnfss\ts1ptm.fd
+File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-
-Package natbib Warning: Citation `optipass2015migratory' on page 3 undefined on
- input line 88.
-
-
-Package natbib Warning: Citation `moody2017pet' on page 3 undefined on input li
-ne 88.
-
-
-Package natbib Warning: Citation `mcmanamay2019commonalities' on page 3 undefin
-ed on input line 88.
-
-[3] [4] [5] (psp_loi.bbl
-Underfull \hbox (badness 10000) in paragraph at lines 129--1
-
+Overfull \hbox (12.27438pt too wide) in paragraph at lines 126--139
+[][] 
  []
 
-
-Package natbib Warning: Empty `thebibliography' environment on input line 3.
-
-)
-
-Package natbib Warning: There were undefined citations.
-
-[6
+[5] (psp_loi.bbl) [6
 
 ] (psp_loi.aux)
 Package rerunfilecheck Info: File `psp_loi.out' has not changed.
 (rerunfilecheck)             Checksum: 61C14EA46BD3D9417B62467EDC74D6AB;1096.
  ) 
 Here is how much of TeX's memory you used:
- 10877 strings out of 479325
- 152797 string characters out of 2873246
- 468902 words of memory out of 3000000
- 28133 multiletter control sequences out of 15000+600000
- 418832 words of font info for 67 fonts, out of 8000000 for 9000
+ 11112 strings out of 479325
+ 156664 string characters out of 2873246
+ 473956 words of memory out of 3000000
+ 28327 multiletter control sequences out of 15000+600000
+ 430527 words of font info for 90 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 83i,9n,88p,1352b,346s stack positions out of 5000i,500n,10000p,200000b,80000s
-{C:/MiKTeX/fonts/enc/dvips/base/8r.enc}<C:/MiKTeX/fonts/type1/public/amsfonts
-/cm/cmmi12.pfb><C:/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/MiKTeX/f
-onts/type1/public/amsfonts/cm/cmmib10.pfb><C:/MiKTeX/fonts/type1/public/amsfont
-s/cmextra/cmmib8.pfb><C:/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Mi
-KTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/MiKTeX/fonts/type1/public/amsf
-onts/cm/cmsy10.pfb><C:/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/MiKTeX/fonts
-/type1/urw/times/utmr8a.pfb><C:/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on psp_loi.pdf (6 pages, 128541 bytes).
+ 83i,9n,88p,1361b,346s stack positions out of 5000i,500n,10000p,200000b,80000s
+pdfTeX warning (dest): name{Hfootnote.4} has been referenced but does not exi
+st, replaced by a fixed one
+
+pdfTeX warning (dest): name{Hfootnote.3} has been referenced but does not exist
+, replaced by a fixed one
+
+pdfTeX warning (dest): name{Hfootnote.2} has been referenced but does not exist
+, replaced by a fixed one
+
+pdfTeX warning (dest): name{Hfootnote.1} has been referenced but does not exist
+, replaced by a fixed one
+
+{C:/MiKTeX/fonts/enc/dvips/base/8r.enc}<C:/MiKTeX/fonts/type1/public/amsfonts/c
+m/cmmi12.pfb><C:/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/MiKTeX/fon
+ts/type1/public/amsfonts/cm/cmmib10.pfb><C:/MiKTeX/fonts/type1/public/amsfonts/
+cmextra/cmmib8.pfb><C:/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/MiKT
+eX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/MiKTeX/fonts/type1/public/amsfon
+ts/cm/cmsy10.pfb><C:/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/MiKTeX/fonts/t
+ype1/urw/times/utmbi8a.pfb><C:/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/MiKT
+eX/fonts/type1/urw/times/utmri8a.pfb>
+Output written on psp_loi.pdf (6 pages, 148908 bytes).
 PDF statistics:
- 115 PDF objects out of 1000 (max. 8388607)
- 19 named destinations out of 1000 (max. 500000)
+ 167 PDF objects out of 1000 (max. 8388607)
+ 39 named destinations out of 1000 (max. 500000)
  65 words of extra memory for PDF output out of 10000 (max. 10000000)
 
