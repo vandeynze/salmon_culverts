@@ -1,4 +1,4 @@
-\begin{thebibliography}{29}
+\begin{thebibliography}{31}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -19,6 +19,12 @@ Fish {Passage} {Inventory}, {Assessment}, and {Prioritization} {Manual}.
 {WSDOT} {Fish} {Passage} {Performance} {Report}.
 \newblock Technical report, Washington Department of Transportation, Olympia,
   Washington, 2020{\natexlab{b}}.
+
+\bibitem[noa(2021)]{noauthor_pacific_2021}
+Pacific {Northwest} salmon habitat project database.
+\newblock Technical report, National Marine Fisheries Service, Northwest
+  Fisheries Science Center, 2021.
+\newblock URL \url{https://www.webapps.nwfsc.noaa.gov/pnshp/}.
 
 \bibitem[Babcock et~al.(1997)Babcock, Lakshminarayan, Wu, and
   Zilberman]{babcock_targeting_1997}
@@ -128,6 +134,16 @@ R.~J. Johnston, G.~Magnusson, M.~J. Mazzotta, and J.~J. Opaluch.
 \newblock \emph{American Journal of Agricultural Economics}, 84\penalty0
   (5):\penalty0 1362--1370, 2002.
 \newblock Publisher: JSTOR.
+
+\bibitem[Katz et~al.(2007)Katz, Barnas, Hicks, Cowen, and
+  Jenkinson]{katz_freshwater_2007}
+S.~L. Katz, K.~Barnas, R.~Hicks, J.~Cowen, and R.~Jenkinson.
+\newblock Freshwater {Habitat} {Restoration} {Actions} in the {Pacific}
+  {Northwest}: {A} {Decade}'s {Investment} in {Habitat} {Improvement}.
+\newblock \emph{Restoration Ecology}, 15\penalty0 (3):\penalty0 494--505, 2007.
+\newblock ISSN 1526-100X.
+\newblock \_eprint:
+  https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1526-100X.2007.00245.x.
 
 \bibitem[King et~al.(2017)King, O'Hanley, Newbold, Kemp, and
   Diebel]{king_toolkit_2017}

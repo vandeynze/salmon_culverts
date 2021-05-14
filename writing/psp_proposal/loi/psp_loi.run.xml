@@ -53,9 +53,12 @@
       <file>blx-dm.def</file>
       <file>blx-compat.def</file>
       <file>biblatex.def</file>
+      <file>blx-natbib.def</file>
       <file>standard.bbx</file>
       <file>numeric.bbx</file>
-      <file>numeric.cbx</file>
+      <file>numeric-comp.bbx</file>
+      <file>nature.bbx</file>
+      <file>authoryear.cbx</file>
       <file>biblatex.cfg</file>
       <file>english.lbx</file>
     </requires>
@@ -77,6 +80,9 @@
     </provides>
     <requires type="dynamic">
       <file>psp_loi.bcf</file>
+    </requires>
+    <requires type="editable">
+      <file>psp.bib</file>
     </requires>
   </external>
 </requests>
