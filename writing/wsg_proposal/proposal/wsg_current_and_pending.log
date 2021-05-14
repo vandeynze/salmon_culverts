@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  13 MAY 2021 10:27
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  13 MAY 2021 11:30
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -614,7 +614,7 @@ Here is how much of TeX's memory you used:
 local/texlive/2016/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}</usr/local/
 texlive/2016/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb></usr/local/texliv
 e/2016/texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb>
-Output written on wsg_current_and_pending.pdf (3 pages, 63265 bytes).
+Output written on wsg_current_and_pending.pdf (3 pages, 63214 bytes).
 PDF statistics:
  47 PDF objects out of 1000 (max. 8388607)
  39 compressed objects within 1 object stream
