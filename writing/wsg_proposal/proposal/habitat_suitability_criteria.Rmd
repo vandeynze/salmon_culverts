@@ -1,0 +1,53 @@
+---
+title: Sec X. Measures of salmon habitat quality
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+## load the package
+library("knitcitations")
+
+## clean out any existing .bib files
+cleanbib()
+
+## set pandoc for formatting
+options("citation_format" = "pandoc")
+```
+
+
+
+### task
+
+either some references for a habitat quality index or 0.5-1 page of text describing the index and highlighting any potential work in constructing the index that a Sea Grant Fellow can be tasked with.
+
+
+# Cites
+
+
+`r citet("10.1111/fwb.13358")`
+
+However, nonlinear relationships may exist between the amount of available habitat and the productivity of stream dwelling salmonids `r citep("10.1111/1365-2656.12845")`
+
+`r citet("10.1111/1365-2656.12845")`
+
+
+`r citet("10.1139/cjfas-2016-0406")`
+
+
+We will also explore the possibility of including the interactive effects of location on the landscape and projected effects of climate change. For example, Battin et al. `r citet("10.1073/pnas.0701685104")` found that future climate change and coordinated habitat restoration working in synergy are likely to cause a shift in the distribution of salmon in Puget Sound. 
+
+Importance of temperature for growth opportunities. habitat quality warmer areas 
+`r citet("10.1002/ecs2.3266")`
+
+habitat connectivity index (HCI) based upon upstream passability and segment length. `r citet("10.1080/20442041.2018.1544817")`
+
+
+Pess `r citep("10.1007/s11160-013-9339-1")`
+
+```{r}
+## create ref cited section
+write.bibtex(file = "references.bib")
+```
+
