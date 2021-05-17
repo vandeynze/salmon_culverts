@@ -1,53 +1,16 @@
 ---
-title: Sec X. Measures of salmon habitat quality
+title: Sec XX. Measures of salmon habitat quality
 output: pdf_document
+bibliography: wsg-mds.bib
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 
-## load the package
-library("knitcitations")
+## Habitat model
 
-## clean out any existing .bib files
-cleanbib()
+In addition to habitat quantity (measured here as lineal distance), habitat quality plays an important role in the growth and survival of salmon [@Pess_2011]. The quality of salmon habitat is a function of many interacting attributes, including water temperature, instream flows, the presence of coarse woody debris, and the amount of fine sediment [@Bartz_2006; @Isaak_2007]. All of these features of habitat quality are further affected by climatology, watershed geomorphology, and the connectivity of different habitat areas [@Caissie_2006; @Rodeles_2019], which means they may vary over time. For example, @Battin_2007 found that future climate change and coordinated habitat restoration working together are likely to cause a shift in the distribution of salmon in Puget Sound as the quality of their habitat shifts around the landscape.
 
-## set pandoc for formatting
-options("citation_format" = "pandoc")
-```
+In a habitat restoration context, one of the key uncertainties is relating land use and land cover characteristics to the quality of salmon habitat [@Bartz_2006; @Jorgensen_2009]. We will use statistical models to relate measures of salmon habitat quality to features of the environment sensu @Bartz_2006 and @Jorgensen_2009. Specifically, our Sea Grant Fellow will work with co-PI Scheuerell to build upon these earlier efforts to develop a unitless metric of salmon habitat quality based on instream temperature and flow data, as well as upland features related to riparian forest density and composition, road density, elevation, and watershed area. In addition, we will consult with regional experts in salmon habitat restoration (e.g., Drs. George Pess and Tim Beechie, NOAA Fisheries) to insure that we are capturing those features of the environment most likely to reflect the quality of salmon habitat.
 
 
 
-### task
-
-either some references for a habitat quality index or 0.5-1 page of text describing the index and highlighting any potential work in constructing the index that a Sea Grant Fellow can be tasked with.
-
-
-# Cites
-
-
-`r citet("10.1111/fwb.13358")`
-
-However, nonlinear relationships may exist between the amount of available habitat and the productivity of stream dwelling salmonids `r citep("10.1111/1365-2656.12845")`
-
-`r citet("10.1111/1365-2656.12845")`
-
-
-`r citet("10.1139/cjfas-2016-0406")`
-
-
-We will also explore the possibility of including the interactive effects of location on the landscape and projected effects of climate change. For example, Battin et al. `r citet("10.1073/pnas.0701685104")` found that future climate change and coordinated habitat restoration working in synergy are likely to cause a shift in the distribution of salmon in Puget Sound. 
-
-Importance of temperature for growth opportunities. habitat quality warmer areas 
-`r citet("10.1002/ecs2.3266")`
-
-habitat connectivity index (HCI) based upon upstream passability and segment length. `r citet("10.1080/20442041.2018.1544817")`
-
-
-Pess `r citep("10.1007/s11160-013-9339-1")`
-
-```{r}
-## create ref cited section
-write.bibtex(file = "references.bib")
-```
 
