@@ -1,0 +1,16 @@
+---
+title: Sec XX. Measures of salmon habitat quality
+output: pdf_document
+bibliography: wsg-mds.bib
+---
+
+
+## Habitat model
+
+In addition to habitat quantity (measured here as lineal distance), habitat quality plays an important role in the growth and survival of salmon [@Pess_2011]. The quality of salmon habitat is a function of many interacting attributes, including water temperature, instream flows, the presence of coarse woody debris, and the amount of fine sediment [@Bartz_2006; @Isaak_2007]. All of these features of habitat quality are further affected by climatology, watershed geomorphology, and the connectivity of different habitat areas [@Caissie_2006; @Rodeles_2019], which means they may vary over time. For example, @Battin_2007 found that future climate change and coordinated habitat restoration working together are likely to cause a shift in the distribution of salmon in Puget Sound as the quality of their habitat shifts around the landscape.
+
+In a habitat restoration context, one of the key uncertainties is relating land use and land cover characteristics to the quality of salmon habitat [@Bartz_2006; @Jorgensen_2009]. We will use statistical models to relate measures of salmon habitat quality to features of the environment sensu @Bartz_2006 and @Jorgensen_2009. Specifically, our Sea Grant Fellow will work with co-PI Scheuerell to build upon these earlier efforts to develop a unitless metric of salmon habitat quality based on instream temperature and flow data, as well as upland features related to riparian forest density and composition, road density, elevation, and watershed area. In addition, we will consult with regional experts in salmon habitat restoration (e.g., Drs. George Pess and Tim Beechie, NOAA Fisheries) to insure that we are capturing those features of the environment most likely to reflect the quality of salmon habitat.
+
+
+
+
