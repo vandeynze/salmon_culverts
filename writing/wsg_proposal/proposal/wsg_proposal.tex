@@ -1,7 +1,6 @@
 \documentclass[12pt]{elsarticle}
 \usepackage{newtxtext}
 \usepackage[margin=1in]{geometry}
-%\pagestyle{empty}
 \usepackage{natbib}
 \bibliographystyle{abbrvnat}
 \usepackage{color}
@@ -10,7 +9,6 @@
 \usepackage{wrapfig}
 \usepackage{titlesec}
 \usepackage{colortbl}
-%\titleformat{\section}[runin]{\normalfont\bfseries}{\thesection.}{3pt}{}
 
 
 \begin{document}
@@ -136,10 +134,13 @@ Importantly, our cost estimates will reflect inherent variability in correction 
 
 A primary objective in culvert barrier correction is increased access to quality salmon habitat. For each culvert restoration plan, defined as a combination of multiple culverts restored, we will quantify the expected increase in habitat quantity, measured as lineal distance, for the five species of Pacific salmon. Spatial dependence will drive restoration benefits, because the culvert restoration downstream determines the benefits from culvert restoration upstream. Estimated habitat quantity gains will be calculated using the USGS National Hydrography Dataset, NDHPlus High Resolution, and the WDFW FPDSI database, which contains information about fish species affected by culvert blockages. Our team has developed code to estimate similar lineal distance metrics for culvert restoration projects in the PNSHP database, which will be leveraged to estimate upstream habitat gained by correcting barriers within the Case Area cataloged in the FPDSI database. 
 
-The lineal distance measures will be supplemented with habitat quality metrics on a per species basis. Prioritization methods currently in use by barrier ownership entities often include some weighting metric for habitat quality. For example, a recent report assessing county-owned culverts in Clallam and Jefferson Counties uses intrinsic potential scores first developed by \cite{burnett_distribution_2007}, while the WDFW methodology assigns a fixed species-specific weight to habitat quantity based on an estimated number of adults potentially produced per habitat area \cite{noauthor_fish_2019}.
+%The lineal distance measures will be supplemented with habitat quality metrics on a per species basis. Prioritization methods currently in use by barrier ownership entities often include some weighting metric for habitat quality. For example, a recent report assessing county-owned culverts in Clallam and Jefferson Counties uses intrinsic potential scores first developed by \cite{burnett_distribution_2007}, while the WDFW methodology assigns a fixed species-specific weight to habitat quantity based on an estimated number of adults potentially produced per habitat area \cite{noauthor_fish_2019}.
 % Burnett, Kelly M., et al. "Distribution of salmon‐habitat potential relative to landscape characteristics and implications for conservation." Ecological Applications 17.1 (2007): 66-80.
 
-% Something from Mark?
+In addition to habitat quantity (measured here as lineal distance), habitat quality plays an important role in the growth and survival of salmon \citep{Pess_2011}. The quality of salmon habitat is a function of many interacting attributes, including water temperature, instream flows, the presence of coarse woody debris, and the amount of fine sediment \citep{Bartz_2006,Isaak_2007}. All of these features of habitat quality are further affected by climatology, watershed geomorphology, and the connectivity of different habitat areas \citep{Caissie_2006, Rodeles_2019}, which means they may vary over time. For example, \citet{Battin_2007} found that future climate change and coordinated habitat restoration working together are likely to cause a shift in the distribution of salmon in Puget Sound as the quality of their habitat shifts around the landscape.
+
+In a habitat restoration context, one of the key uncertainties is relating land use and land cover characteristics to the quality of salmon habitat \citep{Bartz_2006, Jorgensen_2009}. We will use statistical models to relate measures of salmon habitat quality to features of the environment sensu \citet{Bartz_2006} and \citet{Jorgensen_2009}. Specifically, our Sea Grant Fellow will work with co-PI Scheuerell to build upon these earlier efforts to develop a unitless metric of salmon habitat quality based on instream temperature and flow data, as well as upland features related to riparian forest density and composition, road density, elevation, and watershed area. In addition, we will consult with regional experts in salmon habitat restoration (e.g., Drs.\ George Pess and Tim Beechie, NOAA Fisheries) to ensure that we are capturing those features of the environment most likely to reflect the quality of salmon habitat.
+
 
 \subsection*{Equity}
 
@@ -152,14 +153,6 @@ Risk mitigation is yet another important factor to consider when selecting portf
 Additionally, climate change is expected to be a significant driver of returns to investments from barrier culvert correction. Climate change is projected to affect peak water flow during egg incubation, stream temperature during pre-spawning, and minimum flow during spawning \citep{battin_projected_2007}, with greatest impacts in high-elevation streams where barrier culverts are less common. Climate change may also affect channel bankfull width at road crossings, which in turn may cause a previously corrected culvert to revert to barrier status as the stream expands under future climate conditions. While expanded culvert designs can prevent this, they are often more expensive \cite{guillaume_mauger_climate_nodate}. Climate uncertainty will thus create risk of future culvert failure when smaller, cheaper correction designs are considered. 
 % Mauger,  G.S., S.Y.  Lee, J.S.  Won, K.  Byun, and  A.F. Hamlet, 2018. Climate  robust culvert design: Probabilistic estimates of fish passage impediments. Final report for the Skagit Climate Science Consortium. Climate Impacts Group, University of Washington, Seattle. https://cig.uw.edu/wp-content/uploads/sites/2/2018/07/Final_Report_SC2-Culverts_FINAL.compressed_3.pdf
 
-Drawing from the literature on restoration portfolio diversification, we will estimate the degree to which the risk in returns to barrier culvert removal plans can be mitigated through diversification. We will explore risk metrics ranging in complexity from a simple measure of the spread of investments across all salmon runs with habitat in the Case Area to increasingly complex risk metrics that utilize information on the potential negative covariance in expected returns to multiple salmon populations to exploit opportunities for portfolio diversification \citep{sanchirico_empirical_2008, jardine_fishermen_2015, johnston_combining_2002}.  
-
-\subsection*{Optimization framework \label{sec:opt}}
-
-% \subsubsection*{Design}
-
-There are several methods for defining cost-effective restoration plans that meet multiple planning goals (e.g.\ salmon habitat gains, equity considerations, and risk mitigation). We will explore alternative methods, selecting the approach that is most accessible and intuitive for our target users. 
-
 \begin{wrapfigure}{r}{0.5\textwidth}
 \includegraphics[width=0.48\textwidth]{figures/opt_s.pdf}
 \includegraphics[width=0.48\textwidth]{figures/opt_h.pdf}
@@ -168,9 +161,17 @@ There are several methods for defining cost-effective restoration plans that mee
 \caption{Solutions to a scalarized multiobjective problem in a stylized system where there are three salmon stocks (S1-S3) and two tribal nations (U1-U2). \label{fig:opt}}
 \end{wrapfigure}%
 
+Drawing from the literature on restoration portfolio diversification, we will estimate the degree to which the risk in returns to barrier culvert removal plans can be mitigated through diversification. We will explore risk metrics ranging in complexity from a simple measure of the spread of investments across all salmon runs with habitat in the Case Area to increasingly complex risk metrics that utilize information on the potential negative covariance in expected returns to multiple salmon populations to exploit opportunities for portfolio diversification \citep{sanchirico_empirical_2008, jardine_fishermen_2015, johnston_combining_2002}.  
+
+
+
+
+\subsection*{Optimization framework \label{sec:opt}}
+
+There are several methods for defining cost-effective restoration plans that meet multiple planning goals (e.g.\ salmon habitat gains, equity considerations, and risk mitigation). We will explore alternative methods, selecting the approach that is most accessible and intuitive for our target users. 
+
+
 One such method approach, i.e.\ a weighted objective function, managers specify importance weights for each of the objectives and the weighted sum of the objectives is maximized. Weights are constrained to the interval [0, 1] and sum to one, e.g.\ a manager solely interested in habitat would set the habitat importance weight to one and all other weights to zero. The problem will also include a budget constraint, such that expenditures on barrier restoration are less than or equal to a fixed budget $B$, and a hydrography constraint such that habitat gains from restoring any one barrier cannot be realized if there exist any downstream barriers to fish passage. Figure~\ref{fig:opt} demonstrates solutions to this first optimization approach with a budget constraint of \$40. Panel (a) represents a model system with 10 barrier culverts (numbered red markers), 26 units of potential habitat (increments between two adjacent markers represent one unit of habitat), on three streams utilized by three salmon stocks (S1-S3), and harvested by two user groups (U1-U2). Each of the culverts 1-9 have correction cost \$10 to restore while culvert 10 has correction cost \$20 (outlined in blue).
-
-
 
 Panel (b) represents the habitat-maximizing solution (the habitat weight is set to one and all other weights are set to zero), with 14 units of habitat gained (11 on stream 1 and three on stream 2), but all of the benefits going to a single user group. In the habitat-maximizing solution, the budget is exhausted by restoring four culverts for a total cost of \$40. Panel (c) represents the equity-maximizing approach (the equity weight is set to one and all other weights are set to zero), with nine units of habitat restored (four on stream 1 and five on stream 3). In this solution, the budget is also exhausted and the habitat gains are nearly evenly split across user groups (four for U1 and five for U2). Finally, panel (d) represents the diversification-maximizing solution (the weight on diversifying habitat gains across salmon stocks is set to one and all other weights are set to zero), with a total of eight units of habitat gained (four on stream 1, three on stream 2, and one on stream 3) spread across the three salmon stocks. Interestingly, the budget is not exhausted in the diversification-maximizing solution as total expenditures for the three culverts restored is \$30. Whenever objective functions are defined by even allocations, e.g.\ across user groups or salmon stocks, the budget constraint may not hold. 
 
@@ -279,5 +280,5 @@ Costs will be incurred to run three successful workshops and to create a video t
 \clearpage
 %\large References\\
 \normalsize
-\bibliography{wsg-bvd}
+\bibliography{wsg}
 \end{document}
