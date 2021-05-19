@@ -44,9 +44,9 @@ dev.off()
 
 # manager inputs
 B <- 40 #budget
-wh <- 1 #habitat weight
+wh <- 0 #habitat weight
 we <- 0 #equity weight
-wd <- 0 #diversification weight
+wd <- 1 #diversification weight
 
 ## optimization 
 # objective function

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  19 MAY 2021 09:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  19 MAY 2021 09:48
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -622,38 +622,38 @@ Package pdftex.def Info: figures/predCost.png used on input line 123.
 
 pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./figures/opt_s.pdf): PDF in
 clusion: found PDF version <1.6>, but at most version <1.5> allowed
-<figures/opt_s.pdf, id=137, 424.31706pt x 252.31364pt>
+<figures/opt_s.pdf, id=137, 420.70364pt x 235.03508pt>
 File: figures/opt_s.pdf Graphic file (type pdf)
  <use figures/opt_s.pdf>
 Package pdftex.def Info: figures/opt_s.pdf used on input line 157.
-(pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
+(pdftex.def)             Requested size: 225.4804pt x 125.97383pt.
 
 
 pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./figures/opt_h.pdf): PDF in
 clusion: found PDF version <1.6>, but at most version <1.5> allowed
-<figures/opt_h.pdf, id=138, 424.31706pt x 252.31364pt>
+<figures/opt_h.pdf, id=138, 420.70364pt x 235.03508pt>
 File: figures/opt_h.pdf Graphic file (type pdf)
  <use figures/opt_h.pdf>
 Package pdftex.def Info: figures/opt_h.pdf used on input line 158.
-(pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
+(pdftex.def)             Requested size: 225.4804pt x 125.97383pt.
 
 
 pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./figures/opt_e.pdf): PDF in
 clusion: found PDF version <1.6>, but at most version <1.5> allowed
-<figures/opt_e.pdf, id=139, 424.31706pt x 252.31364pt>
+<figures/opt_e.pdf, id=139, 420.70364pt x 235.03508pt>
 File: figures/opt_e.pdf Graphic file (type pdf)
  <use figures/opt_e.pdf>
 Package pdftex.def Info: figures/opt_e.pdf used on input line 159.
-(pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
+(pdftex.def)             Requested size: 225.4804pt x 125.97383pt.
 
 
 pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./figures/opt_d.pdf): PDF in
 clusion: found PDF version <1.6>, but at most version <1.5> allowed
-<figures/opt_d.pdf, id=140, 424.31706pt x 252.31364pt>
+<figures/opt_d.pdf, id=140, 420.70364pt x 235.03508pt>
 File: figures/opt_d.pdf Graphic file (type pdf)
  <use figures/opt_d.pdf>
 Package pdftex.def Info: figures/opt_d.pdf used on input line 160.
-(pdftex.def)             Requested size: 225.4804pt x 134.07593pt.
+(pdftex.def)             Requested size: 225.4804pt x 125.97383pt.
 
 Underfull \hbox (badness 10000) in paragraph at lines 157--161
 [][]
@@ -724,10 +724,6 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 284.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 284.
 Package rerunfilecheck Info: File `wsg_proposal.out' has not changed.
 (rerunfilecheck)             Checksum: 19AFFD5FDC47F75E42D4B063DAFD66DB;194.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
  8870 strings out of 493014
@@ -745,7 +741,7 @@ e/2016/texmf-dist/fonts/type1/public/tex-gyre/qtmb.pfb></usr/local/texlive/2016
 /texmf-dist/fonts/type1/public/tex-gyre/qtmr.pfb></usr/local/texlive/2016/texmf
 -dist/fonts/type1/public/tex-gyre/qtmri.pfb></usr/local/texlive/2016/texmf-dist
 /fonts/type1/public/txfonts/t1xtt.pfb>
-Output written on wsg_proposal.pdf (18 pages, 4145220 bytes).
+Output written on wsg_proposal.pdf (18 pages, 4145454 bytes).
 PDF statistics:
  305 PDF objects out of 1000 (max. 8388607)
  266 compressed objects within 3 object streams

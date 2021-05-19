@@ -38,14 +38,14 @@ cnt = rbind(c(3, 1), c(2, 2), c(0, 4), c(5, 3), c(5, 5), c(7, 3), c(5, 6), c(5, 
 
 #plot
 vis <- function(soln, panel) {
-plot(str)
-plot(bar, col = "red", pch = 19, add = T)
+plot(str, lwd = 1.5)
+plot(bar, col = "red", pch = 19, cex=1.5, add = T)
 if(sum(soln) > 0) {
-plot(st_multilinestring(str[as.logical(soln)]), col = "green", add = T)
-plot(st_multipoint(bar[as.logical(soln), ]), col = "green", pch = 19, add = T)
+plot(st_multilinestring(str[as.logical(soln)]), col = "green",  lwd = 1.5, add = T)
+plot(st_multipoint(bar[as.logical(soln), ]), col = "green", pch = 19, cex = 1.5, add = T)
 }
-plot(cnt, col = "black", pch = 19, add = T)
-plot(eb,  col = "blue", add = T)
+plot(cnt, col = "black", pch = 19, cex = 1.5, add = T)
+plot(eb,  col = "blue", cex = 2, lwd = 2, add = T)
 text(x = c(3, 1, 4, 6, 5, 10, 9, 11, 15, 15) - 0.5, 
      y = c(0, 3, 2, 3, 4, 0, 2, 2, 0, 1), 
      labels = c("1", "2", "3", "5", "4", "6", "7", "8", "9", "10")) 
