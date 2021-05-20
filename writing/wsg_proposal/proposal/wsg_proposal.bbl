@@ -1,4 +1,4 @@
-\begin{thebibliography}{38}
+\begin{thebibliography}{37}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -72,16 +72,6 @@ J.~Battin, M.~W. Wiley, M.~H. Ruckelshaus, R.~N. Palmer, E.~Korb, K.~K. Bartz,
   {Require} {Replacing} {Tens} of {Thousands} of {Culverts}, and {Nobody}
   {Knows} {Where} the {Money} {Will} {Come} {From}.
 \newblock \emph{The Daily Chronicle}, Aug. 2019.
-
-\bibitem[Burnett et~al.(2007)Burnett, Reeves, Miller, Clarke, Vance-Borland,
-  and Christiansen]{burnett_distribution_2007}
-K.~M. Burnett, G.~H. Reeves, D.~J. Miller, S.~Clarke, K.~Vance-Borland, and
-  K.~Christiansen.
-\newblock Distribution of {Salmon}-{Habitat} {Potential} {Relative} to
-  {Landscape} {Characteristics} and {Implications} for {Conservation}.
-\newblock \emph{Ecological Applications}, 17\penalty0 (1):\penalty0 66--80,
-  2007.
-\newblock ISSN 1939-5582.
 
 \bibitem[Caissie(2006)]{Caissie_2006}
 D.~Caissie.

@@ -14,45 +14,45 @@ Warning--empty author in noauthor_pacific_2021
 Warning--empty year in guillaume_mauger_climate_nodate
 Warning--empty year in guillaume_mauger_climate_nodate
 Warning--empty journal in theussl2019roi
-You've used 38 entries,
+You've used 37 entries,
             2773 wiz_defined-function locations,
-            870 strings with 14453 characters,
-and the built_in function-call counts, 20524 in all, are:
-= -- 1857
-> -- 1444
+            865 strings with 14158 characters,
+and the built_in function-call counts, 19873 in all, are:
+= -- 1801
+> -- 1387
 < -- 8
-+ -- 490
-- -- 450
-* -- 1949
-:= -- 3232
-add.period$ -- 156
-call.type$ -- 38
-change.case$ -- 270
-chr.to.int$ -- 36
-cite$ -- 91
-duplicate$ -- 760
-empty$ -- 1424
-format.name$ -- 490
-if$ -- 4168
++ -- 471
+- -- 432
+* -- 1884
+:= -- 3127
+add.period$ -- 152
+call.type$ -- 37
+change.case$ -- 261
+chr.to.int$ -- 35
+cite$ -- 89
+duplicate$ -- 739
+empty$ -- 1385
+format.name$ -- 471
+if$ -- 4038
 int.to.chr$ -- 3
 int.to.str$ -- 1
-missing$ -- 32
-newline$ -- 240
-num.names$ -- 136
-pop$ -- 430
+missing$ -- 31
+newline$ -- 234
+num.names$ -- 132
+pop$ -- 415
 preamble$ -- 1
-purify$ -- 226
+purify$ -- 218
 quote$ -- 0
-skip$ -- 588
+skip$ -- 570
 stack$ -- 0
-substring$ -- 778
-swap$ -- 53
+substring$ -- 757
+swap$ -- 52
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 418
+type$ -- 407
 warning$ -- 11
-while$ -- 159
+while$ -- 154
 width$ -- 0
-write$ -- 584
+write$ -- 569
 (There were 11 warnings)
