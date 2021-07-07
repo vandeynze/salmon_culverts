@@ -1,0 +1,58 @@
+This is BibTeX, Version 0.99d (TeX Live 2016)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: psp_narrative.aux
+The style file: abbrvnat.bst
+Database file #1: psp.bib
+Warning--to sort, need author or key in noauthor_2020_2020
+Warning--to sort, need author or key in noauthor_wsdot_2020
+Warning--to sort, need author or key in noauthor_fish_2019
+Warning--to sort, need author or key in noauthor_pacific_2021
+Warning--empty author in noauthor_fish_2019
+Warning--empty author in noauthor_2020_2020
+Warning--empty author in noauthor_wsdot_2020
+Warning--empty author in noauthor_pacific_2021
+Warning--empty year in guillaume_mauger_climate_nodate
+Warning--empty year in guillaume_mauger_climate_nodate
+Warning--empty journal in theussl2019roi
+You've used 37 entries,
+            2773 wiz_defined-function locations,
+            865 strings with 14160 characters,
+and the built_in function-call counts, 19873 in all, are:
+= -- 1801
+> -- 1387
+< -- 8
++ -- 471
+- -- 432
+* -- 1884
+:= -- 3127
+add.period$ -- 152
+call.type$ -- 37
+change.case$ -- 261
+chr.to.int$ -- 35
+cite$ -- 89
+duplicate$ -- 739
+empty$ -- 1385
+format.name$ -- 471
+if$ -- 4038
+int.to.chr$ -- 3
+int.to.str$ -- 1
+missing$ -- 31
+newline$ -- 234
+num.names$ -- 132
+pop$ -- 415
+preamble$ -- 1
+purify$ -- 218
+quote$ -- 0
+skip$ -- 570
+stack$ -- 0
+substring$ -- 757
+swap$ -- 52
+text.length$ -- 1
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 407
+warning$ -- 11
+while$ -- 154
+width$ -- 0
+write$ -- 569
+(There were 11 warnings)
