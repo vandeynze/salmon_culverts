@@ -1,9 +1,16 @@
-\documentclass[11pt]{article}
+\documentclass[11pt]{elsarticle}
 \usepackage{changepage}% http://ctan.org/pkg/changepage
-\usepackage{titleps}
 \setlength{\textwidth}{5.5in} % set width of text portion
-
-
+\usepackage{newtxtext}
+\usepackage[margin=1in]{geometry}
+\usepackage{natbib}
+\bibliographystyle{abbrvnat}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+\usepackage{titlesec}
+\usepackage{xcolor,colortbl}
 \usepackage{pdfpages} 
  
 \begin{document}
@@ -59,14 +66,22 @@
 \clearpage
 
 %\includepdf[pages = {-}]{psp_summary}
+%\includepdf[pages = {-}]{psp_narrative}
+%%\includepdf[pages = {-}]{psp_wpbi}
+%\includepdf[pages = {-}]{psp_engagement}
+%\includepdf[pages = {-}]{psp_management}
+%%\includepdf[pages = {-}]{psp_references}
+%%\includepdf[pages = {-}]{psp_budget_justification}
 
-\includepdf[pages = {-}]{psp_narrative}
+\input{psp_summary}
+\input{psp_narrative}
+\input{psp_plan}
+\input{psp_engagement}
+\input{psp_management}
+\begin{center} \textbf{7. REFERENCES} \end{center}
 
-%\includepdf[pages = {-}]{psp_wpbi}
-\includepdf[pages = {-}]{psp_engagement}
-\includepdf[pages = {-}]{psp_management}
-%\includepdf[pages = {-}]{psp_references}
-%\includepdf[pages = {-}]{psp_budget_justification}
+\normalsize
+\bibliography{psp}
 
 
 \includepdf[pages = {-}]{cvs/Jardine_CV}
