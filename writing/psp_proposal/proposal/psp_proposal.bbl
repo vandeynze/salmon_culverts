@@ -1,4 +1,4 @@
-\begin{thebibliography}{37}
+\begin{thebibliography}{30}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -47,24 +47,15 @@ K.~K. Bartz, K.~M. Lagueux, M.~D. Scheuerell, T.~Beechie, A.~D. Haas, and M.~H.
 \newblock \doi{10.1139/f06-055}.
 \newblock URL \url{https://doi.org/10.1139/f06-055}.
 
-\bibitem[Battin et~al.(2007{\natexlab{a}})Battin, Wiley, Ruckelshaus, Palmer,
-  Korb, Bartz, and Imaki]{Battin_2007}
+\bibitem[Battin et~al.(2007)Battin, Wiley, Ruckelshaus, Palmer, Korb, Bartz,
+  and Imaki]{Battin_2007}
 J.~Battin, M.~W. Wiley, M.~H. Ruckelshaus, R.~N. Palmer, E.~Korb, K.~K. Bartz,
   and H.~Imaki.
 \newblock Projected impacts of climate change on salmon habitat restoration.
 \newblock \emph{Proceedings of the National Academy of Sciences}, 104\penalty0
-  (16):\penalty0 6720--6725, apr 2007{\natexlab{a}}.
+  (16):\penalty0 6720--6725, apr 2007.
 \newblock \doi{10.1073/pnas.0701685104}.
 \newblock URL \url{https://doi.org/10.1073/pnas.0701685104}.
-
-\bibitem[Battin et~al.(2007{\natexlab{b}})Battin, Wiley, Ruckelshaus, Palmer,
-  Korb, Bartz, and Imaki]{battin_projected_2007}
-J.~Battin, M.~W. Wiley, M.~H. Ruckelshaus, R.~N. Palmer, E.~Korb, K.~K. Bartz,
-  and H.~Imaki.
-\newblock Projected impacts of climate change on salmon habitat restoration.
-\newblock \emph{Proceedings of the national academy of sciences}, 104\penalty0
-  (16):\penalty0 6720--6725, 2007{\natexlab{b}}.
-\newblock Publisher: National Acad Sciences.
 
 \bibitem[{Brown, Alex}(2019)]{brown_coming_2019}
 {Brown, Alex}.
@@ -113,14 +104,6 @@ C.~R. Field and C.~S. Elphick.
 \newblock ISSN 1748-9326.
 \newblock Publisher: IOP Publishing.
 
-\bibitem[{G. Mauger} et~al.(){G. Mauger}, {S. Lee}, {J. Won}, {K. Byun}, and
-  Hamlet]{guillaume_mauger_climate_nodate}
-{G. Mauger}, {S. Lee}, {J. Won}, {K. Byun}, and A.~F. Hamlet.
-\newblock Climate robust culvert design: {Probabilistic} estimates of fish
-  passage impediments.
-\newblock Final report for the {Skagit} {Climate} {Science} {Consortium},
-  Climate Impacts Group, University of Washington, Seattle.
-
 \bibitem[Hermoso et~al.(2021)Hermoso, Clavero, and
   Filipe]{hermoso_accessible_2021}
 V.~Hermoso, M.~Clavero, and A.~F. Filipe.
@@ -147,22 +130,6 @@ D.~J. Isaak, R.~F. Thurow, B.~E. Rieman, and J.~B. Dunham.
   mar 2007.
 \newblock \doi{10.1890/05-1949}.
 \newblock URL \url{https://doi.org/10.1890/05-1949}.
-
-\bibitem[Jardine and Sanchirico(2015)]{jardine_fishermen_2015}
-S.~L. Jardine and J.~N. Sanchirico.
-\newblock Fishermen, markets, and population diversity.
-\newblock \emph{Journal of Environmental Economics and Management},
-  74:\penalty0 37--54, 2015.
-\newblock Publisher: Elsevier.
-
-\bibitem[Johnston et~al.(2002)Johnston, Magnusson, Mazzotta, and
-  Opaluch]{johnston_combining_2002}
-R.~J. Johnston, G.~Magnusson, M.~J. Mazzotta, and J.~J. Opaluch.
-\newblock Combining economic and ecological indicators to prioritize salt marsh
-  restoration actions.
-\newblock \emph{American Journal of Agricultural Economics}, 84\penalty0
-  (5):\penalty0 1362--1370, 2002.
-\newblock Publisher: JSTOR.
 
 \bibitem[Jorgensen et~al.(2009)Jorgensen, Honea, McClure, Cooney, Engie, and
   Holzer]{Jorgensen_2009}
@@ -212,17 +179,6 @@ R.~A. McManamay, J.~S. Perkin, and H.~I. Jager.
 \newblock \emph{Ecosphere}, 10\penalty0 (2):\penalty0 e02596, 2019.
 \newblock Publisher: Wiley Online Library.
 
-\bibitem[Milt et~al.(2017)Milt, Doran, Ferris, Moody, Neeson, and
-  McIntyre]{milt_local-scale_2017}
-A.~W. Milt, P.~J. Doran, M.~C. Ferris, A.~T. Moody, T.~M. Neeson, and P.~B.
-  McIntyre.
-\newblock Local-scale {Benefits} of {River} {Connectivity} {Restoration}
-  {Planning} {Beyond} {Jurisdictional} {Boundaries}.
-\newblock \emph{River Research and Applications}, 33\penalty0 (5):\penalty0
-  788--795, 2017.
-\newblock ISSN 1535-1467.
-\newblock \_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1002/rra.3135.
-
 \bibitem[Moody et~al.(2017)Moody, Neeson, Wangen, Dischler, Diebel, Milt,
   Herbert, Khoury, Yacobson, Doran, and {others}]{moody_pet_2017}
 A.~T. Moody, T.~M. Neeson, S.~Wangen, J.~Dischler, M.~W. Diebel, A.~Milt,
@@ -240,17 +196,6 @@ R.~Naidoo, A.~Balmford, P.~J. Ferraro, S.~Polasky, T.~H. Ricketts, and
 \newblock \emph{Trends in Ecology \& Evolution}, 21\penalty0 (12):\penalty0
   681--687, Dec. 2006.
 \newblock ISSN 0169-5347.
-
-\bibitem[Neeson et~al.(2015)Neeson, Ferris, Diebel, Doran, O'Hanley, and
-  McIntyre]{neeson_enhancing_2015}
-T.~M. Neeson, M.~C. Ferris, M.~W. Diebel, P.~J. Doran, J.~R. O'Hanley, and
-  P.~B. McIntyre.
-\newblock Enhancing ecosystem restoration efficiency through spatial and
-  temporal coordination.
-\newblock \emph{Proceedings of the National Academy of Sciences}, 112\penalty0
-  (19):\penalty0 6236--6241, May 2015.
-\newblock ISSN 0027-8424, 1091-6490.
-\newblock Publisher: National Academy of Sciences Section: Biological Sciences.
 
 \bibitem[O'Hanley(2015)]{ohanley_optipass_2015}
 J.~R. O'Hanley.
@@ -305,14 +250,6 @@ P.~Roni, T.~J. Beechie, R.~E. Bilby, F.~E. Leonetti, M.~M. Pollock, and G.~R.
 \newblock \emph{North American Journal of Fisheries Management}, 22\penalty0
   (1):\penalty0 1--20, 2002.
 \newblock ISSN 1548-8675.
-
-\bibitem[Sanchirico et~al.(2008)Sanchirico, Smith, and
-  Lipton]{sanchirico_empirical_2008}
-J.~N. Sanchirico, M.~D. Smith, and D.~W. Lipton.
-\newblock An empirical approach to ecosystem-based fishery management.
-\newblock \emph{Ecological Economics}, 64\penalty0 (3):\penalty0 586--596,
-  2008.
-\newblock Publisher: Elsevier.
 
 \bibitem[Theu{\ss}l et~al.(2019)Theu{\ss}l, Schwendinger, and
   Hornik]{theussl2019roi}

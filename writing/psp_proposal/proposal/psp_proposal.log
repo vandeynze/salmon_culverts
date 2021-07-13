@@ -1,6 +1,6 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  12 JUL 2021 09:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  12 JUL 2021 13:21
 entering extended mode
- restricted \write18 enabled.
+ \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
 **psp_proposal.tex
@@ -525,30 +525,33 @@ File: pppdftex.def 2016/04/19 v0.5f Pdfpages driver for pdfTeX (AM)
 \c@AM@survey=\count128
 \AM@templatesizebox=\box35
 )
+(/usr/local/texlive/2016/texmf-dist/tex/latex/placeins/placeins.sty
+Package: placeins 2005/04/18  v 2.2
+)
 (./psp_proposal.aux)
 \openout1 = `psp_proposal.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 16.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 16.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 17.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 17.
 
 (/usr/local/texlive/2016/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 16.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 16.
-LaTeX Font Info:    ... okay on input line 16.
+LaTeX Font Info:    ... okay on input line 17.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 17.
+LaTeX Font Info:    ... okay on input line 17.
 
 (/usr/local/texlive/2016/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -616,7 +619,7 @@ e
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 \AtBeginShipoutBox=\box37
-Package hyperref Info: Link coloring OFF on input line 16.
+Package hyperref Info: Link coloring OFF on input line 17.
 (/usr/local/texlive/2016/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
@@ -625,9 +628,9 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count137
 )
-LaTeX Info: Redefining \ref on input line 16.
-LaTeX Info: Redefining \pageref on input line 16.
-LaTeX Info: Redefining \nameref on input line 16.
+LaTeX Info: Redefining \ref on input line 17.
+LaTeX Info: Redefining \pageref on input line 17.
+LaTeX Info: Redefining \nameref on input line 17.
 
 (./psp_proposal.out) (./psp_proposal.out)
 \@outlinefile=\write4
@@ -643,9 +646,9 @@ Package: lscape 2000/10/22 v3.01 Landscape Pages (DPC)
 Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 )
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 12.0pt on input line 21.
+(Font)              scaled to size 12.0pt on input line 22.
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
-(Font)              scaled to size 10.0pt on input line 23.
+(Font)              scaled to size 10.0pt on input line 24.
  [1
 
 {/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
@@ -656,9 +659,9 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 (Font)              scaled to size 10.95pt on input line 1.
 ) (./psp_narrative.tex
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
-(Font)              scaled to size 10.95pt on input line 7.
+(Font)              scaled to size 10.95pt on input line 9.
 
-<figures/fig_mapconcrete.png, id=30, 469.755pt x 505.89pt>
+<figures/fig_mapconcrete.png, id=28, 469.755pt x 505.89pt>
 File: figures/fig_mapconcrete.png Graphic file (type png)
 
 <use figures/fig_mapconcrete.png>
@@ -673,39 +676,24 @@ Underfull \hbox (badness 1264) in paragraph at lines 25--26
 [][]\T1/ntxtlf/m/n/10.95 Importantly, the 2013 in-junc-tion
  []
 
-[3 <./figures/fig_mapconcrete.png (PNG copy)>] [4]
-<figures/predCost.png, id=71, 469.755pt x 289.08pt>
+[3 <./figures/fig_mapconcrete.png (PNG copy)>]
+<figures/predCost.png, id=56, 412.1799pt x 278.9622pt>
 File: figures/predCost.png Graphic file (type png)
- <use figures/predCost.png>
-Package pdftex.def Info: figures/predCost.png used on input line 64.
-(pdftex.def)             Requested size: 284.52756pt x 175.09464pt.
 
-[5 <./figures/predCost.png (PNG copy)>] [6] [7] [8]
-Underfull \hbox (badness 10000) in paragraph at lines 161--161
-[]|\T1/ntxtlf/m/n/10.95 Generate salmon habi-tat
+<use figures/predCost.png>
+Package pdftex.def Info: figures/predCost.png used on input line 67.
+(pdftex.def)             Requested size: 284.52756pt x 192.57776pt.
+ [4] [5 <./figures/predCost.png>] [6] [7] [8]
+Underfull \hbox (badness 10000) in paragraph at lines 164--164
+[]|\T1/ntxtlf/m/n/10 Develop op-ti-miza-tion code
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 163--163
-[]|\T1/ntxtlf/m/n/10.95 Generate habi-tat qual-ity
- []
-
-
-Underfull \hbox (badness 1681) in paragraph at lines 166--166
-[]|\T1/ntxtlf/m/n/10.95 Develop op-ti-miza-tion code
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 170--170
-[]|\T1/ntxtlf/m/n/10.95 Integrate feed-back from
- []
-
-
-Overfull \hbox (22.09344pt too wide) in paragraph at lines 156--176
+Overfull \hbox (22.09344pt too wide) in paragraph at lines 154--174
 [][] 
  []
 
-[9]) (./psp_plan.tex) (./psp_engagement.tex [10] [11]) (./psp_management.tex
+) (./psp_plan.tex) (./psp_engagement.tex [9]) (./psp_management.tex [10]
 Underfull \hbox (badness 10000) in paragraph at lines 3--4
 
  []
@@ -726,32 +714,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 9--10
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 11--12
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 13--14
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 15--16
-
- []
-
-[12]
-Underfull \hbox (badness 10000) in paragraph at lines 17--18
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 19--20
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 22--23
+Underfull \hbox (badness 10000) in paragraph at lines 12--13
 
  []
 
@@ -764,300 +727,303 @@ File: t1ntxtt.fd 2012/04/20 v3.1
 )
 LaTeX Font Info:    Font shape `T1/ntxtt/m/n' will be
 (Font)              scaled to size 10.95pt on input line 27.
- [13] [14]
-[15]) <cvs/Jardine_CV.pdf, id=195, 614.295pt x 794.97pt>
+ [11] [12]
+[13]) <cvs/Jardine_CV.pdf, id=168, 614.295pt x 794.97pt>
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf>
-Package pdftex.def Info: cvs/Jardine_CV.pdf used on input line 87.
+Package pdftex.def Info: cvs/Jardine_CV.pdf used on input line 88.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
  <use cvs/Jardine_CV.pdf>
-Package pdftex.def Info: cvs/Jardine_CV.pdf used on input line 87.
+Package pdftex.def Info: cvs/Jardine_CV.pdf used on input line 88.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Jardine_CV.pdf, id=198, page=1, 614.295pt x 794.97pt>
+<cvs/Jardine_CV.pdf, id=171, page=1, 614.295pt x 794.97pt>
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 87.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 88.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
  <use cvs/Jardine_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 87.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 88.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [16]
+ [14]
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 87.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 88.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
  <use cvs/Jardine_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 87.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 88.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 87.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 88.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [17 <./cvs/Jardine_CV.pdf>]
-<cvs/Jardine_CV.pdf, id=258, page=2, 614.295pt x 794.97pt>
+ [15 <./cvs/Jardine_CV.pdf>]
+<cvs/Jardine_CV.pdf, id=228, page=2, 614.295pt x 794.97pt>
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 87.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 88.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
  <use cvs/Jardine_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 87.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 88.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 87.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 88.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [18 <./cvs/Jardine_CV.pdf>]
-<cvs/Holland_CV.pdf, id=269, 614.295pt x 794.97pt>
+ [16 <./cvs/Jardine_CV.pdf>]
+<cvs/Holland_CV.pdf, id=239, 614.295pt x 794.97pt>
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
  <use cvs/Holland_CV.pdf>
-Package pdftex.def Info: cvs/Holland_CV.pdf used on input line 88.
+Package pdftex.def Info: cvs/Holland_CV.pdf used on input line 89.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf>
-Package pdftex.def Info: cvs/Holland_CV.pdf used on input line 88.
+Package pdftex.def Info: cvs/Holland_CV.pdf used on input line 89.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Holland_CV.pdf, id=272, page=1, 614.295pt x 794.97pt>
+<cvs/Holland_CV.pdf, id=242, page=1, 614.295pt x 794.97pt>
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 88.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 89.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
  <use cvs/Holland_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 88.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 89.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 88.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 89.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
  <use cvs/Holland_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 88.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 89.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 88.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 89.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [19 <./cvs/Holland_CV.pdf>]
-<cvs/Holland_CV.pdf, id=302, page=2, 614.295pt x 794.97pt>
+ [17 <./cvs/Holland_CV.pdf>]
+<cvs/Holland_CV.pdf, id=272, page=2, 614.295pt x 794.97pt>
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 88.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 89.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
  <use cvs/Holland_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 88.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 89.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 88.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 89.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [20 <./cvs/Holland_CV.pdf>]
-<cvs/Fonner_CV.pdf, id=319, 614.295pt x 794.97pt>
+ [18 <./cvs/Holland_CV.pdf>]
+<cvs/Fonner_CV.pdf, id=289, 614.295pt x 794.97pt>
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
  <use cvs/Fonner_CV.pdf>
-Package pdftex.def Info: cvs/Fonner_CV.pdf used on input line 89.
+Package pdftex.def Info: cvs/Fonner_CV.pdf used on input line 90.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf>
-Package pdftex.def Info: cvs/Fonner_CV.pdf used on input line 89.
+Package pdftex.def Info: cvs/Fonner_CV.pdf used on input line 90.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Fonner_CV.pdf, id=322, page=1, 614.295pt x 794.97pt>
+<cvs/Fonner_CV.pdf, id=292, page=1, 614.295pt x 794.97pt>
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 89.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 90.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
  <use cvs/Fonner_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 89.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 90.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 89.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 90.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
  <use cvs/Fonner_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 89.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 90.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 89.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 90.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [21 <./cvs/Fonner_CV.pdf>]
-<cvs/Fonner_CV.pdf, id=381, page=2, 614.295pt x 794.97pt>
+ [19 <./cvs/Fonner_CV.pdf>]
+<cvs/Fonner_CV.pdf, id=352, page=2, 614.295pt x 794.97pt>
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 89.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 90.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
  <use cvs/Fonner_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 89.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 90.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 89.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 90.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [22 <./cvs/Fonner_CV.pdf>]
-<cvs/Scheuerell_CV.pdf, id=396, 614.295pt x 794.97pt>
+ [20 <./cvs/Fonner_CV.pdf>]
+<cvs/Scheuerell_CV.pdf, id=367, 614.295pt x 794.97pt>
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf used on input line 90.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf used on input line 91.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
  <use cvs/Scheuerell_CV.pdf>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf used on input line 90.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf used on input line 91.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Scheuerell_CV.pdf, id=399, page=1, 614.295pt x 794.97pt>
+<cvs/Scheuerell_CV.pdf, id=370, page=1, 614.295pt x 794.97pt>
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 90.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 91.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
  <use cvs/Scheuerell_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 90.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 91.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 90.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 91.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
  <use cvs/Scheuerell_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 90.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 91.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 90.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 91.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [23 <./cvs/Scheuerell_CV.pdf>]
-<cvs/Scheuerell_CV.pdf, id=426, page=2, 614.295pt x 794.97pt>
+ [21 <./cvs/Scheuerell_CV.pdf>]
+<cvs/Scheuerell_CV.pdf, id=396, page=2, 614.295pt x 794.97pt>
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 90.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 91.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
  <use cvs/Scheuerell_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 90.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 91.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 90.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 91.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [24 <./cvs/Scheuerell_CV.pdf>]
-<cvs/Van_Deynze_CV.pdf, id=431, 614.295pt x 794.97pt>
+ [22 <./cvs/Scheuerell_CV.pdf>]
+<cvs/Van_Deynze_CV.pdf, id=401, 614.295pt x 794.97pt>
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf used on input line 91.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf used on input line 92.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
  <use cvs/Van_Deynze_CV.pdf>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf used on input line 91.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf used on input line 92.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Van_Deynze_CV.pdf, id=434, page=1, 614.295pt x 794.97pt>
+<cvs/Van_Deynze_CV.pdf, id=404, page=1, 614.295pt x 794.97pt>
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 91.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
  <use cvs/Van_Deynze_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 91.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 91.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
  <use cvs/Van_Deynze_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 91.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 91.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [25 <./cvs/Van_Deynze_CV.pdf>]
-<cvs/Van_Deynze_CV.pdf, id=476, page=2, 614.295pt x 794.97pt>
+ [23 <./cvs/Van_Deynze_CV.pdf>]
+<cvs/Van_Deynze_CV.pdf, id=446, page=2, 614.295pt x 794.97pt>
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 91.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
  <use cvs/Van_Deynze_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 91.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 91.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [26 <./cvs/Van_Deynze_CV.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 94.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 94.
+ [24 <./cvs/Van_Deynze_CV.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 95.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 95.
 
 (./psp_proposal.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 94.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 94.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 95.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 95.
 Package rerunfilecheck Info: File `psp_proposal.out' has not changed.
 (rerunfilecheck)             Checksum: BE3E509BC87EA0C909E4228E229F4288;184.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
- 10048 strings out of 493014
- 145908 string characters out of 6133351
- 266225 words of memory out of 5000000
- 13321 multiletter control sequences out of 15000+600000
- 25654 words of font info for 36 fonts, out of 8000000 for 9000
+ 10031 strings out of 493014
+ 145367 string characters out of 6133351
+ 262816 words of memory out of 5000000
+ 13313 multiletter control sequences out of 15000+600000
+ 26108 words of font info for 38 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 40i,18n,68p,1233b,528s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 40i,18n,68p,1768b,526s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}</us
 r/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr
-/local/texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/l
-ocal/texlive/2016/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texli
-ve/2016/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2016/te
-xmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2016/texmf-dist/fo
-nts/type1/public/lm/lmri10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/
-public/tex-gyre/qtmb.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public
-/tex-gyre/qtmr.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/tex-g
-yre/qtmri.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/txfonts/t1
-xtt.pfb>
-Output written on psp_proposal.pdf (26 pages, 4765717 bytes).
+/local/texlive/2016/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/tex
+live/2016/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2016/
+texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2016/texmf-dist/
+fonts/type1/public/lm/lmri10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type
+1/public/tex-gyre/qtmb.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/publ
+ic/tex-gyre/qtmr.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/tex
+-gyre/qtmri.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/txfonts/
+t1xtt.pfb>
+Output written on psp_proposal.pdf (24 pages, 4847388 bytes).
 PDF statistics:
- 544 PDF objects out of 1000 (max. 8388607)
- 410 compressed objects within 5 object streams
- 81 named destinations out of 1000 (max. 500000)
+ 507 PDF objects out of 1000 (max. 8388607)
+ 376 compressed objects within 4 object streams
+ 68 named destinations out of 1000 (max. 500000)
  168 words of extra memory for PDF output out of 10000 (max. 10000000)
 
