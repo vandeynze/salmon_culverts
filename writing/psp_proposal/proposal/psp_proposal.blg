@@ -3,54 +3,44 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: psp_proposal.aux
 The style file: abbrvnat.bst
 Database file #1: psp.bib
-Warning--to sort, need author or key in noauthor_2020_2020
-Warning--to sort, need author or key in noauthor_wsdot_2020
-Warning--to sort, need author or key in noauthor_fish_2019
-Warning--to sort, need author or key in noauthor_pacific_2021
-Warning--empty author in noauthor_fish_2019
-Warning--empty author in noauthor_2020_2020
-Warning--empty author in noauthor_wsdot_2020
-Warning--empty author in noauthor_pacific_2021
-Warning--empty journal in theussl2019roi
-You've used 30 entries,
+You've used 13 entries,
             2773 wiz_defined-function locations,
-            819 strings with 12327 characters,
-and the built_in function-call counts, 15721 in all, are:
-= -- 1431
-> -- 1069
-< -- 7
-+ -- 364
-- -- 333
-* -- 1483
-:= -- 2467
-add.period$ -- 123
-call.type$ -- 30
-change.case$ -- 206
-chr.to.int$ -- 29
-cite$ -- 73
-duplicate$ -- 598
-empty$ -- 1113
-format.name$ -- 363
-if$ -- 3203
-int.to.chr$ -- 2
+            706 strings with 8380 characters,
+and the built_in function-call counts, 7630 in all, are:
+= -- 687
+> -- 550
+< -- 4
++ -- 184
+- -- 171
+* -- 731
+:= -- 1211
+add.period$ -- 58
+call.type$ -- 13
+change.case$ -- 96
+chr.to.int$ -- 13
+cite$ -- 26
+duplicate$ -- 274
+empty$ -- 517
+format.name$ -- 188
+if$ -- 1546
+int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 25
-newline$ -- 191
-num.names$ -- 104
-pop$ -- 326
+missing$ -- 13
+newline$ -- 92
+num.names$ -- 52
+pop$ -- 152
 preamble$ -- 1
-purify$ -- 171
+purify$ -- 83
 quote$ -- 0
-skip$ -- 461
+skip$ -- 217
 stack$ -- 0
-substring$ -- 581
-swap$ -- 43
+substring$ -- 304
+swap$ -- 25
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 330
-warning$ -- 9
-while$ -- 121
+type$ -- 143
+warning$ -- 0
+while$ -- 63
 width$ -- 0
-write$ -- 462
-(There were 9 warnings)
+write$ -- 213

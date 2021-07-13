@@ -1,39 +1,9 @@
-\begin{thebibliography}{30}
+\begin{thebibliography}{13}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
-
-\bibitem[noa(2019)]{noauthor_fish_2019}
-Fish {Passage} {Inventory}, {Assessment}, and {Prioritization} {Manual}.
-\newblock Technical report, Washington Department of Fish and Wildlife,
-  Olympia, Washington, 2019.
-
-\bibitem[noa(2020{\natexlab{a}})]{noauthor_2020_2020}
-2020 {State} of {Our} {Watersheds}.
-\newblock Technical report, Northwest Indian Fisheries Commission,
-  2020{\natexlab{a}}.
-
-\bibitem[noa(2020{\natexlab{b}})]{noauthor_wsdot_2020}
-{WSDOT} {Fish} {Passage} {Performance} {Report}.
-\newblock Technical report, Washington Department of Transportation, Olympia,
-  Washington, 2020{\natexlab{b}}.
-
-\bibitem[noa(2021)]{noauthor_pacific_2021}
-Pacific {Northwest} salmon habitat project database.
-\newblock Technical report, National Marine Fisheries Service, Northwest
-  Fisheries Science Center, 2021.
-\newblock URL \url{https://www.webapps.nwfsc.noaa.gov/pnshp/}.
-
-\bibitem[Babcock et~al.(1997)Babcock, Lakshminarayan, Wu, and
-  Zilberman]{babcock_targeting_1997}
-B.~A. Babcock, P.~G. Lakshminarayan, J.~Wu, and D.~Zilberman.
-\newblock Targeting {Tools} for the {Purchase} of {Environmental} {Amenities}.
-\newblock \emph{Land Economics}, 73\penalty0 (3):\penalty0 325--339, 1997.
-\newblock ISSN 0023-7639.
-\newblock Publisher: [Board of Regents of the University of Wisconsin System,
-  University of Wisconsin Press].
 
 \bibitem[Bartz et~al.(2006)Bartz, Lagueux, Scheuerell, Beechie, Haas, and
   Ruckelshaus]{Bartz_2006}
@@ -63,14 +33,6 @@ J.~Battin, M.~W. Wiley, M.~H. Ruckelshaus, R.~N. Palmer, E.~Korb, K.~K. Bartz,
   {Require} {Replacing} {Tens} of {Thousands} of {Culverts}, and {Nobody}
   {Knows} {Where} the {Money} {Will} {Come} {From}.
 \newblock \emph{The Daily Chronicle}, Aug. 2019.
-
-\bibitem[Caissie(2006)]{Caissie_2006}
-D.~Caissie.
-\newblock The thermal regime of rivers: a review.
-\newblock \emph{Freshwater Biology}, 51\penalty0 (8):\penalty0 1389--1406, aug
-  2006.
-\newblock \doi{10.1111/j.1365-2427.2006.01597.x}.
-\newblock URL \url{https://doi.org/10.1111/j.1365-2427.2006.01597.x}.
 
 \bibitem[Couto et~al.(2021)Couto, Messager, and Olden]{couto_safeguarding_2021}
 T.~B. Couto, M.~L. Messager, and J.~D. Olden.
@@ -104,24 +66,6 @@ C.~R. Field and C.~S. Elphick.
 \newblock ISSN 1748-9326.
 \newblock Publisher: IOP Publishing.
 
-\bibitem[Hermoso et~al.(2021)Hermoso, Clavero, and
-  Filipe]{hermoso_accessible_2021}
-V.~Hermoso, M.~Clavero, and A.~F. Filipe.
-\newblock An accessible optimisation method for barrier removal planning in
-  stream networks.
-\newblock \emph{Science of The Total Environment}, 752:\penalty0 141943, Jan.
-  2021.
-\newblock ISSN 0048-9697.
-\newblock \doi{10.1016/j.scitotenv.2020.141943}.
-
-\bibitem[Hickey(2018)]{hickey_highway_2018}
-R.~Hickey.
-\newblock Highway {Culverts}, {Salmon} {Runs}, and the {Stevens} {Treaties}:
-  {A} {Century} of {Litigating} {Pacific} {Northwest} {Tribal} {Fishing}
-  {Rights}.
-\newblock \emph{Pub. Land \& Resources L. Rev.}, 39:\penalty0 253, 2018.
-\newblock Publisher: HeinOnline.
-
 \bibitem[Isaak et~al.(2007)Isaak, Thurow, Rieman, and Dunham]{Isaak_2007}
 D.~J. Isaak, R.~F. Thurow, B.~E. Rieman, and J.~B. Dunham.
 \newblock Chinook salmon use of spawning patches: relative roles of habitat
@@ -142,25 +86,6 @@ J.~C. Jorgensen, J.~M. Honea, M.~M. McClure, T.~D. Cooney, K.~Engie, and D.~M.
 \newblock \doi{10.1111/j.1365-2427.2009.02207.x}.
 \newblock URL \url{https://doi.org/10.1111/j.1365-2427.2009.02207.x}.
 
-\bibitem[Katz et~al.(2007)Katz, Barnas, Hicks, Cowen, and
-  Jenkinson]{katz_freshwater_2007}
-S.~L. Katz, K.~Barnas, R.~Hicks, J.~Cowen, and R.~Jenkinson.
-\newblock Freshwater {Habitat} {Restoration} {Actions} in the {Pacific}
-  {Northwest}: {A} {Decade}'s {Investment} in {Habitat} {Improvement}.
-\newblock \emph{Restoration Ecology}, 15\penalty0 (3):\penalty0 494--505, 2007.
-\newblock ISSN 1526-100X.
-\newblock \_eprint:
-  https://onlinelibrary.wiley.com/doi/pdf/10.1111/j.1526-100X.2007.00245.x.
-
-\bibitem[King et~al.(2017)King, O'Hanley, Newbold, Kemp, and
-  Diebel]{king_toolkit_2017}
-S.~King, J.~R. O'Hanley, L.~R. Newbold, P.~S. Kemp, and M.~W. Diebel.
-\newblock A toolkit for optimizing fish passage barrier mitigation actions.
-\newblock \emph{Journal of Applied Ecology}, 54\penalty0 (2):\penalty0
-  599--611, 2017.
-\newblock ISSN 1365-2664.
-\newblock \doi{https://doi.org/10.1111/1365-2664.12706}.
-
 \bibitem[Kuby et~al.(2005)Kuby, Fagan, ReVelle, and
   Graf]{kuby_multiobjective_2005}
 M.~J. Kuby, W.~F. Fagan, C.~S. ReVelle, and W.~L. Graf.
@@ -171,53 +96,12 @@ M.~J. Kuby, W.~F. Fagan, C.~S. ReVelle, and W.~L. Graf.
   845--855, 2005.
 \newblock Publisher: Elsevier.
 
-\bibitem[McManamay et~al.(2019)McManamay, Perkin, and
-  Jager]{mcmanamay_commonalities_2019}
-R.~A. McManamay, J.~S. Perkin, and H.~I. Jager.
-\newblock Commonalities in stream connectivity restoration alternatives: an
-  attempt to simplify barrier removal optimization.
-\newblock \emph{Ecosphere}, 10\penalty0 (2):\penalty0 e02596, 2019.
-\newblock Publisher: Wiley Online Library.
-
-\bibitem[Moody et~al.(2017)Moody, Neeson, Wangen, Dischler, Diebel, Milt,
-  Herbert, Khoury, Yacobson, Doran, and {others}]{moody_pet_2017}
-A.~T. Moody, T.~M. Neeson, S.~Wangen, J.~Dischler, M.~W. Diebel, A.~Milt,
-  M.~Herbert, M.~Khoury, E.~Yacobson, P.~J. Doran, and {others}.
-\newblock Pet project or best project? {Online} decision support tools for
-  prioritizing barrier removals in the {Great} {Lakes} and beyond.
-\newblock \emph{Fisheries}, 42\penalty0 (1):\penalty0 57--65, 2017.
-\newblock Publisher: Taylor \& Francis.
-
-\bibitem[Naidoo et~al.(2006)Naidoo, Balmford, Ferraro, Polasky, Ricketts, and
-  Rouget]{naidoo_integrating_2006}
-R.~Naidoo, A.~Balmford, P.~J. Ferraro, S.~Polasky, T.~H. Ricketts, and
-  M.~Rouget.
-\newblock Integrating economic costs into conservation planning.
-\newblock \emph{Trends in Ecology \& Evolution}, 21\penalty0 (12):\penalty0
-  681--687, Dec. 2006.
-\newblock ISSN 0169-5347.
-
-\bibitem[O'Hanley(2015)]{ohanley_optipass_2015}
-J.~R. O'Hanley.
-\newblock {OptiPass}: {The} {Migratory} {Fish} {Passage} {Optimization} {Tool},
-  {Version} 1.1. {User} {Manual}.
-\newblock Technical report, Ecointelligence LLC, 2015.
-
 \bibitem[O'Hanley and Tomberlin(2005)]{ohanley_optimizing_2005}
 J.~R. O'Hanley and D.~Tomberlin.
 \newblock Optimizing the removal of small fish passage barriers.
 \newblock \emph{Environmental Modeling \& Assessment}, 10\penalty0
   (2):\penalty0 85--98, 2005.
 \newblock Publisher: Springer.
-
-\bibitem[O'Hanley et~al.(2013)O'Hanley, Wright, Diebel, Fedora, and
-  Soucy]{ohanley_restoring_2013}
-J.~R. O'Hanley, J.~Wright, M.~Diebel, M.~A. Fedora, and C.~L. Soucy.
-\newblock Restoring stream habitat connectivity: {A} proposed method for
-  prioritizing the removal of resident fish passage barriers.
-\newblock \emph{Journal of Environmental Management}, 125:\penalty0 19--27,
-  Aug. 2013.
-\newblock ISSN 0301-4797.
 
 \bibitem[Pess et~al.(2011)Pess, Kiffney, Liermann, Bennett, Anderson, and
   Quinn]{Pess_2011}
@@ -231,15 +115,6 @@ G.~R. Pess, P.~M. Kiffney, M.~C. Liermann, T.~R. Bennett, J.~H. Anderson, and
 \newblock \doi{10.1080/00028487.2011.587752}.
 \newblock URL \url{https://doi.org/10.1080/00028487.2011.587752}.
 
-\bibitem[Rodeles et~al.(2019)Rodeles, Leunda, Elso, Ardaiz, Galicia, and
-  Miranda]{Rodeles_2019}
-A.~A. Rodeles, P.~M. Leunda, J.~Elso, J.~Ardaiz, D.~Galicia, and R.~Miranda.
-\newblock Consideration of habitat quality in a river connectivity index for
-  anadromous fishes.
-\newblock \emph{Inland Waters}, 9\penalty0 (3):\penalty0 278--288, apr 2019.
-\newblock \doi{10.1080/20442041.2018.1544817}.
-\newblock URL \url{https://doi.org/10.1080/20442041.2018.1544817}.
-
 \bibitem[Roni et~al.(2002)Roni, Beechie, Bilby, Leonetti, Pollock, and
   Pess]{roni_review_2002}
 P.~Roni, T.~J. Beechie, R.~E. Bilby, F.~E. Leonetti, M.~M. Pollock, and G.~R.
@@ -250,11 +125,5 @@ P.~Roni, T.~J. Beechie, R.~E. Bilby, F.~E. Leonetti, M.~M. Pollock, and G.~R.
 \newblock \emph{North American Journal of Fisheries Management}, 22\penalty0
   (1):\penalty0 1--20, 2002.
 \newblock ISSN 1548-8675.
-
-\bibitem[Theu{\ss}l et~al.(2019)Theu{\ss}l, Schwendinger, and
-  Hornik]{theussl2019roi}
-S.~Theu{\ss}l, F.~Schwendinger, and K.~Hornik.
-\newblock Roi: an extensible r optimization infrastructure.
-\newblock 2019.
 
 \end{thebibliography}
