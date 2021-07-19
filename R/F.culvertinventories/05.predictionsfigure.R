@@ -637,7 +637,62 @@ sf_inv_preds_huc10 <-
     costpred_brt_mean = mean(exp(costpred_brt), na.rm = TRUE),
     costpred_brt_coefvar = sd(exp(costpred_brt), na.rm = TRUE)/mean(exp(costpred_brt), na.rm = TRUE)
   ) %>%
+  mutate(
+    costpred_brt_mean_q = percent_rank(costpred_brt_mean)
+  ) %>%
   right_join(sf_huc10, by = "huc10")
+
+map_full_preds_mean <-
+  ggplot() +
+  geom_sf(data = sf_base, fill = "antiquewhite1", color = "black") +
+  geom_sf(
+    aes(
+      fill = costpred_brt_mean_q
+    ),
+    color = NA,
+    data = sf_inv_preds_huc10 %>% st_as_sf() %>% st_transform(st_crs(sf_base)),
+    alpha = 0.75
+  ) +
+  geom_sf(data = sf_basin, fill = NA, color = "red") +
+  theme_map_custom() +
+  theme(
+    # legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
+    legend.background = element_rect(color = "black"), 
+    legend.key.size = unit(0.3, "pt"), 
+    # legend.title = element_text(size = 8),
+    # legend.text = element_text(size = 6)
+  ) + 
+  coord_sf(
+    xlim = c(xmin_full, xmax_full),
+    ylim = c(ymin_full, ymax_full),
+    expand = FALSE
+  )  + 
+  scale_fill_fermenter(
+    "Predicted cost\npercentile",
+    palette = "RdYlGn", 
+    direction = -1, 
+    breaks = extended_breaks(7),
+    limits = c(0.01, 0.99),
+    labels = scales::percent_format(1),
+    # breaks = 
+    #   c(0, seq(9, 12, 1), Inf),
+    # quantile(
+    #   sf_inv_preds$costpred_ols, 
+    #   probs = seq(0, 1, 0.2),
+    #   na.rm = TRUE
+    # ),
+    # labels = function(x) exp(x) %>% dollar(),
+    na.value = NA,
+    guide = guide_colorsteps(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
+  )
+
+ggsave(
+  here("output/figs/fig_culvpreds_mean.png"),
+  map_full_preds_mean,
+  height = 7.5,
+  width = 6.5
+)
+
 
 map_full_preds_var <-
   ggplot() +
@@ -689,6 +744,18 @@ ggsave(
   width = 6.5
 )
 
+# Breakdown by ownership
+
+sf_allculv_own <-
+  bind_rows(
+    sf_allculv_odfw %>%
+      st_drop_geometry() %>%
+      dplyr::select(fpb_ftr_id, Ownership),
+    sf_allculv_wdfw %>%
+      st_drop_geometry() %>%
+      dplyr::select(site_id, Ownership)
+  ) %>%
+  rename(ownership = Ownership)
 
 sf_inv_preds_huc10_own <-
   sf_inv_preds %>%
@@ -696,15 +763,72 @@ sf_inv_preds_huc10_own <-
     # huc12 = as.character(huc12),
     huc10 = trunc(huc12/1e2) %>% as.character()
   ) %>%
+  left_join(sf_allculv_own) %>%
   st_drop_geometry() %>%
   group_by(huc10, ownership) %>%
   summarize(
     costpred_brt_mean = mean(exp(costpred_brt), na.rm = TRUE),
     costpred_brt_coefvar = sd(exp(costpred_brt), na.rm = TRUE)/mean(exp(costpred_brt), na.rm = TRUE)
   ) %>%
+  mutate(
+    costpred_brt_mean_q = percent_rank(costpred_brt_mean)
+  ) %>%
   right_join(sf_huc10, by = "huc10") %>%
   drop_na(ownership) %>%
   mutate(ownership = ordered(ownership, levels = c("State", "County", "Other")))
+
+map_full_preds_mean_own <-
+  ggplot() +
+  geom_sf(data = sf_base, fill = "antiquewhite1", color = "black") +
+  geom_sf(
+    aes(
+      fill = costpred_brt_mean_q
+    ),
+    color = NA,
+    data = sf_inv_preds_huc10_own %>% st_as_sf() %>% st_transform(st_crs(sf_base)),
+    alpha = 0.75
+  ) +
+  geom_sf(data = sf_basin, fill = NA, color = "red") +
+  theme_map_custom() +
+  theme(
+    # legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
+    legend.background = element_rect(color = "black"), 
+    legend.key.size = unit(0.3, "pt"), 
+    # legend.title = element_text(size = 8),
+    # legend.text = element_text(size = 6)
+  ) +
+  facet_wrap(~ ownership, nrow = 1) + 
+  coord_sf(
+    xlim = c(xmin_full, xmax_full),
+    ylim = c(ymin_full, ymax_full),
+    expand = FALSE
+  )  + 
+  scale_fill_fermenter(
+    "Predicted cost\npercentile",
+    palette = "RdYlGn", 
+    direction = -1, 
+    breaks = extended_breaks(7),
+    limits = c(0.01, 0.99),
+    labels = scales::percent_format(1),
+    # breaks = 
+    #   c(0, seq(9, 12, 1), Inf),
+    # quantile(
+    #   sf_inv_preds$costpred_ols, 
+    #   probs = seq(0, 1, 0.2),
+    #   na.rm = TRUE
+    # ),
+    # labels = function(x) exp(x) %>% dollar(),
+    na.value = NA,
+    guide = guide_colorsteps(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
+  ) 
+
+ggsave(
+  here("output/figs/fig_culvpreds_mean_own.png"),
+  map_full_preds_mean_own,
+  height = 4,
+  width = 13
+)
+
 
 map_full_preds_var_own <-
   ggplot() +

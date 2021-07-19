@@ -99,7 +99,7 @@ key_nlcd <-
     here(
       "/data/Culverts spatial overlays v 20Jan2021.xlsx"
     ), 
-    sheet = 3
+    sheet = 4
   ) %>% 
   as_tibble() %>%
   clean_names() %>%
@@ -485,7 +485,7 @@ library(gbm)
 set.seed(1)
 
 # Takes ~1min to fun on my machine
-boost_culv <- gbm(log(cost_per_culvert) ~ ., data = df_tree[train,], distribution = "gaussian", n.trees = 5000, interaction.depth = 4, cv.folds = 5)
+boost_culv <- gbm(log(cost_per_culvert) ~ ., data = df_tree[train,], distribution = "gaussian", n.trees = 1000, interaction.depth = 4, cv.folds = 5)
 write_rds(boost_culv, here("output/costfits/boostedregression.rds"))
 
 #' Again, these trees are difficult to interpret because they aggregate several
@@ -552,7 +552,7 @@ write_rds(boost_culv, here("output/costfits/boostedregression.rds"))
 # # Looks quite a bit like our bankfull width - slope chart from the interaction effects in OLS
 # # Basically in-line with what we already knew, but what about predictive power...
 
-yhat_boost = predict(boost_culv, newdata = df_tree[-train,], n.trees = 5000)
+yhat_boost = predict(boost_culv, newdata = df_tree[-train,], n.trees = 1000)
 plot(x = yhat_boost, y = log(y_test) %>% pull(cost_per_culvert))
 abline(0,1)
 
@@ -670,7 +670,7 @@ features = unique(c(vi(bag_culv) %>% slice(1:25) %>% pull(Variable), vi(boost_cu
 #+ warning=F, message=F
 tibble(
   "OLS" = rmse_ols,
-  "4-leaf tree" = rmse_tree4,
+  # "4-leaf tree" = rmse_tree4,
   # "rmse_tree10" = rmse_tree10,
   "Full tree" = rmse_treefull,
   "RF" = rmse_bag,
@@ -687,15 +687,16 @@ tibble(
   geom_hline(aes(yintercept = rmse_ols), data = . %>% filter(method == "rmse_ols"), linetype = "dashed") +
   geom_col(aes(fill = method), color = "black") +
   geom_hline(yintercept = 0) +
-  geom_text(aes(label = round(rmse, 3), y = rmse + 0.025)) +
+  geom_text(aes(label = round(rmse, 3), y = rmse + 0.03), size = 5) +
   scale_fill_brewer(type = "qual") +
   # scale_color_brewer(type = "qual") +
   labs(
-    x = NULL, y = "RMSE", title = "RMSE by method (testing set)",
-    subtitle = "RF shows lowest RMSE, followed closely by BRT, representing ~10% and 7% increase in prediction accuracy over OLS respectively"
+    x = NULL, y = "RMSE", title = "RMSE by method (testing set)"
+    # subtitle = "RF shows lowest RMSE, followed closely by BRT, representing ~10% and 7% increase in prediction accuracy over OLS respectively"
   ) +
   theme_bw() +
   theme(
+    text = element_text(size = 20),
     plot.background = element_rect(color = NULL), legend.position = "none"
   )
 
@@ -714,7 +715,7 @@ df_yhats <-
   tibble(
     "y" = log(df_tree$cost_per_culvert[-train]),
     "OLS" = yhat_culv_ols,
-    "4-leaf tree" = yhat_culv_4,
+    # "4-leaf tree" = yhat_culv_4,
     # "yhat_tree10" = yhat_culv_10,
     "Full tree" = yhat_culv,
     "RF" = yhat_culv_bag,
@@ -737,15 +738,22 @@ df_yhats %>%
   scale_fill_brewer(type = "qual") +
   # scale_color_brewer(type = "qual") +
   labs(
-    x = "Actual cost (log-scale)", y = "Predicted cost (log-scale)", title = "Predicted vs. actual costs (testing set)",
-    subtitle = "RF demonstrates an unfortunate skew"
+    x = "Actual cost (log-scale)", y = "Predicted cost (log-scale)", title = "Predicted vs. actual costs",
+    subtitle = "(testing set)"
   ) +
   theme_bw() +
   theme(
+    text = element_text(size = 20),
     plot.background = element_rect(color = NULL), legend.position = "none"
   ) +
-  scale_x_continuous(labels = function(x) scales::dollar(exp(x)), breaks = c(log(3000), log(22000), log(150000))) + 
-  scale_y_continuous(labels = function(x) scales::dollar(exp(x)), breaks = c(log(3000), log(22000), log(150000)))
+  scale_x_continuous(
+    labels = function(x) paste0(scales::dollar(exp(x)/1000, 1), "K"), 
+    breaks = c(log(3000), log(22000), log(150000))
+  ) + 
+  scale_y_continuous(
+    labels = function(x) paste0(scales::dollar(exp(x)/1000, 1), "K"),
+    breaks = c(log(3000), log(22000), log(150000))
+  )
 
 #' Looking at the predictions against the actual costs per culvert values, we
 #' see the limits of the simple regression trees, which places each worksite
@@ -786,11 +794,13 @@ ggplot(
   scale_fill_brewer(type = "qual") +
   # scale_color_brewer(type = "qual") +
   labs(
-    x = "Residual (log-cost)", y = "Density", title = "Residual distribution (testing set)", 
-    subtitle = "BRT has tighter clustering of residuals near zero but wider tails"
+    x = "Residual (log-cost)", y = "Density", title = "Residual distribution",
+    subtitle = "(testing set)"
+    # subtitle = "BRT has tighter clustering of residuals near zero but wider tails"
   ) +
   theme_bw() +
   theme(
+    text = element_text(size = 20),
     plot.background = element_rect(color = NULL), legend.position = "none"
   ) 
   # scale_x_continuous(labels = function(x) comma(exp(x), 0.1), breaks = c(-3, -1.5, 0, 1.5, 3))
