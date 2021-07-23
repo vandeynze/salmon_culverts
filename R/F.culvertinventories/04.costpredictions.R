@@ -28,7 +28,7 @@ key_nlcd <-
     here(
       "/data/Culverts spatial overlays v 20Jan2021.xlsx"
     ), 
-    sheet = 3
+    sheet = 4
   ) %>% 
   as_tibble() %>%
   clean_names() %>%
@@ -227,6 +227,7 @@ sf_inv_preds <-
   ungroup() %>%
   mutate(
     # TODO Identify observations/basins where fixed effects are standardized to Southern Oregon Coastal
+    basin_true = basin,
     basin = case_when(!(basin %in% unique(df_culv$basin)) ~ "SOUTHERN OREGON COASTAL", TRUE ~ as.character(basin)),
     basin = relevel(factor(basin), ref = "SOUTHERN OREGON COASTAL"),
     # TODO Identify observations where roads are reclassified

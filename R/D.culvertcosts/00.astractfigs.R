@@ -405,7 +405,7 @@ key_nlcd <-
     here(
       "data/Culverts spatial overlays v 20Jan2021.xlsx"
     ), 
-    sheet = 3
+    sheet = 4
   ) %>% 
   as_tibble() %>%
   clean_names() %>%
@@ -584,7 +584,7 @@ key_here %>%
       here(
         "/data/Culverts spatial overlays v 20Jan2021.xlsx"
       ), 
-      sheet = 3
+      sheet = 4
     ) %>% 
     as_tibble() %>%
     clean_names("sentence") %>% 
@@ -2406,15 +2406,15 @@ fig_truevalues <-
     expand = FALSE
   ) +
   theme(
-    text = element_text(size = 20),
-    legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
-    # legend.position = "right",
-    legend.background = element_rect(color = "black", size = 1), 
+    # text = element_text(size = 20),
+    # legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
+    legend.position = "right",
+    legend.background = element_rect(color = NA, size = 1), 
     legend.key.size = unit(0.3, "pt"), 
     # legend.title = element_text(size = 6),
     legend.box.spacing = unit(0, "pt")
   )
-
+ggsave(here("output/figs/fig_culvdata.png"), fig_truevalues, width = unit(6.5, "in"), height = unit(7, "in"))
 #' The map of predicted values highlights areas where physical conditions (i.e.
 #' road, stream, and terrain features) have the largest impact on costs. By
 #' holding year, basin, reporting source, and project scale effects constant, we
@@ -2773,6 +2773,8 @@ df_margeff_slopebfi <-
     ) %>% rowwise() %>% mutate(at = paste("Bankfull width =", at, "m"), across(c(estimate, conf.low, conf.high), exp), p.value = I(p < 0.05), factor = "Stream slope")
   ) %>% select(factor, at, estimate, conf.low, conf.high, p.value) %>% mutate(factor = str_to_sentence(factor) %>% str_replace("_", " "))
 
+
+
 (
   fig_margeff <-
     (
@@ -2786,6 +2788,52 @@ df_margeff_slopebfi <-
         ungroup() %>%
         filter(factor != "Metal materials suppliers") %>%
         mutate(
+          group =
+            case_when(
+              factor %in% c("Bankfull width",
+              "Stream slope") ~ "Stream",
+              factor %in% c("Terrain slope",
+              "Elevation") ~ "Terrain",
+              factor %in% c("Brick, concrete, and related materials suppliers",
+              "Construction equipment suppliers",
+              "Sand and gravel sales yards",
+              "Metal materials suppliers") ~ "Materials",
+              factor %in% c("Ag/forestry employment",
+              "Construction employment") ~ "Labor",
+              factor %in% c("Number of worksites",
+              "Distance between worksites") ~ "Scale",
+              factor %in% c("Managed by individual or company",
+              "Managed by industry",
+              "Managed by non-industrial owner") ~ "Mgmt",
+              factor %in% c("Housing density",
+              "Distance to urban area") ~ "Urban",
+              factor %in% c("Land cover: Developed",
+              "Land cover: Herbaceous",
+              "Land cover: Planted-cultivated",
+              "Land cover: Shrubland",
+              "Land cover: Wetlands") ~ "Terrain",
+              factor %in% c(
+              "Road paved (dummy)",
+              "Road speed class: 3",
+              "Road speed class: 4",
+              "Road speed class: 5",
+              "Road speed class: 6",
+              "Road speed class: 7") ~ "Road"
+            ),
+          group =
+            ordered(group) %>%
+            fct_relevel(.,
+                        "Stream",
+                        "Road",
+                        "Terrain",
+                        "Mgmt",
+                        "Urban",
+                        "Materials",
+                        "Labor",
+                        "Scale"
+                        ),
+          factor = case_when(factor == "Brick, concrete, and related materials suppliers" ~ "Concrete suppliers",
+                             TRUE ~ factor),
           factor = 
             ordered(factor) %>%
             fct_recode(.,
@@ -2821,7 +2869,7 @@ df_margeff_slopebfi <-
                         "Sand and gravel sales yards",
                         # "Metal materials suppliers",
                         "Construction equipment suppliers",
-                        "Brick, concrete, and related materials suppliers",
+                        "Concrete suppliers",
                         "Number of worksites",
                         "Distance between worksites"
 
@@ -2831,7 +2879,7 @@ df_margeff_slopebfi <-
         )
     ) %>%
     ggplot() +
-    geom_vline(xintercept = 1, linetype = "dashed") +
+    geom_vline(xintercept = 1, linetype = "dashed", size = 1.5) +
     geom_pointrange(
       aes(
         y = factor,
@@ -2845,6 +2893,35 @@ df_margeff_slopebfi <-
       ),
       size = 1.5,
       position = position_dodge(width = 0.6)
+    ) +
+    scale_x_continuous(
+      limits = c(
+        0.1, 7.35
+      ),
+      breaks =
+        c(
+          # 0.25,
+          0.5,
+          1,
+          1.5,
+          2,
+          3,
+          4,
+          5,
+          6
+        ),
+      labels =
+        c(
+          # "x0.25",
+          "x0.5",
+          "x1",
+          "x1.5",
+          "x2",
+          "x3",
+          "x4",
+          "x5",
+          "x6"
+        )
     ) +
     # geom_label(
     #   aes(
@@ -2865,6 +2942,12 @@ df_margeff_slopebfi <-
   scale_shape_manual(
     values = c("Stream slope = 0.1" = 22, "Stream slope = 0.005" = 23, "Bankfull width = 11.9 m" = 24, "Bankfull width = 3.8 m" = 25),
     breaks = c("Stream slope = 0.1", "Stream slope = 0.005", "Bankfull width = 11.9 m", "Bankfull width = 3.8 m"),
+    labels = c(
+      "Stream slope = 0.1 (90%-tile)",
+      "Stream slope = 0.005 (10%-tile)",
+      "Bankfull width = 11.9 m (90%-tile)",
+      "Bankfull width = 3.8 m (10%-tile)"
+      ),
     na.value = 16,
     guide = guide_legend(title = NULL, override.aes = list(fill = "darkolivegreen3", color = "darkolivegreen3"))
   ) +
@@ -2878,15 +2961,16 @@ df_margeff_slopebfi <-
       # subtitle = "Project average costs relative to Forest",
       caption = str_wrap(paste0("Adj. R-squared = ", mod_full %>% glance() %>% pull(adj.r.squared) %>% round(3), "; N = ", mod_full %>% glance() %>% pull(nobs) %>% comma(), "; Lines indicate 90-percent confidence intervals"), 100)
     ) +
+    facet_grid(rows = "group", scales = "free_y", space = "free_y", switch = "y") +
     theme_clean() +
     # xlim(0.1, 5.1) +
     theme(
-      legend.position = c(0.8, 0.90),
-      legend.background = element_blank(),
-      strip.background = element_blank(),
-      strip.text.x = element_blank(),
+      legend.position = c(0.7, 0.5),
+      legend.background = element_rect(fill = "white", color = "black"),
+      # strip.background = element_blank(),
+      # strip.text.x = element_blank(),
       panel.grid.major.y = element_blank(),
-      panel.grid.major.x = element_line(color = "grey80", size = 0.6, linetype = "dotted"),
+      panel.grid.major.x = element_line(color = "grey20", size = 1, linetype = "dotted"),
       plot.background = element_rect(color = NA),
       plot.title.position = "plot",
       plot.caption.position = "plot",
@@ -2895,7 +2979,14 @@ df_margeff_slopebfi <-
       axis.text = element_text(size = 20),
       axis.title = element_text(size = 20),
       legend.text = element_text(size = 20),
-      legend.key.size = unit(0.75, "pt")
+      # legend.key.size = unit(0.75, "pt"),
+      strip.placement = "outside",                      # Place facet labels outside x axis labels.
+      strip.background = element_rect(fill = "white"),  # Make facet label background white.
+      axis.title.y = element_blank(),
+      legend.spacing.x = unit(1, "cm"),
+      # legend.spacing.y = unit(2, "cm")
+      legend.key = element_rect(size = 5),
+      legend.key.size = unit(2, 'lines')
     )
 )
 
