@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  23 JUL 2021 11:14
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  26 JUL 2021 11:34
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -661,7 +661,7 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
 (Font)              scaled to size 10.95pt on input line 9.
 
-<figures/fig_mapconcrete.png, id=31, 469.755pt x 505.89pt>
+<figures/fig_mapconcrete.png, id=35, 469.755pt x 505.89pt>
 File: figures/fig_mapconcrete.png Graphic file (type png)
 
 <use figures/fig_mapconcrete.png>
@@ -677,7 +677,7 @@ Underfull \hbox (badness 1264) in paragraph at lines 27--28
  []
 
 [3 <./figures/fig_mapconcrete.png (PNG copy)>] [4]
-<figures/predCost.png, id=60, 412.1799pt x 278.9622pt>
+<figures/predCost.png, id=64, 412.1799pt x 278.9622pt>
 File: figures/predCost.png Graphic file (type png)
 
 <use figures/predCost.png>
@@ -715,19 +715,19 @@ LaTeX Font Info:    Font shape `TS1/ntxtlf/m/n' will be
 (Font)              scaled to size 10.95pt on input line 8.
  [13
 
-])
-<cvs/Jardine_CV.pdf, id=150, 614.295pt x 794.97pt>
-File: cvs/Jardine_CV.pdf Graphic file (type pdf)
- <use cvs/Jardine_CV.pdf>
-Package pdftex.def Info: cvs/Jardine_CV.pdf used on input line 89.
-(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+] [14]
+[15]) <cvs/Jardine_CV.pdf, id=173, 614.295pt x 794.97pt>
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf>
 Package pdftex.def Info: cvs/Jardine_CV.pdf used on input line 89.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+File: cvs/Jardine_CV.pdf Graphic file (type pdf)
+ <use cvs/Jardine_CV.pdf>
+Package pdftex.def Info: cvs/Jardine_CV.pdf used on input line 89.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Jardine_CV.pdf, id=153, page=1, 614.295pt x 794.97pt>
+<cvs/Jardine_CV.pdf, id=176, page=1, 614.295pt x 794.97pt>
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 1>
@@ -737,7 +737,7 @@ File: cvs/Jardine_CV.pdf Graphic file (type pdf)
  <use cvs/Jardine_CV.pdf, page 1>
 Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 89.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [14]
+ [16]
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 1>
@@ -752,8 +752,8 @@ File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 <use cvs/Jardine_CV.pdf, page 1>
 Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 89.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [15 <./cvs/Jardine_CV.pdf>]
-<cvs/Jardine_CV.pdf, id=211, page=2, 614.295pt x 794.97pt>
+ [17 <./cvs/Jardine_CV.pdf>]
+<cvs/Jardine_CV.pdf, id=234, page=2, 614.295pt x 794.97pt>
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 2>
@@ -768,8 +768,8 @@ File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 <use cvs/Jardine_CV.pdf, page 2>
 Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 89.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [16 <./cvs/Jardine_CV.pdf>]
-<cvs/Holland_CV.pdf, id=222, 614.295pt x 794.97pt>
+ [18 <./cvs/Jardine_CV.pdf>]
+<cvs/Holland_CV.pdf, id=245, 614.295pt x 794.97pt>
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
  <use cvs/Holland_CV.pdf>
 Package pdftex.def Info: cvs/Holland_CV.pdf used on input line 90.
@@ -780,7 +780,7 @@ File: cvs/Holland_CV.pdf Graphic file (type pdf)
 Package pdftex.def Info: cvs/Holland_CV.pdf used on input line 90.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Holland_CV.pdf, id=225, page=1, 614.295pt x 794.97pt>
+<cvs/Holland_CV.pdf, id=248, page=1, 614.295pt x 794.97pt>
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf, page 1>
@@ -804,8 +804,8 @@ File: cvs/Holland_CV.pdf Graphic file (type pdf)
 <use cvs/Holland_CV.pdf, page 1>
 Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 90.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [17 <./cvs/Holland_CV.pdf>]
-<cvs/Holland_CV.pdf, id=254, page=2, 614.295pt x 794.97pt>
+ [19 <./cvs/Holland_CV.pdf>]
+<cvs/Holland_CV.pdf, id=279, page=2, 614.295pt x 794.97pt>
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf, page 2>
@@ -820,8 +820,8 @@ File: cvs/Holland_CV.pdf Graphic file (type pdf)
 <use cvs/Holland_CV.pdf, page 2>
 Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 90.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [18 <./cvs/Holland_CV.pdf>]
-<cvs/Fonner_CV.pdf, id=271, 614.295pt x 794.97pt>
+ [20 <./cvs/Holland_CV.pdf>]
+<cvs/Fonner_CV.pdf, id=296, 614.295pt x 794.97pt>
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
  <use cvs/Fonner_CV.pdf>
 Package pdftex.def Info: cvs/Fonner_CV.pdf used on input line 91.
@@ -832,7 +832,7 @@ File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 Package pdftex.def Info: cvs/Fonner_CV.pdf used on input line 91.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Fonner_CV.pdf, id=274, page=1, 614.295pt x 794.97pt>
+<cvs/Fonner_CV.pdf, id=299, page=1, 614.295pt x 794.97pt>
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf, page 1>
@@ -856,8 +856,8 @@ File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 <use cvs/Fonner_CV.pdf, page 1>
 Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 91.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [19 <./cvs/Fonner_CV.pdf>]
-<cvs/Fonner_CV.pdf, id=335, page=2, 614.295pt x 794.97pt>
+ [21 <./cvs/Fonner_CV.pdf>]
+<cvs/Fonner_CV.pdf, id=358, page=2, 614.295pt x 794.97pt>
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf, page 2>
@@ -872,8 +872,8 @@ File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 <use cvs/Fonner_CV.pdf, page 2>
 Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 91.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [20 <./cvs/Fonner_CV.pdf>]
-<cvs/Scheuerell_CV.pdf, id=350, 614.295pt x 794.97pt>
+ [22 <./cvs/Fonner_CV.pdf>]
+<cvs/Scheuerell_CV.pdf, id=373, 614.295pt x 794.97pt>
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf>
@@ -884,7 +884,7 @@ File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 Package pdftex.def Info: cvs/Scheuerell_CV.pdf used on input line 92.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Scheuerell_CV.pdf, id=353, page=1, 614.295pt x 794.97pt>
+<cvs/Scheuerell_CV.pdf, id=376, page=1, 614.295pt x 794.97pt>
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf, page 1>
@@ -908,8 +908,8 @@ File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 <use cvs/Scheuerell_CV.pdf, page 1>
 Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [21 <./cvs/Scheuerell_CV.pdf>]
-<cvs/Scheuerell_CV.pdf, id=379, page=2, 614.295pt x 794.97pt>
+ [23 <./cvs/Scheuerell_CV.pdf>]
+<cvs/Scheuerell_CV.pdf, id=402, page=2, 614.295pt x 794.97pt>
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf, page 2>
@@ -924,8 +924,8 @@ File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 <use cvs/Scheuerell_CV.pdf, page 2>
 Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [22 <./cvs/Scheuerell_CV.pdf>]
-<cvs/Van_Deynze_CV.pdf, id=384, 614.295pt x 794.97pt>
+ [24 <./cvs/Scheuerell_CV.pdf>]
+<cvs/Van_Deynze_CV.pdf, id=407, 614.295pt x 794.97pt>
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf>
@@ -936,7 +936,7 @@ File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 Package pdftex.def Info: cvs/Van_Deynze_CV.pdf used on input line 93.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Van_Deynze_CV.pdf, id=387, page=1, 614.295pt x 794.97pt>
+<cvs/Van_Deynze_CV.pdf, id=410, page=1, 614.295pt x 794.97pt>
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf, page 1>
@@ -960,8 +960,8 @@ File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 <use cvs/Van_Deynze_CV.pdf, page 1>
 Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 93.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [23 <./cvs/Van_Deynze_CV.pdf>]
-<cvs/Van_Deynze_CV.pdf, id=410, page=2, 614.295pt x 794.97pt>
+ [25 <./cvs/Van_Deynze_CV.pdf>]
+<cvs/Van_Deynze_CV.pdf, id=434, page=2, 614.295pt x 794.97pt>
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf, page 2>
@@ -976,8 +976,8 @@ File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 <use cvs/Van_Deynze_CV.pdf, page 2>
 Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 93.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [24 <./cvs/Van_Deynze_CV.pdf>]
-<letters/Hinton_Letter.pdf, id=415, 598.235pt x 845.1575pt>
+ [26 <./cvs/Van_Deynze_CV.pdf>]
+<letters/Hinton_Letter.pdf, id=440, 598.235pt x 845.1575pt>
 File: letters/Hinton_Letter.pdf Graphic file (type pdf)
 
 <use letters/Hinton_Letter.pdf>
@@ -988,7 +988,7 @@ File: letters/Hinton_Letter.pdf Graphic file (type pdf)
 Package pdftex.def Info: letters/Hinton_Letter.pdf used on input line 95.
 (pdftex.def)             Requested size: 598.23354pt x 845.15544pt.
 
-<letters/Hinton_Letter.pdf, id=418, page=1, 598.235pt x 845.1575pt>
+<letters/Hinton_Letter.pdf, id=443, page=1, 598.235pt x 845.1575pt>
 File: letters/Hinton_Letter.pdf Graphic file (type pdf)
 
 <use letters/Hinton_Letter.pdf, page 1>
@@ -1019,13 +1019,13 @@ File: letters/Hinton_Letter.pdf Graphic file (type pdf)
 Package pdftex.def Info: letters/Hinton_Letter.pdf, page1 used on input line 95
 .
 (pdftex.def)             Requested size: 562.80652pt x 795.10587pt.
- [25 <./letters/Hinton_Letter.pdf, page is rotated 270 degrees>]
+ [27 <./letters/Hinton_Letter.pdf, page is rotated 270 degrees>]
 
 pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./letters/2021PSP_FishBarrie
 r_LetterSupport_TNC.pdf): PDF inclusion: found PDF version <1.7>, but at most v
 ersion <1.5> allowed
 
-<letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, id=427, 614.295pt x 794.97p
+<letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, id=451, 614.295pt x 794.97p
 t>
 File: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf Graphic file (type pdf)
 
@@ -1055,7 +1055,7 @@ pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./letters/2021PSP_FishBarrie
 r_LetterSupport_TNC.pdf): PDF inclusion: found PDF version <1.7>, but at most v
 ersion <1.5> allowed
 
-<letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, id=430, page=1, 614.295pt x
+<letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, id=454, page=1, 614.295pt x
  794.97pt>
 File: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf Graphic file (type pdf)
 
@@ -1091,38 +1091,83 @@ File: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf Graphic file (type pdf)
 Package pdftex.def Info: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, pag
 e1 used on input line 96.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [26 <./letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 98.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 98.
- (./psp_proposal.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 98.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 98.
+ [28 <./letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf>]
+<letters/Pagliuco_Letter.pdf, id=494, 595.50484pt x 778.3479pt>
+File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
+
+<use letters/Pagliuco_Letter.pdf>
+Package pdftex.def Info: letters/Pagliuco_Letter.pdf used on input line 97.
+(pdftex.def)             Requested size: 595.50339pt x 778.346pt.
+File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
+ <use letters/Pagliuco_Letter.pdf>
+Package pdftex.def Info: letters/Pagliuco_Letter.pdf used on input line 97.
+(pdftex.def)             Requested size: 595.50339pt x 778.346pt.
+
+<letters/Pagliuco_Letter.pdf, id=497, page=1, 595.50484pt x 778.3479pt>
+File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
+
+<use letters/Pagliuco_Letter.pdf, page 1>
+Package pdftex.def Info: letters/Pagliuco_Letter.pdf, page1 used on input line 
+97.
+(pdftex.def)             Requested size: 595.50339pt x 778.346pt.
+File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
+
+<use letters/Pagliuco_Letter.pdf, page 1>
+Package pdftex.def Info: letters/Pagliuco_Letter.pdf, page1 used on input line 
+97.
+(pdftex.def)             Requested size: 608.48822pt x 795.31767pt.
+File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
+
+<use letters/Pagliuco_Letter.pdf, page 1>
+Package pdftex.def Info: letters/Pagliuco_Letter.pdf, page1 used on input line 
+97.
+(pdftex.def)             Requested size: 608.48822pt x 795.31767pt.
+File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
+
+<use letters/Pagliuco_Letter.pdf, page 1>
+Package pdftex.def Info: letters/Pagliuco_Letter.pdf, page1 used on input line 
+97.
+(pdftex.def)             Requested size: 608.48822pt x 795.31767pt.
+File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
+
+<use letters/Pagliuco_Letter.pdf, page 1>
+Package pdftex.def Info: letters/Pagliuco_Letter.pdf, page1 used on input line 
+97.
+(pdftex.def)             Requested size: 608.48822pt x 795.31767pt.
+ [29 <./letters/Pagliuco_Letter.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 100.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 100.
+
+(./psp_proposal.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 100.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 100.
 Package rerunfilecheck Info: File `psp_proposal.out' has not changed.
-(rerunfilecheck)             Checksum: E3E509035BF2E7382830BC708B4C93A6;251.
+(rerunfilecheck)             Checksum: 427466B1AD53D2B938B35DB863F5EEF1;317.
  ) 
 Here is how much of TeX's memory you used:
- 10025 strings out of 493014
- 144996 string characters out of 6133351
- 260848 words of memory out of 5000000
- 13304 multiletter control sequences out of 15000+600000
+ 10045 strings out of 493014
+ 145353 string characters out of 6133351
+ 261848 words of memory out of 5000000
+ 13312 multiletter control sequences out of 15000+600000
  26484 words of font info for 39 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  40i,18n,68p,1768b,526s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc}{/usr/
 local/texlive/2016/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}</usr/local/
 texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/t
-exlive/2016/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/201
-6/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2016/texmf-di
-st/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/ty
-pe1/public/lm/lmri10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public
-/tex-gyre/qtmb.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/tex-g
-yre/qtmr.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/tex-gyre/qt
-mri.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/txfonts/t1xtt.pf
-b>
-Output written on psp_proposal.pdf (26 pages, 5422998 bytes).
+exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
+xlive/2016/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2016
+/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2016/texmf-dis
+t/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2016/texmf-dist/fonts/typ
+e1/public/lm/lmri10.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/
+tex-gyre/qtmb.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/tex-gy
+re/qtmr.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/tex-gyre/qtm
+ri.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb
+>
+Output written on psp_proposal.pdf (29 pages, 5691918 bytes).
 PDF statistics:
- 511 PDF objects out of 1000 (max. 8388607)
- 369 compressed objects within 4 object streams
- 60 named destinations out of 1000 (max. 500000)
- 216 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 550 PDF objects out of 1000 (max. 8388607)
+ 399 compressed objects within 4 object streams
+ 70 named destinations out of 1000 (max. 500000)
+ 244 words of extra memory for PDF output out of 10000 (max. 10000000)
 
