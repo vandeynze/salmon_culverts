@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  26 JUL 2021 11:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.5.22)  29 JUL 2021 07:06
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -661,7 +661,7 @@ LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
 LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
 (Font)              scaled to size 10.95pt on input line 9.
 
-<figures/fig_mapconcrete.png, id=35, 469.755pt x 505.89pt>
+<figures/fig_mapconcrete.png, id=27, 469.755pt x 505.89pt>
 File: figures/fig_mapconcrete.png Graphic file (type png)
 
 <use figures/fig_mapconcrete.png>
@@ -677,7 +677,7 @@ Underfull \hbox (badness 1264) in paragraph at lines 27--28
  []
 
 [3 <./figures/fig_mapconcrete.png (PNG copy)>] [4]
-<figures/predCost.png, id=64, 412.1799pt x 278.9622pt>
+<figures/predCost.png, id=56, 412.1799pt x 278.9622pt>
 File: figures/predCost.png Graphic file (type png)
 
 <use figures/predCost.png>
@@ -716,322 +716,510 @@ LaTeX Font Info:    Font shape `TS1/ntxtlf/m/n' will be
  [13
 
 ] [14]
-[15]) <cvs/Jardine_CV.pdf, id=173, 614.295pt x 794.97pt>
+[15]) <psp_budget_1.pdf, id=165, 614.295pt x 794.97pt>
+File: psp_budget_1.pdf Graphic file (type pdf)
+ <use psp_budget_1.pdf>
+Package pdftex.def Info: psp_budget_1.pdf used on input line 88.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+File: psp_budget_1.pdf Graphic file (type pdf)
+
+<use psp_budget_1.pdf>
+Package pdftex.def Info: psp_budget_1.pdf used on input line 88.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+
+<psp_budget_1.pdf, id=168, page=1, 614.295pt x 794.97pt>
+File: psp_budget_1.pdf Graphic file (type pdf)
+
+<use psp_budget_1.pdf, page 1>
+Package pdftex.def Info: psp_budget_1.pdf, page1 used on input line 88.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+File: psp_budget_1.pdf Graphic file (type pdf)
+ <use psp_budget_1.pdf, page 1>
+Package pdftex.def Info: psp_budget_1.pdf, page1 used on input line 88.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [16]
+File: psp_budget_1.pdf Graphic file (type pdf)
+
+<use psp_budget_1.pdf, page 1>
+Package pdftex.def Info: psp_budget_1.pdf, page1 used on input line 88.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: psp_budget_1.pdf Graphic file (type pdf)
+ <use psp_budget_1.pdf, page 1>
+Package pdftex.def Info: psp_budget_1.pdf, page1 used on input line 88.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: psp_budget_1.pdf Graphic file (type pdf)
+
+<use psp_budget_1.pdf, page 1>
+Package pdftex.def Info: psp_budget_1.pdf, page1 used on input line 88.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [17 <./psp_budget_1.pdf>]
+<psp_budget_2.pdf, id=184, 614.295pt x 794.97pt>
+File: psp_budget_2.pdf Graphic file (type pdf)
+ <use psp_budget_2.pdf>
+Package pdftex.def Info: psp_budget_2.pdf used on input line 89.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+File: psp_budget_2.pdf Graphic file (type pdf)
+
+<use psp_budget_2.pdf>
+Package pdftex.def Info: psp_budget_2.pdf used on input line 89.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+
+<psp_budget_2.pdf, id=187, page=1, 614.295pt x 794.97pt>
+File: psp_budget_2.pdf Graphic file (type pdf)
+
+<use psp_budget_2.pdf, page 1>
+Package pdftex.def Info: psp_budget_2.pdf, page1 used on input line 89.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+File: psp_budget_2.pdf Graphic file (type pdf)
+ <use psp_budget_2.pdf, page 1>
+Package pdftex.def Info: psp_budget_2.pdf, page1 used on input line 89.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: psp_budget_2.pdf Graphic file (type pdf)
+
+<use psp_budget_2.pdf, page 1>
+Package pdftex.def Info: psp_budget_2.pdf, page1 used on input line 89.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: psp_budget_2.pdf Graphic file (type pdf)
+ <use psp_budget_2.pdf, page 1>
+Package pdftex.def Info: psp_budget_2.pdf, page1 used on input line 89.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: psp_budget_2.pdf Graphic file (type pdf)
+
+<use psp_budget_2.pdf, page 1>
+Package pdftex.def Info: psp_budget_2.pdf, page1 used on input line 89.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [18 <./psp_budget_2.pdf>]
+<psp_budget_3.pdf, id=198, 614.295pt x 794.97pt>
+File: psp_budget_3.pdf Graphic file (type pdf)
+ <use psp_budget_3.pdf>
+Package pdftex.def Info: psp_budget_3.pdf used on input line 90.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+File: psp_budget_3.pdf Graphic file (type pdf)
+
+<use psp_budget_3.pdf>
+Package pdftex.def Info: psp_budget_3.pdf used on input line 90.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+
+<psp_budget_3.pdf, id=201, page=1, 614.295pt x 794.97pt>
+File: psp_budget_3.pdf Graphic file (type pdf)
+
+<use psp_budget_3.pdf, page 1>
+Package pdftex.def Info: psp_budget_3.pdf, page1 used on input line 90.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+File: psp_budget_3.pdf Graphic file (type pdf)
+ <use psp_budget_3.pdf, page 1>
+Package pdftex.def Info: psp_budget_3.pdf, page1 used on input line 90.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: psp_budget_3.pdf Graphic file (type pdf)
+
+<use psp_budget_3.pdf, page 1>
+Package pdftex.def Info: psp_budget_3.pdf, page1 used on input line 90.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: psp_budget_3.pdf Graphic file (type pdf)
+ <use psp_budget_3.pdf, page 1>
+Package pdftex.def Info: psp_budget_3.pdf, page1 used on input line 90.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: psp_budget_3.pdf Graphic file (type pdf)
+
+<use psp_budget_3.pdf, page 1>
+Package pdftex.def Info: psp_budget_3.pdf, page1 used on input line 90.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [19 <./psp_budget_3.pdf>]
+<cvs/Jardine_CV.pdf, id=213, 614.295pt x 794.97pt>
+File: cvs/Jardine_CV.pdf Graphic file (type pdf)
+ <use cvs/Jardine_CV.pdf>
+Package pdftex.def Info: cvs/Jardine_CV.pdf used on input line 92.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf>
-Package pdftex.def Info: cvs/Jardine_CV.pdf used on input line 89.
-(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
-File: cvs/Jardine_CV.pdf Graphic file (type pdf)
- <use cvs/Jardine_CV.pdf>
-Package pdftex.def Info: cvs/Jardine_CV.pdf used on input line 89.
+Package pdftex.def Info: cvs/Jardine_CV.pdf used on input line 92.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Jardine_CV.pdf, id=176, page=1, 614.295pt x 794.97pt>
+<cvs/Jardine_CV.pdf, id=216, page=1, 614.295pt x 794.97pt>
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 89.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
  <use cvs/Jardine_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 89.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [16]
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 89.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
  <use cvs/Jardine_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 89.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 89.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [17 <./cvs/Jardine_CV.pdf>]
-<cvs/Jardine_CV.pdf, id=234, page=2, 614.295pt x 794.97pt>
+ [20 <./cvs/Jardine_CV.pdf>]
+<cvs/Jardine_CV.pdf, id=269, page=2, 614.295pt x 794.97pt>
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 89.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
  <use cvs/Jardine_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 89.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Jardine_CV.pdf Graphic file (type pdf)
 
 <use cvs/Jardine_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 89.
+Package pdftex.def Info: cvs/Jardine_CV.pdf, page2 used on input line 92.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [18 <./cvs/Jardine_CV.pdf>]
-<cvs/Holland_CV.pdf, id=245, 614.295pt x 794.97pt>
+ [21 <./cvs/Jardine_CV.pdf>]
+<cvs/Holland_CV.pdf, id=280, 614.295pt x 794.97pt>
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
  <use cvs/Holland_CV.pdf>
-Package pdftex.def Info: cvs/Holland_CV.pdf used on input line 90.
+Package pdftex.def Info: cvs/Holland_CV.pdf used on input line 93.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf>
-Package pdftex.def Info: cvs/Holland_CV.pdf used on input line 90.
+Package pdftex.def Info: cvs/Holland_CV.pdf used on input line 93.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Holland_CV.pdf, id=248, page=1, 614.295pt x 794.97pt>
+<cvs/Holland_CV.pdf, id=283, page=1, 614.295pt x 794.97pt>
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 90.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 93.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
  <use cvs/Holland_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 90.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 93.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 90.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 93.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
  <use cvs/Holland_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 90.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 93.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 90.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page1 used on input line 93.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [19 <./cvs/Holland_CV.pdf>]
-<cvs/Holland_CV.pdf, id=279, page=2, 614.295pt x 794.97pt>
+ [22 <./cvs/Holland_CV.pdf>]
+<cvs/Holland_CV.pdf, id=313, page=2, 614.295pt x 794.97pt>
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 90.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 93.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
  <use cvs/Holland_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 90.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 93.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Holland_CV.pdf Graphic file (type pdf)
 
 <use cvs/Holland_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 90.
+Package pdftex.def Info: cvs/Holland_CV.pdf, page2 used on input line 93.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [20 <./cvs/Holland_CV.pdf>]
-<cvs/Fonner_CV.pdf, id=296, 614.295pt x 794.97pt>
+ [23 <./cvs/Holland_CV.pdf>]
+<cvs/Fonner_CV.pdf, id=330, 614.295pt x 794.97pt>
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
  <use cvs/Fonner_CV.pdf>
-Package pdftex.def Info: cvs/Fonner_CV.pdf used on input line 91.
+Package pdftex.def Info: cvs/Fonner_CV.pdf used on input line 94.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf>
-Package pdftex.def Info: cvs/Fonner_CV.pdf used on input line 91.
+Package pdftex.def Info: cvs/Fonner_CV.pdf used on input line 94.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Fonner_CV.pdf, id=299, page=1, 614.295pt x 794.97pt>
+<cvs/Fonner_CV.pdf, id=333, page=1, 614.295pt x 794.97pt>
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 91.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 94.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
  <use cvs/Fonner_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 91.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 94.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 91.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 94.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
  <use cvs/Fonner_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 91.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 94.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 91.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page1 used on input line 94.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [21 <./cvs/Fonner_CV.pdf>]
-<cvs/Fonner_CV.pdf, id=358, page=2, 614.295pt x 794.97pt>
+ [24 <./cvs/Fonner_CV.pdf>]
+<cvs/Fonner_CV.pdf, id=392, page=2, 614.295pt x 794.97pt>
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 91.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 94.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
  <use cvs/Fonner_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 91.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 94.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Fonner_CV.pdf Graphic file (type pdf)
 
 <use cvs/Fonner_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 91.
+Package pdftex.def Info: cvs/Fonner_CV.pdf, page2 used on input line 94.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [22 <./cvs/Fonner_CV.pdf>]
-<cvs/Scheuerell_CV.pdf, id=373, 614.295pt x 794.97pt>
+ [25 <./cvs/Fonner_CV.pdf>]
+<cvs/Scheuerell_CV.pdf, id=408, 614.295pt x 794.97pt>
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf used on input line 92.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf used on input line 95.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
  <use cvs/Scheuerell_CV.pdf>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf used on input line 92.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf used on input line 95.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Scheuerell_CV.pdf, id=376, page=1, 614.295pt x 794.97pt>
+<cvs/Scheuerell_CV.pdf, id=411, page=1, 614.295pt x 794.97pt>
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 92.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 95.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
  <use cvs/Scheuerell_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 92.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 95.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 92.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 95.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
  <use cvs/Scheuerell_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 92.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 95.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 92.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page1 used on input line 95.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [23 <./cvs/Scheuerell_CV.pdf>]
-<cvs/Scheuerell_CV.pdf, id=402, page=2, 614.295pt x 794.97pt>
+ [26 <./cvs/Scheuerell_CV.pdf>]
+<cvs/Scheuerell_CV.pdf, id=437, page=2, 614.295pt x 794.97pt>
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 92.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 95.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
  <use cvs/Scheuerell_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 92.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 95.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Scheuerell_CV.pdf Graphic file (type pdf)
 
 <use cvs/Scheuerell_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 92.
+Package pdftex.def Info: cvs/Scheuerell_CV.pdf, page2 used on input line 95.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [24 <./cvs/Scheuerell_CV.pdf>]
-<cvs/Van_Deynze_CV.pdf, id=407, 614.295pt x 794.97pt>
+ [27 <./cvs/Scheuerell_CV.pdf>]
+<cvs/Van_Deynze_CV.pdf, id=442, 614.295pt x 794.97pt>
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf used on input line 93.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf used on input line 96.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
  <use cvs/Van_Deynze_CV.pdf>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf used on input line 93.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf used on input line 96.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
-<cvs/Van_Deynze_CV.pdf, id=410, page=1, 614.295pt x 794.97pt>
+<cvs/Van_Deynze_CV.pdf, id=445, page=1, 614.295pt x 794.97pt>
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 93.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 96.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
  <use cvs/Van_Deynze_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 93.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 96.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 93.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 96.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
  <use cvs/Van_Deynze_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 93.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 96.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf, page 1>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 93.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page1 used on input line 96.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [25 <./cvs/Van_Deynze_CV.pdf>]
-<cvs/Van_Deynze_CV.pdf, id=434, page=2, 614.295pt x 794.97pt>
+ [28 <./cvs/Van_Deynze_CV.pdf>]
+<cvs/Van_Deynze_CV.pdf, id=469, page=2, 614.295pt x 794.97pt>
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 93.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 96.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
  <use cvs/Van_Deynze_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 93.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 96.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: cvs/Van_Deynze_CV.pdf Graphic file (type pdf)
 
 <use cvs/Van_Deynze_CV.pdf, page 2>
-Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 93.
+Package pdftex.def Info: cvs/Van_Deynze_CV.pdf, page2 used on input line 96.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [26 <./cvs/Van_Deynze_CV.pdf>]
-<letters/Hinton_Letter.pdf, id=440, 598.235pt x 845.1575pt>
+ [29 <./cvs/Van_Deynze_CV.pdf>]
+
+pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./letters/Dickison_Letter.pd
+f): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<letters/Dickison_Letter.pdf, id=474, 614.295pt x 794.97pt>
+File: letters/Dickison_Letter.pdf Graphic file (type pdf)
+
+<use letters/Dickison_Letter.pdf>
+Package pdftex.def Info: letters/Dickison_Letter.pdf used on input line 98.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+
+
+pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./letters/Dickison_Letter.pd
+f): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+File: letters/Dickison_Letter.pdf Graphic file (type pdf)
+<use letters/Dickison_Letter.pdf>
+Package pdftex.def Info: letters/Dickison_Letter.pdf used on input line 98.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+
+
+pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./letters/Dickison_Letter.pd
+f): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+
+
+pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./letters/Dickison_Letter.pd
+f): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<letters/Dickison_Letter.pdf, id=477, page=1, 614.295pt x 794.97pt>
+File: letters/Dickison_Letter.pdf Graphic file (type pdf)
+
+<use letters/Dickison_Letter.pdf, page 1>
+Package pdftex.def Info: letters/Dickison_Letter.pdf, page1 used on input line 
+98.
+(pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
+File: letters/Dickison_Letter.pdf Graphic file (type pdf)
+
+<use letters/Dickison_Letter.pdf, page 1>
+Package pdftex.def Info: letters/Dickison_Letter.pdf, page1 used on input line 
+98.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: letters/Dickison_Letter.pdf Graphic file (type pdf)
+
+<use letters/Dickison_Letter.pdf, page 1>
+Package pdftex.def Info: letters/Dickison_Letter.pdf, page1 used on input line 
+98.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: letters/Dickison_Letter.pdf Graphic file (type pdf)
+
+<use letters/Dickison_Letter.pdf, page 1>
+Package pdftex.def Info: letters/Dickison_Letter.pdf, page1 used on input line 
+98.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: letters/Dickison_Letter.pdf Graphic file (type pdf)
+
+<use letters/Dickison_Letter.pdf, page 1>
+Package pdftex.def Info: letters/Dickison_Letter.pdf, page1 used on input line 
+98.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [30 <./letters/Dickison_Letter.pdf>]
+
+pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./letters/Dickison_Letter.pd
+f): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<letters/Dickison_Letter.pdf, id=501, page=2, 614.295pt x 794.97pt>
+File: letters/Dickison_Letter.pdf Graphic file (type pdf)
+
+<use letters/Dickison_Letter.pdf, page 2>
+Package pdftex.def Info: letters/Dickison_Letter.pdf, page2 used on input line 
+98.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: letters/Dickison_Letter.pdf Graphic file (type pdf)
+
+<use letters/Dickison_Letter.pdf, page 2>
+Package pdftex.def Info: letters/Dickison_Letter.pdf, page2 used on input line 
+98.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+File: letters/Dickison_Letter.pdf Graphic file (type pdf)
+
+<use letters/Dickison_Letter.pdf, page 2>
+Package pdftex.def Info: letters/Dickison_Letter.pdf, page2 used on input line 
+98.
+(pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
+ [31 <./letters/Dickison_Letter.pdf>]
+<letters/Hinton_Letter.pdf, id=507, 598.235pt x 845.1575pt>
 File: letters/Hinton_Letter.pdf Graphic file (type pdf)
 
 <use letters/Hinton_Letter.pdf>
-Package pdftex.def Info: letters/Hinton_Letter.pdf used on input line 95.
+Package pdftex.def Info: letters/Hinton_Letter.pdf used on input line 99.
 (pdftex.def)             Requested size: 598.23354pt x 845.15544pt.
 File: letters/Hinton_Letter.pdf Graphic file (type pdf)
  <use letters/Hinton_Letter.pdf>
-Package pdftex.def Info: letters/Hinton_Letter.pdf used on input line 95.
+Package pdftex.def Info: letters/Hinton_Letter.pdf used on input line 99.
 (pdftex.def)             Requested size: 598.23354pt x 845.15544pt.
 
-<letters/Hinton_Letter.pdf, id=443, page=1, 598.235pt x 845.1575pt>
+<letters/Hinton_Letter.pdf, id=510, page=1, 598.235pt x 845.1575pt>
 File: letters/Hinton_Letter.pdf Graphic file (type pdf)
 
 <use letters/Hinton_Letter.pdf, page 1>
-Package pdftex.def Info: letters/Hinton_Letter.pdf, page1 used on input line 95
+Package pdftex.def Info: letters/Hinton_Letter.pdf, page1 used on input line 99
 .
 (pdftex.def)             Requested size: 598.23354pt x 845.15544pt.
 File: letters/Hinton_Letter.pdf Graphic file (type pdf)
 
 <use letters/Hinton_Letter.pdf, page 1>
-Package pdftex.def Info: letters/Hinton_Letter.pdf, page1 used on input line 95
+Package pdftex.def Info: letters/Hinton_Letter.pdf, page1 used on input line 99
 .
 (pdftex.def)             Requested size: 562.80652pt x 795.10587pt.
 File: letters/Hinton_Letter.pdf Graphic file (type pdf)
 
 <use letters/Hinton_Letter.pdf, page 1>
-Package pdftex.def Info: letters/Hinton_Letter.pdf, page1 used on input line 95
+Package pdftex.def Info: letters/Hinton_Letter.pdf, page1 used on input line 99
 .
 (pdftex.def)             Requested size: 562.80652pt x 795.10587pt.
 File: letters/Hinton_Letter.pdf Graphic file (type pdf)
 
 <use letters/Hinton_Letter.pdf, page 1>
-Package pdftex.def Info: letters/Hinton_Letter.pdf, page1 used on input line 95
+Package pdftex.def Info: letters/Hinton_Letter.pdf, page1 used on input line 99
 .
 (pdftex.def)             Requested size: 562.80652pt x 795.10587pt.
 File: letters/Hinton_Letter.pdf Graphic file (type pdf)
 
 <use letters/Hinton_Letter.pdf, page 1>
-Package pdftex.def Info: letters/Hinton_Letter.pdf, page1 used on input line 95
+Package pdftex.def Info: letters/Hinton_Letter.pdf, page1 used on input line 99
 .
 (pdftex.def)             Requested size: 562.80652pt x 795.10587pt.
- [27 <./letters/Hinton_Letter.pdf, page is rotated 270 degrees>]
+ [32 <./letters/Hinton_Letter.pdf, page is rotated 270 degrees>]
 
 pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./letters/2021PSP_FishBarrie
 r_LetterSupport_TNC.pdf): PDF inclusion: found PDF version <1.7>, but at most v
 ersion <1.5> allowed
 
-<letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, id=451, 614.295pt x 794.97p
+<letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, id=518, 614.295pt x 794.97p
 t>
 File: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf Graphic file (type pdf)
 
  <use letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf>
 Package pdftex.def Info: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf used
- on input line 96.
+ on input line 100.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
 
@@ -1042,7 +1230,7 @@ File: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf Graphic file (type pdf)
 
 <use letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf>
 Package pdftex.def Info: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf used
- on input line 96.
+ on input line 100.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 
 
@@ -1055,103 +1243,103 @@ pdfTeX warning: /Library/TeX/texbin/pdflatex (file ./letters/2021PSP_FishBarrie
 r_LetterSupport_TNC.pdf): PDF inclusion: found PDF version <1.7>, but at most v
 ersion <1.5> allowed
 
-<letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, id=454, page=1, 614.295pt x
+<letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, id=521, page=1, 614.295pt x
  794.97pt>
 File: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf Graphic file (type pdf)
 
  <use letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, page 1>
 Package pdftex.def Info: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, pag
-e1 used on input line 96.
+e1 used on input line 100.
 (pdftex.def)             Requested size: 614.29349pt x 794.96806pt.
 File: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf Graphic file (type pdf)
 
 
 <use letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, page 1>
 Package pdftex.def Info: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, pag
-e1 used on input line 96.
+e1 used on input line 100.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf Graphic file (type pdf)
 
 
 <use letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, page 1>
 Package pdftex.def Info: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, pag
-e1 used on input line 96.
+e1 used on input line 100.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf Graphic file (type pdf)
 
 
 <use letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, page 1>
 Package pdftex.def Info: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, pag
-e1 used on input line 96.
+e1 used on input line 100.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
 File: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf Graphic file (type pdf)
 
 
 <use letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, page 1>
 Package pdftex.def Info: letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf, pag
-e1 used on input line 96.
+e1 used on input line 100.
 (pdftex.def)             Requested size: 614.58406pt x 795.3441pt.
- [28 <./letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf>]
-<letters/Pagliuco_Letter.pdf, id=494, 595.50484pt x 778.3479pt>
+ [33 <./letters/2021PSP_FishBarrier_LetterSupport_TNC.pdf>]
+<letters/Pagliuco_Letter.pdf, id=561, 595.50484pt x 778.3479pt>
 File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
 
 <use letters/Pagliuco_Letter.pdf>
-Package pdftex.def Info: letters/Pagliuco_Letter.pdf used on input line 97.
+Package pdftex.def Info: letters/Pagliuco_Letter.pdf used on input line 101.
 (pdftex.def)             Requested size: 595.50339pt x 778.346pt.
 File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
  <use letters/Pagliuco_Letter.pdf>
-Package pdftex.def Info: letters/Pagliuco_Letter.pdf used on input line 97.
+Package pdftex.def Info: letters/Pagliuco_Letter.pdf used on input line 101.
 (pdftex.def)             Requested size: 595.50339pt x 778.346pt.
 
-<letters/Pagliuco_Letter.pdf, id=497, page=1, 595.50484pt x 778.3479pt>
+<letters/Pagliuco_Letter.pdf, id=564, page=1, 595.50484pt x 778.3479pt>
 File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
 
 <use letters/Pagliuco_Letter.pdf, page 1>
 Package pdftex.def Info: letters/Pagliuco_Letter.pdf, page1 used on input line 
-97.
+101.
 (pdftex.def)             Requested size: 595.50339pt x 778.346pt.
 File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
 
 <use letters/Pagliuco_Letter.pdf, page 1>
 Package pdftex.def Info: letters/Pagliuco_Letter.pdf, page1 used on input line 
-97.
+101.
 (pdftex.def)             Requested size: 608.48822pt x 795.31767pt.
 File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
 
 <use letters/Pagliuco_Letter.pdf, page 1>
 Package pdftex.def Info: letters/Pagliuco_Letter.pdf, page1 used on input line 
-97.
+101.
 (pdftex.def)             Requested size: 608.48822pt x 795.31767pt.
 File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
 
 <use letters/Pagliuco_Letter.pdf, page 1>
 Package pdftex.def Info: letters/Pagliuco_Letter.pdf, page1 used on input line 
-97.
+101.
 (pdftex.def)             Requested size: 608.48822pt x 795.31767pt.
 File: letters/Pagliuco_Letter.pdf Graphic file (type pdf)
 
 <use letters/Pagliuco_Letter.pdf, page 1>
 Package pdftex.def Info: letters/Pagliuco_Letter.pdf, page1 used on input line 
-97.
+101.
 (pdftex.def)             Requested size: 608.48822pt x 795.31767pt.
- [29 <./letters/Pagliuco_Letter.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 100.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 100.
+ [34 <./letters/Pagliuco_Letter.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 104.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 104.
 
 (./psp_proposal.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 100.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 100.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 104.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 104.
 Package rerunfilecheck Info: File `psp_proposal.out' has not changed.
-(rerunfilecheck)             Checksum: 427466B1AD53D2B938B35DB863F5EEF1;317.
+(rerunfilecheck)             Checksum: BE3E509BC87EA0C909E4228E229F4288;184.
  ) 
 Here is how much of TeX's memory you used:
- 10045 strings out of 493014
- 145353 string characters out of 6133351
+ 10081 strings out of 493014
+ 146237 string characters out of 6133351
  261848 words of memory out of 5000000
- 13312 multiletter control sequences out of 15000+600000
+ 13341 multiletter control sequences out of 15000+600000
  26484 words of font info for 39 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 40i,18n,68p,1768b,526s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 40i,18n,68p,1768b,530s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc}{/usr/
 local/texlive/2016/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}</usr/local/
 texlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/t
@@ -1164,10 +1352,10 @@ tex-gyre/qtmb.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/tex-gy
 re/qtmr.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/tex-gyre/qtm
 ri.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb
 >
-Output written on psp_proposal.pdf (29 pages, 5691918 bytes).
+Output written on psp_proposal.pdf (34 pages, 7507930 bytes).
 PDF statistics:
- 550 PDF objects out of 1000 (max. 8388607)
- 399 compressed objects within 4 object streams
- 70 named destinations out of 1000 (max. 500000)
- 244 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 620 PDF objects out of 1000 (max. 8388607)
+ 430 compressed objects within 5 object streams
+ 73 named destinations out of 1000 (max. 500000)
+ 313 words of extra memory for PDF output out of 10000 (max. 10000000)
 
