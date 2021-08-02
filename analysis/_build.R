@@ -39,7 +39,7 @@ file.remove(here("R/C.culvertsspatial/07.spatialcostmodels - spatialdependence.R
 # Build site
 wflow_build(
   files = list.files(
-    here("analysis"), 
+    here("analysis"),
     "index.Rmd",
     full.names = TRUE
   ),
