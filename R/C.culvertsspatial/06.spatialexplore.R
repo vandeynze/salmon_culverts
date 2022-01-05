@@ -274,7 +274,7 @@ sf_culv %>%
     caption = "Points represent individual worksite observations, red line indicates 150m cut-off"
   )
 # Number of "good" matches
-# sum(I(sf_culv$nhd_dist_m <= 150), na.rm = TRUE)/nrow(sf_culv)
+sum(!I(sf_culv$nhd_dist_m <= 150), na.rm = TRUE)
 
 # NHDPlus V2.1 streams
 sf_culv %>%

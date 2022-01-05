@@ -209,7 +209,7 @@ mod_full <-
       # merch_totp + 
       const_totp +
       brick_totp +
-      metal_totp +
+      # metal_totp +
       sales_coun +
       # sand_count +
       # Land ownership
@@ -670,7 +670,7 @@ features = unique(c(vi(bag_culv) %>% slice(1:25) %>% pull(Variable), vi(boost_cu
 #+ warning=F, message=F
 tibble(
   "OLS" = rmse_ols,
-  # "4-leaf tree" = rmse_tree4,
+  "4-leaf tree" = rmse_tree4,
   # "rmse_tree10" = rmse_tree10,
   "Full tree" = rmse_treefull,
   "RF" = rmse_bag,
@@ -691,7 +691,8 @@ tibble(
   scale_fill_brewer(type = "qual") +
   # scale_color_brewer(type = "qual") +
   labs(
-    x = NULL, y = "RMSE", title = "RMSE by method (testing set)"
+    x = NULL, y = "RMSE" 
+    # title = "RMSE by method (testing set)"
     # subtitle = "RF shows lowest RMSE, followed closely by BRT, representing ~10% and 7% increase in prediction accuracy over OLS respectively"
   ) +
   theme_bw() +
@@ -715,7 +716,7 @@ df_yhats <-
   tibble(
     "y" = log(df_tree$cost_per_culvert[-train]),
     "OLS" = yhat_culv_ols,
-    # "4-leaf tree" = yhat_culv_4,
+    "4-leaf tree" = yhat_culv_4,
     # "yhat_tree10" = yhat_culv_10,
     "Full tree" = yhat_culv,
     "RF" = yhat_culv_bag,
@@ -738,8 +739,9 @@ df_yhats %>%
   scale_fill_brewer(type = "qual") +
   # scale_color_brewer(type = "qual") +
   labs(
-    x = "Actual cost (log-scale)", y = "Predicted cost (log-scale)", title = "Predicted vs. actual costs",
-    subtitle = "(testing set)"
+    x = "Actual cost (log-scale)", y = "Predicted cost (log-scale)"
+    # title = "Predicted vs. actual costs",
+    # subtitle = "(testing set)"
   ) +
   theme_bw() +
   theme(
@@ -794,8 +796,9 @@ ggplot(
   scale_fill_brewer(type = "qual") +
   # scale_color_brewer(type = "qual") +
   labs(
-    x = "Residual (log-cost)", y = "Density", title = "Residual distribution",
-    subtitle = "(testing set)"
+    x = "Residual (log-cost)", y = "Density"
+    # title = "Residual distribution",
+    # subtitle = "(testing set)"
     # subtitle = "BRT has tighter clustering of residuals near zero but wider tails"
   ) +
   theme_bw() +

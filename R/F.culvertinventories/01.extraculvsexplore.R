@@ -1,6 +1,6 @@
 # TITLE: Explore fish passage inventories
 # AUTHOR: B. Van Deynze
-# DATA: Oct. 2020
+# DATE: Oct. 2020
 
 # Prepare environment ----
 rm(list = ls())

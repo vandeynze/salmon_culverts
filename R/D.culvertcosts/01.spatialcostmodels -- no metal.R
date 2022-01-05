@@ -43,7 +43,6 @@ library(gifski)
 library(sandwich)
 library(lmtest)
 library(nhdplusTools)
-library(ggbreak)
 
 opts_chunk$set(echo=FALSE)
 
@@ -154,9 +153,6 @@ ggplot() +
     # title = "Potential projects in cost-benefit space: <span style='color:#4DAF4A;'>Ratio (C/B)</span> targeting",
     title = "Potential projects in cost-benefit space: <span style='color:#377EB8;'>Benefit (B)</span> targeting",
     # title = "Potential projects in cost-benefit space: <span style='color:#E41A1C;'>Cost (C)</span> targeting",
-
-    # title = "Potential projects in cost-benefit space",
-
     # subtitle = wrapper("Lines illustrate thresholds for which projects would be selected under different targeting schemes; Projects above and to the left of each line would be selected under each scheme"),
     # subtitle = wrapper(" \n "),
     x = "Cost",
@@ -404,7 +400,7 @@ ggplot() +
 key_nlcd <-
   read_xlsx(
     here(
-      "data/Culverts spatial overlays v 20Jan2021.xlsx"
+      "/data/Culverts spatial overlays v 20Jan2021.xlsx"
     ), 
     sheet = 4
   ) %>% 
@@ -488,6 +484,15 @@ df_culv %>%
     `Construction employment (jobs)` = emp_const,
     `Ag/forestry employment (jobs)` = emp_agforest,
     `Distance to urban area (m)` = ua_dist,
+    
+      `Density of construction equipment wholesalers (workers per sq. km)` = const_totp,
+      `Density of brick, stone, and related wholesalers (workers per sq. km)` = brick_totp,
+      `Density of durable metals wholesalers (workers per sq. km)` = metal_totp,
+      `Density of sand and gravel sales yards (firms per sq. km)` = sales_coun,
+      `Private land, individual or company owner (proportion of land within 500m radius)` = pv_1km_buff,
+      `Private land, managed by industry (proportion of land within 500m radius)` = pvi_1km_buff,
+      `Private land, managed by non-industrial owner (proportion of land within 500m radius)` = pvn_1km_buff,
+      
     `Basin` = basin,
     `Year` = project_year,
     `Reporting source` = project_source
@@ -530,6 +535,9 @@ df_culv %>%
 #' - **Bankfull width (m)**: bankfull width is the preferred measure of stream width
 #' at road crossing, accounting for potential width during high-water events;
 #' identified via COMID matching with NHDPlus attributes.  
+#' Note that these two variables are interacted to capture design guidelines that indicate
+#' increased complexity in culvert designs associated with streams that are both particularly 
+#' wide and steep.  
 
 #+ echo=F
 #' ## Road features  
@@ -568,7 +576,7 @@ key_here %>%
 #' - **Terrain slope (degrees)**: steeper terrain is expected to require more
 #' expensive projects; measured by the
 #' ~~[GTOPO30](https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-global-30-arc-second-elevation-gtopo30?qt-science_center_objects=0#qt-science_center_objects)
-#' grid cell the worksite falls in~~ slope recorded for the *catchment* the stream is associated with, as opposed to the stream slope.
+#' grid cell the worksite falls in~~ slope recorded for the *catchment* the stream is associated with via NHDPlus Selected Attributes data release, as opposed to the stream slope.
 #'
 #' - **Land cover (categorical)**: different land covers may be associated more
 #' expensive projects (e.g. less accessible sites in forest, difficult soils in
@@ -585,7 +593,7 @@ key_here %>%
       here(
         "/data/Culverts spatial overlays v 20Jan2021.xlsx"
       ), 
-      sheet = 4
+      sheet = 3
     ) %>% 
     as_tibble() %>%
     clean_names("sentence") %>% 
@@ -611,9 +619,22 @@ key_here %>%
 #' - **Distance to urban area (m)**: as a measure of access to labor and equipment,
 #'  euclidean distance to the nearest census designated urban area, defined as 
 #'  contiguous area with at least 50,000 residents.  
+#' - **Density of wholesalers (workers/firms per sq. km)**: Using firm point data from 
+#' [Homeland Infrastructure Foundation-Level Data (HIFLD)](https://gii.dhs.gov/hifld/), 
+#' we calculate a kernel density field (1km resolution grid/100km search radius) to measure 
+#' access to equipment and materials required for common culvert replacement designs, including...  
+#'   - *Construction equipment (workers)*, representing heavy machinery required for digging, moving materials, etc.,  
+#'   - *Brick, stone, and related (workers)*, representing concrete, pavement, and structural materials required to build replacement culverts,  
+#'   - *Durable metals (workers)*, representing sheet metal used for piping, rebar, and other structural metals materials, and  
+#'   - *Sand and gravel sales yards (firms)*, representing suppliers for fill commonly used to build roads back up after construction.  
+#' - **Private land (proportion within 500m radius)**: we use BLM's 2019 Surface Jurisdiction Map to calculate the proportion of land
+#' within a 500m radius of each worksite that is privately managed, distinguishing between land managed by individuals or companies 
+#' (residential or commercial land), industry (typically forestry in the region), and non-industrial (including private conservation) entities;
+#' Note that the baseline group (i.e., 0 in all three proportions) represents a pooled group of all other land ownership types, which includes all 
+#' publicly-owned and managed land (i.e., national and state forests and parks, U.S. Fish and Wildlife land, BLM land, etc.).
 #' 
 #+ echo=F
-#' ## Scale and scope controls  
+#' ## Scale and scope features  
 #'
 #' - **Number of worksites associated with project (count):** addressing multiple
 #' culverts under the same project may provide scale benefits, but might also
@@ -622,7 +643,7 @@ key_here %>%
 #' under a single project may increase project costs due to increased
 #' transportation costs (and time); measured as the total euclidean distance
 #' between worksites for multiple worksite projects. This variable is interacted 
-#' with the number of worksites to allow flexible corrdination/scale effects.  
+#' with the number of worksites to allow flexible coordination/scale effects.  
 #' - **Action type (categorical):** PNSHP distinguishes between culvert removals
 #' and culvert installations, in addition to culvert improvements (the dominate
 #' category); we expect removals to be cheapest, followed by improvements and
@@ -665,7 +686,20 @@ df_corr <-
     `Stream slope` = slope, `Bankfull width` = bankfull_width,
     `Terrain slope` = cat_basin_slope, `Elevation` = cat_elev_mean,
     `Distance between sites`, `Number of worksites` = n_worksites,
-    `Cost per culvert` = cost_per_culvert
+    `Cost per culvert` = cost_per_culvert,
+    lg_1km_buff,
+    stall_1km_buff,
+    # usfs_1km_buff,
+    # fedother_1km_buff,
+    # blm_1km_buff,
+    # pvall_1km_buff,
+    pvi_1km_buff,
+    pvn_1km_buff,
+    pv_1km_buff,
+    const_totp,
+    brick_totp,
+    metal_totp,
+    sales_coun
   ) %>%
   drop_na()
 
@@ -731,8 +765,8 @@ ggcorrplot(
 #' and to a lesser degree construction employment are positively correlated with
 #' costs.  
 #' 
-#' No variables have particularly large VIFs, suggesting little potential for
-#' error-inflating multicollinearity. (A large VIF indicates that the variable is
+#' ~~No variables have particularly large VIFs, suggesting little potential for
+#' error-inflating multicollinearity.~~ (A large VIF indicates that the variable is
 #' strongly correlated with the other variables in the model, leading to
 #' inflated standard errors and limiting the model's usefulness for prediction
 #' or inference.)  
@@ -744,7 +778,7 @@ ggcorrplot(
 mod_full <- 
   lm(
     log(cost_per_culvert) ~
-      # log(I(adj_cost / n_worksites)) ~
+    # log(I(adj_cost / n_worksites)) ~
       # Scale/scope of project controls: number of culverts, distance between worksites, type of culvert work
       n_worksites * tot_dist + # factor(I(n_worksites == 1)) +
       action_fishpass_culvrem_prj + action_fishpass_culvinst_prj +
@@ -761,7 +795,7 @@ mod_full <-
       # merch_totp + 
       const_totp +
       brick_totp +
-      metal_totp +
+      # metal_totp +
       sales_coun +
       # sand_count +
       # Land ownership
@@ -778,6 +812,15 @@ mod_full <-
       basin + factor(project_year) + project_source,
     df_culv
   )
+
+write_rds(mod_full, here("output/costfits/ols_full.rds"))
+
+coeftest(
+# summary(
+  mod_full, 
+         vcov. = vcovCL(mod_full, cluster = ~ project_id, type = "HC3")
+         # vcov. = vcovHC(mod_full)
+)
 
 # Remove some variables
 # Remove scale/scope controls
@@ -900,7 +943,7 @@ mods <- mget(ls(patter = "mod_"))
 mods <- mods[c(2, 1, 3:length(mods))]
 # mods <- mods[["mod_full"]]
 mods_pars <-
-  map_df(mods, ~coeftest(., vcov. = vcovHC(., "HC3")) %>% tidy, .id = "model") %>%
+  map_df(mods, ~coeftest(., vcov. = vcovCL(., cluster = ~ project_id, "HC3")) %>% tidy, .id = "model") %>%
   complete(model, term) %>%
   mutate(
     stars = case_when(
@@ -920,21 +963,30 @@ mods_pars <-
     ),
     term = case_when(
       term == "(Intercept)" ~ "Intercept",
-      term == "action_fishpass_culvinst_prj" ~ "Culvert installation",
-      term == "action_fishpass_culvrem_prj" ~ "Culvert removal",
+      term == "action_fishpass_culvinst_prj" ~ "Culvert installation (dummy)",
+      term == "action_fishpass_culvrem_prj" ~ "Culvert removal (dummy)",
       term == "n_worksites" ~ "Number of worksites",
       term == "tot_dist" ~ "Distance between worksites",
       # term == "log(dist_mean + 1)" ~ "Mean distance between worksites, log",
-      # term == "factor(I(n_worksites == 1))TRUE" ~ "Single worksite",
+      # term == "factor(I(n_worksites == 1))TRUE" ~ "Single worksite (dummy)",
       term == "slope" ~ "Stream slope",
       term == "bankfull_width" ~ "Bankfull width",
-      str_detect(term, "here_paved") ~ "Road paved",
+      str_detect(term, "here_paved") ~ "Road paved (dummy)",
       term == "cat_basin_slope" ~ "Terrain slope",
       term == "cat_elev_mean" ~ "Elevation",
       term == "hdens_cat" ~ "Housing density",
       term == "emp_const" ~ "Construction employment",
       term == "emp_agforest" ~ "Ag/forestry employment",
       term == "ua_dist" ~ "Distance to urban area",
+      
+      term == "const_totp" ~ "Density (employee-weighted) of construction equipment suppliers",
+      term == "brick_totp" ~ "Density (employee-weighted) of brick, concrete, and related materials suppliers",
+      term == "metal_totp" ~ "Density (employee-weighted) of metal materials suppliers",
+      term == "sales_coun" ~ "Density of sand and gravel sales yards",
+      term == "pv_1km_buff" ~ "Private land, individual or company (% 500m buffer)",
+      term == "pvi_1km_buff" ~ "Private land, managed by industry  (% 500m buffer)",
+      term == "pvn_1km_buff" ~ "Private land, managed by non-industrial owner  (% 500m buffer)",
+      
       term == "slope:bankfull_width" ~ "Stream slope X bankfull width",
       term == "n_worksites:tot_dist" ~ "Number of worksites X distance",
       TRUE ~ term
@@ -965,6 +1017,13 @@ mods_pars <-
     "Housing density",
     ends_with("employment"),
     "Distance to urban area",
+    "Density (employee-weighted) of construction equipment suppliers",
+    "Density (employee-weighted) of brick, concrete, and related materials suppliers",
+    # "Density (employee-weighted) of metal materials suppliers",
+    "Density of sand and gravel sales yards",
+    "Private land, individual or company (% 500m buffer)",
+    "Private land, managed by industry  (% 500m buffer)",
+    "Private land, managed by non-industrial owner  (% 500m buffer)",
     # Scale/scope features
     "Number of worksites",
     starts_with("Distance between "),
@@ -1017,7 +1076,7 @@ mods_pars %>%
     )
   ) %>%
   row_spec(c(ncol(mods_pars) - 1, ncol(mods_pars) + ncol(mods_stats) - 2), extra_css = "border-bottom: 1px solid") %>%
-  add_footnote("* p < 0.1, ** p < 0.05, *** p < 0.01; Heteroskedasticity-consistent standard errors in parentheses (HC3)", notation = "none") %>%
+  add_footnote("* p < 0.1, ** p < 0.05, *** p < 0.01; Heteroskedasticity-consistent clustered standard errors in parentheses (HC3, clustered at project-level)", notation = "none") %>%
   scroll_box(height = "800px")
 
 #' ## Model fit discussion  
@@ -1030,20 +1089,20 @@ mods_pars %>%
 #' variables. When fixed effect categories are removed, we can check which fixed
 #' effects explain the most variation relative to each other. It looks like
 #' reporting source accounts for the most variation, followed by basin then
-#' year, based on the relative R-squareds of models where each is removed and
+#' year, based on the relative R-squares of models where each is removed and
 #' where each is included on its own.
 #' 
 
 #' We can also compare AIC and BIC; the model with only fixed effects for
 #' reporting source is preferred on the basis of BIC, which includes a stronger
 #' penalty for the number of estimated parameters, while the full model is
-#' preferred on the basis of AIC. We use the full model in what proceeds as the
+#' superior on the basis of AIC. We use the full model in what proceeds as the
 #' preferred model.  
 #' 
 
 #'
 #' When the model is fit only on culverts in the "core" basins or sources,
-#' adjusted R-squared falls dramatically. This may suggest that information from
+#' adjusted R-squared falls signifciantly This suggests that information from
 #' the additional sources and outside the core basins improves the fit of the
 #' model.  
 #' 
@@ -1089,78 +1148,89 @@ predict_cost_interaction <-
       )
   }
 
-map_df(mods, predict_cost_interaction, .id = "model") %>% 
+fig_bankfullslope <- (
+  map_df(mods, predict_cost_interaction, .id = "model") %>% 
+    
   # filter(model == "mod_full") %>%
   ggplot() +
-  aes(
-    x = slope,
-    y = bankfull_width,
-    z = predicted
-    # z = log(predicted)
-  ) +
-  geom_contour_filled(
-    breaks = c(0, seq(10000, 20000, 2500), Inf)
-    # breaks = log(c(0, seq(10000, 25000, 2500), Inf))
-  ) +
-  geom_contour(
-    breaks = 
-      ggpredict(
-        mod_full,
-        "slope [mean]"
-      )["predicted"],
-    color = "black",
-    linetype = "solid"
-  ) +
-  geom_contour(
-    breaks = 
-      ggpredict(
-        mod_full,
-        "slope [mean]",
-        vcov.fun = "vcovHC",
-        vcov.type = "HC3",
-      )[c("conf.low", "conf.high")],
-    color = "black",
-    linetype = "dashed"
-  ) +
-  scale_fill_brewer(
-    name = wrapper("Predicted cost per culvert"),
-    direction = -1,
-    palette = "Spectral",
-    labels = c(
-      "$0 to $10,000",
-      "$10,001 to $12,500",
-      "$12,501 to $15,000",
-      "$15,001 to $17,500",
-      "$17,501 to $20,000",
-      "Over $20,000"
-    )
-  ) +
-  # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
-  geom_point(
     aes(
       x = slope,
       y = bankfull_width,
-      z = NULL
-    ),
-    data = df_culv,
-    color = "grey30",
-    alpha = 0.3,
-    size = 0.2
-  ) +
-  theme(
-    # legend.position = "bottom" 
-  ) +
-  coord_fixed(0.3/50) +
-  labs(
-    title = wrapper("Predicted average costs by bankfull width (m) and slope (% grade)"),
-    subtitle = 
-      wrapper(
-        "Predictions based on full model with other continuous variables at means and categorical variables at their modes;
-        points represent underlying observations; line indicates cost contour at mean slope and banfull width with 95% c.i."
+      z = predicted
+      # z = log(predicted)
+    ) +
+    geom_contour_filled(
+      breaks = c(0, c(0.25, 0.5, 0.75, 1, 1.5, 2, 2.5)*ggpredict(mod_full, "slope [mean]")["predicted"]%>%pull, Inf)
+      # breaks = log(c(0, seq(10000, 25000, 2500), Inf))
+    ) +
+    geom_point(
+      aes(
+        x = slope,
+        y = bankfull_width,
+        z = NULL
       ),
-    x = "Slope",
-    y = "Bankfull width"
-  ) + theme_clean()
+      data = df_culv,
+      color = "grey30",
+      alpha = 0.3,
+      size = 1
+    ) +
+    geom_contour(
+      breaks = 
+        ggpredict(
+          mod_full,
+          "slope [mean]"
+        )["predicted"],
+      color = "black",
+      linetype = "solid",
+      size = 1
+    ) +
+    geom_contour(
+      breaks = 
+        ggpredict(
+          mod_full,
+          "slope [mean]",
+          vcov.fun = "vcovHC",
+          vcov.type = "HC3",
+        )[c("conf.low", "conf.high")],
+      color = "black",
+      linetype = "dashed",
+      # size = 1
+    ) +
+    scale_x_continuous(labels = function(x) {
+      x*100
+    }) +
+    scale_fill_brewer(
+      name = str_wrap("Predicted cost per culvert, relative to mean", 30),
+      direction = -1,
+      palette = "RdBu",
+      labels = c(
+        "0.25 to 0.5 x mean",
+        "0.5 to 0.75 x mean",
+        "0.75 to 1 x mean",
+        "1 to 1.5 x mean",
+        "1.5 to 2 x mean",
+        "2 to 2.5 x mean",
+        "Over 2.5 x mean"
+      )
+    ) +
+    # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
+
+    theme(
+      legend.position = c(0.96, 0.96), legend.justification = c(1, 1),
+      aspect.ratio = 1,
+      panel.background = element_rect(fill = "white"),
+      # text = element_text(size = 20)
+    ) +
+    labs(
+      # title = wrapper("Predicted average costs by bankfull width (m) and slope (% grade)"),
+      # subtitle = 
+      #   wrapper(
+      #     "Points represent underlying observations; Lines indicates cost contour at mean slope and banfull width with 95% c.i."),
+      x = "Slope (% grade)",
+      y = "Bankfull width (m)"
+    )
+)
+
 
 df_culv %>%
   ggplot() +
@@ -1187,7 +1257,7 @@ df_culv %>%
     ),
     direction = -1,
     labels = label_dollar(),
-    palette = "Spectral",
+    palette = "RdBu",
     # guide = "legend"
   ) +
   theme(
@@ -1215,94 +1285,100 @@ df_culv %>%
 #' 
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 # ____ Worksites and distance effect space ----
-
-map_df(mods, predict_cost_interaction, var1 = "n_worksites", var2 = "tot_dist", lims1 = c(0, 6), lims2 = c(0, 10000), by1 = 0.1, by2 = 100, .id = "model") %>%
-  # filter(model == "mod_full") %>%
-  ggplot() +
-  aes(
-    x = n_worksites,
-    y = tot_dist/1000,
-    z = predicted
-  ) +
-  geom_contour_filled(
-    breaks =
-      c(
-        seq(0, 20000, 2500),
-        Inf
-      )
-  ) +
-  scale_fill_brewer(
-    name = wrapper("Predicted cost per culvert"),
-    direction = -1,
-    palette = "Spectral",
-    labels =
-      c(
-        "$0 to $2,500",
-        "$2,501 to $5,000",
-        "$5,001 to $7,500",
-        "$7,501 to $10,000",
-        "$10,001 to $12,500",
-        "$12,501 to $15,000",
-        "$15,001 to $17,500",
-        "$17,501 to $20,000",
-        "Over $20,000"
-      )
-  ) +
-  # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
-  geom_violin(
+fig_sitesdist <- (
+  
+  map_df(mods, predict_cost_interaction, var1 = "n_worksites", var2 = "tot_dist", lims1 = c(0, 6), lims2 = c(0, 10000), by1 = 0.1, by2 = 100, .id = "model") %>%
+    # filter(model == "mod_full") %>%
+    ggplot() +
     aes(
-      group = n_worksites,
+      x = n_worksites,
       y = tot_dist/1000,
-      z = NULL
-    ),
-    data = df_culv %>% filter(n_worksites <= 6, tot_dist <= 1e5),
-    color = "grey30",
-    alpha = 0.3
-  ) +
-  geom_point(
-    aes(x = x, y = y, shape = shape), size = 2, stroke = 2,
-    inherit.aes = FALSE,
-    data = tibble(x = c(1, 2), y = c(0, 5), shape = as.character(c(1, 4)))
-  ) +
-  geom_contour(
-    breaks = 
-      ggpredict(
-        mod_full,
-        "n_worksites [1]",
-        condition = c("tot_dist" = 0)
-      )["predicted"],
-    size = 1, color = "black",
-    linetype = "solid"
-  ) +
-  geom_contour(
-    breaks = 
-      ggpredict(
-        mod_full,
-        "n_worksites [1]",
-        condition = c("tot_dist" = 0),
-        vcov.fun = "vcovHC",
-        vcov.type = "HC3",
-      )[c("conf.low", "conf.high")],
-    color = "black",
-    linetype = "dashed"
-  ) +
-  theme(
-    # legend.position = "bottom" 
-  ) +
-  coord_fixed(6/10) +
-  scale_x_continuous(n.breaks = 6, limits = c(0,6)) +
-  scale_shape_manual(values = c(4, 8), guide = NULL) +
-  # scale_y_log10() +
-  labs(
-    title = wrapper("Predicted average costs by number of worksites and total distance between worksites (km)"),
-    subtitle = wrapper("Predictions based on full model with other continuous variables at means and categorical variables at their modes; violin plots represent underlying observations"),
-    x = "Number of worksites",
-    y = "Total distance between worksites (km)"
-  )
-
-#' We can repeat the exercise for the number of worksites and total distance
-#' between worksites to examine the trade-off between economies of scale from
-#' grouping multiple worksites under one project and increased costs in
+      z = predicted
+    ) +
+    geom_contour_filled(
+      breaks = c(0, c(0.25, 0.5, 0.75, 1, 1.5, 2, 2.5)*ggpredict(mod_full, "n_worksites [1]")["predicted"]%>%pull, Inf)
+    ) +
+    scale_fill_brewer(
+      name = str_wrap("Predicted cost per culvert, relative to mean", 30),
+      direction = -1,
+      palette = "RdBu",
+      # limits = c(
+      #   "(0, 4004]",
+      #   "(4004, 8007]",
+      #   "(8007, 12011]",
+      #   "(12011, 16014]",
+      #   "(16014, 24021]",
+      #   "(24021, 32028]",
+      #   "Blah"
+      # ),
+      # labels = c(
+      #   "0.25 to 0.5 x mean",
+      #   "0.5 to 0.75 x mean",
+      #   "0.75 to 1 x mean",
+      #   "1 to 1.5 x mean",
+      #   "1.5 to 2 x mean",
+      #   "2 to 2.5 x mean",
+      #   "Over 2.5 x mean"
+      # )
+    ) +
+    # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
+    geom_violin(
+      aes(
+        group = n_worksites,
+        y = tot_dist/1000,
+        z = NULL
+      ),
+      data = df_culv %>% filter(n_worksites <= 6, tot_dist <= 1e5),
+      color = "grey30",
+      alpha = 0.3
+    ) +
+    # geom_point(
+    #   aes(x = x, y = y, shape = shape), size = 2, stroke = 2,
+    #   inherit.aes = FALSE,
+    #   data = tibble(x = c(1, 2), y = c(0, 5), shape = as.character(c(1, 4)))
+    # ) +
+    geom_contour(
+      breaks = 
+        ggpredict(
+          mod_full,
+          "n_worksites [1]",
+          condition = c("tot_dist" = 0)
+        )["predicted"],
+      size = 1, color = "black",
+      linetype = "solid"
+    ) +
+    geom_contour(
+      breaks = 
+        ggpredict(
+          mod_full,
+          "n_worksites [1]",
+          condition = c("tot_dist" = 0),
+          vcov.fun = "vcovHC",
+          vcov.type = "HC3",
+        )[c("conf.low", "conf.high")],
+      color = "black",
+      linetype = "dashed"
+    ) +
+    theme(
+      legend.position = c(0.04, 0.96), legend.justification = c(0, 1),
+      aspect.ratio = 1,
+      panel.background = element_rect(fill = "white"),
+      # text = element_text(size = 20)
+    ) +
+    scale_x_continuous(n.breaks = 6, limits = c(0,6)) +
+    scale_shape_manual(values = c(4, 8), guide = NULL) +
+    # scale_y_log10() +
+    labs(
+      # title = str_wrap("Predicted average costs by number of worksites and total distance between worksites (km)", 65),
+      # subtitle = str_wrap("Violin plots represent underlying observations"),
+      x = "Number of worksites",
+      y = "Total distance between worksites (km)"
+    )
+)
+    
+  #' We can repeat the exercise for the number of worksites and total distance
+  #' between worksites to examine the trade-off between economies of scale from
+  #' grouping multiple worksites under one project and increased costs in
 #' coordination as proxied by total distance between sites. The contours of this
 #' cost surface can be interpreted as the distance limit for which adding an
 #' additional worksite to a project is associated with economies or
@@ -1325,6 +1401,14 @@ map_df(mods, predict_cost_interaction, var1 = "n_worksites", var2 = "tot_dist", 
 #' additional worksite drops quickly.  
 #' 
 
+library(patchwork)
+cowplot::save_plot(
+
+    plot = fig_bankfullslope / fig_sitesdist + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'a'),
+    filename = here("output/figs/culverts/fig_contours.png"), base_width = 6.5, base_height = 7.5
+  
+)
+
 #' ### Continuous variables  
 #' 
 
@@ -1338,7 +1422,7 @@ map_df(mods, predict_cost_interaction, var1 = "n_worksites", var2 = "tot_dist", 
 #' variable.
 #' 
 
-#+ echo=F, message=F, warning=F, fig.dim=c(8,8)
+#+ echo=F, message=F, warning=F, fig.dim=c(8,12)
 # ____ Marginal effects plots ----
 # Custom wrapper of margins::margins for use with map_df
 margins_custom <-
@@ -1355,90 +1439,86 @@ margins_custom <-
       )
   }
 
-
-(
-  df_margeff <-
-    map_df(
-      mods, 
-      margins_custom,
-      terms =
-        c(
-          "bankfull_width",
-          "slope",
-          "cat_basin_slope",
-          "cat_elev_mean",
-          "n_worksites",
-          "tot_dist",
-          "hdens_cat",
-          "emp_const",
-          "emp_agforest",
-          "ua_dist",
-          
-          
-          "const_totp",
-          "brick_totp",
-          "metal_totp",
-          "sales_coun",
-          "pv_1km_buff",
-          "pvi_1km_buff",
-          "pvn_1km_buff"
-          
-        ),
-      .id = "model"
-    ) %>%
-    mutate(
-      factor = case_when(
-        factor == "bankfull_width" ~ "Bankfull width",
-        factor == "slope" ~ "Stream slope",
-        factor == "cat_basin_slope" ~ "Terrain slope",
-        factor == "cat_elev_mean" ~ "Elevation",
-        factor == "n_worksites" ~ "Number of worksites",
-        factor == "tot_dist" ~ "Distance between worksites",
-        factor == "hdens_cat" ~ "Housing density",
-        factor == "emp_const" ~ "Construction employment",
-        factor == "emp_agforest" ~ "Ag/forestry employment",
-        factor == "ua_dist" ~ "Distance to urban area",
-        
-        factor == "const_totp" ~ "Construction equipment suppliers",
-        factor == "brick_totp" ~ "Brick, concrete, and related materials suppliers",
-        factor == "metal_totp" ~ "Metal materials suppliers",
-        factor == "sales_coun" ~ "Sand and gravel sales yards",
-        factor == "pv_1km_buff" ~ "Managed by individual or company",
-        factor == "pvi_1km_buff" ~ "Managed by industry",
-        factor == "pvn_1km_buff" ~ "Managed by non-industrial owner"
-        
-      ),
-      group = case_when(
-        factor %in% c("Bankfull width", "Stream slope") ~ "Stream features",
-        factor %in% c("Terrain slope", "Elevation") ~ "Terrain features",
-        factor %in% c("Distance between worksites", "Number of worksites") ~ "Project scale",
-        factor %in% c("Construction employment", "Ag/forestry employment", "Housing density", "Distance to urban area") ~ "Population features",
-        factor %in% c(
-          "Construction equipment suppliers",
-          "Brick, concrete, and related materials suppliers",
-          "Metal materials suppliers",
-          "Sand and gravel sales yards"
-        ) ~ "Supplier Density",
-        factor %in% c(
-          "Managed by individual or company",
-          "Managed by industry",
-          "Managed by non-industrial owner"
-        ) ~ "Private Land Ownership (% in 500m buffer)"
-      ),
-      estimate = exp(ame),
-      conf.low = exp(lower),
-      conf.high = exp(upper),
-      p.value = I(p < 0.05),
-      mod.color = case_when(
-        p.value == TRUE & model == "mod_full" ~ "sig-pref",
-        p.value == TRUE & model != "mod_full" ~ "sig-nopref",
-        p.value == FALSE & model == "mod_full" ~ "nosig-pref",
-        p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
-      ),
-      mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
-    ) %>%
-    select(model, factor, estimate, conf.low, conf.high, p.value, group, sd)
-) %>%
+map_df(
+  mods, 
+  margins_custom,
+  terms =
+    c(
+      "bankfull_width",
+      "slope",
+      "cat_basin_slope",
+      "cat_elev_mean",
+      "n_worksites",
+      "tot_dist",
+      "hdens_cat",
+      "emp_const",
+      "emp_agforest",
+      "ua_dist",
+      
+      
+      "const_totp",
+      "brick_totp",
+      # "metal_totp",
+      "sales_coun",
+      "pv_1km_buff",
+      "pvi_1km_buff",
+      "pvn_1km_buff"
+      
+    ),
+  .id = "model"
+  ) %>%
+  mutate(
+    factor = case_when(
+      factor == "bankfull_width" ~ "Bankfull width",
+      factor == "slope" ~ "Stream slope",
+      factor == "cat_basin_slope" ~ "Terrain slope",
+      factor == "cat_elev_mean" ~ "Elevation",
+      factor == "n_worksites" ~ "Number of worksites",
+      factor == "tot_dist" ~ "Distance between worksites",
+      factor == "hdens_cat" ~ "Housing density",
+      factor == "emp_const" ~ "Construction employment",
+      factor == "emp_agforest" ~ "Ag/forestry employment",
+      factor == "ua_dist" ~ "Distance to urban area",
+      
+      factor == "const_totp" ~ "Construction equipment suppliers",
+      factor == "brick_totp" ~ "Brick, concrete, and related materials suppliers",
+      # factor == "metal_totp" ~ "Metal materials suppliers",
+      factor == "sales_coun" ~ "Sand and gravel sales yards",
+      factor == "pv_1km_buff" ~ "Managed by individual or company",
+      factor == "pvi_1km_buff" ~ "Managed by industry",
+      factor == "pvn_1km_buff" ~ "Managed by non-industrial owner"
+      
+    ),
+    group = case_when(
+      factor %in% c("Bankfull width", "Stream slope") ~ "Stream features",
+      factor %in% c("Terrain slope", "Elevation") ~ "Terrain features",
+      factor %in% c("Distance between worksites", "Number of worksites") ~ "Project scale",
+      factor %in% c("Construction employment", "Ag/forestry employment", "Housing density", "Distance to urban area") ~ "Population features",
+      factor %in% c(
+        "Construction equipment suppliers",
+        "Brick, concrete, and related materials suppliers",
+        "Metal materials suppliers",
+        "Sand and gravel sales yards"
+      ) ~ "Supplier Density",
+      factor %in% c(
+        "Managed by individual or company",
+        "Managed by industry",
+        "Managed by non-industrial owner"
+      ) ~ "Private Land Ownership (% in 500m buffer)"
+    ),
+    estimate = exp(ame),
+    conf.low = exp(lower),
+    conf.high = exp(upper),
+    p.value = I(p < 0.05),
+    mod.color = case_when(
+      p.value == TRUE & model == "mod_full" ~ "sig-pref",
+      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+    ),
+    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+  ) %>%
+  select(model, factor, estimate, conf.low, conf.high, p.value, group, sd) %>%
   ggplot() +
   geom_pointrange(
     aes(
@@ -1491,14 +1571,31 @@ margins_custom <-
 #' unexploited opportunities for economies of scale.
 #'
 #' The average marginal effects for all population features are insignificant in
-#' the preferred model. However, in some of the alternative models, housing
+#' the preferred model. ~~However, in some of the alternative models, housing
 #' density and distance to urban area has a slight positive association with
 #' costs. The housing density effect might be evidence of increased access costs
 #' due to negotiating with multiple landowners, while the distance association
 #' may be evidence of increased costs due to lack of access to materials or
 #' labor. We are in the process of gathering improved proxies for each of these
-#' potential mechanisms.  
+#' potential mechanisms.~~  
 #' 
+
+#' One reason the population features may be insignificant is because we measure
+#' access to labor and materials in alternative ways in the model. Worksites
+#' closer to construction equipment and brick/concrete firms, and to a lesser
+#' extent gravel/sand sales yards, are associated with significantly lower costs,
+#' while those closer to metal suppliers have much higher costs.
+#' 
+
+#' Private land ownership influences costs in an interesting way. Note that for
+#' these variables, the implicit baseline are worksites with no
+#' privately-managed land within a 500m buffer. Such culverts are most often
+#' owned by government agencies. Compared to this baseline, culverts surrounded
+#' by land managed by a non-industrial private owner (i.e., non-profit
+#' conservation groups) are associated with higher costs, while culverts
+#' surrounded by industrially-managed land (i.e., land managed for forestry) are
+#' associated with lower costs. This key result indicates efficiencies
+#' associated with barrier improvements conducted by large forest landowners.
 
 #' Bankfull width and stream slope both have positive associations in the
 #' preferred models. A standard deviation increase in either is associated with
@@ -1646,8 +1743,7 @@ ggplot() +
     x = "Project average costs", 
     title = "Reporting source fixed effects",
     subtitle = "Project average costs relative to OWRI",
-    caption = "Lines indicate 95% confidence interval; 
-    Significant coefficients highlighted in color"
+    caption = "Lines indicate 95% confidence interval; Significant coefficients highlighted in color"
   ) +
   # theme_clean() +
   theme(
@@ -1733,27 +1829,24 @@ map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int
 # Land class
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 
-(
-  df_margeff_land <-
-    map_df(mods, ~ coeftest(., vcovCL(., ~ project_id, "HC3")) %>% tidy(conf.int = TRUE), .id = "model") %>%
-    filter(str_detect(term, "nlcd")) %>%
-    mutate(
-      nlcd_current = str_sub(term, 27),
-      estimate = exp(estimate),
-      conf.low = exp(conf.low),
-      conf.high = exp(conf.high),
-      p.value = I(p.value < 0.05),
-      mod.color = case_when(
-        p.value == TRUE & model == "mod_full" ~ "sig-pref",
-        p.value == TRUE & model != "mod_full" ~ "sig-nopref",
-        p.value == FALSE & model == "mod_full" ~ "nosig-pref",
-        p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
-      ),
-      mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
-    ) %>%
-    group_by(nlcd_current) %>%
-    select(model, nlcd_current, estimate, conf.low, conf.high, mod.color) 
-) %>%
+map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), .id = "model") %>%
+  filter(str_detect(term, "nlcd")) %>%
+  mutate(
+    nlcd_current = str_sub(term, 27),
+    estimate = exp(estimate),
+    conf.low = exp(conf.low),
+    conf.high = exp(conf.high),
+    p.value = I(p.value < 0.05),
+    mod.color = case_when(
+      p.value == TRUE & model == "mod_full" ~ "sig-pref",
+      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+    ),
+    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+  ) %>%
+  group_by(nlcd_current) %>%
+  select(model, nlcd_current, estimate, conf.low, conf.high, mod.color) %>%
   ggplot() +
   geom_pointrange(
     aes(
@@ -1806,30 +1899,27 @@ map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 
 # Road features
-(
-  df_margeff_roads <-
-    map_df(mods, ~ coeftest(., vcovCL(., ~ project_id, "HC3")) %>% tidy(conf.int = TRUE), .id = "model") %>%
-    filter(str_detect(term, "here")) %>%
-    mutate(
-      here_var = case_when(
-        str_detect(term, "paved") ~ "Road paved",
-        str_detect(term, "factor") ~ str_replace(term, "factor[(]here_speed[])]", "Road speed class: ")
+map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), .id = "model") %>%
+  filter(str_detect(term, "here")) %>%
+  mutate(
+    here_var = case_when(
+      str_detect(term, "paved") ~ "Road paved (dummy)",
+      str_detect(term, "factor") ~ str_replace(term, "factor[(]here_speed[])]", "Road speed class: ")
       ),
-      estimate = exp(estimate),
-      conf.low = exp(conf.low),
-      conf.high = exp(conf.high),
-      p.value = I(p.value < 0.05),
-      mod.color = case_when(
-        p.value == TRUE & model == "mod_full" ~ "sig-pref",
-        p.value == TRUE & model != "mod_full" ~ "sig-nopref",
-        p.value == FALSE & model == "mod_full" ~ "nosig-pref",
-        p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
-      ),
-      mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
-    ) %>%
-    group_by(here_var) %>%
-    select(model, here_var, estimate, conf.low, conf.high, mod.color) 
-) %>%
+    estimate = exp(estimate),
+    conf.low = exp(conf.low),
+    conf.high = exp(conf.high),
+    p.value = I(p.value < 0.05),
+    mod.color = case_when(
+      p.value == TRUE & model == "mod_full" ~ "sig-pref",
+      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+    ),
+    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+  ) %>%
+  group_by(here_var) %>%
+  select(model, here_var, estimate, conf.low, conf.high, mod.color) %>%
   ggplot() +
   geom_pointrange(
     aes(
@@ -1882,30 +1972,27 @@ map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int
 #+ echo=F, message=F, warning=F, fig.dim=c(8,4)
 
 # Project scope effects
-(
-  df_margeff_scope <-
-    map_df(mods, ~ coeftest(., vcovCL(., ~ project_id, "HC3")) %>% tidy(conf.int = TRUE), conf.int = TRUE, .id = "model") %>%
-    filter(str_detect(term, "action")) %>%
-    mutate(
-      action_var = case_when(
-        str_detect(term, "culvrem") ~ "Culvert removal",
-        str_detect(term, "culvinst") ~ "Culvert installation"
-      ),
-      estimate = exp(estimate),
-      conf.low = exp(conf.low),
-      conf.high = exp(conf.high),
-      p.value = I(p.value < 0.05),
-      mod.color = case_when(
-        p.value == TRUE & model == "mod_full" ~ "sig-pref",
-        p.value == TRUE & model != "mod_full" ~ "sig-nopref",
-        p.value == FALSE & model == "mod_full" ~ "nosig-pref",
-        p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
-      ),
-      mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
-    ) %>%
-    group_by(action_var) %>%
-    select(model, action_var, estimate, conf.low, conf.high, mod.color)
-) %>%
+map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int = TRUE, .id = "model") %>%
+  filter(str_detect(term, "action")) %>%
+  mutate(
+    action_var = case_when(
+      str_detect(term, "culvrem") ~ "Culvert removal (dummy)",
+      str_detect(term, "culvinst") ~ "Culvert installation (dummy)"
+    ),
+    estimate = exp(estimate),
+    conf.low = exp(conf.low),
+    conf.high = exp(conf.high),
+    p.value = I(p.value < 0.05),
+    mod.color = case_when(
+      p.value == TRUE & model == "mod_full" ~ "sig-pref",
+      p.value == TRUE & model != "mod_full" ~ "sig-nopref",
+      p.value == FALSE & model == "mod_full" ~ "nosig-pref",
+      p.value == FALSE & model != "mod_full" ~ "nosig-nopref"
+    ),
+    mod.color = ordered(mod.color, levels = c("sig-pref", "sig-nopref", "nosig-pref", "nosig-nopref"))
+  ) %>%
+  group_by(action_var) %>%
+  select(model, action_var, estimate, conf.low, conf.high, mod.color) %>%
   ggplot() +
   geom_pointrange(
     aes(
@@ -1945,7 +2032,6 @@ map_df(mods, ~ coeftest(., vcovHC(., "HC1")) %>% tidy(conf.int = TRUE), conf.int
 #' indicate that distinctions between these categories in the data are loosely
 #' defined.
 #' 
-
 
 # ____ Maps ----
 #' ## Residual and predicted value maps  
@@ -2085,11 +2171,10 @@ base_map_draft <-
     panel.background = element_rect(fill = "aliceblue", size = 1),
     axis.text = element_blank(),
     axis.ticks = element_blank(),
-    # legend.position = c(0.99, 0.01),
-    # legend.justification = c("right", "bottom"),
-    # legend.box.background = element_rect(color = "black", size = 1),
-    # legend.title = element_text(size = 8),
-    # legend.text = element_text(size = 6)
+    legend.position = c(0.99, 0.01),
+    legend.justification = c("right", "bottom"),
+    legend.box.background = element_rect(color = "black", size = 1),
+    legend.title = element_text(size = 10)
   ) +
   labs(
     x = NULL,
@@ -2150,10 +2235,11 @@ base_map_draft +
   )
 
 #' By looking at the map of residuals, we can examine where the model performs
-#' better or worse. Few obvsious patterns emerge. There seems to be some
+#' better or worse. Few obvious patterns emerge. There seems to be some
 #' clustering of positive residuals in the Portland area, suggesting that costs
 #' are underestimated for that region. Otherwise, the residuals appear to be
-#' fairly well distributed.  
+#' fairly well distributed. We examine the spatial concentration of the
+#' residuals and consider spatial lag specifications in a future report.  
 #' 
 
 #+ message=F, warnings=F, fig.dim=c(8,8)
@@ -2174,7 +2260,8 @@ base_map_draft +
                   n_worksites = 1,
                   tot_dist = 0,
                   project_source = "OWRI",
-                  basin = "SOUTHERN OREGON COASTAL")
+                  # basin = "SOUTHERN OREGON COASTAL"
+                )
               )
             ),
         
@@ -2211,214 +2298,6 @@ base_map_draft +
     expand = FALSE
   )
 
-
-sf_allculv_wdfw <- st_read(here("data/culv_inventories/WdfwFishPassage/WdfwFishPassage.gdb"), layer = "WDFW_FishPassageSite")
-sf_allculv_wdfw %>% clean_names() %>% 
-  filter(
-    feature_type == "Culvert"
-  ) %>% select(site_record_id:feature_type) %>% st_drop_geometry() %>% write_csv(here("output/allculvs/culvinventory_wdfw.csv"))
-# Check projection
-st_crs(sf_allculv_wdfw)
-sf_allculv_wdfw <-
-  sf_allculv_wdfw %>% clean_names() %>% st_transform(st_crs(sf_base)) %>%
-  filter(
-    feature_type == "Culvert",
-    fish_passage_barrier_status_code == 10
-  )
-
-sf_allculv_odfw <- st_read(here("data/culv_inventories/ODFW_44_5_ofpbds_gdb/ofpbds_gdb.gdb"), layer = "ofpbds_pt")
-sf_allculv_odfw %>% 
-  clean_names() %>%
-  filter(
-    fpb_ftr_ty == "Culvert",
-  ) %>% select(fpb_ftr_id:fpb_o_site_id) %>% st_drop_geometry() %>% write_csv(here("output/allculvs/culvinventory_odfw.csv"))
-sf_allculv_odfw <-
-  sf_allculv_odfw %>% clean_names() %>% st_transform(st_crs(sf_base)) %>%
-  filter(
-    fpb_ftr_ty == "Culvert",
-    fpb_f_pas_sta %in% c("Blocked", "Partial")
-  )
-
-sf_allculv_odfw <-
-  sf_allculv_odfw %>%
-  mutate(Ownership = case_when(
-    fpb_own_ty == "County" ~ "County",
-    fpb_own_ty == "State" ~ "State",
-    TRUE ~ "Other"
-  ))
-sf_allculv_wdfw <-
-  sf_allculv_wdfw %>%
-  mutate(Ownership = case_when(
-    owner_type_code == 2 ~ "County",
-    owner_type_code == 5 ~ "State",
-    TRUE ~ "Other"
-  ))
-
-fig_predvalues <-
-  base_map_draft +
-  # base_map +
-  geom_sf(
-    aes(
-      color = Ownership
-    ),
-    data = sf_allculv_odfw,
-    size = 1,
-    # color = "grey60"
-  ) +
-  geom_sf(
-    aes(
-      color = Ownership
-    ),
-    data = sf_allculv_wdfw,
-    size = 1,
-    # color = "grey60"
-  ) +
-  geom_sf(data = sf_basin, fill = NA, color = "red") +
-  geom_sf(
-    aes(
-      # x = longitude,
-      # y = latitude,
-      fill = yhat_2015_owri
-    ),
-    data = 
-      sf_culv %>% 
-      bind_cols(
-        yhat_2015_owri = 
-          exp(
-            predict(
-              mod_full,
-              sf_culv %>% 
-                mutate(
-                  project_year = 2015, 
-                  n_worksites = 1,
-                  tot_dist = 0,
-                  project_source = "OWRI",
-                  basin = "SOUTHERN OREGON COASTAL")
-            )
-          )
-      ),
-    # pull(yhat_2015_owri) %>% summary
-    # filter(yhat_2015_owri < 200000),
-    shape = 21,
-    color = "black",
-    stroke = 0.1,
-    size = 3
-  ) +
-  scale_color_manual(values = c("State" = "grey40", "County" = "grey60", "Other" = "grey80"), breaks = c("County", "State", "Other"), guide = guide_legend(override.aes = list(size = 3))) +
-  scale_fill_distiller(
-    "Predicted cost",
-    # palette = "YlGn",
-    # palette = "Spectral",
-    palette = "RdYlGn",
-    labels = dollar_format(accuracy = 1),
-    # breaks = c(30000, 50000, 100000, 300000),
-    direction = -1,
-    trans = "log10",
-    na.value = "grey70",
-    guide = guide_colorbar(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
-  ) +
-  # ggtitle(
-  #   "Map of predicted values",
-  #   str_wrap("Year set to 2015, source set to OWRI, basin set to Southern Oregon Coastal, and number of culverts set to one for all worksites; Red boarders indicate basin (HUC6) boundaries for included basins")
-  # ) +
-  coord_sf(
-    xlim = c(-126, -117),
-    ylim = c(41.5, 49.5),
-    expand = FALSE
-  ) +
-  theme(
-    text = element_text(size = 20),
-    legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
-    # legend.position = "right",
-    legend.background = element_rect(color = "black", size = 1), 
-    legend.key.size = unit(0.3, "pt"), 
-    # legend.title = element_text(size = 6),
-    legend.box.spacing = unit(0, "pt")
-  )
-
-
-fig_truevalues <-
-  base_map_draft +
-  # base_map +
-  geom_sf(
-    aes(
-      color = Ownership
-    ),
-    data = sf_allculv_odfw,
-    size = 1,
-    # color = "grey60"
-  ) +
-  geom_sf(
-    aes(
-      color = Ownership
-    ),
-    data = sf_allculv_wdfw,
-    size = 1,
-    # color = "grey60"
-  ) +
-  geom_sf(data = sf_basin, fill = NA, color = "red") +
-  geom_sf(
-    aes(
-      # x = longitude,
-      # y = latitude,
-      fill = cost_per_culvert
-    ),
-    data = 
-      sf_culv %>% 
-      bind_cols(
-        yhat_2015_owri = 
-          exp(
-            predict(
-              mod_full,
-              sf_culv %>% 
-                mutate(
-                  project_year = 2015, 
-                  n_worksites = 1,
-                  tot_dist = 0,
-                  project_source = "OWRI",
-                  basin = "SOUTHERN OREGON COASTAL")
-            )
-          )
-      ),
-    # pull(yhat_2015_owri) %>% summary
-    # filter(yhat_2015_owri < 200000),
-    shape = 21,
-    color = "black",
-    stroke = 0.1,
-    size = 3.5
-  ) +
-  scale_color_manual(values = c("State" = "grey40", "County" = "grey60", "Other" = "grey80"), breaks = c("County", "State", "Other"), guide = guide_legend(override.aes = list(size = 3))) +
-  scale_fill_distiller(
-    "Reported cost per culvert",
-    # palette = "YlGn",
-    # palette = "Spectral",
-    palette = "RdYlGn",
-    labels = dollar_format(accuracy = 1),
-    # breaks = c(30000, 50000, 100000, 300000),
-    direction = -1,
-    trans = "log10",
-    na.value = "grey70",
-    guide = guide_colorbar(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
-  ) +
-  # ggtitle(
-  #   "Map of predicted values",
-  #   str_wrap("Year set to 2015, source set to OWRI, basin set to Southern Oregon Coastal, and number of culverts set to one for all worksites; Red boarders indicate basin (HUC6) boundaries for included basins")
-  # ) +
-  coord_sf(
-    xlim = c(-126, -117),
-    ylim = c(41.5, 49.5),
-    expand = FALSE
-  ) +
-  theme(
-    # text = element_text(size = 20),
-    # legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
-    legend.position = "right",
-    legend.background = element_rect(color = NA, size = 1), 
-    legend.key.size = unit(0.3, "pt"), 
-    # legend.title = element_text(size = 6),
-    legend.box.spacing = unit(0, "pt")
-  )
-ggsave(here("output/figs/fig_culvdata.png"), fig_truevalues, width = unit(6.5, "in"), height = unit(7, "in"))
 #' The map of predicted values highlights areas where physical conditions (i.e.
 #' road, stream, and terrain features) have the largest impact on costs. By
 #' holding year, basin, reporting source, and project scale effects constant, we
@@ -2446,7 +2325,8 @@ base_map_draft +
                   n_worksites = 1,
                   tot_dist = 0,
                   project_source = "OWRI",
-                  basin = "SOUTHERN OREGON COASTAL"),
+                  # basin = "SOUTHERN OREGON COASTAL"
+                ),
               
             )
           ),
@@ -2459,7 +2339,8 @@ base_map_draft +
                 n_worksites = 1,
                 tot_dist = 0,
                 project_source = "OWRI",
-                basin = "SOUTHERN OREGON COASTAL"),
+                # basin = "SOUTHERN OREGON COASTAL"
+              ),
             se.fit = TRUE
           )[["se.fit"]]        
       ) %>%
@@ -2512,11 +2393,15 @@ sf_culv %>%
           mod_full,
           sf_culv %>% 
             mutate(
-              project_year = 2015, 
+              project_year = 2015,
+              # bankfull_width = 30,
+              # slope = 0.02,
+              # here_speed = "3",
               n_worksites = 1,
               tot_dist = 0,
               project_source = "OWRI",
-              basin = "SOUTHERN OREGON COASTAL")
+              # basin = "SOUTHERN OREGON COASTAL"
+            )
         )
       ),
     se_2015_owri = 
@@ -2528,7 +2413,8 @@ sf_culv %>%
             n_worksites = 1,
             tot_dist = 0,
             project_source = "OWRI",
-            basin = "SOUTHERN OREGON COASTAL"),
+            # basin = "SOUTHERN OREGON COASTAL"
+          ),
         se.fit = TRUE
       )[["se.fit"]]        
   ) %>%
@@ -2536,29 +2422,35 @@ sf_culv %>%
   rename(Basin = basin) %>%
   group_by(Basin) %>%
   summarize(
+    yhat_sort = mean(yhat_2015_owri),
     `Mean Predicted Value` = comma(round(mean(yhat_2015_owri))),
     `Predicted Value Coefficient of Variation` = round(sd(yhat_2015_owri)/mean(yhat_2015_owri), 3),
-    `Mean Prediction Standard Error` = round(mean(se_2015_owri), 3)
+    `Mean Prediction Standard Error (log scale)` = round(mean(se_2015_owri), 3),
+    `Mean Absolute Residual (log scale)` = round(mean(abs(residuals)), 3),
+    `N` = n()
     ) %>%
-  arrange(`Mean Predicted Value`) %>%
+  arrange(yhat_sort) %>%
+  select(-yhat_sort) %>%
   kable(
     caption = "Prediction charactaristics across basins",
     escape = FALSE,
-    align = "lccc"
+    align = "lccccc"
   ) %>%
   kable_styling("hover", fixed_thead = TRUE)
 
 #' The mean predicted value by basin indicates basins where culverts are more or
-#' less expensive. Southern Oregon Coastal culvert worksites are the most
-#' expensive, while John Day basin worksites are the least expensive. The
-#' predicted value coefficient of variation shows where costs vary the most
-#' *within* a basin on a consistent scale. Costs vary the most within the Upper
-#' Columbia basin, and the least in the John Day basin. Finally, the mean
-#' prediction standard error shows where model uncertainty is highest. As
-#' observed on the map, John Day and Puget Sound basins have the largest
-#' prediction standard errors, while the Western Oregon basins (Northern and
-#' Southern Oregon Coastal, and the Lower Columbaia) have the smallest.  
-#'   
+#' less expensive based on landscape conditions (fixed and project effects
+#' fixed). Puget Sound culvert worksites are the most expensive, while Northern
+#' Oregon Coastal worksites are the least expensive. The predicted value
+#' coefficient of variation shows where costs vary the most *within* a basin on
+#' a consistent scale. Costs vary the most within the Upper Columbia basin, and
+#' the least in the John Day basin. Finally, the mean prediction standard error
+#' shows where model uncertainty is highest. As observed on the map, Middle and
+#' Upper Columbia, and Puget Sound basins have the largest prediction standard
+#' errors, while the Western Oregon basins (Northern and Southern Oregon
+#' Coastal, and the Lower Columbaia) have the smallest, likely because these
+#' basins are releatively well-represented in the sample.  
+#' 
 
 
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
@@ -2588,8 +2480,7 @@ sf_culv %>%
 #' by also examining the distributions of subsets of worksites by region and year.
 
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
-fig_costbeni <-
-  sf_culv %>% 
+sf_culv %>% 
   bind_cols(
     yhat_2015_owri = 
       exp(
@@ -2616,27 +2507,23 @@ fig_costbeni <-
     x = yhat_2015_owri,
     y = upst_dist,
     # y = tot_stream_length,
-    # color = basin
+    color = basin
   ) + 
-  geom_point(size = 0.5) +
+  geom_point() +
   scale_y_log10("Total upstream length (km)", label = label_comma(1)) +
   scale_x_log10("Cost per culvert (K $USD)", label = label_dollar(1, scale = 0.001)) +
   # scale_color_fermenter("Project year", palette = "Spectral", show.limits = TRUE, guide = guide_colorsteps(barwidth = 10, title.position = "top")) +
   scale_color_brewer(type = "qual", palette = 2) +
-  theme_clean() +
   theme(
     aspect.ratio = 1,
     legend.position = "none",
     plot.title.position = "plot",
-    panel.grid.major.y = element_blank(),
-    text = element_text(size = 8),
-    axis.text = element_text(size = 6),
-    axis.title = element_text(size = 6),
-    strip.text = element_text(size = 8),
-    plot.background = element_blank()
-  ) 
+    text = element_text(size = 18),
+    axis.text = element_text(size = 10),
+    strip.text = element_text(size = 10)
+  ) +
   # facet_wrap("basin") +
-  # ggtitle("Worksites in cost - benefit space", "Both on a log scale for clarity; Colors indicate basin") +
+  ggtitle("Worksites in cost - benefit space", "Both on a log scale for clarity; Colors indicate basin")
   # coord_fixed(1000/4500)
 
 sf_culv %>% 
@@ -2674,6 +2561,7 @@ sf_culv %>%
   # scale_color_fermenter("Project year", palette = "Spectral", show.limits = TRUE, guide = guide_colorsteps(barwidth = 10, title.position = "top")) +
   scale_color_brewer(type = "qual", palette = 2) +
   theme(
+    aspect.ratio = 1,
     legend.position = "none",
     plot.title.position = "plot",
     text = element_text(size = 18),
@@ -2681,8 +2569,7 @@ sf_culv %>%
     strip.text = element_text(size = 10)
   ) +
   facet_wrap("basin") +
-  ggtitle("Worksites in cost - benefit space, by basin", "Both on a log scale for clarity; Colors indicate basin") +
-  coord_fixed(1000/4500)
+  ggtitle("Worksites in cost - benefit space, by basin", "Both on a log scale for clarity; Colors indicate basin") 
 
 sf_culv %>% 
   bind_cols(
@@ -2719,6 +2606,7 @@ sf_culv %>%
   # scale_color_fermenter("Project year", palette = "Spectral", show.limits = TRUE, guide = guide_colorsteps(barwidth = 10, title.position = "top")) +
   scale_color_brewer(type = "qual", palette = 2) +
   theme(
+    aspect.ratio = 1,
     legend.position = "none",
     plot.title.position = "plot",
     text = element_text(size = 18),
@@ -2726,14 +2614,13 @@ sf_culv %>%
     strip.text = element_text(size = 10)
   ) +
   facet_wrap("project_year", nrow = 3) +
-  ggtitle("Worksites in cost - benefit space, by year", "Both on a log scale for clarity; Colors indicate basin") +
-  coord_fixed(1000/4500)
+  ggtitle("Worksites in cost - benefit space, by year", "Both on a log scale for clarity; Colors indicate basin") 
 # coord_fixed(0.75)
 
-#' No evidence that projects are selected on cost or benefit-cost ratio basis.
+#' No strong evidence that projects are selected on cost or benefit-cost ratio basis.
 #' It does somewhat appear that the observed projects follow a benefit targeting
 #' pattern with a fairly low benefit cut-off. For Lower Columbia, Upper
-#' Columbia, and Washington Coastal basins, there appears to be a slight upward
+#' Columbia, and Washington Coastal, and Puget Sound basins, there appears to be a slight upward
 #' tilt in the higher-cost region, indicating that benefit-cost targeting may be
 #' more frequent for higher-cost projects.  
 #' 
@@ -2748,360 +2635,6 @@ sf_culv %>%
 #' ## Key findings  
 #'   
 
-# Abstract Figures ----
-df_margeff_slopebfi <-
-  bind_rows(
-    margins(
-      mod_full, 
-      variables = c("bankfull_width"), 
-      change = "sd", 
-      vcov = vcovCL(mod_full, ~ project_id, "HC3"),
-      at = list("slope" = c(0.005, 0.10))
-    ) %>% summary %>% clean_names() %>% rename(
-      at = slope,
-      estimate = ame,
-      conf.low = lower,
-      conf.high = upper
-    ) %>% rowwise() %>% mutate(at = paste("Stream slope =", at), across(c(estimate, conf.low, conf.high), exp), p.value = I(p < 0.05)),
-    margins(
-      mod_full, 
-      variables = c("slope"), 
-      change = "sd", 
-      vcov = vcovCL(mod_full, ~ project_id, "HC3"),
-      at = list("bankfull_width" = c(3.8, 11.9))
-    ) %>% summary %>% clean_names() %>% rename(
-      at = bankfull_width,
-      estimate = ame,
-      conf.low = lower,
-      conf.high = upper
-    ) %>% rowwise() %>% mutate(at = paste("Bankfull width =", at, "m"), across(c(estimate, conf.low, conf.high), exp), p.value = I(p < 0.05), factor = "Stream slope")
-  ) %>% select(factor, at, estimate, conf.low, conf.high, p.value) %>% mutate(factor = str_to_sentence(factor) %>% str_replace("_", " "))
-
-
-
-(
-  fig_margeff <-
-    (
-      df_margeff_all <-
-        bind_rows(
-          # df_margeff_slopebfi,
-          df_margeff %>% select(model:p.value),
-          df_margeff_land %>% rename(factor = nlcd_current) %>% rowwise() %>% mutate(p.value = !str_detect(mod.color, "nosig"), mod.color = NULL, factor = paste("Land cover:", factor)),
-          df_margeff_roads %>% rename(factor = here_var) %>% rowwise() %>% mutate(p.value = !str_detect(mod.color, "nosig"), mod.color = NULL),
-          df_margeff_scope %>% rename(factor = action_var) %>% rowwise() %>% mutate(p.value = !str_detect(mod.color, "nosig"), mod.color = NULL)
-        ) %>%
-        ungroup() %>%
-        # filter(factor != "Metal materials suppliers") %>%
-        mutate(
-          group =
-            case_when(
-              factor %in% c("Bankfull width",
-              "Stream slope") ~ "Hydro",
-              factor %in% c("Terrain slope",
-              "Elevation") ~ "Terrain",
-              factor %in% c("Brick, concrete, and related materials suppliers",
-              "Construction equipment suppliers",
-              "Sand and gravel sales yards",
-              "Metal materials suppliers") ~ "Economic",
-              factor %in% c("Ag/forestry employment",
-              "Construction employment") ~ "Economic",
-              factor %in% c("Number of worksites",
-              "Distance between worksites",
-              "Culvert removal",
-              "Culvert installation") ~ "Project",
-              factor %in% c("Managed by individual or company",
-              "Managed by industry",
-              "Managed by non-industrial owner") ~ "Population",
-              factor %in% c("Housing density",
-              "Distance to urban area") ~ "Population",
-              factor %in% c("Land cover: Developed",
-              "Land cover: Herbaceous",
-              "Land cover: Planted-cultivated",
-              "Land cover: Shrubland",
-              "Land cover: Wetlands") ~ "Terrain",
-              factor %in% c(
-              "Road paved",
-              "Road speed class: 3",
-              "Road speed class: 4",
-              "Road speed class: 5",
-              "Road speed class: 6",
-              "Road speed class: 7") ~ "Road"
-            ),
-          group =
-            ordered(group) %>%
-            fct_relevel(.,
-                        "Hydro",
-                        "Road",
-                        "Terrain",
-                        "Population",
-                        "Economic",
-                        "Project"
-                        ),
-          factor = case_when(factor == "Brick, concrete, and related materials suppliers" ~ "Concrete suppliers",
-                             TRUE ~ factor),
-          factor = 
-            ordered(factor) %>%
-            fct_recode(.,
-                       "Road speed class: 55-64 mph" = "Road speed class: 3",
-                       "Road speed class: 41-54 mph" = "Road speed class: 4",
-                       "Road speed class: 31-40 mph" = "Road speed class: 5",
-                       "Road speed class: 21-30 mph" = "Road speed class: 6",
-                       "Road speed class: 6-20 mph" = "Road speed class: 7"
-            ) %>%
-            fct_relevel(.,
-                        "Bankfull width",
-                        "Stream slope",
-                        "Road speed class: 55-64 mph",
-                        "Road speed class: 41-54 mph",
-                        "Road speed class: 31-40 mph",
-                        "Road speed class: 21-30 mph",
-                        "Road speed class: 6-20 mph",
-                        "Road paved",
-                        "Terrain slope",
-                        "Elevation",
-                        "Land cover: Planted-cultivated",
-                        "Land cover: Developed",
-                        "Land cover: Shrubland",
-                        "Land cover: Wetlands",
-                        "Land cover: Herbaceous",
-                        "Managed by individual or company",
-                        "Managed by industry",
-                        "Managed by non-industrial owner",
-                        "Housing density",
-                        "Distance to urban area",
-                        "Ag/forestry employment",
-                        "Construction employment",
-                        "Sand and gravel sales yards",
-                        "Metal materials suppliers",
-                        "Construction equipment suppliers",
-                        "Concrete suppliers",
-                        "Number of worksites",
-                        "Distance between worksites",
-                        "Culvert removal",
-                        "Culvert installation"
-
-                        
-            ) %>%
-            fct_rev(.)
-        )
-    ) %>%
-    ggplot() +
-    geom_vline(xintercept = 1, linetype = "dashed", size = 0.5) +
-    geom_pointrange(
-      aes(
-        y = factor,
-        x = estimate,
-        group = estimate,
-        xmin = conf.low,
-        xmax = conf.high,
-        color = p.value,
-        fill = p.value,
-        # shape = at
-      ),
-      size = 0.75,
-      position = position_dodge(width = 0.6)
-    ) +
-    scale_x_continuous(
-      limits = c(
-        0.05, 22
-      ),
-      breaks =
-        c(
-          # 0.25,
-          0.5,
-          1,
-          1.5,
-          2,
-          3,
-          # 4,
-          # 5,
-          6,
-          12,
-          18
-        ),
-      labels =
-        c(
-          # "x0.25",
-          "x0.5",
-          "x1",
-          "x1.5",
-          "x2",
-          "x3",
-          # "x4",
-          # "x5",
-          "x6",
-          "x12",
-          "x18"
-        )
-    ) +
-    ggbreak::scale_x_break(c(3.5, 4), scales = 0.5) +
-    # geom_label(
-    #   aes(
-    #     y = factor,
-    #     label = round(estimate, 2)
-    #   ),
-    #   x = 0.1
-    # ) +
-    # geom_text(
-    #   aes(
-    #     y = factor,
-    #     label = at,
-  #     group = estimate,
-  #     x = estimate + 1
-  #   ),
-  #   position = position_dodge(width = 0.6)
-  # ) +
-  # scale_shape_manual(
-  #   values = c("Stream slope = 0.1" = 22, "Stream slope = 0.005" = 23, "Bankfull width = 11.9 m" = 24, "Bankfull width = 3.8 m" = 25),
-  #   breaks = c("Stream slope = 0.1", "Stream slope = 0.005", "Bankfull width = 11.9 m", "Bankfull width = 3.8 m"),
-  #   labels = c(
-  #     "Stream slope = 0.1 (90%-tile)",
-  #     "Stream slope = 0.005 (10%-tile)",
-  #     "Bankfull width = 11.9 m (90%-tile)",
-  #     "Bankfull width = 3.8 m (10%-tile)"
-  #     ),
-  #   na.value = 16,
-  #   guide = guide_legend(title = NULL, override.aes = list(fill = "darkolivegreen3", color = "darkolivegreen3"))
-  # ) +
-    scale_color_manual(values = c("darkolivegreen3", "darkgreen", "grey60", "grey80"), guide = NULL) +
-    scale_fill_manual(values = c("darkolivegreen3", "darkgreen", "grey60", "grey80"), guide = NULL) +
-    labs(
-      y = NULL, 
-      x = "Cost multiplier"
-      # title = "NLCD land cover effects",
-      # title = "Standardized cost multipliers for culvert projects",
-      # subtitle = "Project average costs relative to Forest",
-      # caption = str_wrap(paste0("Adj. R-squared = ", mod_full %>% glance() %>% pull(adj.r.squared) %>% round(3), "; N = ", mod_full %>% glance() %>% pull(nobs) %>% comma(), "; Lines indicate 90-percent confidence intervals"), 100)
-    ) +
-    facet_grid(rows = "group", scales = "free_y", space = "free_y", switch = "y") +
-    theme_clean() +
-    # xlim(0.1, 5.1) +
-    theme(
-      # legend.position = c(0.7, 0.5),
-      legend.position = "none",
-      legend.background = element_rect(fill = "white", color = "black"),
-      # strip.background = element_blank(),
-      # strip.text.x = element_blank(),
-      panel.grid.major.y = element_blank(),
-      panel.grid.major.x = element_line(color = "grey20", size = 0.5, linetype = "dotted"),
-      plot.background = element_rect(color = NA),
-      plot.title.position = "plot",
-      plot.caption.position = "plot",
-      # text = element_text(size = 20),
-      # plot.title = element_text(size = 24),
-      # axis.text = element_text(size = 20),
-      # axis.title = element_text(size = 20),
-      # legend.text = element_text(size = 20),
-      # legend.key.size = unit(0.75, "pt"),
-      strip.placement = "outside",                      # Place facet labels outside x axis labels.
-      strip.background = element_rect(fill = "white"),  # Make facet label background white.
-      axis.title.y = element_blank(),
-      legend.spacing.x = unit(1, "cm"),
-      # legend.spacing.y = unit(2, "cm")
-      legend.key = element_rect(size = 5),
-      legend.key.size = unit(2, 'lines')
-    )
-)
-
-cowplot::save_plot(plot = fig_margeff, filename = here("output/figs/culverts/fig_margeff.png"), base_width = 6.5, base_height = 7.5)
-
-# Final figure
-cowplot::plot_grid(
-  fig_margeff,
-  cowplot::plot_grid(
-    fig_predvalues,
-    fig_costbeni,
-    nrow = 2,
-    labels = c("B", "C")
-  ),
-  nrow = 1, labels = c("A", ""), rel_widths = c(0.6, 0.4)
-) %>% cowplot::save_plot(plot = ., filename = here("output/figs/culverts/fig_abstract.png"), base_width = 6.5, base_height = 4.5)
-
-# Proposal app mock-up maps
-# Load injunction area map
-sf_injunction <- read_sf(here("data/WSDOT_-_Fish_Passage_US_v._WA_Case_Area_Boundary-shp"))
-sf_injunction <- sf_injunction %>% clean_names() %>% st_transform(st_crs(sf_base))
-
-(
-fig_mapmockup <-
-  base_map_draft +
-  # base_map +
-  geom_sf(
-    aes(
-      # color = Ownership
-    ),
-    data = sf_allculv_wdfw,
-    size = 0.1,
-    # color = "grey60"
-  ) +
-  geom_sf(data = sf_injunction, fill = NA, color = "red") +
-  scale_color_manual(values = c("State" = "grey40", "County" = "grey60", "Other" = "grey80"), breaks = c("County", "State", "Other"), guide = guide_legend(override.aes = list(size = 1))) +
-
-  # ggtitle(
-  #   "Map of predicted values",
-  #   str_wrap("Year set to 2015, source set to OWRI, basin set to Southern Oregon Coastal, and number of culverts set to one for all worksites; Red boarders indicate basin (HUC6) boundaries for included basins")
-  # ) +
-  coord_sf(
-    xlim = c(-125, -120.1),
-    ylim = c(46.25, 49.2),
-    expand = FALSE
-  ) +
-  theme(
-    legend.position = "none",
-    legend.background = element_rect(color = "white", size = 0), 
-    legend.key.size = unit(0.3, "pt"), 
-    legend.title = element_text(size = 6),
-    legend.box.spacing = unit(0, "pt")
-  )
-)
-(
-fig_mapmockup_select <-
-  fig_mapmockup +
-  geom_sf(
-    aes(
-      # color = Ownership
-    ),
-    data = sf_allculv_wdfw %>% st_join(sf_injunction, join = st_within) %>% filter(
-      # county_name == "Kitsap", 
-      Ownership == "State",
-      !is.na(shape_st_are)
-    ),
-    size = 0.6,
-    color = "blue"
-  ) +
-    coord_sf(
-      xlim = c(-125, -120.1),
-      ylim = c(46.25, 49.2),
-      expand = FALSE
-    )
-)
-(
-  fig_mapmockup_select2 <-
-    fig_mapmockup_select +
-    geom_sf(
-      aes(
-        # color = Ownership
-      ),
-      data = sf_allculv_wdfw %>% st_join(sf_injunction, join = st_within) %>% filter(
-        # county_name == "Kitsap", 
-        Ownership == "State",
-        !is.na(shape_st_are)
-      ) %>% sample_n(30),
-      size = 1,
-      color = "green"
-    ) +
-    coord_sf(
-      xlim = c(-125, -120.1),
-      ylim = c(46.25, 49.2),
-      expand = FALSE
-    )
-)
-
-cowplot::save_plot(here("output/figs/fig_mapmockup.png"), fig_mapmockup, base_height = 5)
-cowplot::save_plot(here("output/figs/fig_mapmockup_select.png"), fig_mapmockup_select, base_height = 5)
-cowplot::save_plot(here("output/figs/fig_mapmockup_select2.png"), fig_mapmockup_select2, base_height = 5)
-
-
 # Key findings ----
 
 #' 1. Stream features slope and bankfull width increase average costs, especially when they are both high.  
@@ -3110,24 +2643,22 @@ cowplot::save_plot(here("output/figs/fig_mapmockup_select2.png"), fig_mapmockup_
 
 #' 3. Some evidence of economies of scale, in that worksites associated with
 #' projects associated with more worksites tend to have lower average costs.
-#' This effect is countered by a postive association between costs and total
+#' This effect is countered by a positive association between costs and total
 #' distance between worksites.  
 
-#' 4. John Day basin worksites are the lowest cost and lowest variance in costs
-#' between worksites. However, the model error is also highest in this basin.
-#' Costs are highest in the Southern Oregon Coastal and Washington Coastal
-#' basins. Cost variance is also particularly high in the Upper Columbia.  
+#' 4. John Day basin worksites are the lowest variance in costs between
+#' worksites, while Northern Oregon Coastal worksites have the lowest costs
+#' overall. Costs are highest in the Puget Sound and Washington Coastal basins.
+#' Cost variance is also particularly high in the Upper Columbia and Willamette
+#' basins.
 
 #+
 #' ## Next steps  
 #'   
 # Next steps ----
-#' 1. More variables: additional population proximity measures, including distance to materials suppliers (gravel, pavement, metal, machinary, etc.) and parcel density data  
-#' 2. Improved benefit estimates: total upstream distance by species and habitat use, accounting for upstream/downstream blockages, habitat potential measures, etc.  
-#' 3. Forecast costs/benefits for culvert inventories from Oregon and Washington  
-#' 4. Integrate Lorenz curve and Gini coefficient analysis from Babcock et al. (1997) for more consistent comparison between cost and benefit concentration among worksites  
-#' 5. Highlight distribution of high-benefit/low-cost projects relative to traditional tribal lands, different recreational fishing areas, etc.  
-#' 6. Analyze how outcomes (cost/benefit targeting efficiency relative to ratio targeting, cost levels/variation, model uncertainty) across culvert ownership, jursdictions  
+#' 1. Forecast costs/benefits for culvert inventories from Oregon and Washington  
+#' 2. Compare results of OLS estimates to estimates of models with spatial lags, and machine learning methods (boosted regression trees)
+#' 3. Analyze how outcomes (cost/benefit targeting patterns, cost levels/variation, model uncertainty) across culvert ownership, jurisdictions  
 #' 
 
 

@@ -23,7 +23,7 @@ key_nlcd <-
     here(
       "/data/Culverts spatial overlays v 20Jan2021.xlsx"
     ), 
-    sheet = 3
+    sheet = 4
   ) %>% 
   as_tibble() %>%
   clean_names() %>%
@@ -113,6 +113,48 @@ sf_allculv_wdfw <-
 
 # Load models and predictions
 mod_brt <- read_rds(here("output/costfits/boostedregression.rds"))
+key_nlcd <-
+  read_xlsx(
+    here(
+      "/data/Culverts spatial overlays v 20Jan2021.xlsx"
+    ), 
+    sheet = 4
+  ) %>% 
+  as_tibble() %>%
+  clean_names() %>%
+  rename(
+    nlcd_current_class = class,
+    nlcd_current_fullclass = classification
+  ) %>%
+  mutate(across(where(is_character), str_to_sentence)) %>%
+  filter(across(description, ~!str_detect(., "Alaska only"))) %>%
+  select(-description)
+
+df_culv <-
+  read_csv(here("output", "culverts_pure_modelling.csv")) %>%
+  # Relevel factors following D. module
+  mutate(
+    project_year = ordered(project_year),
+    project_source = relevel(factor(project_source), ref = "OWRI"),
+    basin = relevel(factor(basin), ref = "SOUTHERN OREGON COASTAL"),
+    fips = factor(fips),
+    state_fips = factor(state_fips),
+    here_class = as.character(here_class),
+    here_speed = relevel(factor(here_speed), ref = 6),
+    tot_dist = I(n_worksites * dist_mean)
+  ) %>%
+  left_join(
+    key_nlcd, 
+    by = c("nlcd_current" = "value")
+  ) %>%
+  filter(
+    !(nlcd_current_class %in% c("Barren", "Water")),
+    tot_dist < 10000
+  ) %>%
+  mutate(
+    nlcd_current_class = relevel(factor(nlcd_current_class), ref = "Forest")
+  )
+
 sf_culv_preds <-
   df_culv %>%
   modelr::add_predictions(mod_brt, var = "costpred_brt_true") %>%
@@ -311,13 +353,14 @@ map_costpreds <-
     size = 0.8*scale_big
   ) +
   scale_bar(
-    lon = xmin_big + 0.15,
-    lat = ymin_big + 0.1,
-    distance_lon = 30,
-    distance_lat = 5,
-    distance_legend = -5,
+    lon = xmin_full + 0.4,
+    lat = ymin_full + 0.25,
+    distance_lon = 50,
+    distance_lat = 15,
+    distance_legend = -10,
+    legend_size = 3,
     # orientation = FALSE,
-    arrow_length = 30, arrow_distance = 10, arrow_north_size = 6
+    arrow_length = 100, arrow_distance = 40, arrow_north_size = 5
   ) +
   scale_size_manual(
     values = c(
@@ -401,11 +444,25 @@ map_full_base <-
       # color = exp(costpred_brt),
       color = ownership
     ),
-    data = sf_inv_preds_barrier,
+  #   palette = "RdYlGn",
+  #   limits = c(2000, 650000),
+  #   labels = dollar_format(accuracy = 1),
+  #   # breaks = c(30000, 50000, 100ta = sf_inv_preds_barrier,
     size = 1,
     # color = "grey60"
+  data = sf_inv_preds_barrier
   ) +
   geom_sf(data = sf_basin, fill = NA, color = "red") +
+  scale_bar(
+    lon = xmin_full + 0.4,
+    lat = ymin_full + 0.25,
+    distance_lon = 50,
+    distance_lat = 15,
+    distance_legend = -10,
+    legend_size = 3,
+    # orientation = FALSE,
+    arrow_length = 100, arrow_distance = 40, arrow_north_size = 5
+  ) +
   scale_color_manual(
     "Ownership entity",
     values = c("State" = "grey40", "County" = "grey60", "Other" = "grey80"), 
@@ -415,11 +472,7 @@ map_full_base <-
   # scale_color_distiller(
   #   "Predicted cost",
   #   # palette = "YlGn",
-  #   # palette = "Spectral",
-  #   palette = "RdYlGn",
-  #   limits = c(2000, 650000),
-  #   labels = dollar_format(accuracy = 1),
-  #   # breaks = c(30000, 50000, 100000, 300000),
+  #   # palette = "Spectral",000, 300000),
   #   direction = -1,
   #   trans = "log10",
   #   na.value = "grey70",
@@ -434,12 +487,67 @@ map_full_base <-
   theme_map_custom() +
   theme(
     # legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
-    legend.background = element_rect(color = "black"), 
+    legend.background = element_rect(color = "white"), 
     legend.key.size = unit(0.3, "pt"),
     legend.box = "vertical",
     # legend.title = element_text(size = 8),
     # legend.text = element_text(size = 6)
   )
+
+# Load data
+key_nlcd <-
+  read_xlsx(
+    here(
+      "/data/Culverts spatial overlays v 20Jan2021.xlsx"
+    ), 
+    sheet = 4
+  ) %>% 
+  as_tibble() %>%
+  clean_names() %>%
+  rename(
+    nlcd_current_class = class,
+    nlcd_current_fullclass = classification
+  ) %>%
+  mutate(across(where(is_character), str_to_sentence)) %>%
+  filter(across(description, ~!str_detect(., "Alaska only"))) %>%
+  select(-description)
+df_culv <-
+  read_csv(here("output", "culverts_pure_modelling.csv")) %>%
+  mutate(
+    # project_year = ordered(project_year),
+    project_source = relevel(factor(project_source), ref = "OWRI"),
+    basin = relevel(factor(basin), ref = "SOUTHERN OREGON COASTAL"),
+    fips = factor(fips),
+    state_fips = factor(state_fips),
+    here_class = as.character(here_class),
+    here_speed = relevel(factor(here_speed), ref = 6),
+    tot_dist = I(n_worksites * dist_mean)
+  ) %>%
+  left_join(
+    key_nlcd, 
+    by = c("nlcd_current" = "value")
+  ) %>%
+  filter(
+    !(nlcd_current_class %in% c("Barren", "Water")),
+    tot_dist < 10000
+  ) %>%
+  mutate(
+    nlcd_current_class = relevel(factor(nlcd_current_class), ref = "Forest")
+  )
+sf_culv <-
+  df_culv %>%
+  drop_na(
+    cost_per_culvert, n_culverts, dist_mean, n_worksites, action_fishpass_culvinst_prj, action_fishpass_culvrem_prj,
+    slope, bankfull_width, here_class, cat_basin_slope, cat_elev_mean, ua_dist, here_paved, nlcd_current_class, hdens_cat, emp_const, emp_agforest, basin, project_year, project_source
+  ) %>%
+  mutate(
+    latlong = str_sub(geometry, 3, nchar(geometry)-1),
+    long = as.numeric(stringr::word(latlong, 1, sep = ", ")),
+    lat = as.numeric(stringr::word(latlong, 2, sep = ", ")),
+    latlong = NULL,
+    geometry = NULL
+  ) %>%
+  st_as_sf(coords = c("long", "lat")) %>% st_set_crs("WGS84")
 
 map_full_base_sample <-
   map_full_base +
@@ -448,7 +556,7 @@ map_full_base_sample <-
       # fill = exp(costpred_brt)
       fill = cost_per_culvert
     ),
-    data = sf_culv_preds,
+    data = sf_culv,
     shape = 21,
     color = "black",
     stroke = 0.1,
@@ -459,7 +567,7 @@ map_full_base_sample <-
     "Reported cost",
     # palette = "YlGn",
     # palette = "Spectral",
-    palette = "RdYlGn",
+    palette = "RdBu",
     limits = c(2000, 650000),
     labels = dollar_format(accuracy = 1),
     # breaks = c(30000, 50000, 100000, 300000),
@@ -479,7 +587,7 @@ map_full_preds_base <-
   geom_sf(data = sf_base, fill = "antiquewhite1", color = "black") +
   geom_sf(
     aes(
-      color = exp(costpred_brt),
+      color = exp(costpred_brt) %>% percent_rank(),
       # color = ownership
     ),
     data = sf_inv_preds_barrier,
@@ -493,21 +601,50 @@ map_full_preds_base <-
   #   breaks = c("County", "State", "Other"), 
   #   guide = guide_legend(override.aes = list(size = 3))
   # ) +
-  scale_color_distiller(
-    "Predicted cost\npercentile",
-    # palette = "YlGn",
-    # palette = "Spectral",
-    palette = "RdYlGn",
-    # limits = c(2000, 650000),
-    # labels = dollar_format(accuracy = 1),
-    breaks = quantile(exp(sf_inv_preds$costpred_brt), probs = c(0.05, seq(0, 1, 0.2), 0.95)),
-    limits = c(min(exp(sf_inv_preds$costpred_brt)), max(exp(sf_inv_preds$costpred_brt))),
-    direction = -1,
-    trans = "log10",
-    na.value = "grey70",
-    # guide = guide_none()
-    guide = guide_colorbar(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
+  scale_bar(
+    lon = xmin_full + 0.4,
+    lat = ymin_full + 0.25,
+    distance_lon = 50,
+    distance_lat = 15,
+    distance_legend = -10,
+    legend_size = 2,
+    # orientation = FALSE,
+    arrow_length = 100, arrow_distance = 40, arrow_north_size = 5
   ) +
+  scale_color_fermenter(
+    "Predicted cost\npercentile",
+    palette = "RdBu", 
+    direction = -1, 
+    breaks = extended_breaks(7),
+    limits = c(0.01, 0.99),
+    labels = scales::percent_format(1),
+    # breaks = 
+    #   c(0, seq(9, 12, 1), Inf),
+    # quantile(
+    #   sf_inv_preds$costpred_ols, 
+    #   probs = seq(0, 1, 0.2),
+    #   na.rm = TRUE
+    # ),
+    # labels = function(x) exp(x) %>% dollar(),
+    na.value = NA,
+    # guide = guide_colorsteps(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
+    guide = guide_colorsteps(barheight = unit(20, "pt"), barwidth = unit(120, "pt"))
+  ) +
+  # scale_color_distiller(
+  #   "Predicted cost\npercentile",
+  #   # palette = "YlGn",
+  #   # palette = "Spectral",
+  #   palette = "RdYlGn",
+  #   # limits = c(2000, 650000),
+  #   # labels = dollar_format(accuracy = 1),
+  #   breaks = quantile(exp(sf_inv_preds$costpred_brt), probs = c(0.05, seq(0, 1, 0.2), 0.95)),
+  #   limits = c(min(exp(sf_inv_preds$costpred_brt)), max(exp(sf_inv_preds$costpred_brt))),
+  #   direction = -1,
+  #   trans = "log10",
+  #   na.value = "grey70",
+  #   # guide = guide_none()
+  #   guide = guide_colorbar(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
+  # ) +
   coord_sf(
     xlim = c(xmin_full, xmax_full),
     ylim = c(ymin_full, ymax_full),
@@ -516,7 +653,9 @@ map_full_preds_base <-
   theme_map_custom() +
   theme(
     # legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
-    legend.background = element_rect(color = "black"), 
+    legend.direction = "horizontal",
+    legend.box = "horizontal",
+    legend.background = element_rect(color = "white"), 
     legend.key.size = unit(0.3, "pt"), 
     # legend.title = element_text(size = 8),
     # legend.text = element_text(size = 6)
@@ -540,7 +679,7 @@ map_full_preds_sample <-
     # "Reported cost",
     # palette = "YlGn",
     # palette = "Spectral",
-    palette = "RdYlGn",
+    palette = "RdBu",
     # limits = c(2000, 650000),
     # labels = dollar_format(accuracy = 1),
     breaks = quantile(exp(sf_inv_preds$costpred_brt), probs = c(0.05, seq(0, 1, 0.2), 0.95)),
@@ -638,7 +777,8 @@ sf_inv_preds_huc10 <-
     costpred_brt_coefvar = sd(exp(costpred_brt), na.rm = TRUE)/mean(exp(costpred_brt), na.rm = TRUE)
   ) %>%
   mutate(
-    costpred_brt_mean_q = percent_rank(costpred_brt_mean)
+    costpred_brt_mean_q = percent_rank(costpred_brt_mean),
+    costpred_brt_mean_std = costpred_brt_mean / max(costpred_brt_mean)
   ) %>%
   right_join(sf_huc10, by = "huc10")
 
@@ -654,11 +794,23 @@ map_full_preds_mean <-
     alpha = 0.75
   ) +
   geom_sf(data = sf_basin, fill = NA, color = "red") +
+  # scale_bar(
+  #   lon = xmin_full + 0.4,
+  #   lat = ymin_full + 0.25,
+  #   distance_lon = 50,
+  #   distance_lat = 15,
+  #   distance_legend = -10,
+  #   legend_size = 3,
+  #   # orientation = FALSE,
+  #   arrow_length = 100, arrow_distance = 40, arrow_north_size = 5
+  # ) +
   theme_map_custom() +
   theme(
     # legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
-    legend.background = element_rect(color = "black"), 
-    legend.key.size = unit(0.3, "pt"), 
+    legend.direction = "horizontal",
+    legend.background = element_rect(color = "white"), 
+    legend.key.size = unit(0.3, "pt"),
+    legend.box = "horizontal"
     # legend.title = element_text(size = 8),
     # legend.text = element_text(size = 6)
   ) + 
@@ -666,10 +818,10 @@ map_full_preds_mean <-
     xlim = c(xmin_full, xmax_full),
     ylim = c(ymin_full, ymax_full),
     expand = FALSE
-  )  + 
+  ) + 
   scale_fill_fermenter(
     "Predicted cost\npercentile",
-    palette = "RdYlGn", 
+    palette = "RdBu", 
     direction = -1, 
     breaks = extended_breaks(7),
     limits = c(0.01, 0.99),
@@ -683,7 +835,8 @@ map_full_preds_mean <-
     # ),
     # labels = function(x) exp(x) %>% dollar(),
     na.value = NA,
-    guide = guide_colorsteps(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
+    # guide = guide_colorsteps(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
+    guide = guide_colorsteps(barheight = unit(20, "pt"), barwidth = unit(120, "pt"))
   )
 
 ggsave(
@@ -706,10 +859,22 @@ map_full_preds_var <-
     alpha = 0.75
   ) +
   geom_sf(data = sf_basin, fill = NA, color = "red") +
+  # scale_bar(
+  #   lon = xmin_full + 0.4,
+  #   lat = ymin_full + 0.25,
+  #   distance_lon = 50,
+  #   distance_lat = 15,
+  #   distance_legend = -10,
+  #   legend_size = 3,
+  #   # orientation = FALSE,
+  #   arrow_length = 100, arrow_distance = 40, arrow_north_size = 5
+  # ) +
   theme_map_custom() +
   theme(
     # legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
-    legend.background = element_rect(color = "black"), 
+    legend.direction = "horizontal",
+    legend.box = "horizontal",
+    legend.background = element_rect(color = "white"), 
     legend.key.size = unit(0.3, "pt"), 
     # legend.title = element_text(size = 8),
     # legend.text = element_text(size = 6)
@@ -721,7 +886,7 @@ map_full_preds_var <-
   )  + 
   scale_fill_fermenter(
     "Predicted cost\nvariability",
-    palette = "RdYlGn", 
+    palette = "PuOr", 
     direction = -1, 
     breaks = extended_breaks(7),
     limits = c(0.01, 0.99),
@@ -734,13 +899,21 @@ map_full_preds_var <-
     # ),
     # labels = function(x) exp(x) %>% dollar(),
     na.value = NA,
-    guide = guide_colorsteps(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
+    # guide = guide_colorsteps(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
+    guide = guide_colorsteps(barheight = unit(20, "pt"), barwidth = unit(120, "pt"))
   )
 
 ggsave(
   here("output/figs/fig_culvpreds_var.png"),
   map_full_preds_var,
   height = 7.5,
+  width = 6.5
+)
+
+ggsave(
+  here("output/figs/fig_culvpreds_composite.png"),
+  ((map_full_preds_base | (map_full_preds_mean / map_full_preds_var)) + plot_layout(widths = c(2, 1))) / guide_area() + plot_annotation(tag_levels = 'a') + plot_layout(guides = "collect", heights = c(6, 1)) & theme(legend.box = "horizontal"),
+  height = 7,
   width = 6.5
 )
 
@@ -770,6 +943,7 @@ sf_inv_preds_huc10_own <-
     costpred_brt_mean = mean(exp(costpred_brt), na.rm = TRUE),
     costpred_brt_coefvar = sd(exp(costpred_brt), na.rm = TRUE)/mean(exp(costpred_brt), na.rm = TRUE)
   ) %>%
+  ungroup() %>%
   mutate(
     costpred_brt_mean_q = percent_rank(costpred_brt_mean)
   ) %>%
@@ -792,7 +966,7 @@ map_full_preds_mean_own <-
   theme_map_custom() +
   theme(
     # legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
-    legend.background = element_rect(color = "black"), 
+    legend.background = element_rect(color = "white"), 
     legend.key.size = unit(0.3, "pt"), 
     # legend.title = element_text(size = 8),
     # legend.text = element_text(size = 6)
@@ -805,7 +979,7 @@ map_full_preds_mean_own <-
   )  + 
   scale_fill_fermenter(
     "Predicted cost\npercentile",
-    palette = "RdYlGn", 
+    palette = "RdBu", 
     direction = -1, 
     breaks = extended_breaks(7),
     limits = c(0.01, 0.99),
@@ -845,7 +1019,7 @@ map_full_preds_var_own <-
   theme_map_custom() +
   theme(
     # legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
-    legend.background = element_rect(color = "black"), 
+    legend.background = element_rect(color = "white"), 
     legend.key.size = unit(0.3, "pt"), 
     # legend.title = element_text(size = 8),
     # legend.text = element_text(size = 6)
@@ -858,7 +1032,7 @@ map_full_preds_var_own <-
   )  + 
   scale_fill_fermenter(
     "Predicted cost\nvariability",
-    palette = "RdYlGn", 
+    palette = "PuOr", 
     direction = -1, 
     breaks = extended_breaks(7),
     limits = c(0.01, 0.99),
@@ -881,7 +1055,13 @@ ggsave(
   width = 13
 )
 
+ggsave(
+  here("output/figs/fig_culvpreds_own_composite.png"),
+  (map_full_preds_mean_own / map_full_preds_var_own) + plot_annotation(tag_levels = "a"),
+  height = 5.5, width = 6.5
+)
 
+# __ Plot HUC10 RMSE
 sf_culv_preds_huc10 <-
   sf_culv_preds %>%
   mutate(
@@ -909,6 +1089,16 @@ map_full_preds_rmse <-
     alpha = 0.75
   ) +
   geom_sf(data = sf_basin, fill = NA, color = "red") +
+  scale_bar(
+    lon = xmin_full + 0.4,
+    lat = ymin_full + 0.25,
+    distance_lon = 50,
+    distance_lat = 15,
+    distance_legend = -10,
+    legend_size = 3,
+    # orientation = FALSE,
+    arrow_length = 100, arrow_distance = 40, arrow_north_size = 5
+  ) +
   theme_map_custom() +
   theme(
     # legend.position = c(0.97, 0.03), legend.justification = c(1, 0),
@@ -924,7 +1114,7 @@ map_full_preds_rmse <-
   )  + 
   scale_fill_fermenter(
     "RMSE",
-    palette = "RdYlGn", 
+    palette = "PiYG", 
     direction = -1, 
     breaks = extended_breaks(7),
     # limits = c(0.01, 0.99),
@@ -939,7 +1129,14 @@ map_full_preds_rmse <-
     na.value = NA,
     guide = guide_colorsteps(barwidth = unit(20, "pt"), barheight = unit(90, "pt"))
   )
-map_full_preds_rmse
+
+ggsave(
+  here("output/figs/fig_culvpreds_rmse.png"),
+  map_full_preds_rmse,
+  height = 7.5,
+  width = 6.5
+)
+
 
 # __ Plot densities of costs by ownership ----
 # Population vs. sample

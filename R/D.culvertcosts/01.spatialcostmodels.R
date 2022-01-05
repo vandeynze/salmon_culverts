@@ -402,7 +402,7 @@ key_nlcd <-
     here(
       "/data/Culverts spatial overlays v 20Jan2021.xlsx"
     ), 
-    sheet = 3
+    sheet = 4
   ) %>% 
   as_tibble() %>%
   clean_names() %>%
@@ -1148,82 +1148,89 @@ predict_cost_interaction <-
       )
   }
 
-map_df(mods, predict_cost_interaction, .id = "model") %>% 
+fig_bankfullslope <- (
+  map_df(mods, predict_cost_interaction, .id = "model") %>% 
+    
   # filter(model == "mod_full") %>%
   ggplot() +
-  aes(
-    x = slope,
-    y = bankfull_width,
-    z = predicted
-    # z = log(predicted)
-  ) +
-  geom_contour_filled(
-    breaks = c(0, c(0.25, 0.5, 0.75, 1, 1.5, 2, 2.5)*ggpredict(mod_full, "slope [mean]")["predicted"]%>%pull, Inf)
-    # breaks = log(c(0, seq(10000, 25000, 2500), Inf))
-  ) +
-  geom_contour(
-    breaks = 
-      ggpredict(
-        mod_full,
-        "slope [mean]"
-      )["predicted"],
-    color = "black",
-    linetype = "solid",
-    size = 1.5
-  ) +
-  geom_contour(
-    breaks = 
-      ggpredict(
-        mod_full,
-        "slope [mean]",
-        vcov.fun = "vcovHC",
-        vcov.type = "HC3",
-      )[c("conf.low", "conf.high")],
-    color = "black",
-    linetype = "dashed",
-    size = 1.5
-  ) +
-  scale_fill_brewer(
-    name = str_wrap("Predicted cost per culvert, relative to mean", 30),
-    direction = -1,
-    palette = "Spectral",
-    labels = c(
-      "0.25 to 0.5 x mean",
-      "0.5 to 0.75 x mean",
-      "0.75 to 1 x mean",
-      "1 to 1.5 x mean",
-      "1.5 to 2 x mean",
-      "2 to 2.5 x mean",
-      "Over 2.5 x mean"
-    )
-  ) +
-  # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
-  geom_point(
     aes(
       x = slope,
       y = bankfull_width,
-      z = NULL
-    ),
-    data = df_culv,
-    color = "grey30",
-    alpha = 0.3,
-    size = 1
-  ) +
-  theme(
-    legend.position = c(0.96, 0.96), legend.justification = c(1, 1),
-    aspect.ratio = 1,
-    panel.background = element_rect(fill = "white"),
-    text = element_text(size = 20)
-  ) +
-  labs(
-    title = wrapper("Predicted average costs by bankfull width (m) and slope (% grade)"),
-    subtitle = 
-      str_wrap(
-        "Points represent underlying observations; Lines indicates cost contour at mean slope and banfull width with 95% c.i.", 78
+      z = predicted
+      # z = log(predicted)
+    ) +
+    geom_contour_filled(
+      breaks = c(0, c(0.25, 0.5, 0.75, 1, 1.5, 2, 2.5)*ggpredict(mod_full, "slope [mean]")["predicted"]%>%pull, Inf)
+      # breaks = log(c(0, seq(10000, 25000, 2500), Inf))
+    ) +
+    geom_point(
+      aes(
+        x = slope,
+        y = bankfull_width,
+        z = NULL
       ),
-    x = "Slope",
-    y = "Bankfull width"
-  )
+      data = df_culv,
+      color = "grey30",
+      alpha = 0.3,
+      size = 1
+    ) +
+    geom_contour(
+      breaks = 
+        ggpredict(
+          mod_full,
+          "slope [mean]"
+        )["predicted"],
+      color = "black",
+      linetype = "solid",
+      size = 1
+    ) +
+    geom_contour(
+      breaks = 
+        ggpredict(
+          mod_full,
+          "slope [mean]",
+          vcov.fun = "vcovHC",
+          vcov.type = "HC3",
+        )[c("conf.low", "conf.high")],
+      color = "black",
+      linetype = "dashed",
+      # size = 1
+    ) +
+    scale_x_continuous(labels = function(x) {
+      x*100
+    }) +
+    scale_fill_brewer(
+      name = str_wrap("Predicted cost per culvert, relative to mean", 30),
+      direction = -1,
+      palette = "RdBu",
+      labels = c(
+        "0.25 to 0.5 x mean",
+        "0.5 to 0.75 x mean",
+        "0.75 to 1 x mean",
+        "1 to 1.5 x mean",
+        "1.5 to 2 x mean",
+        "2 to 2.5 x mean",
+        "Over 2.5 x mean"
+      )
+    ) +
+    # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
+
+    theme(
+      legend.position = c(0.96, 0.96), legend.justification = c(1, 1),
+      aspect.ratio = 1,
+      panel.background = element_rect(fill = "white"),
+      # text = element_text(size = 20)
+    ) +
+    labs(
+      # title = wrapper("Predicted average costs by bankfull width (m) and slope (% grade)"),
+      # subtitle = 
+      #   wrapper(
+      #     "Points represent underlying observations; Lines indicates cost contour at mean slope and banfull width with 95% c.i."),
+      x = "Slope (% grade)",
+      y = "Bankfull width (m)"
+    )
+)
+
 
 df_culv %>%
   ggplot() +
@@ -1250,7 +1257,7 @@ df_culv %>%
     ),
     direction = -1,
     labels = label_dollar(),
-    palette = "Spectral",
+    palette = "RdBu",
     # guide = "legend"
   ) +
   theme(
@@ -1278,89 +1285,100 @@ df_culv %>%
 #' 
 #+ echo=F, message=F, warning=F, fig.dim=c(8,8)
 # ____ Worksites and distance effect space ----
-
-map_df(mods, predict_cost_interaction, var1 = "n_worksites", var2 = "tot_dist", lims1 = c(0, 6), lims2 = c(0, 10000), by1 = 0.1, by2 = 100, .id = "model") %>%
-  # filter(model == "mod_full") %>%
-  ggplot() +
-  aes(
-    x = n_worksites,
-    y = tot_dist/1000,
-    z = predicted
-  ) +
-  geom_contour_filled(
-    breaks = c(0, c(0.25, 0.5, 0.75, 1, 1.5, 2, 2.5)*ggpredict(mod_full, "n_worksites [1]")["predicted"]%>%pull, Inf)
-  ) +
-  scale_fill_brewer(
-    name = str_wrap("Predicted cost per culvert, relative to mean", 30),
-    direction = -1,
-    palette = "Spectral",
-    labels = c(
-      "0.25 to 0.5 x mean",
-      "0.5 to 0.75 x mean",
-      "0.75 to 1 x mean",
-      "1 to 1.5 x mean",
-      "1.5 to 2 x mean",
-      "2 to 2.5 x mean",
-      "Over 2.5 x mean"
-    )
-  ) +
-  # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
-  geom_violin(
+fig_sitesdist <- (
+  
+  map_df(mods, predict_cost_interaction, var1 = "n_worksites", var2 = "tot_dist", lims1 = c(0, 6), lims2 = c(0, 10000), by1 = 0.1, by2 = 100, .id = "model") %>%
+    # filter(model == "mod_full") %>%
+    ggplot() +
     aes(
-      group = n_worksites,
+      x = n_worksites,
       y = tot_dist/1000,
-      z = NULL
-    ),
-    data = df_culv %>% filter(n_worksites <= 6, tot_dist <= 1e5),
-    color = "grey30",
-    alpha = 0.3
-  ) +
-  geom_point(
-    aes(x = x, y = y, shape = shape), size = 2, stroke = 2,
-    inherit.aes = FALSE,
-    data = tibble(x = c(1, 2), y = c(0, 5), shape = as.character(c(1, 4)))
-  ) +
-  geom_contour(
-    breaks = 
-      ggpredict(
-        mod_full,
-        "n_worksites [1]",
-        condition = c("tot_dist" = 0)
-      )["predicted"],
-    size = 1, color = "black",
-    linetype = "solid"
-  ) +
-  geom_contour(
-    breaks = 
-      ggpredict(
-        mod_full,
-        "n_worksites [1]",
-        condition = c("tot_dist" = 0),
-        vcov.fun = "vcovHC",
-        vcov.type = "HC3",
-      )[c("conf.low", "conf.high")],
-    color = "black",
-    linetype = "dashed"
-  ) +
-  theme(
-    legend.position = c(0.04, 0.96), legend.justification = c(0, 1),
-    aspect.ratio = 1,
-    panel.background = element_rect(fill = "white"),
-    text = element_text(size = 20)
-  ) +
-  scale_x_continuous(n.breaks = 6, limits = c(0,6)) +
-  scale_shape_manual(values = c(4, 8), guide = NULL) +
-  # scale_y_log10() +
-  labs(
-    title = str_wrap("Predicted average costs by number of worksites and total distance between worksites (km)", 65),
-    subtitle = str_wrap("Violin plots represent underlying observations"),
-    x = "Number of worksites",
-    y = "Total distance between worksites (km)"
-  )
-
-#' We can repeat the exercise for the number of worksites and total distance
-#' between worksites to examine the trade-off between economies of scale from
-#' grouping multiple worksites under one project and increased costs in
+      z = predicted
+    ) +
+    geom_contour_filled(
+      breaks = c(0, c(0.25, 0.5, 0.75, 1, 1.5, 2, 2.5)*ggpredict(mod_full, "n_worksites [1]")["predicted"]%>%pull, Inf)
+    ) +
+    scale_fill_brewer(
+      name = str_wrap("Predicted cost per culvert, relative to mean", 30),
+      direction = -1,
+      palette = "RdBu",
+      limits = c(
+        "(0, 4004]",
+        "(4004, 8007]",
+        "(8007, 12011]",
+        "(12011, 16014]",
+        "(16014, 24021]",
+        "(24021, 32028]",
+        "Blah"
+      ),
+      labels = c(
+        "0.25 to 0.5 x mean",
+        "0.5 to 0.75 x mean",
+        "0.75 to 1 x mean",
+        "1 to 1.5 x mean",
+        "1.5 to 2 x mean",
+        "2 to 2.5 x mean",
+        "Over 2.5 x mean"
+      )
+    ) +
+    # facet_wrap("model", nrow = round(sqrt(length(mods)))) +
+    geom_violin(
+      aes(
+        group = n_worksites,
+        y = tot_dist/1000,
+        z = NULL
+      ),
+      data = df_culv %>% filter(n_worksites <= 6, tot_dist <= 1e5),
+      color = "grey30",
+      alpha = 0.3
+    ) +
+    # geom_point(
+    #   aes(x = x, y = y, shape = shape), size = 2, stroke = 2,
+    #   inherit.aes = FALSE,
+    #   data = tibble(x = c(1, 2), y = c(0, 5), shape = as.character(c(1, 4)))
+    # ) +
+    geom_contour(
+      breaks = 
+        ggpredict(
+          mod_full,
+          "n_worksites [1]",
+          condition = c("tot_dist" = 0)
+        )["predicted"],
+      size = 1, color = "black",
+      linetype = "solid"
+    ) +
+    geom_contour(
+      breaks = 
+        ggpredict(
+          mod_full,
+          "n_worksites [1]",
+          condition = c("tot_dist" = 0),
+          vcov.fun = "vcovHC",
+          vcov.type = "HC3",
+        )[c("conf.low", "conf.high")],
+      color = "black",
+      linetype = "dashed"
+    ) +
+    theme(
+      legend.position = c(0.04, 0.96), legend.justification = c(0, 1),
+      aspect.ratio = 1,
+      panel.background = element_rect(fill = "white"),
+      # text = element_text(size = 20)
+    ) +
+    scale_x_continuous(n.breaks = 6, limits = c(0,6)) +
+    scale_shape_manual(values = c(4, 8), guide = NULL) +
+    # scale_y_log10() +
+    labs(
+      # title = str_wrap("Predicted average costs by number of worksites and total distance between worksites (km)", 65),
+      # subtitle = str_wrap("Violin plots represent underlying observations"),
+      x = "Number of worksites",
+      y = "Total distance between worksites (km)"
+    )
+)
+    
+  #' We can repeat the exercise for the number of worksites and total distance
+  #' between worksites to examine the trade-off between economies of scale from
+  #' grouping multiple worksites under one project and increased costs in
 #' coordination as proxied by total distance between sites. The contours of this
 #' cost surface can be interpreted as the distance limit for which adding an
 #' additional worksite to a project is associated with economies or
@@ -1382,6 +1400,14 @@ map_df(mods, predict_cost_interaction, var1 = "n_worksites", var2 = "tot_dist", 
 #' contours flatten, indicating that the maximum distance for an efficient
 #' additional worksite drops quickly.  
 #' 
+
+library(patchwork)
+cowplot::save_plot(
+
+    plot = fig_bankfullslope / fig_sitesdist + plot_layout(guides = "collect") + plot_annotation(tag_levels = 'a'),
+    filename = here("output/figs/culverts/fig_contours.png"), base_width = 6.5, base_height = 7.5
+  
+)
 
 #' ### Continuous variables  
 #' 
