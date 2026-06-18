@@ -37,3 +37,4 @@ output/
 !output/info/
 !output/figs/
 !output/maps/
+.DS_Store
